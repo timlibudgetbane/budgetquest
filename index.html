@@ -368,18 +368,7 @@ body::after {
   position: relative;
   min-width: 0;
 }
-.xp-bar-fill::after {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
-  animation: barShimmer 3s ease-in-out infinite;
-}
-@keyframes barShimmer {
-  0%   { transform: translateX(-100%); }
-  60%  { transform: translateX(200%); }
-  100% { transform: translateX(200%); }
-}
+
 .xp-bar-fill.pulse {
   animation: xpBarPulse 0.7s ease;
 }
