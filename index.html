@@ -1014,7 +1014,7 @@ function render() {
   var nextTitle = getTitle(state.heroClass, ld.level + 1);
   document.getElementById('xp-next-msg').textContent =
     ld.level < LEVEL_XP.length
-      ? ld.toNext + ' XP until next level ' 
+      ? ld.toNext + ' XP until'
       : 'Maximum rank achieved';
 
   var today = new Date().toDateString();
