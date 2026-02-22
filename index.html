@@ -1147,7 +1147,14 @@ function logExpense() {
 
   // XP calculation: flat base + streak bonus, NOT proportional to dollar amount
   var streakBonus = Math.min(5, Math.floor((state.streak || 0) / 5));
-  var xpGained    = 10 + streakBonus + Math.floor(Math.random() * 5); // 10–19 XP
+  var currentLevel = getLevelData(state.xp).level;
+  var baseXp;
+  if (currentLevel <= 3) {
+  baseXp = 30;
+  } else {
+  baseXp = 15;
+}
+  var xpGained = baseXp + streakBonus;
 
   // Update streak BEFORE saving
   markLoggedToday();
