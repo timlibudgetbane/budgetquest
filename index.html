@@ -8,20 +8,20 @@
 <style>
 :root {
   --bg: #0e0c0a;
-  --surface: #1a1610;
-  --surface2: #221e16;
+  --surface: #181410;
+  --surface2: #201c14;
   --border: #3d3520;
   --border-gold: #7a6530;
   --gold: #c9a84c;
   --gold-light: #e8c96a;
-  --gold-dim: #6b5828;
+  --gold-dim: #9a7d3a;
   --red: #c0392b;
   --red-dim: #5a1a14;
   --green: #27ae60;
   --green-dim: #1a6b3c;
   --text: #e8dfc8;
-  --text-dim: #9a8e72;
-  --text-dark: #5a5040;
+  --text-dim: #b0a080;
+  --text-dark: #8a7a62;
   --xp-color: #4a9eff;
   --xp-dim: #1a3a6b;
 }
@@ -80,6 +80,45 @@ body::after {
   font-size: 14px;
   margin-top: 6px;
   font-style: italic;
+}
+
+/* ── LAWS OF THE REALM ── */
+.laws-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+.law-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 13px 15px;
+  transition: border-color 0.2s;
+}
+.law-card { cursor: default; }
+.law-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+  width: 32px;
+  text-align: center;
+  margin-top: 1px;
+}
+.law-body { flex: 1; }
+.law-title {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  color: var(--gold);
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+.law-plain {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.6;
 }
 
 /* ── ONBOARDING CARD ── */
@@ -315,7 +354,7 @@ body::after {
 }
 .char-class {
   font-size: 13px;
-  color: var(--text-dim);
+  color: var(--text);
   font-style: italic;
 }
 .char-level { text-align: right; flex-shrink: 0; }
@@ -327,7 +366,7 @@ body::after {
 }
 .level-label {
   font-size: 11px;
-  color: var(--text-dim);
+  color: var(--text);
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
@@ -371,26 +410,357 @@ body::after {
 }
 
 
-.xp-next-msg {
-  font-size: 14px !important;
+/* ── STREAK BANNER ── */
+.streak-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 18px;
+  margin-bottom: 16px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  position: relative;
+  overflow: hidden;
+  animation: fadeUp 0.4s 0.05s ease both;
+  transition: border-color 0.3s, background 0.3s;
+}
+.streak-banner::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #e8622a, transparent);
+  opacity: 0.7;
+}
+.streak-banner.alive {
+  border-color: rgba(232, 98, 42, 0.45);
+  background: linear-gradient(90deg, rgba(232,98,42,0.06) 0%, var(--surface) 60%);
+}
+.streak-banner.danger {
+  border-color: rgba(232, 98, 42, 0.25);
+  background: var(--surface);
+}
+.streak-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.streak-banner-flame {
+  font-size: 26px;
+  line-height: 1;
+  filter: drop-shadow(0 0 6px rgba(232,98,42,0.5));
+}
+.streak-banner-flame.cold {
+  filter: grayscale(0.8);
+  opacity: 0.5;
+}
+.streak-banner-text {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.streak-banner-count {
+  font-family: 'Cinzel', serif;
+  font-size: 28px;
+  color: #e8622a;
+  line-height: 1;
+}
+.streak-banner-count.cold { color: var(--text-dark); }
+.streak-banner-label {
+  font-size: 13px;
+  color: var(--text-dim);
+  font-style: italic;
+}
+.streak-banner-right {
+  font-size: 11px;
   color: var(--text-dark);
+  font-family: 'Cinzel', serif;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-align: right;
+}
+.streak-banner-right.logged {
+  color: var(--green);
+}
+.streak-banner-right.urgent {
+  color: #e8622a;
+  animation: urgentPulse 2s ease-in-out infinite;
+}
+@keyframes urgentPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+
+.xp-next-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 5px;
+}
+.xp-earn-hint {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-style: italic;
+}
+.xp-next-msg {
+  font-size: 12px;
+  color: var(--text-dim);
+  font-style: italic;
+  text-align: right;
+}
+
+/* Treasury Divider */
+.card-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 14px;
+}
+.card-divider::before,
+.card-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.card-divider-label {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  color: var(--text-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  white-space: nowrap;
+}
+
+/* Coin status row */
+.coin-status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 5px;
+  gap: 8px;
+}
+.coin-earn-hint {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-style: italic;
+  flex-shrink: 0;
+}
+
+/* ── COIN RESERVE ── */
+.coin-reserve-section {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+.coin-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 7px;
+}
+.coin-title-text {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.coin-count-text { font-size: 15px; color: var(--text-dim); }
+.coin-count-text strong {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  color: var(--gold);
+}
+.coin-bar-track {
+  height: 18px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  overflow: hidden;
+  position: relative;
+}
+.coin-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #5a3e10 0%, #a06c1a 55%, #c9a84c 100%);
+  border-radius: 9px;
+  transition: width 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 0;
+}
+.coin-bar-fill.danger {
+  background: linear-gradient(90deg, #5a1a14 0%, #a03020 55%, #c0392b 100%);
+}
+.coin-bar-fill.warning {
+  background: linear-gradient(90deg, #5a3e10 0%, #b07820 55%, #e8a820 100%);
+}
+.coin-status {
+  font-size: 12px;
+  color: var(--text-dim);
   text-align: right;
   margin-top: 5px;
   font-style: italic;
 }
+.coin-status.danger { color: var(--red); }
+.coin-status.warning { color: #e8a820; }
 
-/* Streak */
-.streak-row {
+/* ── IRON VAULT ── */
+.iron-vault-row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 15px;
-  padding-top: 15px;
-  border-top: 1px solid var(--border);
+  justify-content: space-between;
+  margin-top: 14px;
+  padding: 11px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
 }
-.streak-flame { font-size: 18px; }
-.streak-count { font-family: 'Cinzel', serif; font-size: 17px; color: var(--gold); }
-.streak-label { font-size: 13px; color: var(--text-dim); font-style: italic; }
+.iron-vault-row::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--gold-dim), var(--border-gold));
+}
+.vault-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.vault-icon { font-size: 18px; }
+.vault-label-wrap {}
+.vault-title {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+.vault-subtitle {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-style: italic;
+}
+.vault-amount {
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  color: var(--gold);
+  text-align: right;
+}
+.vault-amount.empty { color: var(--text-dark); font-size: 14px; }
+
+/* ── COIN FLOAT ── */
+.coin-float {
+  position: fixed;
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  color: var(--gold);
+  pointer-events: none;
+  z-index: 9000;
+  opacity: 0;
+  font-weight: bold;
+}
+.coin-float.pop {
+  animation: coinDrain 1.1s ease-out forwards;
+}
+@keyframes coinDrain {
+  0%   { opacity: 1; transform: translateX(-50%) translateY(0);   }
+  100% { opacity: 0; transform: translateX(-50%) translateY(28px); }
+}
+
+/* ── MONTH RESET OVERLAY ── */
+.reset-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+.reset-overlay.show { opacity: 1; pointer-events: all; }
+.reset-box {
+  background: var(--surface);
+  border: 1px solid var(--border-gold);
+  border-radius: 6px;
+  padding: 44px 48px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  position: relative;
+  overflow: hidden;
+  transform: scale(0.85) translateY(20px);
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.reset-overlay.show .reset-box { transform: scale(1) translateY(0); }
+.reset-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.reset-icon { font-size: 40px; margin-bottom: 12px; }
+.reset-label {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  margin-bottom: 8px;
+}
+.reset-title {
+  font-family: 'Cinzel', serif;
+  font-size: 22px;
+  color: var(--gold);
+  margin-bottom: 16px;
+  text-shadow: 0 0 30px rgba(201,168,76,0.4);
+}
+.reset-breakdown {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+.reset-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: var(--text);
+  padding: 4px 0;
+}
+.reset-row.highlight { color: var(--gold); font-family: 'Cinzel', serif; font-size: 13px; }
+.reset-row span:last-child { color: var(--text); }
+.reset-row.highlight span:last-child { color: var(--gold); }
+.reset-msg {
+  font-style: italic;
+  color: var(--text-dim);
+  font-size: 13px;
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+.reset-close {
+  background: var(--gold-dim);
+  border: 1px solid var(--gold);
+  color: var(--gold-light);
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  padding: 11px 28px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.reset-close:hover { background: var(--gold); color: var(--bg); }
 
 /* ── LOG SECTION ── */
 .log-section {
@@ -414,7 +784,7 @@ body::after {
 .section-head {
   font-family: 'Cinzel', serif;
   font-size: 11px;
-  color: var(--gold-dim);
+  color: var(--gold);
   text-transform: uppercase;
   letter-spacing: 0.14em;
   margin-bottom: 14px;
@@ -436,7 +806,7 @@ body::after {
 }
 
 .form-group { display: flex; flex-direction: column; gap: 5px; }
-.form-label  { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; }
+.form-label  { font-size: 10px; color: var(--text); text-transform: uppercase; letter-spacing: 0.08em; }
 .form-input {
   background: var(--surface2);
   border: 1px solid var(--border);
@@ -472,7 +842,7 @@ body::after {
 .xp-hint {
   margin-top: 11px;
   font-size: 12px;
-  color: var(--text-dark);
+  color: var(--text-dim);
   font-style: italic;
   text-align: center;
 }
@@ -504,7 +874,7 @@ body::after {
 .log-item:last-child { border-bottom: none; }
 .log-icon  { font-size: 16px; text-align: center; }
 .log-desc  { font-size: 14px; color: var(--text); }
-.log-meta  { font-size: 11px; color: var(--text-dark); font-style: italic; }
+.log-meta  { font-size: 11px; color: var(--text-dim); font-style: italic; }
 .log-right { text-align: right; }
 .log-amount { font-family: 'Cinzel', serif; font-size: 13px; }
 .log-xp    { font-size: 12px; color: var(--xp-color); }
@@ -595,7 +965,7 @@ body::after {
 .teasers-head {
   font-family: 'Cinzel', serif;
   font-size: 11px;
-  color: var(--text-dark);
+  color: var(--text-dim);
   text-transform: uppercase;
   letter-spacing: 0.14em;
   margin-bottom: 14px;
@@ -623,8 +993,440 @@ body::after {
 .teaser-lock { position: absolute; top: 9px; right: 10px; font-size: 11px; color: var(--text-dark); }
 .teaser-icon { font-size: 22px; margin-bottom: 7px; }
 .teaser-name { font-family: 'Cinzel', serif; font-size: 12px; color: var(--gold-dim); margin-bottom: 4px; }
-.teaser-hint { font-size: 11px; color: var(--text-dark); font-style: italic; line-height: 1.5; }
-.teaser-unlock { font-size: 10px; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 8px; }
+.teaser-hint { font-size: 11px; color: var(--text-dim); font-style: italic; line-height: 1.5; }
+.teaser-unlock { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 8px; }
+
+/* ── HEARTS (inside map) ── */
+.map-hearts {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.map-heart {
+  font-size: 16px;
+  transition: all 0.3s;
+  filter: drop-shadow(0 0 3px rgba(192,57,43,0.5));
+  line-height: 1;
+}
+.map-heart.empty {
+  filter: grayscale(1) opacity(0.2);
+}
+
+/* ── BADGES (compact on character card) ── */
+.badges-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.badges-label {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  color: var(--text-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+.badge-slot {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  position: relative;
+  transition: all 0.3s;
+  cursor: default;
+}
+.badge-slot.earned {
+  border-color: var(--gold);
+  box-shadow: 0 0 8px rgba(201,168,76,0.4);
+}
+.badge-slot.locked { opacity: 0.2; }
+.badge-slot .badge-tip {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface);
+  border: 1px solid var(--border-gold);
+  border-radius: 3px;
+  padding: 4px 8px;
+  font-size: 10px;
+  color: var(--text-dim);
+  white-space: nowrap;
+  font-family: 'Cinzel', serif;
+  z-index: 100;
+  pointer-events: none;
+}
+.badge-slot:hover .badge-tip { display: block; }
+
+/* ── NODE MAP ── */
+.map-panel {
+  background: var(--surface);
+  border: 1px solid var(--border-gold);
+  border-radius: 0 0 4px 4px;
+  padding: 20px 20px 16px;
+  position: relative;
+  overflow: hidden;
+  border-top: none;
+}
+.map-panel::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+}
+.map-top-bar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  gap: 12px;
+}
+.map-top-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.map-section-label {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+.map-current-loc {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  color: var(--gold);
+}
+.map-zone-tag {
+  font-size: 12px;
+  color: var(--text);
+  font-style: italic;
+  opacity: 0.7;
+}
+
+/* Map right column (hearts + badges stacked) */
+.map-right-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.map-badges-row {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+/* Map viewport — windowed view, clips to show ~5 nodes at a time */
+.map-viewport {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  overflow: hidden;
+  border-radius: 4px;
+}
+/* Top fade — reveals content came from above */
+.map-viewport::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 40px;
+  background: linear-gradient(180deg, var(--surface) 0%, transparent 100%);
+  z-index: 10;
+  pointer-events: none;
+  transition: opacity 0.5s;
+}
+/* Bottom fade — signals map continues below */
+.map-viewport::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 48px;
+  background: linear-gradient(0deg, var(--surface) 0%, transparent 100%);
+  z-index: 10;
+  pointer-events: none;
+}
+/* "More ahead" arrow at bottom of viewport */
+.map-more-arrow {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  font-size: 11px;
+  color: var(--gold-dim);
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.1em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  pointer-events: none;
+  animation: arrowBob 2s ease-in-out infinite;
+  opacity: 0.7;
+}
+.map-more-arrow.hidden { display: none; }
+@keyframes arrowBob {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(3px); }
+}
+
+/* The scrollable world inside the viewport */
+.node-map {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.node-map svg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  pointer-events: none;
+}
+.node-map-inner {
+  position: relative;
+  z-index: 2;
+}
+
+/* Individual map nodes */
+.map-node-wrap {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transform: translate(-50%, -50%);
+  cursor: default;
+}
+.map-node-circle {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--surface2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  transition: all 0.4s;
+  position: relative;
+}
+.map-node-circle.done {
+  border-color: var(--gold-dim);
+  background: #1c1808;
+  opacity: 0.65;
+}
+.map-node-circle.current {
+  border-color: var(--gold);
+  background: #2a2010;
+  box-shadow: 0 0 18px rgba(201,168,76,0.55);
+  animation: nodeGlow 2.5s ease-in-out infinite;
+}
+.map-node-circle.ahead {
+  opacity: 0.28;
+  filter: saturate(0.15);
+}
+.map-node-circle.badge-node {
+  width: 42px; height: 42px;
+  font-size: 18px;
+  border-style: dashed;
+}
+.map-node-circle.badge-node.earned {
+  border-color: var(--gold);
+  border-style: solid;
+  box-shadow: 0 0 14px rgba(201,168,76,0.5);
+  opacity: 1;
+  filter: none;
+}
+@keyframes nodeGlow {
+  0%, 100% { box-shadow: 0 0 14px rgba(201,168,76,0.4); }
+  50%       { box-shadow: 0 0 28px rgba(201,168,76,0.75); }
+}
+.map-node-label {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  color: var(--text-dark);
+  text-align: center;
+  line-height: 1.3;
+  max-width: 60px;
+  white-space: nowrap;
+}
+.map-node-wrap.current .map-node-label { color: var(--gold-dim); }
+
+/* Zone region labels */
+.zone-region-label {
+  position: absolute;
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  color: var(--text-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Road bonus row */
+.road-bonus-track {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.road-bonus-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-style: italic;
+  flex: 1;
+}
+.road-bonus-pips {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.road-pip {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: all 0.3s;
+}
+.road-pip.earned {
+  background: var(--gold);
+  box-shadow: 0 0 5px rgba(201,168,76,0.5);
+}
+
+/* Character card + map as unified block */
+.hero-block {
+  margin-bottom: 20px;
+  animation: fadeUp 0.4s ease both;
+}
+.hero-block .character-card {
+  border-radius: 4px 4px 0 0;
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--border);
+  animation: none;
+}
+
+/* ── ENCOUNTER OVERLAY ── */
+.encounter-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s;
+}
+.encounter-overlay.show { opacity: 1; pointer-events: all; }
+.encounter-box {
+  background: var(--surface);
+  border-radius: 6px;
+  padding: 36px 40px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  position: relative;
+  overflow: hidden;
+  transform: scale(0.85) translateY(20px);
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.encounter-overlay.show .encounter-box { transform: scale(1) translateY(0); }
+.encounter-box.hostile {
+  border: 1px solid var(--red);
+}
+.encounter-box.hostile::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--red), transparent);
+}
+.encounter-box.friendly {
+  border: 1px solid var(--green);
+}
+.encounter-box.friendly::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--green), transparent);
+}
+.encounter-zone {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin-bottom: 6px;
+}
+.encounter-box.hostile .encounter-zone { color: var(--red); }
+.encounter-box.friendly .encounter-zone { color: var(--green); }
+.encounter-icon { font-size: 44px; margin-bottom: 12px; line-height: 1; }
+.encounter-title {
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.encounter-desc {
+  font-size: 14px;
+  color: var(--text);
+  font-style: italic;
+  line-height: 1.7;
+  margin-bottom: 22px;
+}
+.encounter-choices { display: flex; flex-direction: column; gap: 9px; }
+.encounter-btn {
+  background: transparent;
+  border: 1px solid var(--border-gold);
+  color: var(--text);
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  padding: 12px 20px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  line-height: 1.5;
+}
+.encounter-btn:hover { background: var(--surface2); border-color: var(--gold-dim); }
+.encounter-btn.hostile-choice { border-color: rgba(192,57,43,0.4); }
+.encounter-btn.hostile-choice:hover { border-color: var(--red); background: rgba(192,57,43,0.08); }
+.encounter-btn.friendly-choice { border-color: rgba(39,174,96,0.4); }
+.encounter-btn.friendly-choice:hover { border-color: var(--green); background: rgba(39,174,96,0.08); }
+.encounter-btn-cost {
+  display: block;
+  font-size: 10px;
+  color: var(--text-dark);
+  margin-top: 3px;
+  letter-spacing: 0.05em;
+}
+.encounter-btn-disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  border-color: var(--border) !important;
+  background: transparent !important;
+}
+.encounter-btn-disabled:hover {
+  background: transparent !important;
+  border-color: var(--border) !important;
+}
 
 /* ── TOAST ── */
 .toast {
@@ -667,7 +1469,7 @@ body::after {
   </div>
 
   <!-- ── ONBOARDING ── -->
-  <div id="onboarding" style="display: block;">
+  <div id="onboarding" style="display: none;">
     <div class="onboarding-card">
 
       <div class="steps-row">
@@ -676,6 +1478,10 @@ body::after {
         <div class="step-dot active" id="dot-1"></div>
         <div class="step-line"></div>
         <div class="step-dot" id="dot-2"></div>
+        <div class="step-line"></div>
+        <div class="step-dot" id="dot-3"></div>
+        <div class="step-line"></div>
+        <div class="step-dot" id="dot-4"></div>
       </div>
 
       <!-- Step 1: Name -->
@@ -752,7 +1558,71 @@ body::after {
         </div>
         <div class="ob-nav">
           <button class="ob-btn secondary" onclick="goStep(1)">← Back</button>
-          <button class="ob-btn" onclick="beginJourney()">Begin the Quest ⚔</button>
+          <button class="ob-btn" onclick="goStep(3)">The Laws of the Realm →</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Laws of the Realm -->
+      <div class="ob-step" id="step-3">
+        <div style="text-align:center;font-size:36px;margin-bottom:10px">📜</div>
+        <div class="ob-title">The Laws of the Realm</div>
+        <div class="ob-sub">Five laws govern your journey. Know them before you ride.</div>
+        <div class="laws-grid">
+          <div class="law-card">
+            <div class="law-icon">⚔️</div>
+            <div class="law-body">
+              <div class="law-title">Log Expenses → Earn XP</div>
+              <div class="law-plain">Every purchase you record earns experience. The amount doesn't matter — the act of tracking does.</div>
+            </div>
+          </div>
+          <div class="law-card">
+            <div class="law-icon">🔥</div>
+            <div class="law-body">
+              <div class="law-title">Log Daily → Build Your Streak</div>
+              <div class="law-plain">Log at least once every day to grow your streak. Streaks boost your XP. Miss a day and it resets to zero.</div>
+            </div>
+          </div>
+          <div class="law-card">
+            <div class="law-icon">🔒</div>
+            <div class="law-body">
+              <div class="law-title">Stay Under Budget → Fill the Iron Vault</div>
+              <div class="law-plain">Your monthly budget is your Coin Reserve. Any gold left unspent at month's end is sealed in the Iron Vault — your trophy of discipline.</div>
+            </div>
+          </div>
+          <div class="law-card">
+            <div class="law-icon">🗺️</div>
+            <div class="law-body">
+              <div class="law-title">Level Up → Advance the Map</div>
+              <div class="law-plain">Each level moves you forward on The Journey — a world map of 14 locations across 4 zones. Log well and earn Road Bonuses that accelerate your progress.</div>
+            </div>
+          </div>
+          <div class="law-card">
+            <div class="law-icon">❤️</div>
+            <div class="law-body">
+              <div class="law-title">Hearts Protect You on the Road</div>
+              <div class="law-plain">The road has hazards — bandits, tax collectors, temptation merchants. You start with 3 hearts. Spend one to block a threat, or pay from your Iron Vault instead. Shrines and scouts restore them.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ob-nav">
+          <button class="ob-btn secondary" onclick="goStep(2)">← Back</button>
+          <button class="ob-btn" onclick="goStep(4)">Set Your Treasury →</button>
+        </div>
+      </div>
+
+      <!-- Step 5: Monthly Budget -->
+      <div class="ob-step" id="step-4">
+        <div style="text-align:center;font-size:44px;margin-bottom:14px">🏦</div>
+        <div class="ob-title">Forge Your Monthly Treasury</div>
+        <div class="ob-sub">What is your monthly budget? This becomes your Coin Reserve — your gold to spend each month. Any surplus at month's end is sealed in the Iron Vault.</div>
+        <div class="name-row">
+          <span style="background:var(--surface2);border:1px solid var(--border-gold);border-right:none;border-radius:3px 0 0 3px;padding:11px 14px;color:var(--gold-dim);font-family:'Cinzel',serif;font-size:15px;">$</span>
+          <input class="hero-name-input" id="budget-input" type="number" min="1" step="1" placeholder="e.g. 2000" style="border-radius:0;border-left:none;" autocomplete="off">
+          <button class="ob-btn" style="border-radius:0 3px 3px 0;white-space:nowrap" onclick="beginJourney()">Begin the Quest ⚔</button>
+        </div>
+        <div style="text-align:center;margin-top:14px;font-size:12px;color:var(--text-dark);font-style:italic;">You can update this anytime. No judgment — only discipline.</div>
+        <div class="ob-nav" style="margin-top:18px;">
+          <button class="ob-btn secondary" onclick="goStep(3)">← Back</button>
         </div>
       </div>
 
@@ -760,38 +1630,128 @@ body::after {
   </div><!-- /onboarding -->
 
   <!-- ── MAIN ── -->
-  <div id="main" style="display:none">
+  <div id="main" style="display: block;">
 
-    <!-- Character Card -->
-    <div class="character-card">
-      <div class="char-top">
-        <div class="char-avatar" id="char-avatar">🛡️</div>
-        <div class="char-info">
-          <div class="char-name" id="char-name">—</div>
-          <div class="char-class" id="char-class">Novice</div>
+    <!-- ── HERO BLOCK: character card + map panel as one unified unit ── -->
+    <div class="hero-block">
+
+      <!-- Character Card (top half) -->
+      <div class="character-card">
+        <div class="char-top">
+          <div class="char-avatar" id="char-avatar">🧙</div>
+          <div class="char-info">
+            <div class="char-name" id="char-name">Hero</div>
+            <div class="char-class" id="char-class">Novice</div>
+          </div>
+          <div class="char-level">
+            <div class="level-num" id="level-num">1</div>
+            <div class="level-label">Level</div>
+          </div>
         </div>
-        <div class="char-level">
-          <div class="level-num" id="level-num">1</div>
-          <div class="level-label">Level</div>
+
+        <!-- XP -->
+        <div class="xp-label-row">
+          <span class="xp-title-text">⚔ Experience (XP)</span>
+          <span class="xp-count-text"><strong id="xp-current">0</strong> / <span id="xp-next-val">80</span> XP</span>
+        </div>
+        <div class="xp-bar-track">
+          <div class="xp-bar-fill" id="xp-fill" style="width:0%"></div>
+        </div>
+        <div class="xp-next-row">
+          <span class="xp-earn-hint">Earned by logging expenses</span>
+          <span class="xp-next-msg" id="xp-next-msg">80 XP until Level 2</span>
+        </div>
+
+        <!-- Treasury Divider -->
+        <div class="card-divider"><span class="card-divider-label">Treasury</span></div>
+
+        <!-- Coin Reserve -->
+        <div class="coin-reserve-section" id="coin-reserve-section">
+          <div class="coin-label-row">
+            <span class="coin-title-text">⚜ Monthly Coin Reserve</span>
+            <span class="coin-count-text"><strong id="coin-current">0</strong> / <span id="coin-max">0</span> gold</span>
+          </div>
+          <div class="coin-bar-track">
+            <div class="coin-bar-fill" id="coin-fill" style="width:100%"></div>
+          </div>
+          <div class="coin-status-row">
+            <span class="coin-earn-hint">Your monthly budget — depletes as you spend</span>
+            <span class="coin-status" id="coin-status"></span>
+          </div>
+
+          <!-- Iron Vault -->
+          <div class="iron-vault-row">
+            <div class="vault-left">
+              <div class="vault-icon">🔒</div>
+              <div class="vault-label-wrap">
+                <div class="vault-title">Iron Vault</div>
+                <div class="vault-subtitle">Unspent gold sealed here at month's end — reward for staying under budget</div>
+              </div>
+            </div>
+            <div class="vault-amount" id="vault-amount">Empty</div>
+          </div>
+        </div>
+
+      </div><!-- /character-card -->
+
+      <!-- Map Panel (bottom half, connected) -->
+      <div class="map-panel" id="map-section">
+        <div class="map-top-bar">
+          <div class="map-top-left">
+            <span class="map-section-label">⚔ The Journey</span>
+            <span class="map-current-loc" id="map-location-name">Hearthstone Village</span>
+            <span class="map-zone-tag" id="map-zone-tag">Zone I — The Hearthstone Road</span>
+          </div>
+          <div class="map-right-col">
+            <div class="map-hearts">
+              <span class="map-heart" id="heart-1">❤️</span>
+              <span class="map-heart" id="heart-2">❤️</span>
+              <span class="map-heart" id="heart-3">❤️</span>
+            </div>
+            <div class="map-badges-row">
+              <div class="badge-slot locked" id="badge-zone1"><span>🛡️</span><span class="badge-tip">The First Steps</span></div>
+              <div class="badge-slot locked" id="badge-zone2"><span>🪙</span><span class="badge-tip">Disciplined Traveler</span></div>
+              <div class="badge-slot locked" id="badge-zone3"><span>🌿</span><span class="badge-tip">Thornwood Survivor</span></div>
+              <div class="badge-slot locked" id="badge-zone4"><span>🔒</span><span class="badge-tip">Keeper of the Iron Vault</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Node map rendered by JS -->
+        <div class="map-viewport" id="map-viewport">
+          <div class="node-map" id="node-map">
+            <svg id="map-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+            <div class="node-map-inner" id="node-map-inner"></div>
+          </div>
+          <div class="map-more-arrow" id="map-more-arrow">
+            <span>more ahead</span>
+            <span>▼</span>
+          </div>
+        </div>
+
+        <!-- Road Bonus -->
+        <div class="road-bonus-track">
+          <span class="road-bonus-label" id="road-bonus-label">Road Bonus — log well this week to move faster</span>
+          <div class="road-bonus-pips">
+            <div class="road-pip" id="road-pip-1"></div>
+            <div class="road-pip" id="road-pip-2"></div>
+            <div class="road-pip" id="road-pip-3"></div>
+          </div>
+        </div>
+      </div><!-- /map-panel -->
+
+    </div><!-- /hero-block -->
+
+    <!-- Streak Banner -->
+    <div class="streak-banner" id="streak-banner">
+      <div class="streak-banner-left">
+        <span class="streak-banner-flame" id="streak-banner-flame">🔥</span>
+        <div class="streak-banner-text">
+          <span class="streak-banner-count" id="streak-count">0</span>
+          <span class="streak-banner-label" id="streak-label">day streak — begin yours</span>
         </div>
       </div>
-
-      <!-- XP -->
-      <div class="xp-label-row">
-        <span class="xp-title-text">Experience</span>
-        <span class="xp-count-text"><strong id="xp-current">0</strong> / <span id="xp-next-val">80</span> XP</span>
-      </div>
-      <div class="xp-bar-track">
-        <div class="xp-bar-fill" id="xp-fill" style="width:0%"></div>
-      </div>
-      <div class="xp-next-msg" id="xp-next-msg">Log your first expense to earn XP</div>
-
-      <!-- Streak -->
-      <div class="streak-row">
-        <span class="streak-flame">🔥</span>
-        <span class="streak-count" id="streak-count">0</span>
-        <span class="streak-label" id="streak-label">day streak</span>
-      </div>
+      <div class="streak-banner-right" id="streak-banner-right">Start your streak today</div>
     </div>
 
     <!-- Log Form -->
@@ -811,48 +1771,13 @@ body::after {
           <button class="log-btn" id="log-btn" onclick="logExpense()">⚔ Log It</button>
         </div>
       </div>
-      <div class="xp-hint">Every entry earns XP — the act of tracking is the discipline.</div>
+      <div class="xp-hint">Log an expense → earn XP → level up → advance the map</div>
     </div>
 
-    <!-- Chronicle -->
+    <!-- Expense Chronicle -->
     <div class="log-list-wrap">
-      <div class="section-head">Chronicle</div>
+      <div class="section-head">Expense Chronicle</div>
       <div class="log-list" id="log-list"></div>
-    </div>
-
-    <!-- Teasers -->
-    <div class="teasers">
-      <div class="teasers-head">Unlocks Ahead</div>
-      <div class="teaser-grid">
-        <div class="teaser-card">
-          <div class="teaser-lock">🔒</div>
-          <div class="teaser-icon">⚔️</div>
-          <div class="teaser-name">Foes &amp; Enemies</div>
-          <div class="teaser-hint">Dark forces stir. Your overspending gives them power.</div>
-          <div class="teaser-unlock">Unlocks at Level 3</div>
-        </div>
-        <div class="teaser-card">
-          <div class="teaser-lock">🔒</div>
-          <div class="teaser-icon">🏰</div>
-          <div class="teaser-name">Treasury Vaults</div>
-          <div class="teaser-hint">Allocate gold across your realm's coffers. Stay under budget, gain power.</div>
-          <div class="teaser-unlock">Unlocks at Level 5</div>
-        </div>
-        <div class="teaser-card">
-          <div class="teaser-lock">🔒</div>
-          <div class="teaser-icon">📜</div>
-          <div class="teaser-name">Weekly Quests</div>
-          <div class="teaser-hint">Prove your discipline across 7 days. Claim rare rewards.</div>
-          <div class="teaser-unlock">Unlocks at Level 7</div>
-        </div>
-        <div class="teaser-card">
-          <div class="teaser-lock">🔒</div>
-          <div class="teaser-icon">🛡</div>
-          <div class="teaser-name">The Guild</div>
-          <div class="teaser-hint">Battle monthly bosses alongside a fellowship of heroes.</div>
-          <div class="teaser-unlock">Unlocks at Level 10</div>
-        </div>
-      </div>
     </div>
 
   </div><!-- /main -->
@@ -861,14 +1786,30 @@ body::after {
 <!-- XP Float -->
 <div class="xp-float" id="xp-float"></div>
 
+<!-- Coin Float -->
+<div class="coin-float" id="coin-float"></div>
+
+<!-- Month Reset Overlay -->
+<div class="reset-overlay" id="reset-overlay">
+  <div class="reset-box">
+    <div class="reset-icon">🏦</div>
+    <div class="reset-label">A New Campaign Begins</div>
+    <div class="reset-title">Monthly Reset</div>
+    <div class="reset-breakdown" id="reset-breakdown">
+      <!-- filled dynamically -->
+    </div>
+    <div class="reset-msg" id="reset-msg">Your treasury has been replenished. The Iron Vault holds your surplus. Spend wisely, hero.</div>
+    <button class="reset-close" onclick="closeReset()">March Forward ⚔</button>
+  </div>
+</div>
+
 <!-- Level Up Overlay -->
 <div class="levelup-overlay" id="levelup-overlay">
   <div class="levelup-box">
     <div class="levelup-sparkles">✦ ✧ ✦</div>
     <div class="levelup-label">Level Up</div>
     <div class="levelup-num" id="lu-level">2</div>
-    <div class="levelup-rank" id="lu-rank">Apprentice</div>
-    <div class="levelup-msg" id="lu-msg">Your discipline grows stronger. The realm notices.</div>
+    <div class="levelup-rank" id="lu-rank">Apprentice</div>    <div class="levelup-msg" id="lu-msg">Your discipline grows stronger. The realm notices.</div>
     <button class="levelup-close" onclick="closeLevelUp()">Continue the Quest</button>
   </div>
 </div>
@@ -909,6 +1850,127 @@ var LEVEL_MSGS = [
 var LOG_ICONS = ['💰','🛒','🍖','🧪','⚔️','📜','🐎','🏰','🔮','💎','🌿','🎒'];
 
 // ─────────────────────────
+//  MAP DATA
+// ─────────────────────────
+var MAP_WAYPOINTS = [
+  // Zone 1 — The Hearthstone Road (levels 1-3)
+  { id: 0,  icon: '🏘️', name: 'Hearthstone\nVillage',  zone: 1, zoneName: 'The Hearthstone Road' },
+  { id: 1,  icon: '🌾', name: 'Harvest\nCrossing',      zone: 1, zoneName: 'The Hearthstone Road' },
+  { id: 2,  icon: '🪨', name: 'Stonepath\nMill',        zone: 1, zoneName: 'The Hearthstone Road' },
+  { id: 'z1', icon: '🛡️', name: 'Zone Badge',          zone: 'badge1', badge: 'zone1', zoneName: 'The Hearthstone Road' },
+  // Zone 2 — The Merchant's Pass (levels 4-6)
+  { id: 3,  icon: '🏪', name: "Merchant's\nGate",       zone: 2, zoneName: "The Merchant's Pass" },
+  { id: 4,  icon: '🌉', name: 'Copperbridge',           zone: 2, zoneName: "The Merchant's Pass" },
+  { id: 5,  icon: '⛺', name: 'Trader\'s\nCamp',        zone: 2, zoneName: "The Merchant's Pass" },
+  { id: 'z2', icon: '🪙', name: 'Zone Badge',           zone: 'badge2', badge: 'zone2', zoneName: "The Merchant's Pass" },
+  // Zone 3 — The Thornwood (levels 7-9)
+  { id: 6,  icon: '🌲', name: 'Thornwood\nEdge',        zone: 3, zoneName: 'The Thornwood' },
+  { id: 7,  icon: '🌑', name: 'Darkhollow\nPath',       zone: 3, zoneName: 'The Thornwood' },
+  { id: 8,  icon: '🕯️', name: 'Wayward\nShrine',       zone: 3, zoneName: 'The Thornwood' },
+  { id: 'z3', icon: '🌿', name: 'Zone Badge',           zone: 'badge3', badge: 'zone3', zoneName: 'The Thornwood' },
+  // Zone 4 — The Iron Keep (level 10+)
+  { id: 9,  icon: '⚔️', name: 'Iron Keep\nGates',       zone: 4, zoneName: 'The Iron Keep' },
+  { id: 10, icon: '🏰', name: 'The Iron\nKeep',         zone: 4, zoneName: 'The Iron Keep' },
+  { id: 'z4', icon: '🔒', name: 'Zone Badge',           zone: 'badge4', badge: 'zone4', zoneName: 'The Iron Keep' },
+];
+
+// Map position is 0-10 (numeric waypoints only)
+// Level thresholds for map advancement: level X unlocks map position Y
+var LEVEL_TO_MAP = [0,0,1,2,3,4,5,6,7,8,9,10];
+
+var HOSTILE_ENCOUNTERS = [
+  {
+    id: 'bandits',
+    icon: '🗡️',
+    title: 'Bandits on the Road',
+    zone: 'Road Hazard',
+    desc: 'A band of cutpurses emerges from the shadows, drawn by the scent of recent spending. They demand tribute.',
+    choiceA: { label: 'Spend a Heart to fight them off', cost: 'heart', sub: 'Costs 1 ❤️ — vault protected' },
+    choiceB: { label: 'Pay the toll and pass safely',    cost: 'vault', sub: 'Lose gold from Iron Vault — hearts protected' },
+    vaultCost: 0.05
+  },
+  {
+    id: 'taxman',
+    icon: '📋',
+    title: 'The Tax Collector',
+    zone: 'Road Hazard',
+    desc: 'An officious collector blocks the road, citing your recent large purchase as grounds for an extraordinary levy.',
+    choiceA: { label: 'Contest the levy — spend a Heart', cost: 'heart', sub: 'Costs 1 ❤️ — vault protected' },
+    choiceB: { label: 'Pay without argument',             cost: 'vault', sub: 'Lose gold from Iron Vault — hearts protected' },
+    vaultCost: 0.08
+  },
+  {
+    id: 'wraith',
+    icon: '👻',
+    title: 'The Subscription Wraith',
+    zone: 'Shadow Encounter',
+    desc: 'A pale figure drifts from the mist — a wraith born of forgotten subscriptions and silent recurring charges. It drains as it passes.',
+    choiceA: { label: 'Ward it away — spend a Heart',    cost: 'heart', sub: 'Costs 1 ❤️ — vault protected' },
+    choiceB: { label: 'Let it pass and absorb the drain', cost: 'vault', sub: 'Lose gold from Iron Vault — hearts protected' },
+    vaultCost: 0.06
+  },
+  {
+    id: 'merchant',
+    icon: '🛍️',
+    title: 'The Temptation Merchant',
+    zone: 'Merchant Encounter',
+    desc: 'A silver-tongued merchant appears with wares you did not know you needed. You already spent more than you planned.',
+    choiceA: { label: 'Resist and spend a Heart to move on', cost: 'heart', sub: 'Costs 1 ❤️ — vault protected' },
+    choiceB: { label: 'Pay the merchant\'s price',           cost: 'vault', sub: 'Lose gold from Iron Vault — hearts protected' },
+    vaultCost: 0.07
+  }
+];
+
+var FRIENDLY_ENCOUNTERS = [
+  {
+    id: 'scout',
+    icon: '🧭',
+    title: 'A Wandering Scout',
+    zone: 'Friendly Encounter',
+    desc: 'A road-worn scout shares intelligence: trouble lies ahead on the path. You feel more prepared knowing what\'s coming.',
+    reward: { type: 'xp', amount: 40 },
+    rewardDesc: '+40 bonus XP for your vigilance',
+    warning: true
+  },
+  {
+    id: 'shrine',
+    icon: '🕯️',
+    title: 'Ancient Roadside Shrine',
+    zone: 'Discovery',
+    desc: 'Half-hidden by moss, an old shrine marks the road. You pause to leave an offering. The road feels lighter afterward.',
+    reward: { type: 'heart', amount: 1 },
+    rewardDesc: '❤️ Heart restored'
+  },
+  {
+    id: 'journal',
+    icon: '📖',
+    title: 'Scout\'s Abandoned Journal',
+    zone: 'Discovery',
+    desc: 'Tucked beneath a milestone stone: a weathered journal filled with margin notes on thrift and discipline. You gain from its wisdom.',
+    reward: { type: 'xp', amount: 55 },
+    rewardDesc: '+55 bonus XP from the journal\'s wisdom'
+  },
+  {
+    id: 'camp',
+    icon: '🏕️',
+    title: 'Abandoned Traveler\'s Camp',
+    zone: 'Discovery',
+    desc: 'A cold camp, recently left. Whoever was here traveled light and left a small cache of provisions behind.',
+    reward: { type: 'vault', amount: 25 },
+    rewardDesc: '+25 gold sealed in your Iron Vault'
+  },
+  {
+    id: 'elder',
+    icon: '🧙',
+    title: 'The Road Elder',
+    zone: 'Friendly Encounter',
+    desc: 'An ancient wanderer sits by the road, watching travelers pass. She sees your ledger and nods with approval. Her blessing doubles your next XP gain.',
+    reward: { type: 'xp', amount: 30 },
+    rewardDesc: '+30 bonus XP — the elder\'s blessing'
+  }
+];
+
+// ─────────────────────────
 //  STATE
 // ─────────────────────────
 var state = {
@@ -918,7 +1980,19 @@ var state = {
   xp: 0,
   streak: 0,
   lastLogDate: null,
-  log: []
+  log: [],
+  monthlyBudget: 0,
+  coinReserve: 0,
+  ironVault: 0,
+  currentMonth: '',
+  hearts: 3,
+  mapPosition: 0,
+  badges: [],
+  weekLogDays: [],
+  weekStart: '',
+  roadBonusesThisMonth: 0,
+  lastEncounterLog: '',
+  pendingEncounter: null
 };
 
 // Temp onboarding picks
@@ -940,7 +2014,7 @@ function load() {
     if (typeof parsed !== 'object' || !parsed) return;
     if (!Array.isArray(parsed.log)) parsed.log = [];
     // Merge — only copy known keys so we don't corrupt state
-    ['name','avatar','heroClass','xp','streak','lastLogDate','log'].forEach(function(k) {
+    ['name','avatar','heroClass','xp','streak','lastLogDate','log','monthlyBudget','coinReserve','ironVault','currentMonth','hearts','mapPosition','badges','weekLogDays','weekStart','roadBonusesThisMonth','lastEncounterLog','pendingEncounter'].forEach(function(k) {
       if (parsed[k] !== undefined) state[k] = parsed[k];
     });
   } catch(e) { console.warn('Load failed:', e); }
@@ -997,8 +2071,607 @@ function markLoggedToday() {
 }
 
 // ─────────────────────────
+//  MAP & ENCOUNTER LOGIC
+// ─────────────────────────
+
+function getMapPosition() {
+  var ld = getLevelData(state.xp);
+  var lvl = Math.min(ld.level, LEVEL_TO_MAP.length - 1);
+  return LEVEL_TO_MAP[lvl] || 0;
+}
+
+function getCurrentWaypoint() {
+  var pos = getMapPosition();
+  // Find the numeric waypoint with id === pos
+  for (var i = 0; i < MAP_WAYPOINTS.length; i++) {
+    if (MAP_WAYPOINTS[i].id === pos) return MAP_WAYPOINTS[i];
+  }
+  return MAP_WAYPOINTS[0];
+}
+
+function getZoneForPos(pos) {
+  for (var i = 0; i < MAP_WAYPOINTS.length; i++) {
+    if (MAP_WAYPOINTS[i].id === pos) return MAP_WAYPOINTS[i].zone;
+  }
+  return 1;
+}
+
+function checkWeekRoadBonus() {
+  // Road bonus: earned if player logged >= 5 days this week AND stayed under budget pace
+  var today = new Date().toDateString();
+  if (!Array.isArray(state.weekLogDays)) state.weekLogDays = [];
+
+  // Get start of current week (Sunday)
+  var now = new Date();
+  var dayOfWeek = now.getDay();
+  var weekStart = new Date(now);
+  weekStart.setDate(now.getDate() - dayOfWeek);
+  weekStart.setHours(0,0,0,0);
+  var weekStartStr = weekStart.toDateString();
+
+  // Reset week tracking if new week
+  if (state.weekStart !== weekStartStr) {
+    // Evaluate last week before resetting
+    if (state.weekStart && state.weekLogDays.length >= 5) {
+      // Check budget pace — were they under 25% of monthly budget this week?
+      var weeklyBudgetPace = state.monthlyBudget * 0.25;
+      var weekSpend = 0;
+      var weekStartDate = new Date(state.weekStart);
+      var weekEndDate = new Date(weekStartDate);
+      weekEndDate.setDate(weekStartDate.getDate() + 7);
+      if (Array.isArray(state.log)) {
+        state.log.forEach(function(entry) {
+          var ts = new Date(entry.ts);
+          if (ts >= weekStartDate && ts < weekEndDate) weekSpend += parseFloat(entry.amount) || 0;
+        });
+      }
+      if (weekSpend <= weeklyBudgetPace || state.weekLogDays.length >= 6) {
+        // Earned road bonus
+        state.xp += 50;
+        state.roadBonusesThisMonth = (state.roadBonusesThisMonth || 0) + 1;
+        save();
+        showToast('🌟 Road Bonus earned — +50 XP for disciplined travel!');
+      }
+    }
+    state.weekStart = weekStartStr;
+    state.weekLogDays = [];
+    save();
+  }
+
+  // Add today to week log days if not already there
+  if (state.weekLogDays.indexOf(today) === -1) {
+    state.weekLogDays.push(today);
+    save();
+  }
+}
+
+function checkEncounter(amount) {
+  // Don't fire two encounters on the same log entry
+  var entryId = String(Date.now());
+  if (state.lastEncounterLog === entryId) return;
+
+  var monthlyBudget = state.monthlyBudget || 0;
+  if (monthlyBudget === 0) return;
+
+  var dayOfMonth = new Date().getDate();
+  var daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+  var monthProgress = dayOfMonth / daysInMonth;
+  var reservePct = (state.coinReserve || 0) / monthlyBudget;
+
+  // ── HOSTILE TRIGGERS ──
+  // These only fire when spending behaviour actually warrants it.
+  // Random chance is NOT a hostile trigger — bad luck should never punish good behaviour.
+
+  var hostileType = null;
+
+  // Trigger: Large single expense (>15% of monthly budget) → Tax Collector (index 1)
+  // This is the most narratively specific: "your recent large purchase"
+  if (amount > monthlyBudget * 0.15) {
+    hostileType = 'large';
+  }
+
+  // Trigger: Spending velocity — burned >50% of reserve before 60% of month is gone → Bandits (index 0)
+  // Only fires if the velocity condition is meaningfully bad (not just first few days)
+  if (!hostileType && reservePct < 0.5 && monthProgress < 0.6 && monthProgress > 0.1) {
+    hostileType = 'velocity';
+  }
+
+  // Trigger: Nearly depleted reserve (<15% remaining, any point in month) → Subscription Wraith (index 2)
+  if (!hostileType && reservePct < 0.15) {
+    hostileType = 'depleted';
+  }
+
+  if (hostileType) {
+    // Pick the encounter that matches the financial behaviour
+    var hostile;
+    if (hostileType === 'large') {
+      hostile = HOSTILE_ENCOUNTERS[1]; // Tax Collector — triggered by large purchase
+    } else if (hostileType === 'velocity') {
+      hostile = HOSTILE_ENCOUNTERS[0]; // Bandits — drawn by spending pace
+    } else {
+      hostile = HOSTILE_ENCOUNTERS[2]; // Subscription Wraith — silent drain
+    }
+    // Don't fire hostile on every single qualifying log — add a 60% gate so it
+    // feels like a hazard you might encounter, not a guaranteed punishment
+    if (Math.random() < 0.60) {
+      state.lastEncounterLog = entryId;
+      save();
+      setTimeout(function() { showEncounter(hostile, true); }, 1200);
+      return;
+    }
+  }
+
+  // ── FRIENDLY ENCOUNTERS ──
+  // ~1-in-5 chance on any log when no hostile fired.
+  // These are the random serendipitous events: a scout, a shrine, a wise elder.
+  // They reward showing up, regardless of spending behaviour.
+  if (Math.random() < 0.20) {
+    var friendly = FRIENDLY_ENCOUNTERS[Math.floor(Math.random() * FRIENDLY_ENCOUNTERS.length)];
+    state.lastEncounterLog = entryId;
+    save();
+    setTimeout(function() { showEncounter(friendly, false); }, 1200);
+  }
+}
+
+function showEncounter(enc, isHostile) {
+  var box = document.getElementById('encounter-box');
+  box.className = 'encounter-box ' + (isHostile ? 'hostile' : 'friendly');
+
+  document.getElementById('encounter-zone').textContent  = enc.zone;
+  document.getElementById('encounter-icon').textContent  = enc.icon;
+  document.getElementById('encounter-title').textContent = enc.title;
+  document.getElementById('encounter-desc').textContent  = enc.desc;
+
+  var choices = document.getElementById('encounter-choices');
+  choices.innerHTML = '';
+
+  if (isHostile) {
+    var currentVault  = state.ironVault || 0;
+    var vaultPenalty  = Math.round(currentVault * enc.vaultCost);
+    var vaultViable   = vaultPenalty >= 5;
+
+    var btnA = document.createElement('button');
+    btnA.className = 'encounter-btn hostile-choice';
+    btnA.innerHTML = enc.choiceA.label + '<span class="encounter-btn-cost">' + enc.choiceA.sub + '</span>';
+    btnA.onclick = function() { resolveHostile('heart', enc); };
+
+    var btnB = document.createElement('button');
+    if (vaultViable) {
+      btnB.className = 'encounter-btn';
+      btnB.innerHTML = enc.choiceB.label + '<span class="encounter-btn-cost">Lose ' + vaultPenalty + ' gold from Iron Vault</span>';
+      btnB.onclick = function() { resolveHostile('vault', enc); };
+    } else {
+      btnB.className = 'encounter-btn encounter-btn-disabled';
+      btnB.innerHTML = enc.choiceB.label + '<span class="encounter-btn-cost">Iron Vault is empty — build your surplus to unlock this option</span>';
+      btnB.disabled = true;
+    }
+
+    choices.appendChild(btnA);
+    choices.appendChild(btnB);
+  } else {
+    var btn = document.createElement('button');
+    btn.className = 'encounter-btn friendly-choice';
+    btn.innerHTML = 'Continue the journey<span class="encounter-btn-cost">' + enc.rewardDesc + '</span>';
+    btn.onclick = function() { resolveFriendly(enc); };
+    choices.appendChild(btn);
+  }
+
+  document.getElementById('encounter-overlay').classList.add('show');
+}
+
+function resolveHostile(choice, enc) {
+  document.getElementById('encounter-overlay').classList.remove('show');
+  if (choice === 'heart') {
+    state.hearts = Math.max(0, (state.hearts || 3) - 1);
+    showToast('❤️ Heart spent — the threat is driven back.');
+  } else {
+    var currentVault = state.ironVault || 0;
+    var penalty = Math.round(currentVault * enc.vaultCost);
+    if (penalty < 5) {
+      // Vault too empty — shouldn't happen (button is disabled) but guard anyway
+      state.hearts = Math.max(0, (state.hearts || 3) - 1);
+      showToast('❤️ Vault empty — heart spent instead.');
+    } else {
+      state.ironVault = Math.max(0, currentVault - penalty);
+      showToast('💰 ' + penalty + ' gold taken from Iron Vault.');
+    }
+  }
+  save();
+  render();
+}
+
+function resolveFriendly(enc) {
+  document.getElementById('encounter-overlay').classList.remove('show');
+  if (enc.reward.type === 'xp') {
+    state.xp += enc.reward.amount;
+    showToast('✨ +' + enc.reward.amount + ' bonus XP!');
+  } else if (enc.reward.type === 'heart') {
+    state.hearts = Math.min(3, (state.hearts || 0) + 1);
+    showToast('❤️ Heart restored!');
+  } else if (enc.reward.type === 'vault') {
+    state.ironVault = (state.ironVault || 0) + enc.reward.amount;
+    showToast('🔒 +' + enc.reward.amount + ' gold sealed in Iron Vault!');
+  }
+  save();
+  render();
+}
+
+function checkZoneBadge() {
+  var pos = getMapPosition();
+  var badges = state.badges || [];
+
+  // Zone 1 complete at position 3+ (passed badge node)
+  if (pos >= 3 && badges.indexOf('zone1') === -1) {
+    badges.push('zone1');
+    state.badges = badges;
+    save();
+    setTimeout(function() { showBadgeToast('🛡️ Badge Earned: The First Steps'); }, 800);
+  }
+  if (pos >= 6 && badges.indexOf('zone2') === -1) {
+    badges.push('zone2');
+    state.badges = badges;
+    save();
+    setTimeout(function() { showBadgeToast('🪙 Badge Earned: The Disciplined Traveler'); }, 800);
+  }
+  if (pos >= 9 && badges.indexOf('zone3') === -1) {
+    badges.push('zone3');
+    state.badges = badges;
+    save();
+    setTimeout(function() { showBadgeToast('🌿 Badge Earned: The Thornwood Survivor'); }, 800);
+  }
+  if (pos >= 10 && badges.indexOf('zone4') === -1) {
+    badges.push('zone4');
+    state.badges = badges;
+    save();
+    setTimeout(function() { showBadgeToast('🔒 Badge Earned: Keeper of the Iron Vault'); }, 800);
+  }
+}
+
+function showBadgeToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() { t.classList.remove('show'); }, 4000);
+}
+
+function renderMap() {
+  var pos = getMapPosition();
+  var wp  = getCurrentWaypoint();
+
+  // Update header text
+  if (wp) {
+    document.getElementById('map-location-name').textContent = wp.name.replace('\n',' ');
+    var zoneNums = ['I','II','III','IV'];
+    var zoneIdx  = typeof wp.zone === 'number' ? wp.zone - 1 : 0;
+    document.getElementById('map-zone-tag').textContent =
+      'Zone ' + (zoneNums[zoneIdx] || 'I') + ' — ' + (wp.zoneName || '');
+  }
+
+  // ── NODE LAYOUT ──
+  // Vertical map: all positions as % of total map height (which is taller than viewport)
+  // X positions spread nodes horizontally; Y flows top→bottom
+  // TOTAL MAP HEIGHT = 820px, VIEWPORT = 260px
+  // Camera pans to keep current node ~35% from top of viewport
+  var TOTAL_H = 820;
+  var VIEWPORT_H = 260;
+
+  var NODE_LAYOUT = [
+    // Zone 1 — Hearthstone Road
+    { id:0,   pct:[50, 4]  },   // Hearthstone Village — center
+    { id:1,   pct:[22, 13] },   // Harvest Crossing — left
+    { id:2,   pct:[78, 13] },   // Stonepath Mill — right
+    { id:'z1',pct:[50, 22] },   // Zone 1 badge
+    // Zone 2 — Merchant's Pass
+    { id:3,   pct:[20, 33] },   // Merchant's Gate — left
+    { id:4,   pct:[50, 33] },   // Copperbridge — center
+    { id:5,   pct:[80, 33] },   // Trader's Camp — right
+    { id:'z2',pct:[50, 43] },   // Zone 2 badge
+    // Zone 3 — Thornwood
+    { id:6,   pct:[22, 55] },   // Thornwood Edge — left
+    { id:7,   pct:[78, 55] },   // Darkhollow Path — right
+    { id:8,   pct:[50, 63] },   // Wayward Shrine — center
+    { id:'z3',pct:[50, 72] },   // Zone 3 badge
+    // Zone 4 — Iron Keep
+    { id:9,   pct:[50, 83] },   // Iron Keep Gates
+    { id:10,  pct:[50, 92] },   // The Iron Keep
+    { id:'z4',pct:[78, 83] },   // Zone 4 badge
+  ];
+
+  var CONNECTIONS = [
+    [0,1],[0,2],
+    [1,'z1'],[2,'z1'],
+    ['z1',3],['z1',4],
+    [3,4],[4,5],
+    [4,'z2'],[5,'z2'],
+    ['z2',6],['z2',7],
+    [6,8],[7,8],
+    [8,'z3'],
+    ['z3',9],
+    [9,10],[9,'z4'],
+  ];
+
+  var container  = document.getElementById('node-map');
+  var viewport   = document.getElementById('map-viewport');
+  var inner      = document.getElementById('node-map-inner');
+  var svg        = document.getElementById('map-svg');
+  var moreArrow  = document.getElementById('map-more-arrow');
+  if (!container || !inner || !svg || !viewport) return;
+
+  var W = viewport.offsetWidth || 400;
+  var H = TOTAL_H;
+  container.style.height = H + 'px';
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+  svg.style.height = H + 'px';
+
+  // Build pixel position lookup
+  var posMap = {};
+  NODE_LAYOUT.forEach(function(n) {
+    posMap[n.id] = {
+      x: Math.round(W * n.pct[0] / 100),
+      y: Math.round(H * n.pct[1] / 100)
+    };
+  });
+
+  // ── CAMERA PAN ──
+  // Find current node Y position, pan so it appears at ~30% from top of viewport
+  var currentNodeY = 0;
+  var currentLayout = NODE_LAYOUT.find ? NODE_LAYOUT.find(function(n){ return n.id === pos; }) : null;
+  if (!currentLayout) {
+    for (var ci = 0; ci < NODE_LAYOUT.length; ci++) {
+      if (NODE_LAYOUT[ci].id === pos) { currentLayout = NODE_LAYOUT[ci]; break; }
+    }
+  }
+  if (currentLayout) {
+    currentNodeY = Math.round(H * currentLayout.pct[1] / 100);
+  }
+  // Target: current node appears at 30% from top of viewport
+  var targetScrollTop = currentNodeY - Math.round(VIEWPORT_H * 0.30);
+  targetScrollTop = Math.max(0, Math.min(H - VIEWPORT_H, targetScrollTop));
+  container.style.transform = 'translateY(' + (-targetScrollTop) + 'px)';
+
+  // Show/hide "more ahead" arrow — show if there are nodes below viewport bottom
+  var viewportBottom = targetScrollTop + VIEWPORT_H;
+  var hasNodesBelow = false;
+  NODE_LAYOUT.forEach(function(n) {
+    if (typeof n.id === 'number' && n.id > pos) {
+      var ny = Math.round(H * n.pct[1] / 100);
+      if (ny > viewportBottom - 60) hasNodesBelow = true;
+    }
+  });
+  if (moreArrow) moreArrow.className = 'map-more-arrow' + (hasNodesBelow ? '' : ' hidden');
+
+  // ── SVG CONNECTIONS ──
+  svg.innerHTML = '';
+
+  function isReached(id) {
+    if (typeof id === 'number') return id <= pos;
+    var bm = {'z1':3,'z2':6,'z3':9,'z4':10};
+    return pos >= (bm[id] || 999);
+  }
+
+  // Draw zone watermark text
+  var zoneWatermarks = [
+    { text:'HEARTHSTONE ROAD', y: 8  },
+    { text:"MERCHANT'S PASS",  y: 30 },
+    { text:'THORNWOOD',        y: 52 },
+    { text:'IRON KEEP',        y: 79 },
+  ];
+  zoneWatermarks.forEach(function(zw) {
+    var t = document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x', '4%');
+    t.setAttribute('y', zw.y + '%');
+    t.setAttribute('fill', '#221c0e');
+    t.setAttribute('font-size', '8');
+    t.setAttribute('font-family', 'Cinzel, serif');
+    t.setAttribute('letter-spacing', '2');
+    t.textContent = zw.text;
+    svg.appendChild(t);
+  });
+
+  // Draw horizontal zone separator lines
+  var zoneSepY = [26, 49, 77];
+  zoneSepY.forEach(function(pct) {
+    var line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    var y = Math.round(H * pct / 100);
+    line.setAttribute('x1', '0'); line.setAttribute('y1', y);
+    line.setAttribute('x2', W);   line.setAttribute('y2', y);
+    line.setAttribute('stroke', '#201a0a');
+    line.setAttribute('stroke-width', '1');
+    line.setAttribute('stroke-dasharray', '3 6');
+    svg.appendChild(line);
+  });
+
+  CONNECTIONS.forEach(function(conn) {
+    var a = posMap[conn[0]], b = posMap[conn[1]];
+    if (!a || !b) return;
+    var line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1', a.x); line.setAttribute('y1', a.y);
+    line.setAttribute('x2', b.x); line.setAttribute('y2', b.y);
+    var traveled = isReached(conn[0]) && isReached(conn[1]);
+    line.setAttribute('stroke', traveled ? '#7a6530' : '#1e1808');
+    line.setAttribute('stroke-width', traveled ? '2.5' : '1.5');
+    if (!traveled) line.setAttribute('stroke-dasharray', '4 5');
+    line.setAttribute('stroke-linecap', 'round');
+    svg.appendChild(line);
+  });
+
+  // ── NODE DOM ELEMENTS ──
+  inner.innerHTML = '';
+  inner.style.height = H + 'px';
+
+  NODE_LAYOUT.forEach(function(layout) {
+    var wpData = null;
+    for (var i = 0; i < MAP_WAYPOINTS.length; i++) {
+      if (MAP_WAYPOINTS[i].id === layout.id) { wpData = MAP_WAYPOINTS[i]; break; }
+    }
+    if (!wpData) return;
+
+    var isBadge  = typeof layout.id === 'string';
+    var isEarned = isBadge && (state.badges||[]).indexOf(wpData.badge) !== -1;
+    var isDone   = !isBadge && layout.id < pos;
+    var isCurrent= !isBadge && layout.id === pos;
+    var isAhead  = isBadge ? !isEarned : layout.id > pos;
+
+    var px = posMap[layout.id];
+
+    var wrap = document.createElement('div');
+    wrap.className = 'map-node-wrap' + (isCurrent ? ' current' : '');
+    wrap.style.left = px.x + 'px';
+    wrap.style.top  = px.y + 'px';
+
+    var circle = document.createElement('div');
+    var cc = 'map-node-circle';
+    if (isBadge) cc += ' badge-node' + (isEarned ? ' earned' : ' ahead');
+    else cc += isDone ? ' done' : isCurrent ? ' current' : ' ahead';
+    circle.className = cc;
+    circle.textContent = wpData.icon;
+
+    var label = document.createElement('div');
+    label.className = 'map-node-label';
+    label.textContent = isBadge
+      ? (isEarned ? '★ ' + wpData.zoneName.split(' ').pop() : '?')
+      : wpData.name.replace('\n',' ');
+
+    wrap.appendChild(circle);
+    wrap.appendChild(label);
+    inner.appendChild(wrap);
+  });
+
+  // ── ROAD BONUS PIPS ──
+  var bonuses = Math.min(3, state.roadBonusesThisMonth || 0);
+  for (var i = 1; i <= 3; i++) {
+    var pip = document.getElementById('road-pip-' + i);
+    if (pip) pip.className = 'road-pip' + (i <= bonuses ? ' earned' : '');
+  }
+
+  // ── HEARTS ──
+  for (var h = 1; h <= 3; h++) {
+    var heart = document.getElementById('heart-' + h);
+    if (heart) {
+      var filled = h <= (state.hearts !== undefined ? state.hearts : 3);
+      heart.className = 'map-heart' + (filled ? '' : ' empty');
+      heart.textContent = filled ? '❤️' : '🖤';
+    }
+  }
+
+  // ── BADGE SLOTS ──
+  ['zone1','zone2','zone3','zone4'].forEach(function(bid) {
+    var slot = document.getElementById('badge-' + bid);
+    if (!slot) return;
+    slot.className = (state.badges||[]).indexOf(bid) !== -1 ? 'badge-slot earned' : 'badge-slot locked';
+  });
+}
+
+
+// ─────────────────────────
 //  RENDER
 // ─────────────────────────
+function getCurrentMonth() {
+  var d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+}
+
+function checkMonthReset() {
+  var thisMonth = getCurrentMonth();
+  if (!state.currentMonth) {
+    // First time — just set the month, no ceremony
+    state.currentMonth = thisMonth;
+    if (state.monthlyBudget > 0 && state.coinReserve === 0) {
+      state.coinReserve = state.monthlyBudget;
+    }
+    save();
+    return;
+  }
+  if (state.currentMonth !== thisMonth) {
+    // New month! Calculate surplus
+    var surplus = Math.max(0, state.coinReserve);
+    var prevMonth = state.currentMonth;
+    state.ironVault += surplus;
+    state.coinReserve = state.monthlyBudget;
+    state.currentMonth = thisMonth;
+    save();
+    // Show reset ceremony
+    if (state.name) {
+      showMonthReset(prevMonth, surplus);
+    }
+  }
+}
+
+function showMonthReset(prevMonth, surplus) {
+  var parts = prevMonth.split('-');
+  var monthName = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, 1)
+    .toLocaleString('default', { month: 'long', year: 'numeric' });
+
+  var bd = document.getElementById('reset-breakdown');
+  var surplusLine = surplus > 0
+    ? '<div class="reset-row highlight"><span>Sealed in Iron Vault</span><span>+' + surplus + ' gold</span></div>'
+    : '<div class="reset-row"><span>Surplus</span><span>None — fight harder.</span></div>';
+
+  bd.innerHTML =
+    '<div class="reset-row"><span>Campaign</span><span>' + monthName + '</span></div>' +
+    '<div class="reset-row"><span>Monthly Budget</span><span>' + state.monthlyBudget + ' gold</span></div>' +
+    surplusLine +
+    '<div class="reset-row highlight"><span>New Reserve</span><span>' + state.monthlyBudget + ' gold</span></div>' +
+    '<div class="reset-row"><span>Iron Vault Total</span><span>' + state.ironVault + ' gold</span></div>';
+
+  var msg = surplus > 0
+    ? 'You ended the campaign with ' + surplus + ' gold unspent. It has been sealed in the Iron Vault. Your treasury has been replenished for the new month.'
+    : 'You spent every coin last month. A new treasury awaits. May this campaign bring more discipline — and surplus for the Vault.';
+  document.getElementById('reset-msg').textContent = msg;
+  document.getElementById('reset-overlay').classList.add('show');
+}
+
+function closeReset() {
+  document.getElementById('reset-overlay').classList.remove('show');
+}
+
+function renderCoins() {
+  if (!state.monthlyBudget) {
+    document.getElementById('coin-reserve-section').style.display = 'none';
+    return;
+  }
+  document.getElementById('coin-reserve-section').style.display = 'block';
+
+  var reserve = Math.max(0, state.coinReserve);
+  var budget  = state.monthlyBudget;
+  var pct     = Math.min(100, Math.max(0, (reserve / budget) * 100));
+
+  document.getElementById('coin-current').textContent = reserve;
+  document.getElementById('coin-max').textContent     = budget;
+
+  var fill = document.getElementById('coin-fill');
+  fill.style.width = pct + '%';
+  fill.className = 'coin-bar-fill';
+
+  var statusEl = document.getElementById('coin-status');
+  statusEl.className = 'coin-status';
+
+  if (pct <= 10) {
+    fill.classList.add('danger');
+    statusEl.classList.add('danger');
+    statusEl.textContent = 'Reserves critically low — the realm grows uneasy.';
+  } else if (pct <= 30) {
+    fill.classList.add('warning');
+    statusEl.classList.add('warning');
+    statusEl.textContent = 'Coins dwindling — spend with care, hero.';
+  } else if (pct >= 90) {
+    statusEl.textContent = 'Treasury nearly full — discipline holds strong.';
+  } else {
+    statusEl.textContent = Math.round(pct) + '% of monthly treasury remaining.';
+  }
+
+  var vaultEl = document.getElementById('vault-amount');
+  if (state.ironVault > 0) {
+    vaultEl.textContent = state.ironVault + ' gold';
+    vaultEl.className = 'vault-amount';
+  } else {
+    vaultEl.textContent = 'Empty';
+    vaultEl.className = 'vault-amount empty';
+  }
+
+}
+
 function render() {
   var ld = getLevelData(state.xp);
 
@@ -1014,17 +2687,47 @@ function render() {
   var nextTitle = getTitle(state.heroClass, ld.level + 1);
   document.getElementById('xp-next-msg').textContent =
     ld.level < LEVEL_XP.length
-      ? ld.toNext + ' XP until'
+      ? ld.toNext + ' XP until Level ' + (ld.level + 1)
       : 'Maximum rank achieved';
 
   var today = new Date().toDateString();
-  document.getElementById('streak-count').textContent = state.streak;
-  document.getElementById('streak-label').textContent =
-    state.lastLogDate === today
-      ? (state.streak > 1 ? 'day streak — logged today ✓' : 'day streak — great start!')
-      : (state.streak > 0 ? 'day streak — log today to keep it alive' : 'day streak — start yours today');
+  var loggedToday = state.lastLogDate === today;
+  var streakCount = state.streak || 0;
+
+  document.getElementById('streak-count').textContent = streakCount;
+
+  var banner     = document.getElementById('streak-banner');
+  var flameEl    = document.getElementById('streak-banner-flame');
+  var countEl    = document.getElementById('streak-count');
+  var rightEl    = document.getElementById('streak-banner-right');
+
+  banner.className = 'streak-banner';
+  flameEl.className = 'streak-banner-flame';
+  countEl.className = 'streak-banner-count';
+  rightEl.className = 'streak-banner-right';
+
+  if (loggedToday) {
+    banner.classList.add('alive');
+    rightEl.classList.add('logged');
+    rightEl.textContent = '✓ Logged today';
+    document.getElementById('streak-label').textContent =
+      streakCount > 1 ? 'day streak — burning bright' : 'day streak — great start!';
+  } else if (streakCount > 0) {
+    banner.classList.add('danger');
+    rightEl.classList.add('urgent');
+    rightEl.textContent = '⚠ Log today or lose it';
+    document.getElementById('streak-label').textContent = 'day streak — at risk';
+  } else {
+    flameEl.classList.add('cold');
+    countEl.classList.add('cold');
+    rightEl.textContent = 'Start your streak today';
+    document.getElementById('streak-label').textContent = 'day streak — begin yours';
+  }
 
   renderLog();
+  renderCoins();
+  renderMap();
+  checkZoneBadge();
 }
 
 function renderLog() {
@@ -1077,7 +2780,6 @@ function esc(str) {
 var currentStep = 0;
 
 function goStep(n) {
-  // Validate forward movement
   if (n > currentStep) {
     if (currentStep === 0) {
       var name = document.getElementById('hero-name-input').value.trim();
@@ -1086,21 +2788,23 @@ function goStep(n) {
     if (currentStep === 1) {
       if (!obAvatar) { showToast('Choose your form first.'); return; }
     }
+    if (currentStep === 2) {
+      if (!obClass) { showToast('Choose your class first.'); return; }
+    }
   }
 
   document.getElementById('step-' + currentStep).classList.remove('active');
   currentStep = n;
   document.getElementById('step-' + currentStep).classList.add('active');
 
-  // Update dots
-  for (var i = 0; i <= 2; i++) {
+  for (var i = 0; i <= 4; i++) {
     var dot = document.getElementById('dot-' + i);
+    if (!dot) continue;
     dot.className = 'step-dot';
-    if (i < currentStep)      dot.classList.add('done');
+    if (i < currentStep)       dot.classList.add('done');
     else if (i === currentStep) dot.classList.add('active');
   }
 
-  // Scroll onboarding into view smoothly
   document.getElementById('onboarding').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -1117,10 +2821,22 @@ function selectClass(el) {
 }
 
 function beginJourney() {
+  var budget = parseFloat(document.getElementById('budget-input').value);
+  if (!budget || budget <= 0) { showToast('Set your monthly budget first.'); return; }
   if (!obClass) { showToast('Choose your class first.'); return; }
-  state.name      = document.getElementById('hero-name-input').value.trim();
-  state.avatar    = obAvatar || '🛡️';
-  state.heroClass = obClass;
+  state.name          = document.getElementById('hero-name-input').value.trim();
+  state.avatar        = obAvatar || '🛡️';
+  state.heroClass     = obClass;
+  state.monthlyBudget = Math.round(budget);
+  state.coinReserve   = Math.round(budget);
+  state.ironVault     = 0;
+  state.currentMonth  = getCurrentMonth();
+  state.hearts        = 3;
+  state.mapPosition   = 0;
+  state.badges        = [];
+  state.weekLogDays   = [];
+  state.weekStart     = '';
+  state.roadBonusesThisMonth = 0;
   save();
   document.getElementById('onboarding').style.display = 'none';
   document.getElementById('main').style.display = 'block';
@@ -1174,6 +2890,18 @@ function logExpense() {
   if (!Array.isArray(state.log)) state.log = [];
   state.log.push(entry);
 
+  // Drain coin reserve
+  if (state.monthlyBudget > 0) {
+    state.coinReserve = Math.max(0, (state.coinReserve || 0) - amount);
+    fireCoinFloat('-' + amount.toFixed(0) + ' gold');
+  }
+
+  // Road bonus week tracking
+  checkWeekRoadBonus();
+
+  // Encounter check
+  checkEncounter(amount);
+
   // Save and render
   save();
   render();
@@ -1216,14 +2944,32 @@ function fireXpFloat(text) {
   floatEl.classList.add('pop');
 }
 
+function fireCoinFloat(text) {
+  var floatEl = document.getElementById('coin-float');
+  var track   = document.getElementById('coin-fill');
+  if (!track) return;
+  var rect    = track.getBoundingClientRect();
+
+  floatEl.style.left = Math.round(rect.left + rect.width / 2) + 'px';
+  floatEl.style.top  = Math.round(rect.top  + window.scrollY + rect.height) + 'px';
+  floatEl.textContent = text;
+
+  floatEl.classList.remove('pop');
+  void floatEl.offsetWidth;
+  floatEl.classList.add('pop');
+}
+
+
 // ─────────────────────────
 //  LEVEL UP
 // ─────────────────────────
 function showLevelUp(level) {
+  save();
   document.getElementById('lu-level').textContent = level;
   document.getElementById('lu-rank').textContent  = getTitle(state.heroClass, level);
   document.getElementById('lu-msg').textContent   = LEVEL_MSGS[Math.min(level - 2, LEVEL_MSGS.length - 1)];
   document.getElementById('levelup-overlay').classList.add('show');
+  renderCoins();
 }
 
 function closeLevelUp() {
@@ -1257,7 +3003,21 @@ document.addEventListener('keydown', function(e) {
 //  INIT
 // ─────────────────────────
 load();
+
+// Ensure new state fields exist on old saves
+if (state.hearts === undefined) state.hearts = 3;
+if (!state.badges) state.badges = [];
+if (!state.weekLogDays) state.weekLogDays = [];
+if (state.roadBonusesThisMonth === undefined) state.roadBonusesThisMonth = 0;
+if (!state.lastEncounterLog) state.lastEncounterLog = '';
+
 checkStreak();
+checkMonthReset();
+
+// Re-render map on resize (SVG coordinate recalc)
+window.addEventListener('resize', function() {
+  if (state.name) renderMap();
+});
 
 if (state.name) {
   document.getElementById('onboarding').style.display = 'none';
@@ -1269,5 +3029,32 @@ if (state.name) {
 }
 </script>
 
+
+
+
+<!-- Encounter Overlay -->
+<div class="encounter-overlay" id="encounter-overlay">
+  <div class="encounter-box" id="encounter-box">
+    <div class="encounter-zone" id="encounter-zone">Encounter</div>
+    <div class="encounter-icon" id="encounter-icon">⚔️</div>
+    <div class="encounter-title" id="encounter-title">Bandits on the Road</div>
+    <div class="encounter-desc" id="encounter-desc">A band of cutpurses blocks your path, demanding tribute for your recent spending.</div>
+    <div class="encounter-choices" id="encounter-choices">
+      <!-- filled dynamically -->
+    </div>
+  </div>
+</div>
+
+
+<!-- Encounter Overlay -->
+<div class="encounter-overlay" id="encounter-overlay">
+  <div class="encounter-box" id="encounter-box">
+    <div class="encounter-zone" id="encounter-zone">Encounter</div>
+    <div class="encounter-icon" id="encounter-icon">⚔️</div>
+    <div class="encounter-title" id="encounter-title">Bandits on the Road</div>
+    <div class="encounter-desc" id="encounter-desc">A band of cutpurses blocks your path.</div>
+    <div class="encounter-choices" id="encounter-choices"></div>
+  </div>
+</div>
 
 </body></html>
