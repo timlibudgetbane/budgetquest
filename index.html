@@ -1,0 +1,2298 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Budget Quest</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+:root {
+  --bg: #0e0c0a;
+  --surface: #1a1610;
+  --surface2: #221e16;
+  --border: #3d3520;
+  --border-gold: #7a6530;
+  --gold: #c9a84c;
+  --gold-light: #e8c96a;
+  --gold-dim: #6b5828;
+  --red: #c0392b;
+  --red-dim: #5a1a14;
+  --green: #27ae60;
+  --green-dim: #1a6b3c;
+  --purple: #8e44ad;
+  --purple-dim: #4a1a6b;
+  --text: #e8dfc8;
+  --text-dim: #9a8e72;
+  --text-dark: #5a5040;
+  --xp-color: #4a9eff;
+  --xp-dim: #1a3a6b;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: var(--bg); color: var(--text); font-family: 'Crimson Text', serif; font-size: 16px; min-height: 100vh; background-image: radial-gradient(ellipse at 20% 0%, rgba(201,168,76,0.04) 0%, transparent 60%), radial-gradient(ellipse at 80% 100%, rgba(74,158,255,0.03) 0%, transparent 60%); }
+body::after { content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 1000; opacity: 0.03; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+.app { max-width: 960px; margin: 0 auto; padding: 24px 16px 80px; }
+
+.tabs { display: flex; border-bottom: 1px solid var(--border-gold); margin-bottom: 24px; }
+.tab { font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 0.08em; color: var(--text-dim); padding: 12px 20px; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; background: none; border-top: none; border-left: none; border-right: none; }
+.tab:hover { color: var(--gold-dim); }
+.tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+.header { text-align: center; padding: 28px 0 20px; border-bottom: 1px solid var(--border-gold); margin-bottom: 24px; position: relative; }
+.header::before, .header::after { content: '⬡'; color: var(--gold-dim); font-size: 12px; position: absolute; top: 50%; transform: translateY(-50%); }
+.header::before { left: 0; } .header::after { right: 0; }
+.header h1 { font-family: 'Cinzel', serif; font-size: clamp(22px,4vw,36px); color: var(--gold); letter-spacing: 0.08em; text-shadow: 0 0 40px rgba(201,168,76,0.3); }
+.header p { color: var(--text-dim); font-size: 14px; margin-top: 4px; font-style: italic; }
+
+.character-card { background: var(--surface); border: 1px solid var(--border-gold); border-radius: 4px; padding: 20px; margin-bottom: 20px; position: relative; overflow: hidden; }
+.character-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+.char-top { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+.char-avatar { width: 64px; height: 64px; border: 2px solid var(--border-gold); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 32px; background: var(--surface2); flex-shrink: 0; }
+.char-info { flex: 1; }
+.char-name-input { background: none; border: none; border-bottom: 1px dashed var(--border-gold); color: var(--gold); font-family: 'Cinzel', serif; font-size: 18px; width: 160px; outline: none; padding: 0 2px; margin-bottom: 4px; display: block; }
+.char-class { color: var(--text-dim); font-style: italic; font-size: 13px; }
+.char-level { text-align: right; }
+.level-num { font-family: 'Cinzel', serif; font-size: 28px; color: var(--gold-light); line-height: 1; }
+.level-label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; }
+.xp-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-dim); margin-bottom: 5px; }
+.xp-label span:first-child { color: var(--xp-color); }
+.xp-bar-track { height: 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 2px; overflow: hidden; }
+.xp-bar-fill { height: 100%; background: linear-gradient(90deg, var(--xp-dim), var(--xp-color)); border-radius: 2px; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); }
+.stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+.stat { text-align: center; padding: 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 3px; }
+.stat-val { font-family: 'Cinzel', serif; font-size: 16px; color: var(--gold); }
+.stat-name { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
+
+.daily-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.daily-card { background: var(--surface); border: 1px solid var(--border-gold); border-radius: 4px; padding: 14px 16px; position: relative; overflow: hidden; }
+.daily-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+.daily-card.challenge::before { background: linear-gradient(90deg, transparent, #4a9eff, transparent); }
+.daily-card.encounter::before { background: linear-gradient(90deg, transparent, var(--purple), transparent); }
+.daily-card.completed { opacity: 0.65; }
+@keyframes completeDayPulse { 0%,100%{box-shadow:0 0 14px rgba(201,168,76,0.15);border-color:var(--gold);} 50%{box-shadow:0 0 28px rgba(201,168,76,0.35);border-color:var(--gold-light);} }
+.daily-card.ready { border-color: var(--gold); }
+.daily-card.ready::before { background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+.daily-reward.ready { color: var(--gold); }
+.daily-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-dim); margin-bottom: 6px; }
+.daily-title { font-family: 'Cinzel', serif; font-size: 13px; color: var(--gold); margin-bottom: 4px; display: flex; align-items: center; gap: 7px; }
+.daily-desc { font-size: 12px; color: var(--text-dim); font-style: italic; line-height: 1.5; margin-bottom: 8px; }
+.daily-reward { font-size: 11px; color: var(--xp-color); }
+.daily-reward.complete { color: var(--green); }
+.daily-action-btn { background: var(--gold-dim); border: 1px solid var(--gold); color: var(--gold-light); font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.06em; padding: 5px 12px; border-radius: 3px; cursor: pointer; transition: all 0.2s; margin-top: 6px; }
+.daily-action-btn:hover { background: var(--gold); color: var(--bg); }
+.login-banner { background: linear-gradient(135deg, rgba(201,168,76,0.1), rgba(74,158,255,0.05)); border: 1px solid var(--gold-dim); border-radius: 4px; padding: 10px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; animation: slideIn 0.4s ease both; }
+.login-banner-icon { font-size: 22px; }
+.login-banner-text { flex: 1; font-size: 13px; color: var(--text); }
+.login-banner-xp { font-family: 'Cinzel', serif; font-size: 16px; color: var(--gold); }
+.monster-taunt { font-size: 11px; color: var(--red); font-style: italic; margin-top: 5px; border-left: 2px solid var(--red-dim); padding-left: 8px; }
+.monster-taunt.ambient { color: var(--purple); border-left-color: var(--purple-dim); }
+
+.attrs-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 10px; }
+.attr-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 3px; padding: 10px 12px; }
+.attr-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 7px; }
+.attr-name { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); }
+.attr-level { font-family: 'Cinzel', serif; font-size: 11px; }
+.attr-level.discipline { color: #4a9eff; }
+.attr-level.wisdom { color: var(--gold); }
+.attr-level.willpower { color: var(--purple); }
+.attr-pips { display: flex; gap: 4px; flex-wrap: wrap; }
+.pip { width: 10px; height: 10px; border-radius: 50%; border: 1px solid; transition: all 0.3s; }
+.pip.discipline.filled { background: #4a9eff; border-color: #4a9eff; box-shadow: 0 0 6px #4a9eff88; }
+.pip.discipline.empty { background: transparent; border-color: #4a9eff44; }
+.pip.wisdom.filled { background: var(--gold); border-color: var(--gold); box-shadow: 0 0 6px rgba(201,168,76,0.5); }
+.pip.wisdom.empty { background: transparent; border-color: var(--gold-dim); }
+.pip.willpower.filled { background: var(--purple); border-color: var(--purple); box-shadow: 0 0 6px rgba(142,68,173,0.5); }
+.pip.willpower.empty { background: transparent; border-color: var(--purple-dim); }
+.attr-desc { font-size: 10px; color: var(--text-dark); font-style: italic; margin-top: 5px; line-height: 1.4; }
+
+.section-head { font-family: 'Cinzel', serif; font-size: 12px; color: var(--gold-dim); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+.section-head::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.cat-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(220px,1fr)); gap: 10px; margin-bottom: 20px; }
+.cat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 12px 14px; transition: border-color 0.2s; position: relative; }
+.cat-card:hover { border-color: var(--border-gold); }
+.cat-card.over-budget { border-color: var(--red) !important; }
+.cat-card.under-budget { border-color: var(--green-dim); }
+.cat-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.cat-name { font-family: 'Cinzel', serif; font-size: 12px; color: var(--text); display: flex; align-items: center; gap: 6px; }
+.cat-amounts { text-align: right; font-size: 12px; }
+.cat-spent { color: var(--text); font-weight: 600; }
+.cat-budget { color: var(--text-dim); }
+.cat-bar-track { height: 5px; background: var(--surface2); border-radius: 2px; overflow: hidden; }
+.cat-bar-fill { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
+.cat-bar-fill.good { background: var(--green); } .cat-bar-fill.warn { background: #e67e22; } .cat-bar-fill.bad { background: var(--red); }
+.cat-remaining { margin-top: 5px; font-size: 11px; }
+.cat-remaining.good { color: var(--green); } .cat-remaining.warn { color: #e67e22; } .cat-remaining.bad { color: var(--red); }
+.edit-budget-btn { position: absolute; top: 6px; right: 8px; background: none; border: none; color: var(--text-dark); cursor: pointer; font-size: 11px; padding: 2px 4px; transition: color 0.2s; }
+.edit-budget-btn:hover { color: var(--gold-dim); }
+
+.log-form { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 16px; display: grid; grid-template-columns: 1fr 110px 150px auto; gap: 10px; align-items: end; margin-bottom: 20px; }
+.form-group { display: flex; flex-direction: column; gap: 4px; }
+.form-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; }
+.form-input, .form-select { background: var(--surface2); border: 1px solid var(--border); border-radius: 3px; color: var(--text); font-family: 'Crimson Text', serif; font-size: 15px; padding: 7px 9px; outline: none; transition: border-color 0.2s; }
+.form-input:focus, .form-select:focus { border-color: var(--gold-dim); }
+.form-select option { background: var(--surface2); }
+.log-btn { background: var(--gold-dim); border: 1px solid var(--gold); color: var(--gold-light); font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.06em; padding: 8px 16px; border-radius: 3px; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+.log-btn:hover { background: var(--gold); color: var(--bg); }
+
+.log-list { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+.log-empty { padding: 28px; text-align: center; color: var(--text-dark); font-style: italic; }
+.log-item { display: grid; grid-template-columns: 26px 1fr auto auto; gap: 10px; align-items: center; padding: 10px 14px; border-bottom: 1px solid var(--border); transition: background 0.15s; }
+.log-item:last-child { border-bottom: none; }
+.log-item:hover { background: var(--surface2); }
+.log-icon { font-size: 14px; text-align: center; }
+.log-desc { font-size: 14px; }
+.log-cat { font-size: 11px; color: var(--text-dim); font-style: italic; }
+.log-amount { font-family: 'Cinzel', serif; font-size: 13px; text-align: right; }
+.log-xp { font-size: 11px; color: var(--xp-color); text-align: right; }
+
+.monsters-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(260px,1fr)); gap: 12px; margin-bottom: 20px; }
+.monster-card { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 16px; position: relative; overflow: hidden; transition: border-color 0.2s; }
+.monster-card.active { border-color: var(--red); }
+.monster-card.active::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--red), transparent); }
+.monster-card.defeated { border-color: var(--green-dim); opacity: 0.6; }
+.monster-card.boss { border-color: var(--purple); }
+.monster-card.boss::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--purple), transparent); }
+.monster-top { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
+.monster-icon { font-size: 28px; flex-shrink: 0; }
+.monster-name { font-family: 'Cinzel', serif; font-size: 14px; color: var(--text); margin-bottom: 2px; }
+.monster-name.boss-name { color: var(--purple); }
+.monster-type { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); margin-bottom: 4px; }
+.monster-desc { font-size: 12px; color: var(--text-dim); font-style: italic; line-height: 1.5; }
+.hp-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-dim); margin-bottom: 4px; }
+.hp-bar-track { height: 6px; background: var(--surface2); border-radius: 2px; overflow: hidden; margin-bottom: 8px; }
+.hp-bar-fill { height: 100%; border-radius: 2px; transition: width 0.5s ease; }
+.hp-bar-fill.active-hp { background: linear-gradient(90deg, var(--red-dim), var(--red)); }
+.hp-bar-fill.boss-hp { background: linear-gradient(90deg, var(--purple-dim), var(--purple)); }
+.hp-bar-fill.defeated-hp { background: var(--green-dim); width: 0% !important; }
+.monster-footer { display: flex; justify-content: space-between; }
+.monster-status { font-size: 11px; font-style: italic; }
+.monster-status.defeated-text { color: var(--green); } .monster-status.active-text { color: var(--red); } .monster-status.boss-text { color: var(--purple); }
+.monster-reward { font-size: 11px; color: var(--gold-dim); }
+
+.quests-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.quest-card { background: var(--surface); border: 1px solid var(--border-gold); border-radius: 4px; padding: 16px; display: flex; gap: 16px; align-items: center; position: relative; overflow: hidden; }
+.quest-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--gold-dim), transparent); }
+.quest-card.completed { border-color: var(--green-dim); opacity: 0.7; }
+.quest-icon { font-size: 26px; flex-shrink: 0; }
+.quest-info { flex: 1; }
+.quest-name { font-family: 'Cinzel', serif; font-size: 14px; color: var(--gold); margin-bottom: 3px; }
+.quest-desc { font-size: 13px; color: var(--text-dim); font-style: italic; margin-bottom: 8px; line-height: 1.5; }
+.quest-progress-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-dim); margin-bottom: 4px; }
+.quest-bar-track { height: 5px; background: var(--surface2); border-radius: 2px; overflow: hidden; }
+.quest-bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold-dim), var(--gold)); border-radius: 2px; transition: width 0.4s ease; }
+.quest-reward { font-size: 11px; color: var(--gold-dim); margin-top: 4px; }
+.quest-meta { text-align: right; min-width: 80px; }
+.quest-xp { font-family: 'Cinzel', serif; font-size: 16px; color: var(--xp-color); }
+.quest-xp-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; }
+.quest-expires { font-size: 10px; color: var(--text-dark); margin-top: 4px; }
+
+.username-setup { background: var(--surface); border: 1px solid var(--border-gold); border-radius: 4px; padding: 20px; text-align: center; margin-bottom: 16px; }
+.username-setup h3 { font-family: 'Cinzel', serif; color: var(--gold); margin-bottom: 8px; font-size: 16px; }
+.username-setup p { color: var(--text-dim); font-size: 13px; font-style: italic; margin-bottom: 14px; }
+.username-row { display: flex; gap: 10px; justify-content: center; }
+.username-input { background: var(--surface2); border: 1px solid var(--border-gold); border-radius: 3px; color: var(--text); font-family: 'Crimson Text', serif; font-size: 15px; padding: 8px 12px; outline: none; width: 200px; }
+.username-btn { background: var(--gold-dim); border: 1px solid var(--gold); color: var(--gold-light); font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.06em; padding: 8px 16px; border-radius: 3px; cursor: pointer; transition: all 0.2s; }
+.username-btn:hover { background: var(--gold); color: var(--bg); }
+
+.lb-table { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 12px; }
+.lb-row { display: grid; grid-template-columns: 40px 1fr 70px 80px 70px; gap: 10px; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border); transition: background 0.15s; }
+.lb-row:last-child { border-bottom: none; }
+.lb-row:hover { background: var(--surface2); }
+.lb-row.me { background: rgba(201,168,76,0.06); border-left: 2px solid var(--gold); }
+.lb-row.header-row { background: var(--surface2); border-bottom: 1px solid var(--border-gold); }
+.lb-rank { font-family: 'Cinzel', serif; font-size: 14px; color: var(--gold-dim); text-align: center; }
+.lb-rank.top1 { color: #ffd700; } .lb-rank.top2 { color: #c0c0c0; } .lb-rank.top3 { color: #cd7f32; }
+.lb-name { font-family: 'Cinzel', serif; font-size: 13px; color: var(--text); }
+.lb-class { font-family: 'Crimson Text', serif; font-size: 11px; color: var(--text-dim); font-style: italic; }
+.lb-val { font-family: 'Cinzel', serif; font-size: 13px; color: var(--text); text-align: center; }
+.lb-header { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; text-align: center; }
+.lb-header.left { text-align: left; }
+.lb-refresh-btn { background: none; border: 1px solid var(--border); color: var(--text-dim); font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.06em; padding: 6px 14px; border-radius: 3px; cursor: pointer; transition: all 0.2s; display: block; margin: 0 auto; }
+.lb-refresh-btn:hover { border-color: var(--gold-dim); color: var(--gold-dim); }
+
+.guild-card { background: var(--surface); border: 1px solid var(--border-gold); border-radius: 4px; padding: 20px; margin-bottom: 16px; position: relative; overflow: hidden; }
+.guild-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--purple), transparent); }
+.guild-title { font-family: 'Cinzel', serif; font-size: 16px; color: var(--purple); margin-bottom: 4px; }
+.guild-desc { font-size: 13px; color: var(--text-dim); font-style: italic; margin-bottom: 14px; }
+.guild-boss-name { font-family: 'Cinzel', serif; font-size: 13px; color: var(--text); margin-bottom: 6px; display: flex; justify-content: space-between; }
+.guild-boss-bar-track { height: 10px; background: var(--surface2); border-radius: 2px; overflow: hidden; margin-bottom: 6px; }
+.guild-boss-bar-fill { height: 100%; background: linear-gradient(90deg, var(--purple-dim), var(--purple)); border-radius: 2px; transition: width 0.5s ease; }
+.guild-members { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.guild-member-chip { background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; font-size: 12px; color: var(--text-dim); display: flex; align-items: center; gap: 6px; }
+.guild-member-chip.me { border-color: var(--gold-dim); color: var(--gold); }
+
+@keyframes specterPulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(142,68,173,0.5); }
+  50% { box-shadow: 0 0 18px rgba(142,68,173,1), 0 0 30px rgba(142,68,173,0.4); }
+}
+.hp-bar-fill.enraged-hp {
+  background: linear-gradient(90deg, var(--purple-dim), var(--purple));
+  animation: specterPulse 1.6s ease-in-out infinite;
+}
+.enraged-badge {
+  display: inline-block;
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  color: var(--purple);
+  border: 1px solid var(--purple);
+  padding: 1px 7px;
+  border-radius: 2px;
+  margin-left: 6px;
+  animation: specterPulse 1.6s ease-in-out infinite;
+  vertical-align: middle;
+}
+.haunted-banner {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  background: rgba(142,68,173,0.08);
+  border: 1px solid var(--purple-dim);
+  border-left: 3px solid var(--purple);
+  border-radius: 3px;
+  padding: 10px 14px;
+  margin-top: 10px;
+}
+.haunted-banner-icon { font-size: 18px; line-height: 1; }
+.haunted-banner-body { display: flex; flex-direction: column; gap: 3px; }
+.haunted-banner-title {
+  font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.08em;
+  color: var(--purple); text-transform: uppercase;
+  display: flex; align-items: center; gap: 8px;
+}
+.haunted-banner-days {
+  font-size: 10px; font-family: 'Cinzel', serif;
+  background: rgba(142,68,173,0.2); border: 1px solid var(--purple-dim);
+  color: var(--purple); padding: 1px 7px; border-radius: 10px; white-space: nowrap;
+}
+.haunted-banner-detail {
+  font-size: 12px; color: var(--text-dim);
+  font-family: 'Crimson Text', serif; line-height: 1.4;
+}
+.haunted-banner-xp { text-align: right; font-family: 'Cinzel', serif; }
+.haunted-banner-xp-before { font-size: 11px; color: var(--text-dark); text-decoration: line-through; }
+.haunted-banner-xp-after { font-size: 16px; color: #c0392b; font-weight: bold; line-height: 1.1; }
+.haunted-banner-xp-label { font-size: 9px; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.08em; }
+
+.sub-pill {
+  background: rgba(142,68,173,0.15);
+  border: 1px solid var(--purple-dim);
+  color: var(--text-dim);
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+.sub-pill:hover {
+  background: rgba(142,68,173,0.35);
+  border-color: var(--purple);
+  color: var(--text);
+}
+.sub-pill.used {
+  background: rgba(142,68,173,0.08);
+  color: var(--text-dark);
+  border-color: var(--border);
+  cursor: default;
+}
+
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface); border: 1px solid var(--gold); border-radius: 4px; padding: 11px 22px; font-family: 'Cinzel', serif; font-size: 12px; color: var(--gold-light); transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1); z-index: 500; text-align: center; box-shadow: 0 4px 32px rgba(0,0,0,0.6); white-space: nowrap; }
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+.levelup-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 900; opacity: 0; pointer-events: none; transition: opacity 0.4s; }
+.levelup-overlay.show { opacity: 1; pointer-events: all; }
+.levelup-box { background: var(--surface); border: 2px solid var(--gold); border-radius: 6px; padding: 40px; text-align: center; position: relative; max-width: 340px; transform: scale(0.8); transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+.levelup-overlay.show .levelup-box { transform: scale(1); }
+.levelup-box::before { content: ''; position: absolute; inset: 6px; border: 1px solid var(--border-gold); border-radius: 4px; pointer-events: none; }
+.levelup-icon { font-size: 48px; margin-bottom: 14px; display: block; }
+.levelup-title { font-family: 'Cinzel', serif; font-size: 26px; color: var(--gold-light); margin-bottom: 8px; text-shadow: 0 0 30px rgba(232,201,106,0.5); }
+.levelup-subtitle { color: var(--text-dim); font-style: italic; margin-bottom: 20px; }
+.levelup-close { background: var(--gold-dim); border: 1px solid var(--gold); color: var(--gold-light); font-family: 'Cinzel', serif; font-size: 12px; padding: 9px 24px; border-radius: 3px; cursor: pointer; letter-spacing: 0.06em; transition: all 0.2s; }
+.levelup-close:hover { background: var(--gold); color: var(--bg); }
+.veteran-box { border-color: #c0392b; max-width: 400px; }
+.veteran-box::before { border-color: rgba(192,57,43,0.3); }
+.veteran-eyebrow { font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--red); margin-bottom: 10px; }
+.veteran-body { font-size: 13px; color: var(--text-dim); line-height: 1.7; margin-bottom: 16px; font-family: 'Crimson Text', serif; }
+.veteran-body strong { color: var(--text); }
+.veteran-badge { display: inline-block; background: rgba(192,57,43,0.15); border: 1px solid var(--red); color: var(--red); font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.08em; padding: 6px 16px; border-radius: 3px; }
+
+@media (max-width: 640px) {
+  .log-form { grid-template-columns: 1fr 1fr; }
+  .log-form .log-btn { grid-column: span 2; }
+  .stats-row { grid-template-columns: repeat(2,1fr); }
+  .lb-row { grid-template-columns: 32px 1fr 60px 60px; }
+  .lb-row > *:nth-child(5) { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="header">
+  <h1>⚔ Budget Quest ⚔</h1>
+  <p>Master your gold. Level your legend.</p>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('adventure')">⚔ Adventure</button>
+  <button class="tab" onclick="switchTab('treasury')">💰 Treasury</button>
+  <button class="tab" onclick="switchTab('guild')">🛡 Guild &amp; Ranks</button>
+</div>
+
+<!-- ADVENTURE -->
+<div class="tab-panel active" id="tab-adventure">
+  <div class="character-card">
+    <div class="char-top">
+      <div class="char-avatar" id="char-avatar">🧙</div>
+      <div class="char-info">
+        <input type="text" class="char-name-input" id="char-name-input" value="Adventurer" maxlength="20">
+        <div class="char-class" id="char-class">Copper Squire · Rank I</div>
+      </div>
+      <div class="char-level">
+        <div class="level-num" id="level-display">1</div>
+        <div class="level-label">Level</div>
+      </div>
+    </div>
+    <div class="xp-label"><span id="xp-label-text">✦ 90 / 100 XP</span><span id="xp-pct-text">90%</span></div>
+    <div class="xp-bar-track"><div class="xp-bar-fill" id="xp-bar" style="width: 90%;"></div></div>
+    <div id="haunted-banner"></div>
+    <div id="complete-day-wrap" style="display: block; margin: 14px 0px 4px;">
+      <button onclick="openCompleteDayModal()" style="width:100%;font-family:'Cinzel',serif;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;background:linear-gradient(135deg,rgba(201,168,76,0.18),rgba(201,168,76,0.08));border:1px solid var(--gold);color:var(--gold);padding:13px 16px;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 0 18px rgba(201,168,76,0.15);animation:completeDayPulse 2.5s ease-in-out infinite;">❖ Complete Day — Seal Your Progress
+      </button>
+    </div>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-val" id="stat-streak">1</div><div class="stat-name">🔥 Streak</div></div>
+      <div class="stat"><div class="stat-val" id="stat-monsters">0</div><div class="stat-name">Slain</div></div>
+      <div class="stat"><div class="stat-val" id="stat-quests">0</div><div class="stat-name">Quests</div></div>
+    </div>
+    <div class="attrs-row" id="attrs-row"><div class="attr-card" title="Reduces streak reset penalty. Habit monsters deal less damage."><div class="attr-header"><span class="attr-name">Discipline</span><span class="attr-level discipline">Newcomer</span></div><div class="attr-pips"><div class="pip discipline empty"></div><div class="pip discipline empty"></div><div class="pip discipline empty"></div><div class="pip discipline empty"></div><div class="pip discipline empty"></div></div><div class="attr-desc">Reduces streak reset penalty. Habit monsters deal less damage.</div></div><div class="attr-card" title="Budget Dragon starts with lower HP. Better XP from staying under budget."><div class="attr-header"><span class="attr-name">Wisdom</span><span class="attr-level wisdom">Unaware</span></div><div class="attr-pips"><div class="pip wisdom empty"></div><div class="pip wisdom empty"></div><div class="pip wisdom empty"></div><div class="pip wisdom empty"></div><div class="pip wisdom empty"></div></div><div class="attr-desc">Budget Dragon starts with lower HP. Better XP from staying under budget.</div></div><div class="attr-card" title="Impulse monsters appear with less HP. Restraint quests give bonus XP."><div class="attr-header"><span class="attr-name">Willpower</span><span class="attr-level willpower">Tempted</span></div><div class="attr-pips"><div class="pip willpower empty"></div><div class="pip willpower empty"></div><div class="pip willpower empty"></div><div class="pip willpower empty"></div><div class="pip willpower empty"></div></div><div class="attr-desc">Impulse monsters appear with less HP. Restraint quests give bonus XP.</div></div></div>
+  </div>
+
+  <div id="login-banner"></div>
+
+<!-- Complete Day Modal -->
+<div class="levelup-overlay" id="complete-day-overlay">
+  <div class="levelup-box" style="max-width:440px;position:relative;">
+    <button onclick="document.getElementById('complete-day-overlay').classList.remove('show')" style="position: absolute; top: 12px; right: 12px; background: none; border-top-width: ; border-top-style: ; border-color: var(--border); border-right-width: ; border-right-style: ; border-bottom-width: ; border-bottom-style: ; border-left-width: ; border-left-style: ; border-image-outset: ; border-image-repeat: ; border-image-slice: ; border-image-source: ; border-image-width: ; border-radius: 3px; color: var(--text-dim); font-family: &quot;Cinzel&quot;, serif; font-size: 9px; letter-spacing: 0.08em; cursor: pointer; padding: 5px 9px; display: flex; align-items: center; gap: 5px; transition: 0.2s;" onmouseover="this.style.borderColor='var(--gold-dim)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-dim)'">← Not done, go back!</button>
+    <div style="text-align:center;margin-bottom:18px;">
+      <div style="font-size:36px;margin-bottom:6px;">🌙</div>
+      <div class="levelup-title" style="font-size:20px;">Day Complete</div>
+      <div class="levelup-subtitle" id="complete-day-subtitle">Seal the day to collect 50 XP.</div>
+    </div>
+    <div id="complete-day-summary" style="margin-bottom:12px;font-family:'Crimson Text',serif;font-size:15px;color:var(--text-dim);line-height:1.6;">You logged <strong style="color:var(--text);">2 expenses</strong> today, totalling <strong style="color:var(--gold);">$30.00</strong>. The ledger is ready to be sealed.</div>
+    <div id="complete-day-xp-list" style="background:rgba(201,168,76,0.06);border:1px solid var(--border-gold);border-radius:4px;padding:12px 14px;margin-bottom:16px;"><div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="font-size:13px;color:var(--text-dim);">⚡ The Impulse Attack!</span><span style="font-family:Cinzel,serif;font-size:12px;color:var(--xp-color);">+25 XP</span></div><div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="font-size:13px;color:var(--text-dim);">⚔️ The Small Victory</span><span style="font-family:Cinzel,serif;font-size:12px;color:var(--xp-color);">+25 XP</span></div><div style="display:flex;justify-content:space-between;padding:7px 0 2px;"><span style="font-size:11px;color:var(--text-dark);text-transform:uppercase;letter-spacing:0.08em;">Total</span><span style="font-family:Cinzel,serif;font-size:13px;color:var(--gold);">+50 XP</span></div></div>
+    <button class="levelup-close" onclick="confirmCompleteDay()" style="width:100%;text-align:center;">❖ Seal the Day</button>
+  </div>
+</div>
+
+  <div class="daily-bar">
+    <div class="daily-card challenge completed" id="daily-challenge-card"><div class="daily-label">⚡ Daily Challenge</div><div class="daily-title">⚔️ The Small Victory</div><div class="daily-desc">Log any expense and stay under budget in that category. A first lesson in discipline.</div><div class="daily-reward complete">✓ Claimed</div></div>
+    <div class="daily-card encounter completed" id="daily-encounter-card"><div class="daily-label">🎲 Random Encounter</div><div class="daily-title">⚡ The Impulse Attack!</div><div class="daily-desc">The Impulse Specter ambushes you! Log no shopping purchases today to repel the attack.</div><div class="daily-reward complete">✓ Reward claimed</div></div>
+  </div>
+  <div id="dev-panel" style="display:none;background:#1a0a0a;border:1px dashed #c0392b;border-radius:4px;padding:12px 16px;margin-bottom:16px;">
+    <div style="font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:#c0392b;margin-bottom:10px;">⚠ Dev Test Mode</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+      <button onclick="devSimulateDay7()" style="background:none;border:1px solid #c0392b;color:#c0392b;font-family:'Cinzel',serif;font-size:10px;padding:5px 10px;border-radius:3px;cursor:pointer;">Simulate Day 7 (Small Victory)</button>
+      <button onclick="devTriggerVeteran()" style="background:none;border:1px solid #c0392b;color:#c0392b;font-family:'Cinzel',serif;font-size:10px;padding:5px 10px;border-radius:3px;cursor:pointer;">Trigger Veteran Ceremony</button>
+      <button onclick="devSimulateDay8()" style="background:none;border:1px solid #c0392b;color:#c0392b;font-family:'Cinzel',serif;font-size:10px;padding:5px 10px;border-radius:3px;cursor:pointer;">Simulate Day 8+ (Veteran Test)</button>
+      <button onclick="devCompleteChallenge()" style="background:none;border:1px solid #c0392b;color:#c0392b;font-family:'Cinzel',serif;font-size:10px;padding:5px 10px;border-radius:3px;cursor:pointer;">Complete Today Challenge</button>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;padding-top:8px;border-top:1px solid #3a0a0a;margin-bottom:8px;">
+      <button onclick="devUndoLastExpense()" style="background:none;border:1px solid #e67e22;color:#e67e22;font-family:'Cinzel',serif;font-size:10px;padding:5px 10px;border-radius:3px;cursor:pointer;">↩ Undo Last Expense</button>
+      <button onclick="devUndoLastQuest()" style="background:none;border:1px solid #e67e22;color:#e67e22;font-family:'Cinzel',serif;font-size:10px;padding:5px 10px;border-radius:3px;cursor:pointer;">↩ Undo Last Quest</button>
+      <button onclick="devUndoLastXP()" style="background:none;border:1px solid #e67e22;color:#e67e22;font-family:'Cinzel',serif;font-size:10px;padding:5px 10px;border-radius:3px;cursor:pointer;">↩ Undo Last XP Gain</button>
+      <button onclick="devClearProgress()" style="background:none;border:1px solid #e67e22;color:#e67e22;font-family:'Cinzel',serif;font-size:10px;padding:5px 10px;border-radius:3px;cursor:pointer;">Clear Progress (keep settings)</button>
+      <button onclick="devResetAll()" style="background:none;border:1px solid #555;color:#555;font-family:'Cinzel',serif;font-size:10px;padding:5px 10px;border-radius:3px;cursor:pointer;">Reset Everything</button>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;padding-top:8px;border-top:1px solid #3a0a0a;">
+      <div style="width:100%;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#8e44ad;margin-bottom:4px;">👻 Specter Tests</div>
+      <button onclick="devAdvanceDay()" style="background:none;border:1px solid #c0392b;color:#c0392b;font-family:'Cinzel',serif;font-size:10px;padding:5px 10px;border-radius:3px;cursor:pointer;">Advance to Next Day</button>
+      <button onclick="devResetDay()" style="background:none;border:1px solid #c0392b;color:#c0392b;font-family:'Cinzel',serif;font-size:10px;padding:5px 10px;border-radius:3px;cursor:pointer;">Reset to Today</button>
+      <button onclick="devSpecterFullPenaltyScenario()" style="background:rgba(142,68,173,0.15);border:1px solid #8e44ad;color:#8e44ad;font-family:'Cinzel',serif;font-size:10px;padding:5px 10px;border-radius:3px;cursor:pointer;">⚡ Simulate 1-Week+ Add (full scenario)</button>
+      <button onclick="devSpecterSimulateNextDay()" style="background:none;border:1px solid #8e44ad;color:#8e44ad;font-family:'Cinzel',serif;font-size:10px;padding:5px 10px;border-radius:3px;cursor:pointer;">Age Sub Dates Past Grace Window</button>
+      <button onclick="devSpecterClearCurse()" style="background:none;border:1px solid #8e44ad;color:#8e44ad;font-family:'Cinzel',serif;font-size:10px;padding:5px 10px;border-radius:3px;cursor:pointer;">Clear Haunted Curse</button>
+      <button onclick="devSpecterClearEnrage()" style="background:none;border:1px solid #8e44ad;color:#8e44ad;font-family:'Cinzel',serif;font-size:10px;padding:5px 10px;border-radius:3px;cursor:pointer;">Clear Enrage</button>
+      <button onclick="devSpecterStatus()" style="background:none;border:1px solid #8e44ad;color:#8e44ad;font-family:'Cinzel',serif;font-size:10px;padding:5px 10px;border-radius:3px;cursor:pointer;">Log Specter State</button>
+    </div>
+  </div>
+  <div class="section-head">Active Threats</div>
+  <div class="monsters-grid" id="monsters-grid"><div class="monster-card boss"><div class="monster-top"><div class="monster-icon">🐉</div><div><div class="monster-name boss-name">The Budget Dragon</div><div class="monster-type">⚠ Monthly Boss</div><div class="monster-desc">Defeated only by staying under ALL budgets for the month with 5+ expenses logged.</div><div class="monster-taunt ">"Your budget bleeds. I grow stronger."</div></div></div><div class="hp-label"><span>❤ HP</span><span>1%</span></div><div class="hp-bar-track"><div class="hp-bar-fill boss-hp" style="width:1%"></div></div><div class="monster-footer"><div class="monster-status boss-text">Keep all budgets green</div><div class="monster-reward">150 XP</div></div></div><div class="monster-card active"><div class="monster-top"><div class="monster-icon">👤</div><div><div class="monster-name">The Shadow Budget</div><div class="monster-type">Personal Curse · Dormant</div><div class="monster-desc">No category is under serious threat. Stay vigilant — complacency is its own enemy.</div><div class="monster-taunt ">"Enjoy the calm. It will not last."</div></div></div><div class="hp-label"><span>❤ HP</span><span>0%</span></div><div class="hp-bar-track"><div class="hp-bar-fill active-hp" style="width:0%"></div></div><div class="monster-footer"><div class="monster-status active-text">All budgets healthy</div><div class="monster-reward">—</div></div></div><div class="monster-card defeated"><div class="monster-top"><div class="monster-icon">👻</div><div><div class="monster-name">The Subscription Specter</div><div class="monster-type">Ambient Threat · Dormant</div><div class="monster-desc">You carry no discretionary subscriptions. The Specter finds no purchase here.</div></div></div><div class="hp-label"><span>☠ Defeated</span><span>0%</span></div><div class="hp-bar-track"><div class="hp-bar-fill defeated-hp" style="width:0%"></div></div><div class="monster-footer"><div class="monster-status defeated-text">✓ No subscriptions to haunt you</div><div class="monster-reward">—</div></div><button class="daily-action-btn" style="margin-top: 10px; width: 100%; border-color: var(--red-dim); color: var(--text-dim); background: rgba(192, 57, 43, 0.07);">+ Add a Subscription</button></div></div>
+
+  <div class="section-head">Weekly Community Quest</div>
+  <div class="quests-list" id="quests-list"><div class="quest-card "><div class="quest-icon">👁</div><div class="quest-info"><div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;"><div class="quest-name" style="margin:0">The Watchful Eye</div><span style="font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:2px 7px;border-radius:10px;background:#4a9eff22;color:#4a9eff;border:1px solid #4a9eff44">Habit</span></div><div class="quest-desc">Log expenses on 5 out of 7 days this week. The hero who tracks daily never loses the thread.</div><div class="quest-progress-label"><span>Weekly Quest</span><span>1 / 5</span></div><div class="quest-bar-track"><div class="quest-bar-fill" style="width:20%;background:linear-gradient(90deg,#4a9eff88,#4a9eff)"></div></div><div class="quest-reward">Reward: +70 XP</div></div><div class="quest-meta"><div class="quest-xp" style="color:#4a9eff">70</div><div class="quest-xp-label">XP</div><div class="quest-expires">Active</div></div></div><div class="quest-card "><div class="quest-icon">⚖️</div><div class="quest-info"><div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;"><div class="quest-name" style="margin:0">The Savings Sentinel</div><span style="font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:2px 7px;border-radius:10px;background:#c9a84c22;color:#c9a84c;border:1px solid #c9a84c44">Budget</span></div><div class="quest-desc">End the week having spent less than 50% of your total monthly budget. Stay well ahead of pace.</div><div class="quest-progress-label"><span>Weekly Quest</span><span>1% of monthly budget used</span></div><div class="quest-bar-track"><div class="quest-bar-fill" style="width:99%;background:linear-gradient(90deg,#c9a84c88,#c9a84c)"></div></div><div class="quest-reward">Reward: +100 XP</div></div><div class="quest-meta"><div class="quest-xp" style="color:#c9a84c">100</div><div class="quest-xp-label">XP</div><div class="quest-expires">Active</div></div></div><div class="quest-card "><div class="quest-icon">🔒</div><div class="quest-info"><div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;"><div class="quest-name" style="margin:0">The Merchant Embargo</div><span style="font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:2px 7px;border-radius:10px;background:#8e44ad22;color:#8e44ad;border:1px solid #8e44ad44">Restraint</span></div><div class="quest-desc">Make 3 or fewer total purchases this week. Each coin spent must count.</div><div class="quest-progress-label"><span>Weekly Quest</span><span>2 purchases so far (max 3)</span></div><div class="quest-bar-track"><div class="quest-bar-fill" style="width:33.33333333333333%;background:linear-gradient(90deg,#8e44ad88,#8e44ad)"></div></div><div class="quest-reward">Reward: +90 XP</div></div><div class="quest-meta"><div class="quest-xp" style="color:#8e44ad">90</div><div class="quest-xp-label">XP</div><div class="quest-expires">Active</div></div></div></div>
+</div>
+
+<!-- TREASURY -->
+<div class="tab-panel" id="tab-treasury">
+  <div class="section-head" style="margin-top:8px">Realm Treasuries</div>
+  <div class="cat-grid" id="cat-grid"><div class="cat-card under-budget">
+      <button class="edit-budget-btn" onclick="editBudget('food','Food &amp; Feasts')">✎</button>
+      <div class="cat-top">
+        <div class="cat-name">🍖 Food &amp; Feasts</div>
+        <div class="cat-amounts"><div class="cat-spent">$30</div><div class="cat-budget">of $400</div></div>
+      </div>
+      <div class="cat-bar-track"><div class="cat-bar-fill good" style="width:7.5%"></div></div>
+      <div class="cat-remaining good">$370 remaining</div></div><div class="cat-card under-budget">
+      <button class="edit-budget-btn" onclick="editBudget('transport','Swift Travel')">✎</button>
+      <div class="cat-top">
+        <div class="cat-name">🐎 Swift Travel</div>
+        <div class="cat-amounts"><div class="cat-spent">$0</div><div class="cat-budget">of $150</div></div>
+      </div>
+      <div class="cat-bar-track"><div class="cat-bar-fill good" style="width:0%"></div></div>
+      <div class="cat-remaining good">$150 remaining</div></div><div class="cat-card under-budget">
+      <button class="edit-budget-btn" onclick="editBudget('shelter','Shelter &amp; Keep')">✎</button>
+      <div class="cat-top">
+        <div class="cat-name">🏰 Shelter &amp; Keep</div>
+        <div class="cat-amounts"><div class="cat-spent">$0</div><div class="cat-budget">of $1200</div></div>
+      </div>
+      <div class="cat-bar-track"><div class="cat-bar-fill good" style="width:0%"></div></div>
+      <div class="cat-remaining good">$1200 remaining</div></div><div class="cat-card under-budget">
+      <button class="edit-budget-btn" onclick="editBudget('gear','Arms &amp; Shopping')">✎</button>
+      <div class="cat-top">
+        <div class="cat-name">⚔️ Arms &amp; Shopping</div>
+        <div class="cat-amounts"><div class="cat-spent">$0</div><div class="cat-budget">of $200</div></div>
+      </div>
+      <div class="cat-bar-track"><div class="cat-bar-fill good" style="width:0%"></div></div>
+      <div class="cat-remaining good">$200 remaining</div></div><div class="cat-card under-budget">
+      <button class="edit-budget-btn" onclick="editBudget('potions','Potions &amp; Health')">✎</button>
+      <div class="cat-top">
+        <div class="cat-name">🧪 Potions &amp; Health</div>
+        <div class="cat-amounts"><div class="cat-spent">$0</div><div class="cat-budget">of $100</div></div>
+      </div>
+      <div class="cat-bar-track"><div class="cat-bar-fill good" style="width:0%"></div></div>
+      <div class="cat-remaining good">$100 remaining</div></div><div class="cat-card under-budget">
+      <button class="edit-budget-btn" onclick="editBudget('scrolls','Scrolls &amp; Learning')">✎</button>
+      <div class="cat-top">
+        <div class="cat-name">📜 Scrolls &amp; Learning</div>
+        <div class="cat-amounts"><div class="cat-spent">$0</div><div class="cat-budget">of $80</div></div>
+      </div>
+      <div class="cat-bar-track"><div class="cat-bar-fill good" style="width:0%"></div></div>
+      <div class="cat-remaining good">$80 remaining</div></div></div>
+  <div class="section-head">Record a Spendings Scroll</div>
+  <div class="log-form">
+    <div class="form-group"><label class="form-label">Description</label><input class="form-input" id="desc-input" type="text" placeholder="What did you spend on?"></div>
+    <div class="form-group"><label class="form-label">Amount ($)</label><input class="form-input" id="amount-input" type="number" min="0.01" step="0.01" placeholder="0.00"></div>
+    <div class="form-group"><label class="form-label">Category</label><select class="form-select" id="cat-select"><option value="food" selected="selected">🍖 Food &amp; Feasts</option><option value="transport">🐎 Swift Travel</option><option value="shelter">🏰 Shelter &amp; Keep</option><option value="gear">⚔️ Arms &amp; Shopping</option><option value="potions">🧪 Potions &amp; Health</option><option value="scrolls">📜 Scrolls &amp; Learning</option></select></div>
+    <button class="log-btn" onclick="logExpense()">⚔ Log It</button>
+  </div>
+  <div class="section-head">Chronicle of Expenditures</div>
+  <div class="log-list" id="log-list"><div class="log-item"><div class="log-icon">🍖</div><div><div class="log-desc">clothes</div><div class="log-cat">Food &amp; Feasts</div></div><div class="log-amount">$5.00</div><div class="log-xp">+XP</div></div><div class="log-item"><div class="log-icon">🍖</div><div><div class="log-desc">clothes</div><div class="log-cat">Food &amp; Feasts</div></div><div class="log-amount">$25.00</div><div class="log-xp">+XP</div></div></div>
+</div>
+
+<!-- GUILD -->
+<div class="tab-panel" id="tab-guild">
+  <div id="username-setup-section" style="margin-top:8px"></div>
+  <div class="guild-card">
+    <div class="guild-title">🛡 The Frugal Fellowship</div>
+    <div class="guild-desc">Your party battles the Monthly Budget Dragon together. Every member who stays under budget deals damage to the boss.</div>
+    <div class="guild-boss-name"><span>🐉 Budget Dragon — Month Boss</span><span id="guild-boss-pct" style="color:var(--purple)">100% HP</span></div>
+    <div class="guild-boss-bar-track"><div class="guild-boss-bar-fill" id="guild-boss-bar" style="width:100%"></div></div>
+    <div style="font-size:11px;color:var(--text-dim);">Each hero under budget this month deals 10 damage. Boss has 100 HP.</div>
+    <div class="section-head" style="margin:12px 0 8px">Party Members</div>
+    <div class="guild-members" id="guild-members"><div style="color:var(--text-dark);font-style:italic;font-size:13px;">Loading party...</div></div>
+  </div>
+  <div class="section-head">Hall of Legend</div>
+  <div class="lb-table" id="lb-table">
+    <div class="lb-row header-row">
+      <div class="lb-header">#</div>
+      <div class="lb-header left">Hero</div>
+      <div class="lb-header">Level</div>
+      <div class="lb-header">XP</div>
+      <div class="lb-header">Streak</div>
+    </div>
+    <div style="padding:24px;text-align:center;color:var(--text-dark);font-style:italic;">Loading leaderboard...</div>
+  </div>
+  <button class="lb-refresh-btn" onclick="loadLeaderboard()">↻ Refresh Rankings</button>
+</div>
+
+</div>
+
+
+<div class="levelup-overlay" id="sub-wizard-overlay">
+  <div class="levelup-box" style="max-width:500px;text-align:left;max-height:90vh;overflow-y:auto;">
+    <div style="text-align:center;margin-bottom:16px;">
+      <span class="levelup-icon">👻</span>
+      <div class="levelup-title" style="font-size:20px;">A Shadow Stirs...</div>
+      <div class="levelup-subtitle">Name your recurring burdens so the Specter may be measured.</div>
+    </div>
+    <div style="font-size:13px;color:var(--text-dim);line-height:1.6;margin-bottom:14px;font-family:'Crimson Text',serif;">
+      The <strong style="color:var(--purple)">Subscription Specter</strong> feeds on discretionary recurring charges —
+      streaming, gaming, meal kits, app upgrades, news, and subscription boxes.<br>
+      <span style="color:var(--text-dark);font-size:12px;font-style:italic;">
+        ⚠ Skip essentials: internet, phone, gym, insurance, utilities.
+      </span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;" id="sub-pills">
+      <span class="sub-pill" onclick="addSubRow('Streaming');this.classList.add('used')">📺 Streaming</span>
+      <span class="sub-pill" onclick="addSubRow('Gaming');this.classList.add('used')">🎮 Gaming</span>
+      <span class="sub-pill" onclick="addSubRow('News');this.classList.add('used')">📰 News</span>
+      <span class="sub-pill" onclick="addSubRow('Meal kits');this.classList.add('used')">🍱 Meal kits</span>
+      <span class="sub-pill" onclick="addSubRow('Subscription box');this.classList.add('used')">📦 Subscription boxes</span>
+      <span class="sub-pill" onclick="addSubRow('App upgrade');this.classList.add('used')">☁ App upgrades</span>
+    </div>
+    <div id="sub-list-rows" style="margin-bottom:10px;display:flex;flex-direction:column;gap:7px;"></div>
+    <button onclick="addSubRow('Other')" style="background:none;border:1px dashed var(--purple-dim);color:var(--purple);font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.06em;padding:7px 0;border-radius:3px;cursor:pointer;width:100%;margin-bottom:14px;">+ Add Other Subscription</button>
+    <div id="sub-wizard-total" style="text-align:right;font-size:12px;color:var(--text-dim);margin-bottom:14px;font-family:'Cinzel',serif;"></div>
+    <button class="levelup-close" onclick="saveSubWizard()" style="width:100%;text-align:center;">⚔ Begin My Quest</button>
+    <div style="text-align:center;margin-top:10px;"><button onclick="saveSubWizard(true)" style="background:none;border:none;color:var(--text-dark);font-size:12px;cursor:pointer;font-style:italic;">I have no discretionary subscriptions — skip</button></div>
+  </div>
+</div>
+
+<!-- Cancel subscription modal -->
+<div class="levelup-overlay" id="cancel-sub-overlay">
+  <div class="levelup-box" style="max-width:400px;text-align:left;">
+    <div style="text-align:center;margin-bottom:16px;">
+      <span style="font-size:32px;">✂</span>
+      <div class="levelup-title" style="font-size:18px;">Cancel a Subscription</div>
+      <div class="levelup-subtitle">Choose which shadow to banish this month.</div>
+    </div>
+    <div id="cancel-sub-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;"></div>
+    <button onclick="document.getElementById('cancel-sub-overlay').classList.remove('show')" style="background:none;border:1px solid var(--border);color:var(--text-dim);font-family:'Cinzel',serif;font-size:11px;padding:8px;border-radius:3px;cursor:pointer;width:100%;">← Keep them for now</button>
+  </div>
+</div>
+
+<!-- Specter penalty announcement modal -->
+<div class="levelup-overlay" id="specter-penalty-overlay">
+  <div class="levelup-box" style="max-width:420px;text-align:left;">
+    <div style="text-align:center;margin-bottom:18px;">
+      <span style="font-size:40px;display:block;margin-bottom:8px;">👻</span>
+      <div class="levelup-title" style="font-size:20px;color:var(--purple);">The Specter Stirs</div>
+      <div class="levelup-subtitle" id="penalty-modal-subtitle">You have fed the shadow.</div>
+    </div>
+    <div style="background:rgba(142,68,173,0.1);border:1px solid var(--purple-dim);border-radius:4px;padding:14px 16px;margin-bottom:16px;">
+      <div id="penalty-modal-body" style="font-family:'Crimson Text',serif;font-size:15px;color:var(--text-dim);line-height:1.7;"></div>
+    </div>
+    <div style="background:rgba(192,57,43,0.08);border:1px solid rgba(192,57,43,0.3);border-radius:4px;padding:12px 16px;margin-bottom:18px;">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:#c0392b;margin-bottom:6px;">⚠ Penalties Applied</div>
+      <div id="penalty-modal-penalties" style="font-size:13px;color:var(--text-dim);line-height:1.8;"></div>
+    </div>
+    <button class="levelup-close" onclick="document.getElementById('specter-penalty-overlay').classList.remove('show')" style="width:100%;text-align:center;border-color:var(--purple);color:var(--purple);">I understand — face the shadow</button>
+  </div>
+</div>
+
+<!-- Add subscription modal (from adventure tab) -->
+<div class="levelup-overlay" id="add-sub-overlay">
+  <div class="levelup-box" style="max-width:440px;text-align:left;">
+    <div style="text-align:center;margin-bottom:16px;">
+      <span style="font-size:32px;">👻</span>
+      <div class="levelup-title" style="font-size:18px;">Feed the Specter</div>
+      <div class="levelup-subtitle">Adding a subscription strengthens the shadow.</div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;" id="add-sub-pills">
+      <span class="sub-pill" onclick="addSubRowToModal('Streaming')">📺 Streaming</span>
+      <span class="sub-pill" onclick="addSubRowToModal('Gaming')">🎮 Gaming</span>
+      <span class="sub-pill" onclick="addSubRowToModal('News')">📰 News</span>
+      <span class="sub-pill" onclick="addSubRowToModal('Meal kits')">🍱 Meal kits</span>
+      <span class="sub-pill" onclick="addSubRowToModal('Subscription box')">📦 Subscription boxes</span>
+      <span class="sub-pill" onclick="addSubRowToModal('App upgrade')">☁ App upgrades</span>
+    </div>
+    <div id="add-sub-row-container" style="margin-bottom:12px;"></div>
+    <div id="add-sub-hint" style="font-size:12px;color:var(--text-dark);font-style:italic;margin-bottom:14px;">Click a category above or fill in manually.</div>
+    <div style="display:flex;gap:8px;">
+      <button onclick="confirmAddSub()" class="levelup-close" style="flex:1;">+ Add to Specter</button>
+      <button onclick="document.getElementById('add-sub-overlay').classList.remove('show')" style="background:none;border:1px solid var(--border);color:var(--text-dim);font-family:Cinzel,serif;font-size:11px;padding:8px 16px;border-radius:3px;cursor:pointer;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">+15 XP — logged + under budget</div>
+
+<div class="levelup-overlay" id="levelup-overlay">
+  <div class="levelup-box">
+    <span class="levelup-icon">⚔️</span>
+    <div class="levelup-title" id="levelup-title">Level Up!</div>
+    <div class="levelup-subtitle" id="levelup-subtitle">You grow stronger.</div>
+    <button class="levelup-close" onclick="closeLevelUp()">Continue Quest</button>
+  </div>
+</div>
+
+<div class="levelup-overlay" id="veteran-overlay">
+  <div class="levelup-box veteran-box">
+    <span class="levelup-icon">🎖️</span>
+    <div class="veteran-eyebrow">Training Complete</div>
+    <div class="levelup-title" style="font-size:22px;margin-bottom:6px;">The Training Grounds<br>Are Behind You.</div>
+    <div class="veteran-body">
+      You have logged expenses, stayed under budget, and proven you understand the basics.
+      The Small Victory challenge has served its purpose — it will not return.<br><br>
+      From this day forward, harder challenges await. The <strong>Veteran's Test</strong> now takes its place.
+      The real quest begins now.
+    </div>
+    <div class="veteran-badge">⚔ Veteran Adventurer Unlocked</div>
+    <button class="levelup-close" onclick="closeVeteran()" style="margin-top:20px">I Am Ready</button>
+  </div>
+</div>
+
+<script>
+const CATEGORIES = [
+  { id:'food',      name:'Food & Feasts',     icon:'🍖', budget:400 },
+  { id:'transport', name:'Swift Travel',       icon:'🐎', budget:150 },
+  { id:'shelter',   name:'Shelter & Keep',     icon:'🏰', budget:1200 },
+  { id:'gear',      name:'Arms & Shopping',    icon:'⚔️',  budget:200 },
+  { id:'potions',   name:'Potions & Health',   icon:'🧪', budget:100 },
+  { id:'scrolls',   name:'Scrolls & Learning', icon:'📜', budget:80 },
+];
+
+const LEVELS = [
+  {level:1,xp:0,title:'Copper Squire',rank:'I',avatar:'🧙'},
+  {level:2,xp:100,title:'Silver Scout',rank:'II',avatar:'🧙'},
+  {level:3,xp:250,title:'Bronze Keeper',rank:'III',avatar:'🧝'},
+  {level:4,xp:500,title:'Iron Steward',rank:'IV',avatar:'🧝'},
+  {level:5,xp:900,title:'Gold Warden',rank:'V',avatar:'🧛'},
+  {level:6,xp:1400,title:'Sapphire Guardian',rank:'VI',avatar:'🧛'},
+  {level:7,xp:2100,title:'Ruby Marshal',rank:'VII',avatar:'🤴'},
+  {level:8,xp:3000,title:'Diamond Vanguard',rank:'VIII',avatar:'🤴'},
+  {level:9,xp:4200,title:'Mythril Sovereign',rank:'IX',avatar:'👑'},
+  {level:10,xp:6000,title:'Legendary Archon',rank:'X',avatar:'👑'},
+];
+
+const MONSTER_TEMPLATES = {
+  food:      {name:'The Feast Demon',        icon:'🍖', desc:'Grows stronger each time you overspend on food and drink.', type:'Personal Curse',
+    taunts:['Your appetite grows. Your gold shrinks.','Another feast, another coin lost to the void.','Hunger is weakness. And you are very hungry.']},
+  transport: {name:'The Wandering Shade',    icon:'🌪', desc:'Drains your coffers through aimless travel and transit costs.', type:'Personal Curse',
+    taunts:['Every trip costs more than the destination is worth.','The road is long. Your budget is short.','Wandering without purpose is my favorite meal.']},
+  shelter:   {name:'The Rent Wraith',        icon:'🏚', desc:'An ancient horror that feeds on shelter budget overruns.', type:'Personal Curse',
+    taunts:['Home is where the debt is.','I live in the gap between what you earn and what you owe.','Your landlord and I are old friends.']},
+  gear:      {name:'The Impulse Specter',    icon:'🛍', desc:'Whispers of unnecessary purchases haunt your every step.', type:'Personal Curse',
+    taunts:['You do not need it. But you want it. And wanting is enough.','Add to cart. Add to cart. Add to cart...','Every impulse buy is a small prayer to me.']},
+  potions:   {name:'The Wellness Leech',     icon:'🧫', desc:'Siphons gold through unchecked health and wellness spending.', type:'Personal Curse',
+    taunts:['Feeling healthy? Your wallet is not.','Another supplement, another gold coin for me.','Self-care is my favorite income stream.']},
+  scrolls:   {name:'The Hoarder of Scrolls', icon:'📚', desc:'Tempts you to buy courses and books you never finish.', type:'Personal Curse',
+    taunts:['You bought it. You will never read it. We both know this.','Another course, 80% watched, 0% applied.','Knowledge is power. Buying it and ignoring it? That is my power.']},
+};
+
+// Ambient threats — always lurk regardless of spending
+const AMBIENT_MONSTERS = [
+  {id:'debt_troll',    name:'The Debt Troll',        icon:'💀', type:'Ambient Threat',
+    desc:'Feeds on minimum payments and unpaid balances. Grows stronger when you ignore him.',
+    taunts:['Interest compounds daily. So does my strength.','Minimum payment accepted. My power grows.','You owe me. You always owe me.']},
+  {id:'sub_specter',   name:'The Subscription Specter',icon:'👻', type:'Ambient Threat',
+    desc:'A ghost of forgotten subscriptions, silently draining gold each month.',
+    taunts:['You forgot about me. You are still paying for me.','$9.99 a month. Every month. Forever.','I auto-renew. Always.']},
+  {id:'lifestyle_creep',name:'Lifestyle Creep',       icon:'🐌', type:'Ambient Threat',
+    desc:'Slow, invisible, relentless. Your expenses rise to meet every raise you get.',
+    taunts:['You earned more. You spent more. Net zero.','Upgrades feel like progress. They are my progress.','The comfortable life is my best recruiting tool.']},
+];
+
+// Daily challenges pool
+// dc4 = onboarding only (days 1-7). dc4v = veteran replacement (day 8+)
+const DAILY_CHALLENGES = [
+  {id:'dc1', name:'The Morning Ledger',   icon:'🌅', desc:'Log at least one expense today before the day ends.',                              metric:'log_today',     goal:1,  xpReward:20},
+  {id:'dc2', name:'The Frugal Meal',      icon:'🥗', desc:'Log a food expense under $15 today.',                                              metric:'cheap_food',    goal:15, xpReward:25},
+  {id:'dc3', name:'The Silent Purse',     icon:'🤐', desc:'Log zero discretionary purchases in shopping today.',                              metric:'no_gear_today', goal:0,  xpReward:30},
+  {id:'dc4', name:'The Small Victory',    icon:'⚔️', desc:'Log any expense and stay under budget in that category. A first lesson in discipline.', metric:'log_under', goal:1,  xpReward:25, onboardingOnly:true},
+  {id:'dc4v',name:'The Veteran Test',  icon:'🏆', desc:'Log an expense and stay under budget in THREE different categories today.',        metric:'log_under_three', goal:3, xpReward:40, veteranOnly:true},
+  {id:'dc5', name:'The Double Entry',     icon:'✌️', desc:'Log at least two separate expenses today.',                                        metric:'two_today',     goal:2,  xpReward:20},
+  {id:'dc6', name:'The Budget Check',     icon:'📊', desc:'Open the app today — awareness is its own reward.',                               metric:'login_bonus',   goal:1,  xpReward:15},
+  {id:'dc7', name:'The Penny Pincher',    icon:'🪙', desc:'Log an expense under $5 today.',                                                   metric:'tiny_purchase', goal:5,  xpReward:20},
+];
+
+// Random encounter pool
+const RANDOM_ENCOUNTERS = [
+  {id:'re1', icon:'🧙', title:'The Wandering Sage',    desc:'A wise sage appears. "Track every coin for 3 days," he whispers, "and your Discipline grows."', reward:'+15 XP + Discipline hint', xp:15},
+  {id:'re2', icon:'💰', title:'Found Gold!',            desc:'You discover a forgotten $20 bill in an old coat. A reminder: small savings accumulate.', reward:'+20 XP', xp:20},
+  {id:'re3', icon:'🏪', title:'The Merchant Temptation', desc:'A merchant displays wares you do not need. You walk past. Your willpower stirs.', reward:'+10 XP Willpower', xp:10},
+  {id:'re4', icon:'⚡', title:'The Impulse Attack!',   desc:'The Impulse Specter ambushes you! Log no shopping purchases today to repel the attack.', reward:'+25 XP if resisted', xp:25},
+  {id:'re5', icon:'🌟', title:'A Clear Day',            desc:'No unusual expenses. No surprises. Just steady, quiet progress. That is how wealth is built.', reward:'+10 XP', xp:10},
+  {id:'re6', icon:'📜', title:'The Ancient Scroll',    desc:'You find a scroll: "He who tracks his spending for 7 days straight shall know his true enemy."', reward:'+15 XP', xp:15},
+  {id:'re7', icon:'🎲', title:'Fortune Gamble',     desc:'The gods of gold offer a challenge: spend nothing today for double the login bonus.', reward:'+30 XP if no spending', xp:30},
+];
+
+// Three themed quest pools — one from each rotates weekly
+const QUEST_POOLS = {
+  habit: [
+    {id:'h1',name:'The Great Logging Crusade',icon:'📜',theme:'Habit',desc:'Log at least 5 expenses this week. Awareness is the first weapon.',goal:5,metric:'expenses_this_week',xpReward:50},
+    {id:'h2',name:'The Streak of Virtue',     icon:'🔥',theme:'Habit',desc:'Log expenses on 3 consecutive days. Consistency defeats chaos.',goal:3,metric:'streak',xpReward:60},
+    {id:'h3',name:'The Watchful Eye',         icon:'👁',theme:'Habit',desc:'Log expenses on 5 out of 7 days this week. The hero who tracks daily never loses the thread.',goal:5,metric:'days_logged_this_week',xpReward:70},
+  ],
+  budget: [
+    {id:'b1',name:'The Frugal Festival',   icon:'🎪',theme:'Budget',desc:'Stay under budget in at least 3 categories by week end. Discipline is its own reward.',goal:3,metric:'categories_under',xpReward:75},
+    {id:'b2',name:'The Iron Discipline',   icon:'🛡',theme:'Budget',desc:'End the week with at least 4 categories still under budget. Restraint is the rarest armor.',goal:4,metric:'categories_under',xpReward:90},
+    {id:'b3',name:'The Savings Sentinel',  icon:'⚖️',theme:'Budget',desc:'End the week having spent less than 50% of your total monthly budget. Stay well ahead of pace.',goal:50,metric:'under_half_budget',xpReward:100},
+  ],
+  restraint: [
+    {id:'r1',name:'The Week of Silence',    icon:'🤫',theme:'Restraint',desc:'Log zero purchases in Arms and Shopping this week. Sometimes the bravest act is to not spend.',goal:0,metric:'no_gear_spend',xpReward:80},
+    {id:'r2',name:'The Feast Fast',         icon:'🚫',theme:'Restraint',desc:'Keep food spending under 75% of your food budget this week. Hunger for discipline, not gold.',goal:75,metric:'food_under_pct',xpReward:85},
+    {id:'r3',name:'The Merchant Embargo',   icon:'🔒',theme:'Restraint',desc:'Make 3 or fewer total purchases this week. Each coin spent must count.',goal:3,metric:'max_transactions',xpReward:90},
+  ],
+};
+
+function getWeeklyQuests(weekNum){
+  return [
+    QUEST_POOLS.habit[weekNum % QUEST_POOLS.habit.length],
+    QUEST_POOLS.budget[weekNum % QUEST_POOLS.budget.length],
+    QUEST_POOLS.restraint[weekNum % QUEST_POOLS.restraint.length],
+  ];
+}
+
+let state = {
+  xp:0, level:1, expenses:[], streak:0, lastLogDate:null,
+  budgets:Object.fromEntries(CATEGORIES.map(c=>[c.id,c.budget])),
+  monstersDefeated:[], questsCompleted:[],
+  username:null, playerId:null,
+  attrs:{discipline:0, wisdom:0, willpower:0},
+  lastLoginDate:null, loginStreakXP:0,
+  dailyChallengeDate:null, dailyChallengeId:null, dailyChallengeComplete:false,
+  lastEncounterDate:null, lastEncounterId:null, dayCompleteDate:null,
+  firstOpenDate:null, veteranCelebrated:false,
+  subscriptions:[], subWizardDone:false, subWizardDate:null, lastSubAddDate:null,
+  hauntedUntil:null, hauntedReason:null, specterEnraged:false, specterEnrageBonus:0, specterEnrageLabel:null,
+};
+
+try { const s=localStorage.getItem('bq3'); if(s) state={...state,...JSON.parse(s)}; } catch(e){}
+if(!state.playerId) state.playerId='p_'+Math.random().toString(36).substr(2,9);
+
+function save(){try{localStorage.setItem('bq3',JSON.stringify(state));}catch(e){}}
+
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(x=>x.classList.remove('active'));
+  document.querySelector(`[onclick="switchTab('${t}')"]`).classList.add('active');
+  document.getElementById('tab-'+t).classList.add('active');
+  if(t==='guild'){renderUsernameSection();loadLeaderboard();}
+}
+
+function getLevelData(xp){for(let i=LEVELS.length-1;i>=0;i--){if(xp>=LEVELS[i].xp)return LEVELS[i];}return LEVELS[0];}
+function getNextLevel(xp){const c=getLevelData(xp);return LEVELS.find(l=>l.level===c.level+1)||null;}
+
+function addXP(amount,reason){
+  // Apply haunted curse — halve XP gains from expense logging (not from quests/challenges/bonuses)
+  if(amount > 0 && isHaunted() && reason && (reason.includes('logged') || reason.includes('budget'))){
+    amount = Math.max(1, Math.floor(amount / 2));
+    reason = reason + ' (Haunted: ½ XP)';
+  }
+  const prev=getLevelData(state.xp).level;
+  state.xp+=amount;
+  const cur=getLevelData(state.xp);
+  state.level=cur.level;
+  save(); updateCharacter();
+  showToast(`+${amount} XP — ${reason}`);
+  if(cur.level>prev) setTimeout(()=>showLevelUp(cur.level),800);
+  publishLeaderboard();
+}
+
+function isHaunted(){
+  if(!state.hauntedUntil) return false;
+  return new Date() < new Date(state.hauntedUntil);
+}
+
+function daysHauntedRemaining(){
+  if(!isHaunted()) return 0;
+  return Math.ceil((new Date(state.hauntedUntil) - new Date()) / 86400000);
+}
+
+function renderHauntedBanner(){
+  const el = document.getElementById('haunted-banner');
+  if(!el) return;
+  if(isHaunted()){
+    const days = daysHauntedRemaining();
+    const reason = state.hauntedReason || 'a subscription was added outside your grace period';
+    el.innerHTML =
+      '<div class="haunted-banner">'+
+        '<div class="haunted-banner-icon">👻</div>'+
+        '<div class="haunted-banner-body">'+
+          '<div class="haunted-banner-title">Haunted Curse<span class="haunted-banner-days">'+days+' day'+(days!==1?'s':'')+' left</span></div>'+
+          '<div class="haunted-banner-detail">Logging XP penalized — '+reason.replace('you added','added')+'.</div>'+
+        '</div>'+
+        '<div class="haunted-banner-xp">'+
+          '<div class="haunted-banner-xp-before">15 XP</div>'+
+          '<div class="haunted-banner-xp-after">7 XP</div>'+
+          '<div class="haunted-banner-xp-label">per log</div>'+
+        '</div>'+
+      '</div>';
+  } else {
+    el.innerHTML = '';
+    if(state.hauntedUntil && !isHaunted()){
+      state.hauntedUntil = null;
+      state.hauntedReason = null;
+      save();
+    }
+  }
+}
+
+function applyHauntedCurse(reason){
+  const until = new Date();
+  until.setDate(until.getDate() + 3);
+  until.setHours(23, 59, 59, 999);
+  state.hauntedUntil = until.toISOString();
+  state.hauntedReason = reason || null;
+  save();
+  renderHauntedBanner();
+}
+
+function shouldPenalizeMidMonthAdd(){
+  const now = new Date();
+  const hasExistingSubs = state.subscriptions && state.subscriptions.length > 0;
+
+  // Determine the "establishment date" — earliest of wizard date or first sub add date
+  const establishedDate = state.lastSubAddDate
+    ? new Date(state.lastSubAddDate)
+    : (state.subWizardDate ? new Date(state.subWizardDate) : null);
+
+  // No establishment yet — this is literally the first-ever add, no penalty
+  if(!establishedDate) return false;
+
+  // Within 7-day grace window from establishment — still discovering forgotten subs
+  const daysSinceEstablished = (now - establishedDate) / 86400000;
+  if(daysSinceEstablished < 7) return false;
+
+  // Beyond 7 days — any new addition is a genuine mid-month add, penalize
+  return true;
+}
+
+function updateCharacter(){
+  const cur=getLevelData(state.xp);
+  const next=getNextLevel(state.xp);
+  const pct=next?((state.xp-cur.xp)/(next.xp-cur.xp))*100:100;
+  document.getElementById('level-display').textContent=cur.level;
+  document.getElementById('char-class').textContent=`${cur.title} · Rank ${cur.rank}`;
+  document.getElementById('char-avatar').textContent=cur.avatar;
+  document.getElementById('xp-bar').style.width=`${Math.min(pct,100)}%`;
+  document.getElementById('xp-label-text').textContent=next?`✦ ${state.xp} / ${next.xp} XP`:`✦ ${state.xp} XP (MAX)`;
+  document.getElementById('xp-pct-text').textContent=`${Math.round(pct)}%`;
+  document.getElementById('stat-streak').textContent=state.streak;
+  document.getElementById('stat-monsters').textContent=state.monstersDefeated.length;
+  document.getElementById('stat-quests').textContent=state.questsCompleted.length;
+  renderAttrs();
+  renderHauntedBanner();
+}
+
+function getMonthlySpent(){
+  const now=new Date(),m=now.getMonth(),y=now.getFullYear();
+  const t={};CATEGORIES.forEach(c=>t[c.id]=0);
+  state.expenses.forEach(e=>{const d=new Date(e.date);if(d.getMonth()===m&&d.getFullYear()===y)t[e.catId]=(t[e.catId]||0)+e.amount;});
+  return t;
+}
+
+function getWeeklyExpenses(){const wa=new Date(Date.now()-7*86400000);return state.expenses.filter(e=>new Date(e.date)>=wa);}
+
+function updateStreak(dateStr, hadExpenses){
+  if(state.lastLogDate===dateStr) return;
+  if(!hadExpenses){
+    state.streak=0;
+  } else {
+    const prevDay=new Date(new Date(dateStr).getTime()-86400000).toDateString();
+    state.streak=(state.lastLogDate===prevDay)?state.streak+1:1;
+    if(state.streak%3===0) setTimeout(function(){addXP(25,state.streak+'-day streak bonus!');},400);
+  }
+  state.lastLogDate=dateStr;
+}
+
+function buildSelect(){
+  const s=document.getElementById('cat-select');s.innerHTML='';
+  CATEGORIES.forEach(c=>{const o=document.createElement('option');o.value=c.id;o.textContent=`${c.icon} ${c.name}`;s.appendChild(o);});
+}
+
+function logExpense(){
+  const desc=document.getElementById('desc-input').value.trim();
+  const amount=parseFloat(document.getElementById('amount-input').value);
+  const catId=document.getElementById('cat-select').value;
+  if(!desc){showToast('Name thy expenditure!');return;}
+  if(!amount||amount<=0){showToast('Enter a valid amount!');return;}
+  const spent=getMonthlySpent();
+  const newSpent=(spent[catId]||0)+amount;
+  const budget=state.budgets[catId];
+  state.expenses.unshift({id:Date.now(),desc,amount,catId,date:new Date(Date.now()+devDateOffsetDays*86400000).toISOString()});
+  const xpEarned=newSpent<=budget?15:5;
+  const xpReason=newSpent<=budget?'logged + under budget':'logged (over budget)';
+  save();renderCategories();renderLog();
+  addXP(xpEarned,xpReason);
+  checkMonsters();checkQuests();renderDailyChallenge();renderDailyEncounter();updateCompleteDayButton();
+  document.getElementById('desc-input').value='';
+  document.getElementById('amount-input').value='';
+}
+
+function renderCategories(){
+  const spent=getMonthlySpent();
+  const grid=document.getElementById('cat-grid');grid.innerHTML='';
+  CATEGORIES.forEach(cat=>{
+    const s=spent[cat.id]||0,b=state.budgets[cat.id];
+    const pct=Math.min((s/b)*100,100);
+    const rem=b-s;
+    const st=pct<75?'good':pct<100?'warn':'bad';
+    const card=document.createElement('div');
+    card.className=`cat-card ${pct>=100?'over-budget':pct>=75?'':'under-budget'}`;
+    card.innerHTML=`
+      <button class="edit-budget-btn" onclick="editBudget('${cat.id}','${cat.name}')">✎</button>
+      <div class="cat-top">
+        <div class="cat-name">${cat.icon} ${cat.name}</div>
+        <div class="cat-amounts"><div class="cat-spent">$${s.toFixed(0)}</div><div class="cat-budget">of $${b}</div></div>
+      </div>
+      <div class="cat-bar-track"><div class="cat-bar-fill ${st}" style="width:${pct}%"></div></div>
+      <div class="cat-remaining ${st}">${rem>=0?`$${rem.toFixed(0)} remaining`:`$${Math.abs(rem).toFixed(0)} over!`}</div>`;
+    grid.appendChild(card);
+  });
+}
+
+function editBudget(id,name){
+  const v=prompt(`Budget for "${name}":`,state.budgets[id]);if(v===null)return;
+  const n=parseFloat(v);if(isNaN(n)||n<=0){alert('Invalid amount');return;}
+  state.budgets[id]=n;save();renderCategories();checkMonsters();
+}
+
+function renderLog(){
+  const l=document.getElementById('log-list');
+  if(!state.expenses.length){l.innerHTML='<div class="log-empty">No expenses yet. Begin your quest!</div>';return;}
+  l.innerHTML='';
+  state.expenses.slice(0,20).forEach(e=>{
+    const cat=CATEGORIES.find(c=>c.id===e.catId);
+    const item=document.createElement('div');item.className='log-item';
+    item.innerHTML=`<div class="log-icon">${cat?cat.icon:'📦'}</div><div><div class="log-desc">${e.desc}</div><div class="log-cat">${cat?cat.name:e.catId}</div></div><div class="log-amount">$${e.amount.toFixed(2)}</div><div class="log-xp">+XP</div>`;
+    l.appendChild(item);
+  });
+}
+
+function getMonsterHP(catId,spent,budgets){
+  const s=spent[catId]||0,b=budgets[catId];
+  const pct=s/b;
+  if(pct<0.8)return 0;
+  return Math.min(Math.round(((pct-0.8)/0.4)*100),100);
+}
+
+// ── DAILY ENGINE ──
+
+let devDateOffsetDays = 0;
+function getTodayStr(){
+  return new Date(Date.now() + devDateOffsetDays * 86400000).toDateString();
+}
+function getNowWithOffset(){
+  return new Date(Date.now() + devDateOffsetDays * 86400000);
+}
+
+function getDayOfYear(){
+  const now=new Date();
+  const start=new Date(now.getFullYear(),0,0);
+  return Math.floor((now-start)/86400000);
+}
+
+function getDaysPlaying(){
+  if(!state.firstOpenDate) return 0;
+  const first=new Date(state.firstOpenDate);
+  const now=new Date();
+  return Math.floor((now-first)/86400000);
+}
+
+function isVeteran(){ return getDaysPlaying()>=7; }
+
+function getDailyChallenge(){
+  const day=getDayOfYear();
+  const veteran=isVeteran();
+  // Build rotation excluding onboarding-only (for veterans) and veteran-only (for beginners)
+  const pool=DAILY_CHALLENGES.filter(function(c){
+    if(veteran && c.onboardingOnly) return false;
+    if(!veteran && c.veteranOnly) return false;
+    return true;
+  });
+  return pool[day % pool.length];
+}
+
+function checkVeteranMilestone(){
+  if(state.veteranCelebrated) return;
+  if(!isVeteran()) return;
+  state.veteranCelebrated=true;
+  save();
+  setTimeout(function(){
+    document.getElementById('veteran-overlay').classList.add('show');
+  }, 1500);
+}
+
+function closeVeteran(){
+  document.getElementById('veteran-overlay').classList.remove('show');
+  showToast('⚔ Veteran Adventurer — the real quest begins.');
+  addXP(50,'Veteran milestone unlocked');
+}
+
+function getDailyEncounter(){
+  const day=getDayOfYear();
+  return RANDOM_ENCOUNTERS[day % RANDOM_ENCOUNTERS.length];
+}
+
+function getAmbientMonster(){
+  const month=new Date().getMonth();
+  return AMBIENT_MONSTERS[month % AMBIENT_MONSTERS.length];
+}
+
+function getDailyTaunt(taunts){
+  if(!taunts||!taunts.length) return '';
+  return taunts[getDayOfYear() % taunts.length];
+}
+
+function checkLoginBonus(){
+  const today=getTodayStr();
+  // Set first open date if not set
+  if(!state.firstOpenDate){ state.firstOpenDate=new Date().toISOString(); save(); }
+  // Reset cancelled count each new month
+  const thisMonth=new Date().getMonth();
+  if(state.lastResetMonth!==thisMonth){
+    state.lastResetMonth=thisMonth;
+    // Reset cancelled flags on all subs for the new month
+    if(state.subscriptions) state.subscriptions.forEach(function(s){s.cancelled=false;});
+    state.specterEnraged=false; state.specterEnrageBonus=0; state.specterEnrageLabel=null; state.hauntedUntil=null; state.hauntedReason=null;
+    // Remove last month's specter defeat so it can re-appear
+    const lastMk=(thisMonth+11)%12;
+    state.monstersDefeated=state.monstersDefeated.filter(function(id){return id!=='sub_specter_'+lastMk;});
+    save();
+  }
+  if(state.lastLoginDate===today) return;
+  state.lastLoginDate=today;
+  // Increment login day count
+  state.loginDay=(state.loginDay||0)+1;
+  const bonusXP=10+Math.min(state.streak*2,30); // 10 base + 2 per streak day, max 40
+  state.loginStreakXP=bonusXP;
+  save();
+  // Show banner
+  const banner=document.getElementById('login-banner');
+  if(banner){
+    const dayLabel=state.loginDay===1?'First login! Your quest begins.':'Day '+state.loginDay+'. Streak: '+state.streak+' days.';
+    banner.innerHTML=
+      '<div class="login-banner">'+
+        '<div class="login-banner-icon">☀️</div>'+
+        '<div class="login-banner-text"><strong>Daily Login!</strong> '+dayLabel+'</div>'+
+        '<div class="login-banner-xp">+'+bonusXP+' XP</div>'+
+      '</div>';
+    setTimeout(function(){addXP(bonusXP,'Daily login bonus');},500);
+    setTimeout(function(){banner.innerHTML='';},4000);
+  }
+}
+
+function checkDailyChallenge(){
+  const today=getTodayStr();
+  const ch=getDailyChallenge();
+  // Reset challenge if new day
+  if(state.dailyChallengeDate!==today){
+    state.dailyChallengeDate=today;
+    state.dailyChallengeId=ch.id;
+    state.dailyChallengeComplete=false;
+    state.dayCompleteDate=null; // reset so today's seal is fresh
+    save();
+  }
+  renderDailyChallenge();
+}
+
+function isDailyChallengeComplete(){
+  const today=getTodayStr();
+  const ch=getDailyChallenge();
+  const todayExp=state.expenses.filter(function(e){return new Date(e.date).toDateString()===today;});
+  switch(ch.metric){
+    case 'log_today':       return todayExp.length>=1;
+    case 'cheap_food':      return todayExp.some(function(e){return e.catId==='food'&&e.amount<ch.goal;});
+    case 'no_gear_today':   return todayExp.length>0&&todayExp.every(function(e){return e.catId!=='gear';});
+    case 'log_under': {
+      const spent=getMonthlySpent();
+      return todayExp.some(function(e){return (spent[e.catId]||0)<=state.budgets[e.catId];});
+    }
+    case 'log_under_three': {
+      const spent2=getMonthlySpent();
+      const underCats=new Set(todayExp.filter(function(e){return (spent2[e.catId]||0)<=state.budgets[e.catId];}).map(function(e){return e.catId;}));
+      return underCats.size>=3;
+    }
+    case 'two_today':       return todayExp.length>=2;
+    case 'login_bonus':     return true; // completed just by opening
+    case 'tiny_purchase':   return todayExp.some(function(e){return e.amount<ch.goal;});
+    default:                return false;
+  }
+}
+
+function renderDailyChallenge(){
+  const card=document.getElementById('daily-challenge-card');
+  if(!card)return;
+  const ch=getDailyChallenge();
+  const today=getTodayStr();
+  const daySealed=state.dayCompleteDate===today;
+  const conditionMet=state.dailyChallengeComplete||isDailyChallengeComplete();
+  const claimed=daySealed&&conditionMet;
+  if(conditionMet&&!state.dailyChallengeComplete){state.dailyChallengeComplete=true;save();}
+  card.className='daily-card challenge'+(claimed?' completed':conditionMet?' ready':'');
+  card.innerHTML=
+    '<div class="daily-label">⚡ Daily Challenge</div>'+
+    '<div class="daily-title">'+ch.icon+' '+ch.name+'</div>'+
+    '<div class="daily-desc">'+ch.desc+'</div>'+
+    '<div class="daily-reward '+(claimed?'complete':conditionMet?'ready':'')+'">'+ 
+      (claimed?'✓ Claimed':'Reward: +'+ch.xpReward+' XP'+(conditionMet?' — seal day to collect':''))+
+    '</div>';
+}
+
+function getEncounterOutcome(enc){
+  const today=getTodayStr();
+  const todayExp=state.expenses.filter(function(e){return new Date(e.date).toDateString()===today;});
+  if(enc.id==='re4'){
+    const had=todayExp.some(function(e){return e.catId==='gear';});
+    return {passed:!had,statusText:had?'⚠ Shopping detected — attack succeeds':'✓ No shopping logged — attack resisted'};
+  }
+  if(enc.id==='re7'){
+    return {passed:todayExp.length===0,statusText:todayExp.length>0?'⚠ Spending detected — gamble lost':'✓ No spending today — gamble won'};
+  }
+  return null;
+}
+
+function renderDailyEncounter(){
+  const card=document.getElementById('daily-encounter-card');
+  if(!card)return;
+  const enc=getDailyEncounter();
+  const today=getTodayStr();
+  const claimed=state.lastEncounterDate===today;
+  const outcome=getEncounterOutcome(enc);
+  card.className='daily-card encounter'+(claimed?' completed':'');
+  let statusHtml;
+  if(claimed){
+    statusHtml='<div class="daily-reward complete">✓ Reward claimed</div>';
+  } else if(outcome){
+    const color=outcome.passed?'var(--green)':'var(--red)';
+    statusHtml='<div style="font-size:11px;color:'+color+';margin-top:6px;font-family:Cinzel,serif;letter-spacing:0.04em;">'+outcome.statusText+'</div>'+
+      '<div class="daily-reward" style="margin-top:4px;">'+(outcome.passed?enc.reward:'Try again tomorrow')+' — seal day to claim</div>';
+  } else {
+    statusHtml='<div class="daily-reward">'+enc.reward+' — seal day to claim</div>';
+  }
+  card.innerHTML=
+    '<div class="daily-label">🎲 Random Encounter</div>'+
+    '<div class="daily-title">'+enc.icon+' '+enc.title+'</div>'+
+    '<div class="daily-desc">'+enc.desc+'</div>'+
+    statusHtml;
+}
+
+function claimEncounter(){
+  const today=getTodayStr();
+  if(state.lastEncounterDate===today) return 0;
+  const enc=getDailyEncounter();
+  const outcome=getEncounterOutcome(enc);
+  const xp=(!outcome||outcome.passed)?enc.xp:0;
+  state.lastEncounterDate=today;save();
+  return xp;
+}
+
+function updateCompleteDayButton(){
+  const wrap=document.getElementById('complete-day-wrap');
+  if(!wrap) return;
+  const today=getTodayStr();
+  const hasExp=state.expenses.some(function(e){return new Date(e.date).toDateString()===today;});
+  // Show whenever there are expenses today — sealing is idempotent (rewards already guarded)
+  wrap.style.display=hasExp?'block':'none';
+}
+
+function openCompleteDayModal(){
+  const today=getTodayStr();
+  // dayCompleteDate is null when fresh day (reset by checkDailyChallenge)
+  const enc=getDailyEncounter();
+  const ch=getDailyChallenge();
+  const outcome=getEncounterOutcome(enc);
+  const encXp=(!outcome||outcome.passed)?enc.xp:0;
+  const chComplete=state.dailyChallengeComplete||isDailyChallengeComplete();
+  const chXp=chComplete?ch.xpReward:0;
+  const todayExp=state.expenses.filter(function(e){return new Date(e.date).toDateString()===today;});
+  const totalSpent=todayExp.reduce(function(a,e){return a+e.amount;},0);
+  document.getElementById('complete-day-summary').innerHTML=
+    'You logged <strong style="color:var(--text);">'+todayExp.length+' expense'+(todayExp.length!==1?'s':'')+
+    '</strong> today, totalling <strong style="color:var(--gold);">$'+totalSpent.toFixed(2)+'</strong>. The ledger is ready to be sealed.';
+  const rows=[];
+  if(encXp>0) rows.push([enc.icon+' '+enc.title,'+'+encXp+' XP','var(--xp-color)']);
+  else if(outcome&&!outcome.passed) rows.push([enc.icon+' '+enc.title,'Resisted — 0 XP','var(--text-dark)']);
+  if(chXp>0) rows.push([ch.icon+' '+ch.name,'+'+chXp+' XP','var(--xp-color)']);
+  const totalXp=encXp+chXp;
+  document.getElementById('complete-day-xp-list').innerHTML=
+    rows.map(function(r){
+      return '<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.05);">'
+        +'<span style="font-size:13px;color:var(--text-dim);">'+r[0]+'</span>'
+        +'<span style="font-family:Cinzel,serif;font-size:12px;color:'+r[2]+';">'+r[1]+'</span></div>';
+    }).join('')+
+    (totalXp>0
+      ?'<div style="display:flex;justify-content:space-between;padding:7px 0 2px;"><span style="font-size:11px;color:var(--text-dark);text-transform:uppercase;letter-spacing:0.08em;">Total</span><span style="font-family:Cinzel,serif;font-size:13px;color:var(--gold);">+'+totalXp+' XP</span></div>'
+      :'<div style="font-size:12px;color:var(--text-dark);text-align:center;padding:6px 0;">No rewards to claim today.</div>');
+  document.getElementById('complete-day-subtitle').textContent=
+    totalXp>0?'Seal the day to collect '+totalXp+' XP.':'A day of quiet progress. Seal it and rest.';
+  document.getElementById('complete-day-overlay').classList.add('show');
+}
+
+function confirmCompleteDay(){
+  const today=getTodayStr();
+  if(state.dayCompleteDate===today) return; // null when fresh (reset by checkDailyChallenge)
+  state.dayCompleteDate=today;
+  const enc=getDailyEncounter();
+  const ch=getDailyChallenge();
+  const encXp=claimEncounter();
+  if(encXp>0) setTimeout(function(){addXP(encXp,'Random Encounter: '+enc.title);},300);
+  const chComplete=state.dailyChallengeComplete||isDailyChallengeComplete();
+  if(chComplete){state.dailyChallengeComplete=true;setTimeout(function(){addXP(ch.xpReward,'Daily Challenge: '+ch.name);},600);}
+  const todayStr=today;
+  const hadExp=state.expenses.some(function(e){return new Date(e.date).toDateString()===todayStr;});
+  updateStreak(todayStr, hadExp);
+  save();
+  document.getElementById('complete-day-overlay').classList.remove('show');
+  updateCompleteDayButton();renderDailyChallenge();renderDailyEncounter();updateCharacter();
+  const totalXp=encXp+(chComplete?ch.xpReward:0);
+  const streakMsg=state.streak>1?' — '+String.fromCodePoint(0x1F525)+' '+state.streak+' day streak!':'';
+  if(totalXp>0) setTimeout(function(){showToast(String.fromCodePoint(0x1F319)+' Day sealed! +'+totalXp+' XP earned'+streakMsg);},200);
+  else setTimeout(function(){showToast(String.fromCodePoint(0x1F319)+' Day sealed. Rest well, adventurer.'+streakMsg);},200);
+}
+
+function autoCompleteYesterday(){
+  // Only expires yesterday's encounter — streak is evaluated only on confirmCompleteDay
+  const yesterday=new Date(Date.now()+devDateOffsetDays*86400000-86400000).toDateString();
+  const today=getTodayStr();
+  if(state.lastLoginDate&&state.lastLoginDate!==today){
+    if(!state.lastEncounterDate||state.lastEncounterDate!==yesterday) state.lastEncounterDate=yesterday;
+    save();
+  }
+}
+
+function runDailyEngine(){
+  autoCompleteYesterday();
+  checkLoginBonus();
+  checkDailyChallenge();
+  renderDailyEncounter();
+  updateCompleteDayButton();
+  checkVeteranMilestone();
+  checkSubWizard();
+}
+
+
+
+function checkMonsters(){
+  const spent=getMonthlySpent();
+  const mk=new Date().getMonth();
+  // Check if all under budget for boss
+  const bossId='boss_'+mk;
+  if(!state.monstersDefeated.includes(bossId)){
+    const allUnder=CATEGORIES.every(c=>(spent[c.id]||0)<=state.budgets[c.id]);
+    if(allUnder&&state.expenses.length>=5){
+      state.monstersDefeated.push(bossId);save();
+      setTimeout(()=>addXP(150,'Budget Dragon defeated!'),600);
+      setTimeout(()=>showToast('🐉 BOSS DEFEATED! +150 XP'),200);
+    }
+  }
+  // Personal monsters: defeated if HP drops to 0 (came under budget)
+  CATEGORIES.forEach(cat=>{
+    const mid=cat.id+'_'+mk;
+    if(!state.monstersDefeated.includes(mid)){
+      const s=spent[cat.id]||0,b=state.budgets[cat.id];
+      if(s<=b*0.75&&state.expenses.filter(e=>e.catId===cat.id).length>=2){
+        // Was over, now clearly under — defeat
+        // Only fire if we've logged enough to prove it
+      }
+    }
+  });
+  renderMonsters();
+}
+
+function makeMonsterCard(opts){
+  // opts: {icon, name, type, desc, taunt, hp, defeated, bossStyle, ambientStyle, reward, defeatText, activeText}
+  const cls='monster-card '+(opts.defeated?'defeated':opts.bossStyle?'boss':opts.ambientStyle?'boss':'active');
+  const hpFillCls=opts.defeated?'defeated-hp':opts.bossStyle?'boss-hp':opts.ambientStyle?'boss-hp':'active-hp';
+  const tauntColor=opts.ambientStyle?'ambient':'';
+  const card=document.createElement('div');
+  card.className=cls;
+  card.innerHTML=
+    '<div class="monster-top">'+
+      '<div class="monster-icon">'+opts.icon+'</div>'+
+      '<div>'+
+        '<div class="monster-name'+(opts.bossStyle?' boss-name':'')+'">'+opts.name+'</div>'+
+        '<div class="monster-type">'+opts.type+'</div>'+
+        '<div class="monster-desc">'+opts.desc+'</div>'+
+        (opts.taunt&&!opts.defeated?'<div class="monster-taunt '+tauntColor+'">"'+opts.taunt+'"</div>':'')+
+      '</div>'+
+    '</div>'+
+    '<div class="hp-label"><span>'+(opts.defeated?'☠ Defeated':'❤ HP')+'</span><span>'+opts.hp+'%</span></div>'+
+    '<div class="hp-bar-track"><div class="hp-bar-fill '+hpFillCls+'" style="width:'+opts.hp+'%"></div></div>'+
+    '<div class="monster-footer">'+
+      '<div class="monster-status '+(opts.defeated?'defeated-text':opts.bossStyle?'boss-text':'active-text')+'">'+
+        (opts.defeated?'✓ '+(opts.defeatText||'Vanquished'):opts.activeText||'Spend less to weaken')+
+      '</div>'+
+      '<div class="monster-reward">'+opts.reward+'</div>'+
+    '</div>';
+  return card;
+}
+
+function renderMonsters(){
+  const spent=getMonthlySpent();
+  const mk=new Date().getMonth();
+  const grid=document.getElementById('monsters-grid');grid.innerHTML='';
+
+  // ── SLOT 1: BOSS ──
+  const bossId='boss_'+mk;
+  const bossDefeated=state.monstersDefeated.includes(bossId);
+  const totalPct=CATEGORIES.reduce(function(sum,c){return sum+Math.min((spent[c.id]||0)/state.budgets[c.id],1.5);},0)/CATEGORIES.length;
+  const bossHp=bossDefeated?0:Math.max(0,Math.min(Math.round(totalPct*80),100)-getBossDragonHPMod());
+  const bossTaunts=['Your budget bleeds. I grow stronger.','All categories must fall before I do.','One overspent category feeds me for a week.','Your Wisdom score wounds me. But not enough.'];
+  grid.appendChild(makeMonsterCard({
+    icon:'🐉', name:'The Budget Dragon', type:'⚠ Monthly Boss',
+    desc:'Defeated only by staying under ALL budgets for the month with 5+ expenses logged.',
+    taunt:getDailyTaunt(bossTaunts), hp:bossHp, defeated:bossDefeated, bossStyle:true,
+    reward:'150 XP', defeatText:'Slain this month', activeText:'Keep all budgets green'
+  }));
+
+  // ── SLOT 2: PERSONAL CURSE (worst offending category, or default) ──
+  let worstCat=null, worstPct=0;
+  CATEGORIES.forEach(function(cat){
+    const pct=(spent[cat.id]||0)/state.budgets[cat.id];
+    if(pct>worstPct){worstPct=pct;worstCat=cat;}
+  });
+  if(worstCat&&worstPct>=0.5){
+    const mid=worstCat.id+'_'+mk;
+    const defeated=state.monstersDefeated.includes(mid);
+    const rawHp=getMonsterHP(worstCat.id,spent,state.budgets);
+    const hp=defeated?0:Math.max(0,rawHp-getAttrMonsterMod(worstCat.id));
+    const t=MONSTER_TEMPLATES[worstCat.id];
+    grid.appendChild(makeMonsterCard({
+      icon:t.icon, name:t.name, type:t.type+' · '+worstCat.name,
+      desc:t.desc, taunt:getDailyTaunt(t.taunts),
+      hp:worstPct>=0.8?hp:Math.round(worstPct*40), // show threat level even if not at 80%
+      defeated:defeated, reward:'30 XP',
+      activeText:worstPct>=0.8?'Spend less to weaken':'Growing stronger...'
+    }));
+  } else {
+    // Placeholder if perfectly healthy
+    grid.appendChild(makeMonsterCard({
+      icon:'👤', name:'The Shadow Budget', type:'Personal Curse · Dormant',
+      desc:'No category is under serious threat. Stay vigilant — complacency is its own enemy.',
+      taunt:'Enjoy the calm. It will not last.', hp:0, defeated:false, reward:'—',
+      activeText:'All budgets healthy'
+    }));
+  }
+
+  // ── SLOT 3: SUBSCRIPTION SPECTER ──
+  const specId='sub_specter_'+mk;
+  const specDefeated=state.monstersDefeated.includes(specId);
+  if(!state.subWizardDone){
+    // Wizard not done yet — show dormant placeholder
+    grid.appendChild(makeMonsterCard({
+      icon:'👻', name:'The Subscription Specter', type:'Ambient Threat · Dormant',
+      desc:'This shadow has not yet been measured. Complete the Oracle\u2019s questionnaire to reveal its true power.',
+      taunt:'I am already draining you. You simply do not know my name yet.',
+      hp:0, defeated:false, ambientStyle:true,
+      reward:'Up to 75 XP', activeText:'Complete onboarding to reveal'
+    }));
+  } else if((!state.subscriptions || state.subscriptions.length===0) && !specDefeated){
+    // No subs — specter sleeps
+    const noSubCard=makeMonsterCard({
+      icon:'👻', name:'The Subscription Specter', type:'Ambient Threat · Dormant',
+      desc:'You carry no discretionary subscriptions. The Specter finds no purchase here.',
+      taunt:null, hp:0, defeated:true, ambientStyle:true,
+      reward:'—', defeatText:'No subscriptions to haunt you'
+    });
+    const addBtnDormant=document.createElement('button');
+    addBtnDormant.className='daily-action-btn';
+    addBtnDormant.style.cssText='margin-top:10px;width:100%;border-color:var(--red-dim);color:var(--text-dim);background:rgba(192,57,43,0.07);';
+    addBtnDormant.textContent='+ Add a Subscription';
+    addBtnDormant.onclick=openAddSubModal;
+    noSubCard.appendChild(addBtnDormant);
+    grid.appendChild(noSubCard);
+  } else {
+    const specHp=specDefeated?0:getSubSpecterHP();
+    const activeSubs=(state.subscriptions||[]).filter(function(s){return !s.cancelled;});
+    const totalAmt=(state.subscriptions||[]).reduce(function(a,s){return a+s.amount;},0);
+    const remainingAmt=activeSubs.reduce(function(a,s){return a+s.amount;},0);
+    const specTaunts=['You forgot about me. You are still paying for me.','$9.99 a month. Every month. Forever.','I auto-renew. Always.','One click to cancel. You never click it.'];
+    const enraged = state.specterEnraged && specHp > 100;
+
+
+    // desc: two sentences matching other card pattern — static desc + dynamic drain line
+    const specDesc = 'Recurring charges that silently auto-renew each month. '
+      + (remainingAmt > 0 && !specDefeated
+          ? 'You’re currently paying <strong style="color:var(--text);">$'+remainingAmt.toFixed(2)+'/mo</strong> across '+activeSubs.length+' active subscription'+(activeSubs.length!==1?'s':'')+'.'
+          : 'Cancel all subscriptions to banish this threat.');
+
+    // Reward field: show XP for cancelling the most expensive remaining sub
+    const totalAmtForReward = state.subscriptions.reduce(function(a,s){return a+s.amount;},0);
+    const mostExpensive = activeSubs.slice().sort(function(a,b){return b.amount-a.amount;})[0];
+    const bestCancelXp = mostExpensive && totalAmtForReward > 0
+      ? Math.max(5, Math.round((mostExpensive.amount / totalAmtForReward) * 75))
+      : 0;
+    const rewardText = specDefeated
+      ? 'Banished this month'
+      : (mostExpensive ? 'Cancel '+mostExpensive.name+' → +'+bestCancelXp+' XP' : '—');
+
+    const card=makeMonsterCard({
+      icon:'👻', name:'The Subscription Specter', type:'Ambient Threat · Monthly',
+      desc:specDesc,
+      taunt:getDailyTaunt(specTaunts),
+      hp:Math.min(specHp,100), defeated:specDefeated, ambientStyle:true,
+      reward:rewardText,
+      defeatText:'All subscriptions cancelled this month',
+      activeText:'Cancel subscriptions to reduce HP and earn XP'
+    });
+
+    // Inject enraged pill inline in the name row when enraged
+    if(enraged){
+      const nameEl = card.querySelector('.monster-name');
+      if(nameEl){
+        nameEl.style.cssText += 'display:flex;align-items:center;gap:8px;flex-wrap:wrap;';
+        const pill = document.createElement('span');
+        pill.style.cssText = 'font-family:Cinzel,serif;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--purple);background:rgba(142,68,173,0.2);border:1px solid var(--purple-dim);padding:2px 8px;border-radius:10px;white-space:nowrap;animation:specterPulse 2s ease-in-out infinite;';
+        pill.textContent = '⚡ Enraged';
+        nameEl.appendChild(pill);
+      }
+    }
+
+    // Sub list injected after the taunt, consistent with card layout
+    if(!specDefeated && activeSubs.length > 0){
+      const tauntEl = card.querySelector('.monster-taunt');
+      const insertAfter = tauntEl || card.querySelector('.monster-desc');
+      if(insertAfter){
+        const subTable = document.createElement('div');
+        subTable.style.cssText = 'margin-top:8px;';
+        subTable.innerHTML = activeSubs.map(function(s){
+          return '<div style="display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04);">'
+            +'<span style="color:var(--text-dim);font-size:12px;">'+s.name+'</span>'
+            +'<span style="color:var(--text-dark);font-family:Cinzel,serif;font-size:11px;">$'+s.amount.toFixed(2)+'/mo</span>'
+            +'</div>';
+        }).join('');
+        insertAfter.after(subTable);
+      }
+    }
+
+    // Restructure HP label: left side "❤ HP", right side stacks % and buff tightly
+    if(enraged){
+      const bar = card.querySelector('.hp-bar-fill');
+      if(bar){ bar.className = 'hp-bar-fill enraged-hp'; }
+      const hpBuff = Math.round(specHp - 100);
+      const hpLabel = card.querySelector('.hp-label');
+      if(hpLabel){
+        // Replace right span with a tight right-aligned stack
+        const rightSpan = hpLabel.querySelector('span:last-child');
+        if(rightSpan){
+          rightSpan.style.cssText = 'display:flex;flex-direction:column;align-items:flex-end;gap:1px;';
+          rightSpan.innerHTML =
+            '<span style="font-family:Cinzel,serif;font-size:13px;color:var(--text);">'+Math.min(specHp,100)+'%</span>'+
+            '<span style="font-family:Cinzel,serif;font-size:10px;color:var(--purple);background:rgba(142,68,173,0.18);border:1px solid var(--purple-dim);padding:0 6px;border-radius:10px;white-space:nowrap;">+'+hpBuff+'% buff</span>';
+        }
+      }
+      // Single minimal note below bar
+      const note = document.createElement('div');
+      note.style.cssText = 'font-size:11px;color:var(--text-dark);font-style:italic;margin-top:5px;padding:4px 8px;border-left:2px solid var(--purple-dim);';
+      note.textContent = 'A mid-month subscription addition buffed the Specter by +'+hpBuff+'% HP.';
+      card.querySelector('.hp-bar-track').after(note);
+    }
+    if(!specDefeated && activeSubs.length>0){
+      const btnRow=document.createElement('div');
+      btnRow.style.cssText='margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:7px;';
+      const cancelBtn=document.createElement('button');
+      cancelBtn.className='daily-action-btn';
+      cancelBtn.style.cssText='border-color:var(--purple);color:var(--purple);background:rgba(142,68,173,0.1);';
+      cancelBtn.textContent='✂ Cancel One';
+      cancelBtn.onclick=openCancelModal;
+      const addBtn=document.createElement('button');
+      addBtn.className='daily-action-btn';
+      addBtn.style.cssText='border-color:var(--red-dim);color:var(--text-dim);background:rgba(192,57,43,0.07);';
+      addBtn.textContent='+ Add Sub';
+      addBtn.onclick=openAddSubModal;
+      btnRow.appendChild(cancelBtn);
+      btnRow.appendChild(addBtn);
+      card.appendChild(btnRow);
+    } else if(specDefeated){
+      const addBtn=document.createElement('button');
+      addBtn.className='daily-action-btn';
+      addBtn.style.cssText='margin-top:10px;width:100%;border-color:var(--red-dim);color:var(--text-dim);background:rgba(192,57,43,0.07);';
+      addBtn.textContent='+ Add New Subscription';
+      addBtn.onclick=openAddSubModal;
+      card.appendChild(addBtn);
+    }
+    grid.appendChild(card);
+  }
+}
+
+function getWeekNumber(){
+  const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()+3-(d.getDay()+6)%7);
+  const w1=new Date(d.getFullYear(),0,4);
+  return 1+Math.round(((d-w1)/86400000-3+(w1.getDay()+6)%7)/7);
+}
+
+function getQuestProgress(q){
+  const we=getWeeklyExpenses(),spent=getMonthlySpent();
+  const totalBudget=Object.values(state.budgets).reduce((a,b)=>a+b,0);
+  const totalSpent=Object.values(spent).reduce((a,b)=>a+b,0);
+  const spentPct=totalBudget>0?(totalSpent/totalBudget)*100:0;
+  const daysLoggedThisWeek=new Set(we.map(e=>new Date(e.date).toDateString())).size;
+  const gearSpendThisWeek=we.filter(e=>e.catId==='gear').reduce((a,e)=>a+e.amount,0);
+  const foodSpent=spent['food']||0, foodBudget=state.budgets['food']||400;
+  const foodPct=foodBudget>0?(foodSpent/foodBudget)*100:0;
+  switch(q.metric){
+    case 'expenses_this_week':       return Math.min(we.length,q.goal);
+    case 'categories_under':         return Math.min(CATEGORIES.filter(c=>(spent[c.id]||0)<=state.budgets[c.id]).length,q.goal);
+    case 'streak':                   return Math.min(state.streak,q.goal);
+    case 'days_logged_this_week':    return Math.min(daysLoggedThisWeek,q.goal);
+    case 'no_gear_spend':            return gearSpendThisWeek;
+    case 'under_half_budget':        return Math.round(spentPct);
+    case 'food_under_pct':           return Math.round(foodPct);
+    case 'max_transactions':         return we.length;
+    default:return 0;
+  }
+}
+function isQuestComplete(q){
+  const prog=getQuestProgress(q);
+  const we=getWeeklyExpenses();
+  if(q.metric==='no_gear_spend')    return we.length>=3&&prog===0;
+  if(q.metric==='under_half_budget')return prog<50&&we.length>=5;
+  if(q.metric==='food_under_pct')   return prog<75&&we.length>=3;
+  if(q.metric==='max_transactions') return we.length>=q.goal&&prog<=q.goal;
+  return prog>=q.goal;
+}
+function questDisplayProgress(q){
+  const prog=getQuestProgress(q);
+  const we=getWeeklyExpenses();
+  if(q.metric==='no_gear_spend')    return {cur:prog===0&&we.length>0?1:0,total:1,label:prog===0&&we.length>0?'No shopping this week':'$'+prog.toFixed(0)+' spent in shopping'};
+  if(q.metric==='under_half_budget')return {cur:Math.max(0,100-prog),total:100,label:Math.round(prog)+'% of monthly budget used'};
+  if(q.metric==='food_under_pct')   return {cur:Math.max(0,100-prog),total:100,label:Math.round(prog)+'% of food budget used'};
+  if(q.metric==='max_transactions') return {cur:Math.max(0,q.goal-prog),total:q.goal,label:prog+' purchases so far (max '+q.goal+')'};
+  return {cur:prog,total:q.goal};
+}
+
+// ── ATTRIBUTES ──
+const ATTR_DEFS = {
+  discipline: {
+    name:'Discipline', color:'#4a9eff', icon:'🔵',
+    desc:['Newcomer','Consistent','Reliable','Methodical','Steadfast','Unbreakable'],
+    effect:'Reduces streak reset penalty. Habit monsters deal less damage.'
+  },
+  wisdom: {
+    name:'Wisdom', color:'#c9a84c', icon:'🟡',
+    desc:['Unaware','Aware','Prudent','Savvy','Shrewd','Oracle'],
+    effect:'Budget Dragon starts with lower HP. Better XP from staying under budget.'
+  },
+  willpower: {
+    name:'Willpower', color:'#8e44ad', icon:'🟣',
+    desc:['Tempted','Resisting','Firm','Ironclad','Immovable','Legendary'],
+    effect:'Impulse monsters appear with less HP. Restraint quests give bonus XP.'
+  },
+};
+const MAX_ATTR = 5; // pips per attribute (each quest completion = +1, max 5 per attr)
+
+function addAttrPoint(attr){
+  if(!state.attrs) state.attrs={discipline:0,wisdom:0,willpower:0};
+  if(state.attrs[attr]<MAX_ATTR){
+    state.attrs[attr]++;
+    save();
+    renderAttrs();
+    const def=ATTR_DEFS[attr];
+    const newLevel=state.attrs[attr];
+    showToast(def.icon+' '+def.name+' increased to '+newLevel+'!');
+  }
+}
+
+function renderAttrs(){
+  if(!state.attrs) state.attrs={discipline:0,wisdom:0,willpower:0};
+  const row=document.getElementById('attrs-row');
+  if(!row)return;
+  row.innerHTML='';
+  ['discipline','wisdom','willpower'].forEach(function(attr){
+    const def=ATTR_DEFS[attr];
+    const val=state.attrs[attr]||0;
+    const tierName=def.desc[Math.min(val,def.desc.length-1)];
+    let pipsHtml='';
+    for(let i=0;i<MAX_ATTR;i++){
+      pipsHtml+='<div class="pip '+attr+' '+(i<val?'filled':'empty')+'"></div>';
+    }
+    const card=document.createElement('div');
+    card.className='attr-card';
+    card.title=def.effect;
+    card.innerHTML=
+      '<div class="attr-header">'+
+        '<span class="attr-name">'+def.name+'</span>'+
+        '<span class="attr-level '+attr+'">'+tierName+'</span>'+
+      '</div>'+
+      '<div class="attr-pips">'+pipsHtml+'</div>'+
+      '<div class="attr-desc">'+def.effect+'</div>';
+    row.appendChild(card);
+  });
+}
+
+// Map quest themes to attributes
+const THEME_TO_ATTR={Habit:'discipline',Budget:'wisdom',Restraint:'willpower'};
+
+// Attribute effects on monster HP
+function getAttrMonsterMod(catId){
+  if(!state.attrs) return 0;
+  // Willpower reduces gear/impulse monster HP
+  if(catId==='gear') return Math.floor((state.attrs.willpower||0)*5);
+  // Discipline reduces food/habit monsters
+  if(catId==='food') return Math.floor((state.attrs.discipline||0)*4);
+  // Wisdom reduces all others slightly
+  return Math.floor((state.attrs.wisdom||0)*3);
+}
+
+function getBossDragonHPMod(){
+  if(!state.attrs) return 0;
+  // Wisdom reduces boss starting HP (max -20 at wisdom 5 -> 5*4=20)
+  return Math.floor((state.attrs.wisdom||0)*4);
+}
+
+function checkQuests(){
+  const wn=getWeekNumber();
+  const activeQuests=getWeeklyQuests(wn);
+  activeQuests.forEach(q=>{
+    const qk=q.id+'_w'+wn;
+    if(!state.questsCompleted.includes(qk)&&isQuestComplete(q)){
+      state.questsCompleted.push(qk);save();
+      setTimeout(function(){addXP(q.xpReward,'Quest: '+q.name);},400);
+      setTimeout(function(){showToast('⚔ Quest Complete! +'+q.xpReward+' XP');},100);
+      // Award attribute point based on theme
+      const attrKey=THEME_TO_ATTR[q.theme];
+      if(attrKey) setTimeout(function(){addAttrPoint(attrKey);},1200);
+    }
+  });
+  renderQuests();
+}
+
+function renderQuests(){
+  const wn=getWeekNumber();
+  const list=document.getElementById('quests-list');list.innerHTML='';
+  const themeColors={Habit:'#4a9eff',Budget:'#c9a84c',Restraint:'#8e44ad'};
+  const activeQuests=getWeeklyQuests(wn);
+  activeQuests.forEach(function(q){
+    const qk=q.id+'_w'+wn;
+    const done=state.questsCompleted.includes(qk);
+    const dp=questDisplayProgress(q);
+    const color=themeColors[q.theme]||'var(--gold)';
+    const pct=Math.min(dp.cur/dp.total*100,100);
+    const label=dp.label||(dp.cur+' / '+dp.total);
+    const card=document.createElement('div');
+    card.className='quest-card '+(done?'completed':'');
+    card.innerHTML=
+      '<div class="quest-icon">'+q.icon+'</div>'+
+      '<div class="quest-info">'+
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">'+
+          '<div class="quest-name" style="margin:0">'+q.name+'</div>'+
+          '<span style="font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:2px 7px;border-radius:10px;background:'+color+'22;color:'+color+';border:1px solid '+color+'44">'+q.theme+'</span>'+
+        '</div>'+
+        '<div class="quest-desc">'+q.desc+'</div>'+
+        '<div class="quest-progress-label"><span>Weekly Quest</span><span>'+label+'</span></div>'+
+        '<div class="quest-bar-track"><div class="quest-bar-fill" style="width:'+pct+'%;background:linear-gradient(90deg,'+color+'88,'+color+')"></div></div>'+
+        '<div class="quest-reward">'+(done?'&#10003; Completed':'Reward: +'+q.xpReward+' XP')+'</div>'+
+      '</div>'+
+      '<div class="quest-meta"><div class="quest-xp" style="color:'+color+'">'+q.xpReward+'</div><div class="quest-xp-label">XP</div><div class="quest-expires">Active</div></div>';
+    list.appendChild(card);
+  });
+}
+
+async function publishLeaderboard(){
+  if(!state.username)return;
+  const cur=getLevelData(state.xp);
+  try{await window.storage.set('bq:'+state.playerId,JSON.stringify({name:state.username,level:cur.level,title:cur.title,xp:state.xp,streak:state.streak,avatar:cur.avatar,t:Date.now()}),true);}catch(e){}
+}
+
+async function loadLeaderboard(){
+  const table=document.getElementById('lb-table');
+  table.innerHTML=`<div class="lb-row header-row"><div class="lb-header">#</div><div class="lb-header left">Hero</div><div class="lb-header">Level</div><div class="lb-header">XP</div><div class="lb-header">Streak</div></div>`;
+  try{
+    const kr=await window.storage.list('bq:',true);
+    const keys=kr?kr.keys:[];
+    const entries=[];
+    for(const k of keys){try{const r=await window.storage.get(k,true);if(r)entries.push({...JSON.parse(r.value),key:k});}catch(e){}}
+    entries.sort((a,b)=>b.xp-a.xp);
+    if(!entries.length){table.innerHTML+='<div style="padding:24px;text-align:center;color:var(--text-dark);font-style:italic;">No heroes yet — join the fellowship above!</div>';return;}
+    entries.forEach((e,i)=>{
+      const isMe=e.key==='bq:'+state.playerId;
+      const rc=i===0?'top1':i===1?'top2':i===2?'top3':'';
+      const ri=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
+      const row=document.createElement('div');row.className=`lb-row ${isMe?'me':''}`;
+      row.innerHTML=`<div class="lb-rank ${rc}">${ri}</div><div class="lb-name">${e.avatar} ${e.name}${isMe?' <span style="color:var(--gold-dim);font-size:10px">(you)</span>':''}<div class="lb-class">${e.title}</div></div><div class="lb-val">${e.level}</div><div class="lb-val">${e.xp.toLocaleString()}</div><div class="lb-val">${e.streak}🔥</div>`;
+      table.appendChild(row);
+    });
+    // Update guild
+    renderGuildMembers(entries);
+  }catch(e){table.innerHTML+='<div style="padding:24px;text-align:center;color:var(--text-dark);font-style:italic;">Could not load — try refreshing.</div>';}
+}
+
+function renderGuildMembers(entries){
+  const el=document.getElementById('guild-members');el.innerHTML='';
+  const damage=Math.min(entries.length*10,100);
+  const bossHp=Math.max(0,100-damage);
+  document.getElementById('guild-boss-bar').style.width=bossHp+'%';
+  document.getElementById('guild-boss-pct').textContent=bossHp+'% HP';
+  if(!entries.length){el.innerHTML='<div style="color:var(--text-dark);font-style:italic;font-size:13px;">No party members yet.</div>';return;}
+  entries.slice(0,8).forEach(m=>{
+    const isMe=m.key==='bq:'+state.playerId;
+    const chip=document.createElement('div');chip.className=`guild-member-chip ${isMe?'me':''}`;
+    chip.innerHTML=`${m.avatar} ${m.name} <span style="color:var(--gold-dim)">Lv.${m.level}</span>`;
+    el.appendChild(chip);
+  });
+}
+
+function renderUsernameSection(){
+  const s=document.getElementById('username-setup-section');
+  if(!state.username){
+    s.innerHTML=`<div class="username-setup"><h3>Join the Fellowship</h3><p>Enter a hero name to appear on the leaderboard. Only your name, level, and XP are shared — never your spending.</p><div class="username-row"><input class="username-input" id="username-field" type="text" placeholder="Your hero name..." maxlength="20"><button class="username-btn" onclick="saveUsername()">⚔ Join</button></div></div>`;
+  }else{
+    s.innerHTML=`<div style="font-size:12px;color:var(--text-dim);margin-bottom:12px;font-style:italic;">Playing as <span style="color:var(--gold)">${state.username}</span> · <span style="cursor:pointer;text-decoration:underline;" onclick="changeUsername()">change name</span></div>`;
+  }
+}
+
+function saveUsername(){
+  const v=document.getElementById('username-field').value.trim();
+  if(!v){showToast('Enter a hero name!');return;}
+  state.username=v;save();publishLeaderboard();renderUsernameSection();loadLeaderboard();showToast(`Welcome, ${v}!`);
+}
+function changeUsername(){state.username=null;save();renderUsernameSection();}
+
+let toastTimer;
+function showToast(msg, duration){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),duration||2800);}
+function showLevelUp(lv){const d=LEVELS.find(l=>l.level===lv);document.getElementById('levelup-title').textContent=`Level ${lv} Achieved!`;document.getElementById('levelup-subtitle').textContent=`You are now a ${d.title}. Your legend grows.`;document.getElementById('levelup-overlay').classList.add('show');}
+function closeLevelUp(){document.getElementById('levelup-overlay').classList.remove('show');}
+
+
+// ── ADD SUBSCRIPTION FROM ADVENTURE TAB ──
+let _addSubModalRow = null;
+
+function openAddSubModal(){
+  const container = document.getElementById('add-sub-row-container');
+  container.innerHTML = '';
+  _addSubModalRow = null;
+  // Reset pills
+  document.querySelectorAll('#add-sub-pills .sub-pill').forEach(function(p){ p.classList.remove('used'); });
+  document.getElementById('add-sub-hint').style.display = 'block';
+  document.getElementById('add-sub-overlay').classList.add('show');
+  // Start with a blank row
+  buildAddSubRow('', '');
+}
+
+function addSubRowToModal(name){
+  buildAddSubRow(name, '');
+  document.getElementById('add-sub-hint').style.display = 'none';
+  // Mark pill as used
+  document.querySelectorAll('#add-sub-pills .sub-pill').forEach(function(p){
+    if(p.textContent.includes(name.split(' ')[0]) || p.textContent.toLowerCase().includes(name.toLowerCase().split(' ')[0])){
+      p.classList.add('used');
+    }
+  });
+}
+
+function buildAddSubRow(name, amount){
+  const container = document.getElementById('add-sub-row-container');
+  container.innerHTML = '';
+
+  const row = document.createElement('div');
+  row.style.cssText = 'display:grid;grid-template-columns:1fr 100px;gap:8px;';
+
+  const nameInput = document.createElement('input');
+  nameInput.placeholder = 'Subscription name...';
+  nameInput.value = name || '';
+  nameInput.style.cssText = 'background:var(--surface2);border:1px solid var(--border-gold);border-radius:3px;color:var(--text);font-family:Crimson Text,serif;font-size:14px;padding:7px 10px;outline:none;width:100%;';
+  nameInput.id = 'add-sub-name';
+
+  const amtWrap = document.createElement('div');
+  amtWrap.style.cssText = 'display:flex;align-items:center;gap:4px;background:var(--surface2);border:1px solid var(--border-gold);border-radius:3px;padding:7px 10px;';
+  const dollar = document.createElement('span');
+  dollar.textContent = '$';
+  dollar.style.cssText = 'color:var(--text-dim);font-size:13px;flex-shrink:0;';
+  const amtInput = document.createElement('input');
+  amtInput.type = 'number';
+  amtInput.min = '0.01';
+  amtInput.step = '0.01';
+  amtInput.placeholder = '9.99';
+  amtInput.value = amount || '';
+  amtInput.style.cssText = 'background:none;border:none;color:var(--text);font-family:Cinzel,serif;font-size:13px;width:100%;outline:none;';
+  amtInput.id = 'add-sub-amount';
+  amtWrap.appendChild(dollar);
+  amtWrap.appendChild(amtInput);
+
+  row.appendChild(nameInput);
+  row.appendChild(amtWrap);
+  container.appendChild(row);
+
+  // Focus name if empty, else focus amount
+  setTimeout(function(){ 
+    if(!name) nameInput.focus();
+    else amtInput.focus();
+  }, 50);
+}
+
+function confirmAddSub(){
+  const nameEl = document.getElementById('add-sub-name');
+  const amtEl = document.getElementById('add-sub-amount');
+  if(!nameEl || !amtEl){ showToast('Fill in the subscription details.'); return; }
+  const name = nameEl.value.trim();
+  const amount = parseFloat(amtEl.value);
+  if(!name){ showToast('Enter a subscription name.'); return; }
+  if(isNaN(amount) || amount <= 0){ showToast('Enter a valid monthly amount.'); return; }
+
+  if(!state.subscriptions) state.subscriptions = [];
+
+  // Evaluate penalty BEFORE pushing the new sub or updating lastSubAddDate
+  const penalty = shouldPenalizeMidMonthAdd();
+
+  const newSub = {id:'sub_'+(Date.now()), name:name, amount:amount, cancelled:false};
+  state.subscriptions.push(newSub);
+  state.lastSubAddDate = new Date().toDateString(); // track when subs were last added
+
+  // Remove defeat status — specter re-awakens
+  const mk = new Date().getMonth();
+  const specId = 'sub_specter_'+mk;
+  state.monstersDefeated = state.monstersDefeated.filter(function(id){ return id !== specId; });
+
+  if(penalty){
+    // Enrage the specter — track bonus HP and label
+    const newTotal2 = state.subscriptions.reduce(function(a,s){return a+s.amount;},0);
+    const hpGain = newTotal2 > 0 ? Math.min(20, Math.round((amount / newTotal2) * 40)) : 0;
+    state.specterEnraged = true;
+    state.specterEnrageBonus = (state.specterEnrageBonus||0) + amount;
+    state.specterEnrageLabel = name+' added mid-month (+'+hpGain+'% HP buff)';
+    // Apply haunted curse with clear reason
+    applyHauntedCurse('you added "'+name+'" more than 7 days after your initial subscriptions were set up');
+  }
+
+  save();
+  document.getElementById('add-sub-overlay').classList.remove('show');
+  renderMonsters();
+  updateCharacter();
+
+  const newTotal = state.subscriptions.filter(function(s){return !s.cancelled;}).reduce(function(a,s){return a+s.amount;},0);
+
+  if(penalty){
+    showPenaltyModal(name, amount, hpGain);
+  } else {
+    showToast('👻 '+name+' ($'+amount.toFixed(2)+'/mo) added to Specter.');
+  }
+}
+
+function showPenaltyModal(subName, amount, hpGain){
+  document.getElementById('penalty-modal-subtitle').textContent = '"'+subName+'" was added more than 7 days after your subscriptions were established.';
+  document.getElementById('penalty-modal-body').innerHTML =
+    'You had a full week to remember forgotten subscriptions. Adding <strong style="color:var(--text);">'+subName+'</strong> ($'+amount.toFixed(2)+'/mo) now signals a new recurring charge — and the Specter grows stronger for it.';
+  document.getElementById('penalty-modal-penalties').innerHTML =
+    '⚡ <strong>Specter HP increased by ~'+hpGain+'%</strong> — harder to defeat this month<br>'+
+    '👻 <strong>3-day Haunted Curse</strong> — each logged expense earns <strong style="color:#c0392b;">half XP</strong> until the curse lifts<br>'+
+    '<span style="font-size:12px;color:var(--text-dark);">Example: a $30 expense that would earn 15 XP will now earn 7 XP.</span>';
+  document.getElementById('specter-penalty-overlay').classList.add('show');
+}
+
+// ── SUBSCRIPTION WIZARD ──
+let _subRowId = 0;
+
+function addSubRow(type, amount){
+  // type = pill label e.g. 'Streaming', 'Gaming' etc.
+  const id = 'subrow_' + (++_subRowId);
+  const container = document.getElementById('sub-list-rows');
+
+  const row = document.createElement('div');
+  row.id = id;
+  row.style.cssText = 'background:var(--surface2);border:1px solid var(--border-gold);border-radius:4px;padding:10px 12px;display:grid;grid-template-columns:100px 1fr 90px 32px;gap:8px;align-items:center;';
+
+  // Type badge (read-only, from pill)
+  const typeLabel = document.createElement('div');
+  typeLabel.style.cssText = 'background:rgba(142,68,173,0.2);border:1px solid var(--purple-dim);color:var(--purple);font-size:10px;padding:3px 8px;border-radius:10px;text-align:center;font-family:Cinzel,serif;letter-spacing:0.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+  typeLabel.textContent = type || 'Other';
+  typeLabel.className = 'sub-type-label';
+
+  // Name input
+  const nameInput = document.createElement('input');
+  nameInput.placeholder = 'e.g. Netflix, Spotify...';
+  nameInput.value = '';
+  nameInput.style.cssText = 'background:var(--surface);border:1px solid var(--border);border-radius:3px;color:var(--text);font-family:Crimson Text,serif;font-size:14px;padding:5px 8px;outline:none;width:100%;transition:border-color 0.2s;';
+  nameInput.className = 'sub-name-input';
+  nameInput.addEventListener('focus', function(){ this.style.borderColor='var(--border-gold)'; });
+  nameInput.addEventListener('blur', function(){ this.style.borderColor='var(--border)'; });
+  nameInput.addEventListener('input', updateSubTotal);
+
+  // Amount input
+  const amtWrap = document.createElement('div');
+  amtWrap.style.cssText = 'display:flex;align-items:center;gap:3px;background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:5px 8px;transition:border-color 0.2s;';
+  amtWrap.addEventListener('focusin', function(){ this.style.borderColor='var(--border-gold)'; });
+  amtWrap.addEventListener('focusout', function(){ this.style.borderColor='var(--border)'; });
+  const dollar = document.createElement('span');
+  dollar.textContent = '$';
+  dollar.style.cssText = 'color:var(--text-dim);font-size:12px;flex-shrink:0;';
+  const amtInput = document.createElement('input');
+  amtInput.type = 'number';
+  amtInput.min = '0.01';
+  amtInput.step = '0.01';
+  amtInput.placeholder = '9.99';
+  amtInput.value = amount || '';
+  amtInput.style.cssText = 'background:none;border:none;color:var(--text);font-family:Cinzel,serif;font-size:13px;width:100%;outline:none;';
+  amtInput.className = 'sub-amount-input';
+  amtInput.addEventListener('input', updateSubTotal);
+  amtWrap.appendChild(dollar);
+  amtWrap.appendChild(amtInput);
+
+  // Remove button
+  const removeBtn = document.createElement('button');
+  removeBtn.textContent = '✕';
+  removeBtn.style.cssText = 'background:none;border:1px solid var(--border);color:var(--text-dark);border-radius:3px;cursor:pointer;font-size:13px;padding:4px 7px;transition:color 0.2s;';
+  removeBtn.addEventListener('mouseover', function(){ this.style.color='var(--red)'; });
+  removeBtn.addEventListener('mouseout', function(){ this.style.color='var(--text-dark)'; });
+  removeBtn.addEventListener('click', function(){
+    row.remove();
+    updateSubTotal();
+    // Un-mark the pill for this type
+    document.querySelectorAll('#sub-pills .sub-pill').forEach(function(p){
+      if(p.textContent.trim().toLowerCase().includes((type||'').toLowerCase().split(' ')[0])){
+        p.classList.remove('used');
+      }
+    });
+  });
+
+  row.appendChild(typeLabel);
+  row.appendChild(nameInput);
+  row.appendChild(amtWrap);
+  row.appendChild(removeBtn);
+  container.appendChild(row);
+  updateSubTotal();
+
+  // Focus name field after render
+  setTimeout(function(){ nameInput.focus(); }, 50);
+}
+
+function updateSubTotal(){
+  const rows = document.getElementById('sub-list-rows').querySelectorAll('div[id^="subrow_"]');
+  let total = 0, count = 0;
+  rows.forEach(function(row){
+    const amt = parseFloat(row.querySelector('.sub-amount-input').value);
+    if(!isNaN(amt) && amt > 0){ total += amt; count++; }
+  });
+  const el = document.getElementById('sub-wizard-total');
+  if(count > 0){
+    el.innerHTML = '<span style="color:var(--text-dim);">'+count+' subscription'+(count!==1?'s':'')+' · </span><span style="color:var(--purple);">$'+total.toFixed(2)+'/mo</span>';
+  } else {
+    el.innerHTML = '';
+  }
+}
+
+function saveSubWizard(skip){
+  if(skip){
+    state.subscriptions = [];
+    state.subWizardDone = true;
+    save();
+    document.getElementById('sub-wizard-overlay').classList.remove('show');
+    renderMonsters();
+    showToast('The Specter finds no purchase. Stay vigilant.');
+    return;
+  }
+  const rows = document.getElementById('sub-list-rows').querySelectorAll('div[id^="subrow_"]');
+  const subs = [];
+  rows.forEach(function(row){
+    const typeEl = row.querySelector('.sub-type-label');
+    const type = typeEl ? typeEl.textContent.trim() : '';
+    const name = row.querySelector('.sub-name-input').value.trim();
+    const amt = parseFloat(row.querySelector('.sub-amount-input').value);
+    if(!isNaN(amt) && amt > 0){
+      const displayName = name || type; // fall back to type if no name entered
+      subs.push({id:'sub_'+(++_subRowId), type:type, name:displayName, amount:amt, cancelled:false});
+    }
+  });
+  state.subscriptions = subs;
+  state.subWizardDone = true;
+  state.subWizardDate = new Date().toDateString();
+  state.lastSubAddDate = new Date().toDateString();
+  save();
+  document.getElementById('sub-wizard-overlay').classList.remove('show');
+  renderMonsters();
+  if(subs.length > 0){
+    const total = subs.reduce(function(a,s){return a+s.amount;},0);
+    showToast('👻 Specter awakened! '+subs.length+' subscription'+(subs.length!==1?'s':'')+' · $'+total.toFixed(2)+'/mo');
+  } else {
+    showToast('No subscriptions entered — the Specter sleeps.');
+  }
+}
+
+function checkSubWizard(){
+  if(!state.subWizardDone){
+    // Clear rows — pills drive entry
+    document.getElementById('sub-list-rows').innerHTML = '';
+    _subRowId = 0;
+    updateSubTotal();
+    setTimeout(function(){ document.getElementById('sub-wizard-overlay').classList.add('show'); }, 1200);
+  }
+}
+
+function openCancelModal(){
+  const active = (state.subscriptions||[]).filter(function(s){return !s.cancelled;});
+  if(!active.length){ showToast('No active subscriptions to cancel!'); return; }
+  const list = document.getElementById('cancel-sub-list');
+  list.innerHTML = '';
+  const totalOriginal = (state.subscriptions||[]).reduce(function(a,s){return a+s.amount;},0);
+  const totalAmtModal = state.subscriptions.reduce(function(a,s){return a+s.amount;},0);
+  active.forEach(function(sub){
+    const subXp = totalAmtModal > 0 ? Math.max(5, Math.round((sub.amount / totalAmtModal) * 75)) : 10;
+    const btn = document.createElement('button');
+    btn.style.cssText = 'display:flex;justify-content:space-between;align-items:center;background:var(--surface2);border:1px solid var(--purple-dim);border-radius:3px;padding:11px 14px;cursor:pointer;transition:border-color 0.2s;width:100%;';
+    btn.onmouseover = function(){ this.style.borderColor='var(--purple)'; };
+    btn.onmouseout = function(){ this.style.borderColor='var(--purple-dim)'; };
+    btn.innerHTML =
+      '<span style="font-family:Cinzel,serif;font-size:13px;color:var(--text);">'+sub.name+'</span>'+
+      '<span style="display:flex;gap:10px;align-items:center;">'+
+        '<span style="font-size:12px;color:var(--text-dim);">$'+sub.amount.toFixed(2)+'/mo</span>'+
+        '<span style="font-size:11px;color:var(--xp-color);">+'+subXp+' XP</span>'+
+        '<span style="font-family:Cinzel,serif;font-size:10px;color:var(--purple);border:1px solid var(--purple-dim);padding:2px 8px;border-radius:3px;">✂ Cancel</span>'+
+      '</span>';
+    btn.onclick = function(){ confirmCancel(sub.id); };
+    list.appendChild(btn);
+  });
+  document.getElementById('cancel-sub-overlay').classList.add('show');
+}
+
+function confirmCancel(subId){
+  const sub = (state.subscriptions||[]).find(function(s){return s.id===subId;});
+  if(!sub){ return; }
+
+  // Calculate XP BEFORE marking cancelled — proportional to $ share of total spend
+  const totalAmt = state.subscriptions.reduce(function(a,s){return a+s.amount;},0);
+  const xpEarned = totalAmt > 0 ? Math.max(5, Math.round((sub.amount / totalAmt) * 75)) : 10;
+
+  sub.cancelled = true;
+  const mk = new Date().getMonth();
+  const specId = 'sub_specter_'+mk;
+  const active = state.subscriptions.filter(function(s){return !s.cancelled;});
+
+  document.getElementById('cancel-sub-overlay').classList.remove('show');
+
+  if(active.length === 0){
+    // All cancelled — full defeat, clear enrage and curse
+    state.monstersDefeated.push(specId);
+    state.specterEnraged = false;
+    state.specterEnrageBonus = 0;
+    state.specterEnrageLabel = null;
+    state.hauntedUntil = null;
+    state.hauntedReason = null;
+    save(); renderMonsters(); updateCharacter();
+    const defeatBonus = 25;
+    setTimeout(function(){ addXP(xpEarned + defeatBonus, 'Specter defeated — all subscriptions cancelled'); }, 400);
+    showToast('👻 SPECTER DEFEATED! +' + (xpEarned + defeatBonus) + ' XP', 5000);
+  } else {
+    save(); renderMonsters(); updateCharacter();
+    addXP(xpEarned, 'Cancelled subscription: '+sub.name+' ($'+sub.amount.toFixed(2)+'/mo)');
+    showToast('👻 Specter weakened! Cancelled '+sub.name+' ($'+sub.amount.toFixed(2)+'/mo). +'+xpEarned+' XP');
+  }
+}
+
+function getSubSpecterHP(){
+  if(!state.subWizardDone || !state.subscriptions || !state.subscriptions.length) return 0;
+  const totalAmt = state.subscriptions.reduce(function(a,s){return a+s.amount;},0);
+  if(totalAmt === 0) return 0;
+  const remainingAmt = state.subscriptions.filter(function(s){return !s.cancelled;}).reduce(function(a,s){return a+s.amount;},0);
+  const baseHp = Math.round((remainingAmt / totalAmt) * 100);
+  // Enrage bonus: adds up to 40 extra HP proportional to mid-month additions
+  if(state.specterEnraged && state.specterEnrageBonus > 0){
+    const enrageExtra = Math.min(20, Math.round((state.specterEnrageBonus / totalAmt) * 40));
+    return Math.min(120, baseHp + enrageExtra);
+  }
+  return baseHp;
+}
+
+document.getElementById('char-name-input').addEventListener('change',save);
+if(state.charName) document.getElementById('char-name-input').value=state.charName;
+buildSelect();renderCategories();renderLog();renderMonsters();renderQuests();updateCharacter();runDailyEngine();
+
+// ── DEV TEST MODE ──
+// Toggle with Shift+D
+document.addEventListener('keydown',function(e){
+  if(e.shiftKey&&e.key==='D'){
+    const p=document.getElementById('dev-panel');
+    p.style.display=p.style.display==='none'?'block':'none';
+    showToast(p.style.display==='block'?'Dev mode ON (Shift+D to hide)':'Dev mode OFF');
+  }
+});
+
+function devAdvanceDay(){
+  devDateOffsetDays++;
+  const prevDay = new Date(Date.now() + (devDateOffsetDays-1) * 86400000).toDateString();
+  // Stamp last login as the day we're leaving, then clear day-specific state for the new day
+  state.lastLoginDate = prevDay;
+  state.dailyChallengeDate = prevDay; // force checkDailyChallenge to see a new day
+  state.dayCompleteDate = null;       // explicitly clear so new day can be sealed
+  state.dailyChallengeComplete = false;
+  save();
+  runDailyEngine();
+  renderMonsters();
+  updateCompleteDayButton();
+  showToast('Dev: simulated date is now ' + getTodayStr() + ' (offset +' + devDateOffsetDays + 'd)');
+}
+
+function devResetDay(){
+  devDateOffsetDays = 0;
+  save();
+  runDailyEngine();
+  renderMonsters();
+  updateCompleteDayButton();
+  showToast('Dev: date reset to real today — ' + getTodayStr());
+}
+
+function devSimulateDay7(){
+  // Set firstOpenDate to 6 days ago so getDaysPlaying() returns 6 (still in onboarding)
+  const sixDaysAgo=new Date(Date.now()-6*86400000).toISOString();
+  state.firstOpenDate=sixDaysAgo;
+  state.veteranCelebrated=false;
+  state.dailyChallengeDate=null;
+  state.dailyChallengeComplete=false;
+  save();
+  checkDailyChallenge();
+  showToast('Simulating Day 7 — Small Victory active');
+}
+
+function devTriggerVeteran(){
+  // Set firstOpenDate to 7+ days ago and reset veteran flag
+  const eightDaysAgo=new Date(Date.now()-8*86400000).toISOString();
+  state.firstOpenDate=eightDaysAgo;
+  state.veteranCelebrated=false;
+  save();
+  checkVeteranMilestone();
+}
+
+function devSimulateDay8(){
+  // Set to veteran state, show the new challenge
+  const eightDaysAgo=new Date(Date.now()-8*86400000).toISOString();
+  state.firstOpenDate=eightDaysAgo;
+  state.veteranCelebrated=true;
+  state.dailyChallengeDate=null;
+  state.dailyChallengeComplete=false;
+  save();
+  checkDailyChallenge();
+  showToast('Simulating Day 8+ — Veteran Test active');
+}
+
+function devCompleteChallenge(){
+  // Force-complete today challenge by injecting a fake qualifying expense
+  const ch=getDailyChallenge();
+  // Inject an expense that satisfies most metrics
+  state.expenses.unshift({id:Date.now(),desc:'[Test expense]',amount:4.99,catId:'food',date:new Date(Date.now()+devDateOffsetDays*86400000).toISOString()});
+  if(state.expenses.length>1) state.expenses.unshift({id:Date.now()+1,desc:'[Test expense 2]',amount:3.50,catId:'transport',date:new Date(Date.now()+devDateOffsetDays*86400000).toISOString()});
+  state.expenses.unshift({id:Date.now()+2,desc:'[Test expense 3]',amount:2.00,catId:'scrolls',date:new Date(Date.now()+devDateOffsetDays*86400000).toISOString()});
+  save();
+  renderLog();
+  checkDailyChallenge();
+  checkQuests();
+  renderCategories();
+  updateCharacter();
+  showToast('Injected test expenses — checking challenge...');
+}
+
+function devUndoLastExpense(){
+  if(!state.expenses.length){showToast('No expenses to undo.');return;}
+  const removed=state.expenses.shift();
+  // Also refund XP estimate
+  const refund=15;
+  state.xp=Math.max(0,state.xp-refund);
+  state.level=getLevelData(state.xp).level;
+  save();
+  renderLog();renderCategories();renderMonsters();updateCharacter();checkDailyChallenge();
+  showToast('↩ Removed: '+removed.desc+' (-$'+removed.amount.toFixed(2)+')');
+}
+
+function devUndoLastQuest(){
+  if(!state.questsCompleted.length){showToast('No completed quests to undo.');return;}
+  const removed=state.questsCompleted.pop();
+  // Refund quest XP (approximate — use 60 as average)
+  state.xp=Math.max(0,state.xp-60);
+  state.level=getLevelData(state.xp).level;
+  // Also undo attr point if possible
+  const wn=getWeekNumber();
+  const activeQuests=getWeeklyQuests(wn);
+  activeQuests.forEach(function(q){
+    if(removed.startsWith(q.id)){
+      const attr=THEME_TO_ATTR[q.theme];
+      if(attr&&state.attrs[attr]>0) state.attrs[attr]--;
+    }
+  });
+  save();
+  renderQuests();updateCharacter();renderAttrs();
+  showToast('↩ Quest progress undone: '+removed);
+}
+
+function devUndoLastXP(){
+  const amount=state.lastXPGain||10;
+  state.xp=Math.max(0,state.xp-amount);
+  state.level=getLevelData(state.xp).level;
+  save();
+  updateCharacter();
+  showToast('↩ Removed '+amount+' XP');
+}
+
+function devClearProgress(){
+  if(!confirm('Reset ALL progress? This cannot be undone.')) return;
+  localStorage.removeItem('bq3');
+  location.reload();
+}
+
+
+function devResetAll(){
+  if(!confirm('Reset everything including name and budgets? This cannot be undone.')) return;
+  localStorage.removeItem('bq3');
+  location.reload();
+}
+
+// ── SPECTER DEV TOOLS ──
+
+function devSpecterFullPenaltyScenario(){
+  // One-click setup: establish subs, age dates past grace window, ready for penalty add
+  const eightDaysAgo = new Date(Date.now() - 8 * 86400000).toDateString();
+  if(!state.subscriptions || state.subscriptions.length === 0){
+    state.subscriptions = [
+      {id:'dev_sub_1', type:'Streaming', name:'Netflix', amount:15.99, cancelled:false},
+      {id:'dev_sub_2', type:'Gaming', name:'Xbox Game Pass', amount:14.99, cancelled:false},
+    ];
+  }
+  state.subWizardDone = true;
+  state.subWizardDate = eightDaysAgo;
+  state.lastSubAddDate = eightDaysAgo;
+  state.hauntedUntil = null;
+  state.hauntedReason = null;
+  state.specterEnraged = false;
+  state.specterEnrageBonus = 0;
+  state.specterEnrageLabel = null;
+  save();
+  renderMonsters();
+  updateCharacter();
+  showToast('👻 Ready: subs set 8 days ago. Hit "+ Add Sub" on the Specter card — penalty will fire.');
+}
+
+function devSpecterSimulateNextDay(){
+  // Push all date guards to 8 days ago to blow past the 7-day grace window
+  const eightDaysAgo = new Date(Date.now() - 8 * 86400000).toDateString();
+  state.lastSubAddDate = eightDaysAgo;
+  state.subWizardDate = eightDaysAgo;
+  save();
+  const hasSubs = state.subscriptions && state.subscriptions.length > 0;
+  showToast('👻 Dates → 8 days ago (past grace window). ' + (hasSubs ? 'Next add WILL penalize.' : 'Add subs first, then run this again to test penalty.'));
+}
+
+function devSpecterAddPenaltyTest(){
+  // Set both dates to yesterday and ensure at least one sub exists for penalty to fire
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  state.subWizardDate = yesterday;
+  state.lastSubAddDate = yesterday;
+  // Add a dummy sub if none exist so penalty condition is met
+  if(!state.subscriptions || state.subscriptions.length === 0){
+    state.subscriptions = [{id:'sub_dev_test', name:'Dev Test Sub', amount:9.99, cancelled:false}];
+    state.subWizardDone = true;
+  }
+  save();
+  renderMonsters();
+  showToast('👻 Next sub add WILL trigger penalty. Open Add Sub to test.');
+}
+
+function devSpecterClearCurse(){
+  state.hauntedUntil = null;
+  save();
+  updateCharacter();
+  showToast('👻 Haunted curse cleared.');
+}
+
+function devSpecterClearEnrage(){
+  state.specterEnraged = false;
+  state.specterEnrageBonus = 0;
+  save();
+  renderMonsters();
+  showToast('👻 Specter enrage cleared.');
+}
+
+function devSpecterStatus(){
+  const today = new Date().toDateString();
+  const subs = state.subscriptions || [];
+  const active = subs.filter(function(s){return !s.cancelled;});
+  console.log('=== SPECTER STATE ===');
+  console.log('subWizardDone:', state.subWizardDone);
+  console.log('subWizardDate:', state.subWizardDate, '| today:', today, '| same day:', state.subWizardDate === today);
+  console.log('lastSubAddDate:', state.lastSubAddDate, '| same day:', state.lastSubAddDate === today);
+  console.log('subscriptions:', subs.length, 'total,', active.length, 'active');
+  console.log('hauntedUntil:', state.hauntedUntil, '| isHaunted:', isHaunted(), '| daysLeft:', daysHauntedRemaining());
+  console.log('specterEnraged:', state.specterEnraged, '| enrageBonus:', state.specterEnrageBonus);
+  console.log('specterHP:', getSubSpecterHP());
+  console.log('shouldPenalize:', shouldPenalizeMidMonthAdd());
+  showToast('👻 Specter state logged to console (F12).');
+}
+</script>
+
+
+</body></html>
