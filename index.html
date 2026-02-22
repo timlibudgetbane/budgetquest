@@ -1221,14 +1221,7 @@ function logExpense() {
   // 1. XP float above the bar
   fireXpFloat('+' + xpGained + ' XP');
 
-  // 2. XP bar pulse
-  var fill = document.getElementById('xp-fill');
-  fill.classList.remove('pulse');
-  void fill.offsetWidth;
-  fill.classList.add('pulse');
-  setTimeout(function() { fill.classList.remove('pulse'); }, 800);
-
-  // 3. Level up check
+  // 2. Level up check
   var newLevel = getLevelData(state.xp).level;
   if (newLevel > prevLevel) {
     setTimeout(function() { showLevelUp(newLevel); }, 900);
