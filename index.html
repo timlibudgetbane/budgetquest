@@ -346,24 +346,27 @@ body::after {
   text-transform: uppercase;
   letter-spacing: 0.12em;
 }
-.xp-count-text { font-size: 30px; color: var(--text-dim); }
+.xp-count-text { font-size: 24px; color: var(--text-dim); }
 .xp-count-text strong {
   font-family: 'Cinzel', serif;
-  font-size: 30px;
+  font-size: 24px;
+  font-weight: 700;
   color: var(--xp-color);
+  
 }
 .xp-bar-track {
-  height: 30px;
+  height: 22px;
   background: var(--surface2);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 14px;
+  margin-top: 12px
   overflow: hidden;
   position: relative;
 }
 .xp-bar-fill {
   height: 100%;
   background: linear-gradient(90deg, #152d5e 0%, #2560b8 55%, #4a9eff 100%);
-  border-radius: 2px;
+  border-radius: 14px;
   transition: width 0.85s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   min-width: 0;
@@ -371,7 +374,7 @@ body::after {
 
 
 .xp-next-msg {
-  font-size: 11px;
+  font-size: 18px;
   color: var(--text-dark);
   text-align: right;
   margin-top: 5px;
