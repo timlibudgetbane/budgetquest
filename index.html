@@ -528,7 +528,7 @@ body::after {
 
 /* ── XP FLOAT ── */
 .xp-float {
-  position: fixed;
+  position: absolute;
   pointer-events: none;
   z-index: 9100;
   font-family: 'Cinzel', serif;
@@ -541,13 +541,22 @@ body::after {
   transform: translateX(-50%);
 }
 .xp-float.pop {
-  animation: floatUp 1.5s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+  animation: animation: floatUp 0.9s ease-out forwards;
 }
 @keyframes floatUp {
-  0%   { opacity: 0;   transform: translateX(-50%) translateY(0)    scale(0.7); }
-  18%  { opacity: 1;   transform: translateX(-50%) translateY(-10px) scale(1.15); }
-  55%  { opacity: 1;   transform: translateX(-50%) translateY(-34px) scale(1); }
-  100% { opacity: 0;   transform: translateX(-50%) translateY(-65px) scale(0.9); }
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-45px);
+  }
 }
 
 /* ── LEVEL UP ── */
