@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Budget Quest</title>
+<link href="Budget%20Quest_22226_files/css2.css" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e0c0a;
+  --surface: #1a1610;
+  --surface2: #221e16;
+  --border: #3d3520;
+  --border-gold: #7a6530;
+  --gold: #c9a84c;
+  --gold-light: #e8c96a;
+  --gold-dim: #6b5828;
+  --red: #c0392b;
+  --red-dim: #5a1a14;
+  --green: #27ae60;
+  --green-dim: #1a6b3c;
+  --text: #e8dfc8;
+  --text-dim: #9a8e72;
+  --text-dark: #5a5040;
+  --xp-color: #4a9eff;
+  --xp-dim: #1a3a6b;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Crimson Text', serif;
+  font-size: 16px;
+  min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse at 20% 0%, rgba(201,168,76,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 100%, rgba(74,158,255,0.04) 0%, transparent 60%);
+}
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.app { max-width: 680px; margin: 0 auto; padding: 32px 16px 100px; }
+
+/* ── HEADER ── */
+.header {
+  text-align: center;
+  padding: 32px 0 24px;
+  border-bottom: 1px solid var(--border-gold);
+  margin-bottom: 28px;
+  position: relative;
+}
+.header::before, .header::after {
+  content: '⬡';
+  color: var(--gold-dim);
+  font-size: 12px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.header::before { left: 0; }
+.header::after { right: 0; }
+.header h1 {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(24px, 5vw, 40px);
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 40px rgba(201,168,76,0.35);
+}
+.header .tagline {
+  color: var(--text-dim);
+  font-size: 14px;
+  margin-top: 6px;
+  font-style: italic;
+}
+
+/* ── ONBOARDING CARD ── */
+.onboarding-card {
+  background: var(--surface);
+  border: 1px solid var(--border-gold);
+  border-radius: 4px;
+  padding: 32px 28px;
+  position: relative;
+  overflow: hidden;
+  animation: fadeUp 0.5s ease both;
+}
+.onboarding-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+/* Step dots */
+.steps-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 28px;
+}
+.step-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+.step-dot.active { background: var(--gold); box-shadow: 0 0 8px rgba(201,168,76,0.6); }
+.step-dot.done { background: var(--gold-dim); }
+.step-line { width: 28px; height: 1px; background: var(--border); flex-shrink: 0; }
+
+/* Steps */
+.ob-step { display: none; }
+.ob-step.active { display: block; animation: fadeUp 0.3s ease both; }
+
+.ob-title {
+  font-family: 'Cinzel', serif;
+  color: var(--gold);
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 8px;
+}
+.ob-sub {
+  color: var(--text-dim);
+  font-style: italic;
+  font-size: 14px;
+  text-align: center;
+  line-height: 1.65;
+  margin-bottom: 22px;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Name input */
+.name-row {
+  display: flex;
+  gap: 0;
+  justify-content: center;
+  max-width: 340px;
+  margin: 0 auto;
+}
+.hero-name-input {
+  background: var(--surface2);
+  border: 1px solid var(--border-gold);
+  border-right: none;
+  border-radius: 3px 0 0 3px;
+  color: var(--text);
+  font-family: 'Crimson Text', serif;
+  font-size: 17px;
+  padding: 11px 16px;
+  outline: none;
+  flex: 1;
+  transition: border-color 0.2s;
+}
+.hero-name-input:focus { border-color: var(--gold); }
+.hero-name-input::placeholder { color: var(--text-dark); }
+
+/* Avatar picker */
+.avatar-grid {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.avatar-opt {
+  width: 72px; height: 72px;
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  user-select: none;
+}
+.avatar-opt:hover { border-color: var(--gold-dim); background: #2a2418; transform: translateY(-2px); }
+.avatar-opt.selected {
+  border-color: var(--gold);
+  box-shadow: 0 0 16px rgba(201,168,76,0.4);
+  background: #2a2418;
+}
+.avatar-opt.selected::after {
+  content: '✓';
+  position: absolute;
+  bottom: 3px; right: 5px;
+  font-size: 10px;
+  font-family: 'Cinzel', serif;
+  color: var(--gold);
+}
+
+/* Class picker */
+.class-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-bottom: 22px;
+}
+.class-opt {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 13px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  user-select: none;
+}
+.class-opt:hover { border-color: var(--gold-dim); background: #272118; }
+.class-opt.selected { border-color: var(--gold); background: #272118; box-shadow: inset 3px 0 0 var(--gold); }
+.class-emoji { font-size: 26px; flex-shrink: 0; width: 36px; text-align: center; }
+.class-info { flex: 1; }
+.class-name { font-family: 'Cinzel', serif; font-size: 13px; color: var(--gold); margin-bottom: 2px; }
+.class-desc { font-size: 12px; color: var(--text-dim); font-style: italic; line-height: 1.5; }
+.class-trait {
+  font-size: 10px;
+  color: var(--xp-color);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  background: rgba(74,158,255,0.1);
+  border: 1px solid rgba(74,158,255,0.2);
+  padding: 2px 8px;
+  border-radius: 10px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Nav buttons */
+.ob-nav {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+.ob-btn {
+  background: var(--gold-dim);
+  border: 1px solid var(--gold);
+  color: var(--gold-light);
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  padding: 11px 28px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ob-btn:hover { background: var(--gold); color: var(--bg); }
+.ob-btn.secondary {
+  background: transparent;
+  border-color: var(--border-gold);
+  color: var(--text-dim);
+}
+.ob-btn.secondary:hover { border-color: var(--gold-dim); color: var(--text); }
+
+/* ── CHARACTER CARD ── */
+.character-card {
+  background: var(--surface);
+  border: 1px solid var(--border-gold);
+  border-radius: 4px;
+  padding: 20px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+  animation: fadeUp 0.4s ease both;
+}
+.character-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.char-top {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.char-avatar {
+  width: 60px; height: 60px;
+  border: 2px solid var(--border-gold);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  background: var(--surface2);
+  flex-shrink: 0;
+}
+.char-info { flex: 1; min-width: 0; }
+.char-name {
+  font-family: 'Cinzel', serif;
+  font-size: 19px;
+  color: var(--gold);
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.char-class {
+  font-size: 13px;
+  color: var(--text-dim);
+  font-style: italic;
+}
+.char-level { text-align: right; flex-shrink: 0; }
+.level-num {
+  font-family: 'Cinzel', serif;
+  font-size: 32px;
+  color: var(--gold-light);
+  line-height: 1;
+}
+.level-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ── XP BAR (salient) ── */
+.xp-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 7px;
+}
+.xp-title-text {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  color: var(--xp-color);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.xp-count-text { font-size: 13px; color: var(--text-dim); }
+.xp-count-text strong {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  color: var(--xp-color);
+}
+.xp-bar-track {
+  height: 16px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+.xp-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #152d5e 0%, #2560b8 55%, #4a9eff 100%);
+  border-radius: 2px;
+  transition: width 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  min-width: 0;
+}
+.xp-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+  animation: barShimmer 3s ease-in-out infinite;
+}
+@keyframes barShimmer {
+  0%   { transform: translateX(-100%); }
+  60%  { transform: translateX(200%); }
+  100% { transform: translateX(200%); }
+}
+.xp-bar-fill.pulse {
+  animation: xpBarPulse 0.7s ease;
+}
+@keyframes xpBarPulse {
+  0%   { filter: brightness(1); box-shadow: none; }
+  35%  { filter: brightness(1.5); box-shadow: 0 0 16px rgba(74,158,255,0.7); }
+  100% { filter: brightness(1); box-shadow: none; }
+}
+.xp-next-msg {
+  font-size: 11px;
+  color: var(--text-dark);
+  text-align: right;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+/* Streak */
+.streak-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid var(--border);
+}
+.streak-flame { font-size: 18px; }
+.streak-count { font-family: 'Cinzel', serif; font-size: 17px; color: var(--gold); }
+.streak-label { font-size: 13px; color: var(--text-dim); font-style: italic; }
+
+/* ── LOG SECTION ── */
+.log-section {
+  background: var(--surface);
+  border: 1px solid var(--border-gold);
+  border-radius: 4px;
+  padding: 20px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+  animation: fadeUp 0.4s 0.08s ease both;
+}
+.log-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--xp-color), transparent);
+}
+
+.section-head {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-head::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.log-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 110px auto;
+  gap: 10px;
+  align-items: end;
+}
+@media (max-width: 500px) {
+  .log-form-grid { grid-template-columns: 1fr 1fr; }
+  .log-btn-wrap  { grid-column: 1 / -1; }
+}
+
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-label  { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; }
+.form-input {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text);
+  font-family: 'Crimson Text', serif;
+  font-size: 15px;
+  padding: 9px 11px;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+.form-input:focus { border-color: var(--gold-dim); }
+.form-input::placeholder { color: var(--text-dark); }
+
+.log-btn {
+  background: var(--gold-dim);
+  border: 1px solid var(--gold);
+  color: var(--gold-light);
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  padding: 9px 18px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  width: 100%;
+}
+.log-btn:hover  { background: var(--gold); color: var(--bg); }
+.log-btn:active { transform: scale(0.97); }
+
+.xp-hint {
+  margin-top: 11px;
+  font-size: 12px;
+  color: var(--text-dark);
+  font-style: italic;
+  text-align: center;
+}
+
+/* ── CHRONICLE ── */
+.log-list-wrap { margin-bottom: 20px; animation: fadeUp 0.4s 0.16s ease both; }
+.log-list {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.log-empty {
+  padding: 24px;
+  text-align: center;
+  color: var(--text-dark);
+  font-style: italic;
+  font-size: 14px;
+}
+.log-item {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border);
+  animation: slideIn 0.3s ease both;
+}
+.log-item:last-child { border-bottom: none; }
+.log-icon  { font-size: 16px; text-align: center; }
+.log-desc  { font-size: 14px; color: var(--text); }
+.log-meta  { font-size: 11px; color: var(--text-dark); font-style: italic; }
+.log-right { text-align: right; }
+.log-amount { font-family: 'Cinzel', serif; font-size: 13px; }
+.log-xp    { font-size: 12px; color: var(--xp-color); }
+
+/* ── XP FLOAT ── */
+.xp-float {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9100;
+  font-family: 'Cinzel', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--xp-color);
+  text-shadow: 0 0 18px rgba(74,158,255,0.9), 0 2px 8px rgba(0,0,0,0.9);
+  opacity: 0;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+.xp-float.pop {
+  animation: floatUp 1.5s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+}
+@keyframes floatUp {
+  0%   { opacity: 0;   transform: translateX(-50%) translateY(0)    scale(0.7); }
+  18%  { opacity: 1;   transform: translateX(-50%) translateY(-10px) scale(1.15); }
+  55%  { opacity: 1;   transform: translateX(-50%) translateY(-34px) scale(1); }
+  100% { opacity: 0;   transform: translateX(-50%) translateY(-65px) scale(0.9); }
+}
+
+/* ── LEVEL UP ── */
+.levelup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.87);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s;
+}
+.levelup-overlay.show { opacity: 1; pointer-events: all; }
+.levelup-box {
+  background: var(--surface);
+  border: 1px solid var(--gold);
+  border-radius: 6px;
+  padding: 44px 52px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transform: scale(0.8) translateY(20px);
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-width: 380px;
+  width: 90%;
+}
+.levelup-overlay.show .levelup-box { transform: scale(1) translateY(0); }
+.levelup-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.levelup-sparkles { font-size: 30px; letter-spacing: 6px; margin-bottom: 10px; }
+.levelup-label {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  margin-bottom: 4px;
+}
+.levelup-num {
+  font-family: 'Cinzel', serif;
+  font-size: 62px;
+  color: var(--gold);
+  line-height: 1;
+  margin: 2px 0 8px;
+  text-shadow: 0 0 40px rgba(201,168,76,0.55);
+}
+.levelup-rank {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  color: var(--gold-light);
+  margin-bottom: 14px;
+}
+.levelup-msg {
+  font-style: italic;
+  color: var(--text-dim);
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 24px;
+  padding: 0 8px;
+}
+.levelup-close {
+  background: var(--gold-dim);
+  border: 1px solid var(--gold);
+  color: var(--gold-light);
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  padding: 11px 28px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.levelup-close:hover { background: var(--gold); color: var(--bg); }
+
+/* ── TEASERS ── */
+.teasers { margin-top: 28px; animation: fadeUp 0.5s 0.3s ease both; }
+.teasers-head {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  color: var(--text-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.teasers-head::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.teaser-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 10px;
+}
+.teaser-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 14px 16px;
+  opacity: 0.38;
+  filter: saturate(0.2);
+  position: relative;
+  transition: opacity 0.2s, filter 0.2s;
+}
+.teaser-card:hover { opacity: 0.55; filter: saturate(0.4); }
+.teaser-lock { position: absolute; top: 9px; right: 10px; font-size: 11px; color: var(--text-dark); }
+.teaser-icon { font-size: 22px; margin-bottom: 7px; }
+.teaser-name { font-family: 'Cinzel', serif; font-size: 12px; color: var(--gold-dim); margin-bottom: 4px; }
+.teaser-hint { font-size: 11px; color: var(--text-dark); font-style: italic; line-height: 1.5; }
+.teaser-unlock { font-size: 10px; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 8px; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(16px);
+  background: var(--surface);
+  border: 1px solid var(--border-gold);
+  color: var(--text);
+  font-size: 13px;
+  padding: 10px 20px;
+  border-radius: 3px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 8000;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── UTILS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>⚔ Budget Quest</h1>
+    <div class="tagline">Turn financial discipline into heroic progress.</div>
+  </div>
+
+  <!-- ── ONBOARDING ── -->
+  <div id="onboarding" style="display: block;">
+    <div class="onboarding-card">
+
+      <div class="steps-row">
+        <div class="step-dot done" id="dot-0"></div>
+        <div class="step-line"></div>
+        <div class="step-dot active" id="dot-1"></div>
+        <div class="step-line"></div>
+        <div class="step-dot" id="dot-2"></div>
+      </div>
+
+      <!-- Step 1: Name -->
+      <div class="ob-step" id="step-0">
+        <div style="text-align:center;font-size:44px;margin-bottom:14px">🛡️</div>
+        <div class="ob-title">Your Legend Begins</div>
+        <div class="ob-sub">Every coin you track is an act of discipline. Every logged expense builds your power. What name shall history remember?</div>
+        <div class="name-row">
+          <input class="hero-name-input" id="hero-name-input" type="text" placeholder="Name your hero…" maxlength="24" autocomplete="off" value="Timli">
+          <button class="ob-btn" style="border-radius:0 3px 3px 0;white-space:nowrap" onclick="goStep(1)">Next →</button>
+        </div>
+      </div>
+
+      <!-- Step 2: Avatar -->
+      <div class="ob-step active" id="step-1">
+        <div class="ob-title">Choose Your Form</div>
+        <div class="ob-sub">How shall you appear in the chronicles of the realm?</div>
+        <div class="avatar-grid" id="avatar-grid">
+          <div class="avatar-opt" data-avatar="🧙" onclick="selectAvatar(this)">🧙</div>
+          <div class="avatar-opt selected" data-avatar="🧝‍♀️" onclick="selectAvatar(this)">🧝‍♀️</div>
+          <div class="avatar-opt" data-avatar="🏹" onclick="selectAvatar(this)">🏹</div>
+          <div class="avatar-opt" data-avatar="🗡️" onclick="selectAvatar(this)">🗡️</div>
+          <div class="avatar-opt" data-avatar="❤️‍🩹" onclick="selectAvatar(this)">❤️‍🩹</div>
+        </div>
+        <div class="ob-nav">
+          <button class="ob-btn secondary" onclick="goStep(0)">← Back</button>
+          <button class="ob-btn" onclick="goStep(2)">Choose Class →</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Class -->
+      <div class="ob-step" id="step-2">
+        <div class="ob-title">Choose Your Class</div>
+        <div class="ob-sub">Your class shapes the path ahead. All roads lead to mastery.</div>
+        <div class="class-grid" id="class-grid">
+          <div class="class-opt" data-class="Mage" onclick="selectClass(this)">
+            <div class="class-emoji">🧙</div>
+            <div class="class-info">
+              <div class="class-name">Mage of the Archive</div>
+              <div class="class-desc">You wield knowledge as a weapon. Subscriptions and hidden fees hold no power over you.</div>
+            </div>
+            <div class="class-trait">Wisdom</div>
+          </div>
+          <div class="class-opt" data-class="Ranger" onclick="selectClass(this)">
+            <div class="class-emoji">🧝‍♀️</div>
+            <div class="class-info">
+              <div class="class-name">Ranger of the Forest</div>
+              <div class="class-desc">Discipline is your nature. You log daily, break no streaks, and spend only with intention.</div>
+            </div>
+            <div class="class-trait">Discipline</div>
+          </div>
+          <div class="class-opt" data-class="Hunter" onclick="selectClass(this)">
+            <div class="class-emoji">🏹</div>
+            <div class="class-info">
+              <div class="class-name">Hunter of Surplus</div>
+              <div class="class-desc">You pursue savings aggressively. Every budget you beat is a trophy on your wall.</div>
+            </div>
+            <div class="class-trait">Willpower</div>
+          </div>
+          <div class="class-opt" data-class="Knight" onclick="selectClass(this)">
+            <div class="class-emoji">🗡️</div>
+            <div class="class-info">
+              <div class="class-name">Knight of the Keep</div>
+              <div class="class-desc">You defend your budget with honor. Overspending is a foe that shall not pass.</div>
+            </div>
+            <div class="class-trait">Discipline</div>
+          </div>
+          <div class="class-opt" data-class="Healer" onclick="selectClass(this)">
+            <div class="class-emoji">❤️‍🩹</div>
+            <div class="class-info">
+              <div class="class-name">Healer of Debts</div>
+              <div class="class-desc">Recovery is your power. You restore what was lost and patience is your greatest asset.</div>
+            </div>
+            <div class="class-trait">Wisdom</div>
+          </div>
+        </div>
+        <div class="ob-nav">
+          <button class="ob-btn secondary" onclick="goStep(1)">← Back</button>
+          <button class="ob-btn" onclick="beginJourney()">Begin the Quest ⚔</button>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /onboarding -->
+
+  <!-- ── MAIN ── -->
+  <div id="main" style="display:none">
+
+    <!-- Character Card -->
+    <div class="character-card">
+      <div class="char-top">
+        <div class="char-avatar" id="char-avatar">🛡️</div>
+        <div class="char-info">
+          <div class="char-name" id="char-name">—</div>
+          <div class="char-class" id="char-class">Novice</div>
+        </div>
+        <div class="char-level">
+          <div class="level-num" id="level-num">1</div>
+          <div class="level-label">Level</div>
+        </div>
+      </div>
+
+      <!-- XP -->
+      <div class="xp-label-row">
+        <span class="xp-title-text">⬡ Experience</span>
+        <span class="xp-count-text"><strong id="xp-current">0</strong> / <span id="xp-next-val">80</span> XP</span>
+      </div>
+      <div class="xp-bar-track">
+        <div class="xp-bar-fill" id="xp-fill" style="width:0%"></div>
+      </div>
+      <div class="xp-next-msg" id="xp-next-msg">Log your first expense to earn XP</div>
+
+      <!-- Streak -->
+      <div class="streak-row">
+        <span class="streak-flame">🔥</span>
+        <span class="streak-count" id="streak-count">0</span>
+        <span class="streak-label" id="streak-label">day streak</span>
+      </div>
+    </div>
+
+    <!-- Log Form -->
+    <div class="log-section">
+      <div class="section-head">Record an Expense</div>
+      <div class="log-form-grid">
+        <div class="form-group">
+          <label class="form-label">What did you spend on?</label>
+          <input class="form-input" id="desc-input" type="text" placeholder="e.g. Morning coffee" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Amount ($)</label>
+          <input class="form-input" id="amount-input" type="number" min="0.01" step="0.01" placeholder="0.00">
+        </div>
+        <div class="log-btn-wrap">
+          <label class="form-label" style="visibility:hidden">Log</label>
+          <button class="log-btn" id="log-btn" onclick="logExpense()">⚔ Log It</button>
+        </div>
+      </div>
+      <div class="xp-hint">Every entry earns XP — the act of tracking is the discipline.</div>
+    </div>
+
+    <!-- Chronicle -->
+    <div class="log-list-wrap">
+      <div class="section-head">Chronicle</div>
+      <div class="log-list" id="log-list"></div>
+    </div>
+
+    <!-- Teasers -->
+    <div class="teasers">
+      <div class="teasers-head">Unlocks Ahead</div>
+      <div class="teaser-grid">
+        <div class="teaser-card">
+          <div class="teaser-lock">🔒</div>
+          <div class="teaser-icon">⚔️</div>
+          <div class="teaser-name">Foes &amp; Enemies</div>
+          <div class="teaser-hint">Dark forces stir. Your overspending gives them power.</div>
+          <div class="teaser-unlock">Unlocks at Level 3</div>
+        </div>
+        <div class="teaser-card">
+          <div class="teaser-lock">🔒</div>
+          <div class="teaser-icon">🏰</div>
+          <div class="teaser-name">Treasury Vaults</div>
+          <div class="teaser-hint">Allocate gold across your realm's coffers. Stay under budget, gain power.</div>
+          <div class="teaser-unlock">Unlocks at Level 5</div>
+        </div>
+        <div class="teaser-card">
+          <div class="teaser-lock">🔒</div>
+          <div class="teaser-icon">📜</div>
+          <div class="teaser-name">Weekly Quests</div>
+          <div class="teaser-hint">Prove your discipline across 7 days. Claim rare rewards.</div>
+          <div class="teaser-unlock">Unlocks at Level 7</div>
+        </div>
+        <div class="teaser-card">
+          <div class="teaser-lock">🔒</div>
+          <div class="teaser-icon">🛡</div>
+          <div class="teaser-name">The Guild</div>
+          <div class="teaser-hint">Battle monthly bosses alongside a fellowship of heroes.</div>
+          <div class="teaser-unlock">Unlocks at Level 10</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- XP Float -->
+<div class="xp-float" id="xp-float"></div>
+
+<!-- Level Up Overlay -->
+<div class="levelup-overlay" id="levelup-overlay">
+  <div class="levelup-box">
+    <div class="levelup-sparkles">✦ ✧ ✦</div>
+    <div class="levelup-label">Level Up</div>
+    <div class="levelup-num" id="lu-level">2</div>
+    <div class="levelup-rank" id="lu-rank">Apprentice</div>
+    <div class="levelup-msg" id="lu-msg">Your discipline grows stronger. The realm notices.</div>
+    <button class="levelup-close" onclick="closeLevelUp()">Continue the Quest</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─────────────────────────
+//  CONSTANTS
+// ─────────────────────────
+var SAVE_KEY = 'bq_v2';
+
+// Cumulative XP to reach each level (index = level - 1)
+var LEVEL_XP = [0, 80, 200, 370, 600, 900, 1270, 1720, 2260, 3000, 4000];
+
+var CLASS_TITLES = {
+  Mage:   ['Novice Archivist','Apprentice Mage','Scroll Keeper','Lore Binder','Elder Mage'],
+  Ranger: ['Novice Tracker','Trail Walker','Forest Keeper','Silent Warden','Ranger Lord'],
+  Hunter: ['Novice Hunter','Coin Stalker','Surplus Seeker','Thrift Predator','Master Hunter'],
+  Knight: ['Novice Guard','Shield Bearer','Budget Warden','Iron Keeper','Knight Commander'],
+  Healer: ['Novice Mender','Debt Healer','Wound Closer','Recovery Sage','Grand Healer'],
+};
+
+var LEVEL_MSGS = [
+  'The realm whispers your name with growing respect.',
+  'Enemies stir in the shadows. Your discipline unnerves them.',
+  'Ancient powers take note of your consistency.',
+  'A darkness begins to sense you. It fears the disciplined.',
+  'Merchants speak of a keeper who cannot be broken.',
+  'The old ones said this path would find no hero. They were wrong.',
+  'Your ledger has become a weapon. Your restraint, a shield.',
+  'Guild halls echo with tales of your perseverance.',
+  'You approach the upper tiers of mastery. Few have come this far.',
+  'The realm is yours to protect. You have become legend.',
+];
+
+var LOG_ICONS = ['💰','🛒','🍖','🧪','⚔️','📜','🐎','🏰','🔮','💎','🌿','🎒'];
+
+// ─────────────────────────
+//  STATE
+// ─────────────────────────
+var state = {
+  name: '',
+  avatar: '',
+  heroClass: '',
+  xp: 0,
+  streak: 0,
+  lastLogDate: null,
+  log: []
+};
+
+// Temp onboarding picks
+var obAvatar = '';
+var obClass  = '';
+
+// ─────────────────────────
+//  SAVE / LOAD
+// ─────────────────────────
+function save() {
+  localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+}
+
+function load() {
+  var raw = localStorage.getItem(SAVE_KEY);
+  if (!raw) return;
+  try {
+    var parsed = JSON.parse(raw);
+    if (typeof parsed !== 'object' || !parsed) return;
+    if (!Array.isArray(parsed.log)) parsed.log = [];
+    // Merge — only copy known keys so we don't corrupt state
+    ['name','avatar','heroClass','xp','streak','lastLogDate','log'].forEach(function(k) {
+      if (parsed[k] !== undefined) state[k] = parsed[k];
+    });
+  } catch(e) { console.warn('Load failed:', e); }
+}
+
+// ─────────────────────────
+//  LEVEL HELPERS
+// ─────────────────────────
+function getLevelData(xp) {
+  var level = 1;
+  for (var i = LEVEL_XP.length - 1; i >= 0; i--) {
+    if (xp >= LEVEL_XP[i]) { level = i + 1; break; }
+  }
+  level = Math.min(level, LEVEL_XP.length);
+
+  var xpAtStart = LEVEL_XP[level - 1] || 0;
+  var xpAtEnd   = LEVEL_XP[level] || (xpAtStart + 1000);
+  var span      = xpAtEnd - xpAtStart;
+  var progress  = xp - xpAtStart;
+  var pct       = Math.min(100, Math.max(0, (progress / span) * 100));
+
+  return { level: level, xpAtStart: xpAtStart, xpAtEnd: xpAtEnd, pct: pct, toNext: xpAtEnd - xp };
+}
+
+function getTitle(heroClass, level) {
+  var titles = CLASS_TITLES[heroClass] || CLASS_TITLES['Knight'];
+  var idx = Math.min(Math.floor((level - 1) / 2), titles.length - 1);
+  return titles[idx];
+}
+
+// ─────────────────────────
+//  STREAK
+// ─────────────────────────
+function checkStreak() {
+  if (!state.lastLogDate) return;
+  var today     = new Date().toDateString();
+  var yesterday = new Date(Date.now() - 86400000).toDateString();
+  if (state.lastLogDate !== today && state.lastLogDate !== yesterday) {
+    state.streak = 0;
+    save();
+  }
+}
+
+function markLoggedToday() {
+  var today     = new Date().toDateString();
+  var yesterday = new Date(Date.now() - 86400000).toDateString();
+  if (state.lastLogDate === today) return; // already counted today
+  if (state.lastLogDate === yesterday) {
+    state.streak = (state.streak || 0) + 1;
+  } else {
+    state.streak = 1;
+  }
+  state.lastLogDate = today;
+}
+
+// ─────────────────────────
+//  RENDER
+// ─────────────────────────
+function render() {
+  var ld = getLevelData(state.xp);
+
+  document.getElementById('char-avatar').textContent = state.avatar || '🛡️';
+  document.getElementById('char-name').textContent   = state.name   || '—';
+  document.getElementById('char-class').textContent  = getTitle(state.heroClass, ld.level);
+  document.getElementById('level-num').textContent   = ld.level;
+
+  document.getElementById('xp-current').textContent  = state.xp;
+  document.getElementById('xp-next-val').textContent = ld.xpAtEnd;
+  document.getElementById('xp-fill').style.width     = ld.pct + '%';
+
+  var nextTitle = getTitle(state.heroClass, ld.level + 1);
+  document.getElementById('xp-next-msg').textContent =
+    ld.level < LEVEL_XP.length
+      ? ld.toNext + ' XP until ' + nextTitle
+      : 'Maximum rank achieved';
+
+  var today = new Date().toDateString();
+  document.getElementById('streak-count').textContent = state.streak;
+  document.getElementById('streak-label').textContent =
+    state.lastLogDate === today
+      ? (state.streak > 1 ? 'day streak — logged today ✓' : 'day streak — great start!')
+      : (state.streak > 0 ? 'day streak — log today to keep it alive' : 'day streak — start yours today');
+
+  renderLog();
+}
+
+function renderLog() {
+  var list = document.getElementById('log-list');
+  list.innerHTML = ''; // always clear and rebuild
+
+  if (!state.log || state.log.length === 0) {
+    var empty = document.createElement('div');
+    empty.className = 'log-empty';
+    empty.textContent = 'No entries yet. Log your first expense above.';
+    list.appendChild(empty);
+    return;
+  }
+
+  // Show most recent first, up to 20
+  var items = state.log.slice().reverse().slice(0, 20);
+  items.forEach(function(entry) {
+    var el = document.createElement('div');
+    el.className = 'log-item';
+    var amt  = parseFloat(entry.amount).toFixed(2);
+    var icon = entry.icon || '💰';
+    var meta = entry.ts ? formatDate(entry.ts) : '';
+    el.innerHTML =
+      '<div class="log-icon">' + icon + '</div>' +
+      '<div>' +
+        '<div class="log-desc">' + esc(entry.desc) + '</div>' +
+        (meta ? '<div class="log-meta">' + meta + '</div>' : '') +
+      '</div>' +
+      '<div class="log-right">' +
+        '<div class="log-amount">$' + amt + '</div>' +
+        '<div class="log-xp">+' + entry.xpGained + ' XP</div>' +
+      '</div>';
+    list.appendChild(el);
+  });
+}
+
+function formatDate(ts) {
+  if (!ts) return '';
+  return new Date(ts).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+}
+
+function esc(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ─────────────────────────
+//  ONBOARDING
+// ─────────────────────────
+var currentStep = 0;
+
+function goStep(n) {
+  // Validate forward movement
+  if (n > currentStep) {
+    if (currentStep === 0) {
+      var name = document.getElementById('hero-name-input').value.trim();
+      if (!name) { showToast('Name your hero first.'); return; }
+    }
+    if (currentStep === 1) {
+      if (!obAvatar) { showToast('Choose your form first.'); return; }
+    }
+  }
+
+  document.getElementById('step-' + currentStep).classList.remove('active');
+  currentStep = n;
+  document.getElementById('step-' + currentStep).classList.add('active');
+
+  // Update dots
+  for (var i = 0; i <= 2; i++) {
+    var dot = document.getElementById('dot-' + i);
+    dot.className = 'step-dot';
+    if (i < currentStep)      dot.classList.add('done');
+    else if (i === currentStep) dot.classList.add('active');
+  }
+
+  // Scroll onboarding into view smoothly
+  document.getElementById('onboarding').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function selectAvatar(el) {
+  document.querySelectorAll('.avatar-opt').forEach(function(a) { a.classList.remove('selected'); });
+  el.classList.add('selected');
+  obAvatar = el.getAttribute('data-avatar');
+}
+
+function selectClass(el) {
+  document.querySelectorAll('.class-opt').forEach(function(c) { c.classList.remove('selected'); });
+  el.classList.add('selected');
+  obClass = el.getAttribute('data-class');
+}
+
+function beginJourney() {
+  if (!obClass) { showToast('Choose your class first.'); return; }
+  state.name      = document.getElementById('hero-name-input').value.trim();
+  state.avatar    = obAvatar || '🛡️';
+  state.heroClass = obClass;
+  save();
+  document.getElementById('onboarding').style.display = 'none';
+  document.getElementById('main').style.display = 'block';
+  render();
+}
+
+document.getElementById('hero-name-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') goStep(1);
+});
+
+// ─────────────────────────
+//  LOG EXPENSE
+// ─────────────────────────
+function logExpense() {
+  var descEl   = document.getElementById('desc-input');
+  var amountEl = document.getElementById('amount-input');
+  var desc     = descEl.value.trim();
+  var amount   = parseFloat(amountEl.value);
+
+  if (!desc)               { showToast('Describe your expense.'); return; }
+  if (!amount || amount <= 0) { showToast('Enter a valid amount.'); return; }
+
+  var prevLevel = getLevelData(state.xp).level;
+
+  // XP calculation: flat base + streak bonus, NOT proportional to dollar amount
+  var streakBonus = Math.min(5, Math.floor((state.streak || 0) / 5));
+  var xpGained    = 10 + streakBonus + Math.floor(Math.random() * 5); // 10–19 XP
+
+  // Update streak BEFORE saving
+  markLoggedToday();
+  state.xp += xpGained;
+
+  // Build entry object
+  var entry = {
+    id:       String(Date.now()) + String(Math.floor(Math.random() * 10000)),
+    desc:     desc,
+    amount:   amount,
+    xpGained: xpGained,
+    icon:     LOG_ICONS[Math.floor(Math.random() * LOG_ICONS.length)],
+    ts:       new Date().toISOString()
+  };
+
+  // Push to log (guaranteed array)
+  if (!Array.isArray(state.log)) state.log = [];
+  state.log.push(entry);
+
+  // Save and render
+  save();
+  render();
+
+  // Clear inputs
+  descEl.value   = '';
+  amountEl.value = '';
+  descEl.focus();
+
+  // === Feedback ===
+
+  // 1. XP float above the bar
+  fireXpFloat('+' + xpGained + ' XP');
+
+  // 2. XP bar pulse
+  var fill = document.getElementById('xp-fill');
+  fill.classList.remove('pulse');
+  void fill.offsetWidth;
+  fill.classList.add('pulse');
+  setTimeout(function() { fill.classList.remove('pulse'); }, 800);
+
+  // 3. Level up check
+  var newLevel = getLevelData(state.xp).level;
+  if (newLevel > prevLevel) {
+    setTimeout(function() { showLevelUp(newLevel); }, 900);
+  }
+}
+
+function fireXpFloat(text) {
+  var floatEl = document.getElementById('xp-float');
+  var track   = document.getElementById('xp-fill');
+  var rect    = track.getBoundingClientRect();
+
+  floatEl.style.left = Math.round(rect.left + rect.width / 2) + 'px';
+  floatEl.style.top  = Math.round(rect.top  + window.scrollY) + 'px';
+  floatEl.textContent = text;
+
+  floatEl.classList.remove('pop');
+  void floatEl.offsetWidth; // reflow to restart animation
+  floatEl.classList.add('pop');
+}
+
+// ─────────────────────────
+//  LEVEL UP
+// ─────────────────────────
+function showLevelUp(level) {
+  document.getElementById('lu-level').textContent = level;
+  document.getElementById('lu-rank').textContent  = getTitle(state.heroClass, level);
+  document.getElementById('lu-msg').textContent   = LEVEL_MSGS[Math.min(level - 2, LEVEL_MSGS.length - 1)];
+  document.getElementById('levelup-overlay').classList.add('show');
+}
+
+function closeLevelUp() {
+  document.getElementById('levelup-overlay').classList.remove('show');
+}
+
+// ─────────────────────────
+//  TOAST
+// ─────────────────────────
+var toastTimer;
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() { t.classList.remove('show'); }, 2800);
+}
+
+// ─────────────────────────
+//  KEYBOARD
+// ─────────────────────────
+document.addEventListener('keydown', function(e) {
+  if (e.key !== 'Enter') return;
+  var a = document.activeElement;
+  if (a && (a.id === 'desc-input' || a.id === 'amount-input')) {
+    logExpense();
+  }
+});
+
+// ─────────────────────────
+//  INIT
+// ─────────────────────────
+load();
+checkStreak();
+
+if (state.name) {
+  document.getElementById('onboarding').style.display = 'none';
+  document.getElementById('main').style.display = 'block';
+  render();
+} else {
+  document.getElementById('onboarding').style.display = 'block';
+  document.getElementById('main').style.display = 'none';
+}
+</script>
+
+
+</body></html>
