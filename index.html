@@ -1512,20 +1512,42 @@ body::after {
     <div class="onboarding-card" style="max-width:400px;margin:0 auto;">
       <div style="text-align:center;font-size:48px;margin-bottom:16px">🛡️</div>
       <div class="ob-title">Enter the Realm</div>
-      <div class="ob-sub" style="margin-bottom:24px;">Every hero needs a name on the ledger. Enter your email and we'll send you a link to claim your place on the road.</div>
-      <div id="login-form">
-        <div class="name-row" style="flex-direction:column;gap:10px;">
-          <input class="hero-name-input" id="login-email" type="email" placeholder="your@email.com" autocomplete="email" style="border-radius:3px;width:100%;">
-          <button class="ob-btn" style="width:100%;justify-content:center;" onclick="sendMagicLink()">Claim Your Place on the Road ⚔</button>
+
+      <!-- Tab switcher -->
+      <div style="display:flex;gap:0;margin-bottom:20px;border:1px solid var(--border);border-radius:4px;overflow:hidden;">
+        <button id="tab-password" onclick="switchLoginTab('password')" style="flex:1;padding:9px;background:var(--gold);color:#1a1400;border:none;cursor:pointer;font-family:'Cinzel',serif;font-size:12px;font-weight:bold;">Password</button>
+        <button id="tab-magic" onclick="switchLoginTab('magic')" style="flex:1;padding:9px;background:var(--surface2);color:var(--text-dim);border:none;cursor:pointer;font-family:'Cinzel',serif;font-size:12px;">Magic Link</button>
+      </div>
+
+      <!-- Password login -->
+      <div id="login-password-panel">
+        <div id="login-form-password">
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <input class="hero-name-input" id="login-email-pw" type="email" placeholder="your@email.com" autocomplete="email" style="border-radius:3px;width:100%;">
+            <input class="hero-name-input" id="login-password" type="password" placeholder="Password" autocomplete="current-password" style="border-radius:3px;width:100%;">
+            <button class="ob-btn" style="width:100%;justify-content:center;" onclick="signInWithPassword()">Enter the Realm ⚔</button>
+          </div>
+          <div id="login-error-pw" style="color:var(--red);font-size:13px;text-align:center;margin-top:10px;display:none;"></div>
         </div>
-        <div id="login-error" style="color:var(--red);font-size:13px;text-align:center;margin-top:10px;display:none;"></div>
       </div>
-      <div id="login-sent" style="display:none;text-align:center;">
-        <div style="font-size:36px;margin-bottom:12px">✉️</div>
-        <div style="color:var(--gold);font-family:'Cinzel',serif;font-size:16px;margin-bottom:8px;">Your summons has been sent</div>
-        <div style="color:var(--text-dim);font-size:14px;line-height:1.6;">A magic link rides to <strong id="sent-email" style="color:var(--text)"></strong>.<br>Click it to enter the realm and begin your journey.</div>
-        <button onclick="resetLoginForm()" style="margin-top:16px;background:none;border:none;color:var(--text-dark);font-size:12px;cursor:pointer;text-decoration:underline;">Use a different email</button>
+
+      <!-- Magic link login -->
+      <div id="login-magic-panel" style="display:none;">
+        <div id="login-form-magic">
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <input class="hero-name-input" id="login-email" type="email" placeholder="your@email.com" autocomplete="email" style="border-radius:3px;width:100%;">
+            <button class="ob-btn" style="width:100%;justify-content:center;" onclick="sendMagicLink()">Send Magic Link ✉</button>
+          </div>
+          <div id="login-error" style="color:var(--red);font-size:13px;text-align:center;margin-top:10px;display:none;"></div>
+        </div>
+        <div id="login-sent" style="display:none;text-align:center;">
+          <div style="font-size:36px;margin-bottom:12px">✉️</div>
+          <div style="color:var(--gold);font-family:'Cinzel',serif;font-size:16px;margin-bottom:8px;">Your summons has been sent</div>
+          <div style="color:var(--text-dim);font-size:14px;line-height:1.6;">A magic link rides to <strong id="sent-email" style="color:var(--text)"></strong>.<br>Click it to enter the realm and begin your journey.</div>
+          <button onclick="resetLoginForm()" style="margin-top:16px;background:none;border:none;color:var(--text-dark);font-size:12px;cursor:pointer;text-decoration:underline;">Use a different email</button>
+        </div>
       </div>
+
     </div>
   </div>
 
@@ -2435,6 +2457,43 @@ async function loadFromSupabase() {
 // ─────────────────────────
 //  AUTH FUNCTIONS
 // ─────────────────────────
+function switchLoginTab(tab) {
+  var isPassword = tab === 'password';
+  document.getElementById('login-password-panel').style.display = isPassword ? 'block' : 'none';
+  document.getElementById('login-magic-panel').style.display   = isPassword ? 'none' : 'block';
+  document.getElementById('tab-password').style.background = isPassword ? 'var(--gold)' : 'var(--surface2)';
+  document.getElementById('tab-password').style.color      = isPassword ? '#1a1400' : 'var(--text-dim)';
+  document.getElementById('tab-magic').style.background    = isPassword ? 'var(--surface2)' : 'var(--gold)';
+  document.getElementById('tab-magic').style.color         = isPassword ? 'var(--text-dim)' : '#1a1400';
+}
+
+async function signInWithPassword() {
+  var email    = document.getElementById('login-email-pw').value.trim();
+  var password = document.getElementById('login-password').value;
+  var errEl    = document.getElementById('login-error-pw');
+  errEl.style.display = 'none';
+
+  if (!email || !password) {
+    errEl.textContent = 'Enter your email and password.';
+    errEl.style.display = 'block';
+    return;
+  }
+  var btn = document.querySelector('#login-form-password .ob-btn');
+  btn.textContent = 'Entering…';
+  btn.disabled = true;
+
+  var res = await sb.auth.signInWithPassword({ email: email, password: password });
+  if (res.error) {
+    errEl.textContent = res.error.message === 'Invalid login credentials'
+      ? 'Wrong email or password. Try again.'
+      : res.error.message;
+    errEl.style.display = 'block';
+    btn.textContent = 'Enter the Realm ⚔';
+    btn.disabled = false;
+  }
+  // Success is handled by onAuthStateChange
+}
+
 async function sendMagicLink() {
   var email = document.getElementById('login-email').value.trim();
   if (!email || !email.includes('@')) {
