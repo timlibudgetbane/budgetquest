@@ -1510,20 +1510,20 @@ body::after {
   <!-- ── LOGIN ── -->
   <div id="login-screen" style="display:none;">
     <div class="onboarding-card" style="max-width:400px;margin:0 auto;">
-      <div style="text-align:center;font-size:48px;margin-bottom:16px">⚔️</div>
-      <div class="ob-title">Budget Quest</div>
-      <div class="ob-sub" style="margin-bottom:24px;">Enter your email to receive a magic login link. No password needed.</div>
+      <div style="text-align:center;font-size:48px;margin-bottom:16px">🛡️</div>
+      <div class="ob-title">Enter the Realm</div>
+      <div class="ob-sub" style="margin-bottom:24px;">Every hero needs a name on the ledger. Enter your email and we'll send you a link to claim your place on the road.</div>
       <div id="login-form">
         <div class="name-row" style="flex-direction:column;gap:10px;">
           <input class="hero-name-input" id="login-email" type="email" placeholder="your@email.com" autocomplete="email" style="border-radius:3px;width:100%;">
-          <button class="ob-btn" style="width:100%;justify-content:center;" onclick="sendMagicLink()">Send Magic Link ✉</button>
+          <button class="ob-btn" style="width:100%;justify-content:center;" onclick="sendMagicLink()">Claim Your Place on the Road ⚔</button>
         </div>
         <div id="login-error" style="color:var(--red);font-size:13px;text-align:center;margin-top:10px;display:none;"></div>
       </div>
       <div id="login-sent" style="display:none;text-align:center;">
         <div style="font-size:36px;margin-bottom:12px">✉️</div>
-        <div style="color:var(--gold);font-family:'Cinzel',serif;font-size:16px;margin-bottom:8px;">Check your email</div>
-        <div style="color:var(--text-dim);font-size:14px;line-height:1.6;">A magic link is on its way to <strong id="sent-email" style="color:var(--text)"></strong>.<br>Click the link to enter the realm.</div>
+        <div style="color:var(--gold);font-family:'Cinzel',serif;font-size:16px;margin-bottom:8px;">Your summons has been sent</div>
+        <div style="color:var(--text-dim);font-size:14px;line-height:1.6;">A magic link rides to <strong id="sent-email" style="color:var(--text)"></strong>.<br>Click it to enter the realm and begin your journey.</div>
         <button onclick="resetLoginForm()" style="margin-top:16px;background:none;border:none;color:var(--text-dark);font-size:12px;cursor:pointer;text-decoration:underline;">Use a different email</button>
       </div>
     </div>
@@ -2730,13 +2730,12 @@ function checkEncounter(amount) {
   // ── HOSTILE TRIGGERS ──
   var hostileType = null;
 
-  if (amount > monthlyBudget * 0.15) {
-    hostileType = 'large';
-  }
-  if (!hostileType && reservePct < 0.5 && monthProgress < 0.6 && monthProgress > 0.1) {
+  // Reserve below 50% — spending velocity is too high
+  if (reservePct < 0.50) {
     hostileType = 'velocity';
   }
-  if (!hostileType && reservePct < 0.15) {
+  // Reserve critically low (<15%)
+  if (reservePct < 0.15) {
     hostileType = 'depleted';
   }
 
@@ -2745,17 +2744,16 @@ function checkEncounter(amount) {
     var pos = getMapPosition();
     var hostile;
     if (pos >= 9) {
-      hostile = HOSTILE_ENCOUNTERS[4]; // Gate Duty — Iron Keep
+      hostile = HOSTILE_ENCOUNTERS[4];
     } else if (pos >= 6) {
-      hostile = HOSTILE_ENCOUNTERS[2]; // Thornwood Ambush
-    } else if (hostileType === 'large') {
-      hostile = HOSTILE_ENCOUNTERS[1]; // King's Collector
-    } else if (hostileType === 'velocity') {
-      hostile = HOSTILE_ENCOUNTERS[0]; // Bandits
+      hostile = HOSTILE_ENCOUNTERS[2];
+    } else if (hostileType === 'depleted') {
+      hostile = HOSTILE_ENCOUNTERS[3]; // Silk Road Merchant — scraping the barrel
     } else {
-      hostile = HOSTILE_ENCOUNTERS[3]; // Silk Road Merchant
+      hostile = HOSTILE_ENCOUNTERS[0]; // Bandits — burning through reserves
     }
-    if (Math.random() < 0.60) {
+    // Always fire — the pattern warrants it
+    if (Math.random() < 0.70) {
       state.lastEncounterLog = entryId;
       save();
       setTimeout(function() { showEncounter(hostile, true); }, 1200);
