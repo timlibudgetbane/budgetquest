@@ -1283,7 +1283,7 @@ body {
 
         <!-- Road Bonus -->
         <div class="road-bonus-track">
-          <span class="road-bonus-label" id="road-bonus-label">Road Bonus — log every day this week to move faster</span>
+          <span class="road-bonus-label" id="road-bonus-label">Road Bonus — log 5 days this week for an extra map step</span>
           <div class="road-bonus-pips">
             <div class="road-pip" id="road-pip-1"></div>
             <div class="road-pip" id="road-pip-2"></div>
@@ -2793,7 +2793,19 @@ function logExpense() {
 
   var newLevel = getLevelData(state.xp).level;
   if (newLevel > prevLevel) {
-    setTimeout(function() { showLevelUp(newLevel); }, 900);
+    // Level-up advances map: level 2 -> pos 1, level 3 -> pos 2, etc.
+    var targetPos = newLevel - 1;
+    if (targetPos > getMapPosition() && targetPos <= 10) {
+      state.mapPosition = targetPos;
+      state.lastMapPosition = targetPos - 1;
+      save();
+    }
+    setTimeout(function() {
+      showLevelUp(newLevel);
+      render();
+      checkZoneBadge();
+      setTimeout(function() { checkArrival(); }, 500);
+    }, 900);
   }
 }
 
