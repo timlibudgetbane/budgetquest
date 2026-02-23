@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Budget Quest</title>
 <link href="Budget%20Quest_22226_files/css2.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
   --bg: #0e0c0a;
@@ -996,7 +997,41 @@ body::after {
 .teaser-hint { font-size: 11px; color: var(--text-dim); font-style: italic; line-height: 1.5; }
 .teaser-unlock { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 8px; }
 
-/* ── HEARTS (inside map) ── */
+/* ── ENCOUNTER BOX VARIANTS ── */
+.encounter-box.story {
+  border-color: var(--border-gold);
+}
+.encounter-box.story .encounter-zone {
+  color: var(--gold-dim);
+}
+.encounter-box.arrival {
+  border-color: #4a9eff;
+  box-shadow: 0 0 32px rgba(74,158,255,0.15);
+}
+.encounter-box.arrival .encounter-zone {
+  color: #4a9eff;
+}
+.encounter-box.zone-complete {
+  border-color: var(--gold);
+  box-shadow: 0 0 40px rgba(201,168,76,0.25);
+}
+.encounter-box.zone-complete .encounter-zone {
+  color: var(--gold);
+  font-size: 13px;
+}
+.encounter-box.zone-complete .encounter-title {
+  color: var(--gold-light);
+}
+.encounter-btn.story-choice {
+  background: var(--surface2);
+  border-color: var(--border-gold);
+  color: var(--text-dim);
+}
+.encounter-btn.story-choice:hover {
+  background: var(--surface);
+  border-color: var(--gold-dim);
+  color: var(--text);
+}
 .map-hearts {
   display: flex;
   align-items: center;
@@ -1466,6 +1501,32 @@ body::after {
   <div class="header">
     <h1>⚔ Budget Quest</h1>
     <div class="tagline">Turn financial discipline into heroic progress.</div>
+    <div id="header-auth" style="display:none;margin-top:8px;font-size:12px;color:var(--text-dark);">
+      <span id="header-email"></span>
+      <button onclick="signOut()" style="margin-left:12px;background:none;border:1px solid var(--border);color:var(--text-dark);padding:3px 10px;border-radius:3px;cursor:pointer;font-size:11px;">Sign Out</button>
+    </div>
+  </div>
+
+  <!-- ── LOGIN ── -->
+  <div id="login-screen" style="display:none;">
+    <div class="onboarding-card" style="max-width:400px;margin:0 auto;">
+      <div style="text-align:center;font-size:48px;margin-bottom:16px">⚔️</div>
+      <div class="ob-title">Budget Quest</div>
+      <div class="ob-sub" style="margin-bottom:24px;">Enter your email to receive a magic login link. No password needed.</div>
+      <div id="login-form">
+        <div class="name-row" style="flex-direction:column;gap:10px;">
+          <input class="hero-name-input" id="login-email" type="email" placeholder="your@email.com" autocomplete="email" style="border-radius:3px;width:100%;">
+          <button class="ob-btn" style="width:100%;justify-content:center;" onclick="sendMagicLink()">Send Magic Link ✉</button>
+        </div>
+        <div id="login-error" style="color:var(--red);font-size:13px;text-align:center;margin-top:10px;display:none;"></div>
+      </div>
+      <div id="login-sent" style="display:none;text-align:center;">
+        <div style="font-size:36px;margin-bottom:12px">✉️</div>
+        <div style="color:var(--gold);font-family:'Cinzel',serif;font-size:16px;margin-bottom:8px;">Check your email</div>
+        <div style="color:var(--text-dim);font-size:14px;line-height:1.6;">A magic link is on its way to <strong id="sent-email" style="color:var(--text)"></strong>.<br>Click the link to enter the realm.</div>
+        <button onclick="resetLoginForm()" style="margin-top:16px;background:none;border:none;color:var(--text-dark);font-size:12px;cursor:pointer;text-decoration:underline;">Use a different email</button>
+      </div>
+    </div>
   </div>
 
   <!-- ── ONBOARDING ── -->
@@ -1854,24 +1915,39 @@ var LOG_ICONS = ['💰','🛒','🍖','🧪','⚔️','📜','🐎','🏰','🔮
 // ─────────────────────────
 var MAP_WAYPOINTS = [
   // Zone 1 — The Hearthstone Road (levels 1-3)
-  { id: 0,  icon: '🏘️', name: 'Hearthstone\nVillage',  zone: 1, zoneName: 'The Hearthstone Road' },
-  { id: 1,  icon: '🌾', name: 'Harvest\nCrossing',      zone: 1, zoneName: 'The Hearthstone Road' },
-  { id: 2,  icon: '🪨', name: 'Stonepath\nMill',        zone: 1, zoneName: 'The Hearthstone Road' },
-  { id: 'z1', icon: '🛡️', name: 'Zone Badge',          zone: 'badge1', badge: 'zone1', zoneName: 'The Hearthstone Road' },
-  // Zone 2 — The Merchant's Pass (levels 4-6)
-  { id: 3,  icon: '🏪', name: "Merchant's\nGate",       zone: 2, zoneName: "The Merchant's Pass" },
-  { id: 4,  icon: '🌉', name: 'Copperbridge',           zone: 2, zoneName: "The Merchant's Pass" },
-  { id: 5,  icon: '⛺', name: 'Trader\'s\nCamp',        zone: 2, zoneName: "The Merchant's Pass" },
-  { id: 'z2', icon: '🪙', name: 'Zone Badge',           zone: 'badge2', badge: 'zone2', zoneName: "The Merchant's Pass" },
+  { id: 0,  icon: '🏘️', name: 'Hearthstone\nVillage',  zone: 1, zoneName: 'The Hearthstone Road',
+    arrival: 'Your journey begins in Hearthstone — a village built on old scorch marks that nobody talks about. Log your expenses to earn XP, level up, and move down the road.' },
+  { id: 1,  icon: '🌾', name: 'Harvest\nCrossing',      zone: 1, zoneName: 'The Hearthstone Road',
+    arrival: 'The Oldfather Oak is larger than you expected. Three guilds claim ownership of it. None of them are here.' },
+  { id: 2,  icon: '🪨', name: 'Stonepath\nMill',        zone: 1, zoneName: 'The Hearthstone Road',
+    arrival: 'The miller takes coin only. No credit, no exceptions. The sign above his door has been there longer than he has.' },
+  { id: 'z1', icon: '🛡️', name: 'Zone Badge',          zone: 'badge1', badge: 'zone1', zoneName: 'The Hearthstone Road',
+    zoneComplete: 'You leave the Hearthstone Road behind. It looks smaller from here than it felt while you were on it.' },
+  // Zone 2 — The Merchant\'s Pass (levels 4-6)
+  { id: 3,  icon: '🏪', name: "Merchant's\nGate",       zone: 2, zoneName: "The Merchant's Pass",
+    arrival: 'The original gate collapsed centuries ago. The market that grew up around the ruin never stopped.' },
+  { id: 4,  icon: '🌉', name: 'Copperbridge',           zone: 2, zoneName: "The Merchant's Pass",
+    arrival: 'The copper plating was stripped and sold by a treasurer hiding a deficit. Someone still leaves coins on the memorial plaque.' },
+  { id: 5,  icon: '⛺', name: "Trader's\nCamp",         zone: 2, zoneName: "The Merchant's Pass",
+    arrival: 'The Thornwood begins fifty yards past the last tent. At night you can\'t tell where the camp ends and the forest starts.' },
+  { id: 'z2', icon: '🪙', name: 'Zone Badge',           zone: 'badge2', badge: 'zone2', zoneName: "The Merchant's Pass",
+    zoneComplete: "The Merchant's Pass falls behind you. The road ahead grows quieter. That is not entirely reassuring." },
   // Zone 3 — The Thornwood (levels 7-9)
-  { id: 6,  icon: '🌲', name: 'Thornwood\nEdge',        zone: 3, zoneName: 'The Thornwood' },
-  { id: 7,  icon: '🌑', name: 'Darkhollow\nPath',       zone: 3, zoneName: 'The Thornwood' },
-  { id: 8,  icon: '🕯️', name: 'Wayward\nShrine',       zone: 3, zoneName: 'The Thornwood' },
-  { id: 'z3', icon: '🌿', name: 'Zone Badge',           zone: 'badge3', badge: 'zone3', zoneName: 'The Thornwood' },
+  { id: 6,  icon: '🌲', name: 'Thornwood\nEdge',        zone: 3, zoneName: 'The Thornwood',
+    arrival: 'The tree line begins without warning. You mark your entry point with stones, the way experienced travelers do. You don\'t ask why.' },
+  { id: 7,  icon: '🌑', name: 'Darkhollow\nPath',       zone: 3, zoneName: 'The Thornwood',
+    arrival: 'The path narrows. The light here has a grey, used quality. You notice you\'re walking faster without having decided to.' },
+  { id: 8,  icon: '🕯️', name: 'Wayward\nShrine',       zone: 3, zoneName: 'The Thornwood',
+    arrival: 'Nobody built this shrine. The candles burn without being lit. The offerings left by travelers disappear by morning.' },
+  { id: 'z3', icon: '🌿', name: 'Zone Badge',           zone: 'badge3', badge: 'zone3', zoneName: 'The Thornwood',
+    zoneComplete: 'You leave the Thornwood behind. The light on the other side is warmer than you remembered light being.' },
   // Zone 4 — The Iron Keep (level 10+)
-  { id: 9,  icon: '⚔️', name: 'Iron Keep\nGates',       zone: 4, zoneName: 'The Iron Keep' },
-  { id: 10, icon: '🏰', name: 'The Iron\nKeep',         zone: 4, zoneName: 'The Iron Keep' },
-  { id: 'z4', icon: '🔒', name: 'Zone Badge',           zone: 'badge4', badge: 'zone4', zoneName: 'The Iron Keep' },
+  { id: 9,  icon: '⚔️', name: 'Iron Keep\nGates',       zone: 4, zoneName: 'The Iron Keep',
+    arrival: 'These gates have never been closed — not during wars, not during sieges, not once. You walk through them.' },
+  { id: 10, icon: '🏰', name: 'The Iron\nKeep',         zone: 4, zoneName: 'The Iron Keep',
+    arrival: 'From a distance it looked like a fortress. Up close it\'s a city. At its heart: a black tower whose windows are lit by a light with no source.' },
+  { id: 'z4', icon: '🔒', name: 'Zone Badge',           zone: 'badge4', badge: 'zone4', zoneName: 'The Iron Keep',
+    zoneComplete: 'You have reached the Iron Keep. The road behind you is longer than it looked when you started. You do not mind.' },
 ];
 
 // Map position is 0-10 (numeric waypoints only)
@@ -1884,40 +1960,50 @@ var HOSTILE_ENCOUNTERS = [
     icon: '🗡️',
     title: 'Bandits on the Road',
     zone: 'Road Hazard',
-    desc: 'A band of cutpurses emerges from the shadows, drawn by the scent of recent spending. They demand tribute.',
-    choiceA: { label: 'Spend a Heart to fight them off', cost: 'heart', sub: 'Costs 1 ❤️ — vault protected' },
-    choiceB: { label: 'Pay the toll and pass safely',    cost: 'vault', sub: 'Lose gold from Iron Vault — hearts protected' },
+    desc: 'Three figures step from the shadows ahead, blades drawn. They have been watching the road. They have been watching you. One holds out a hand.',
+    choiceA: { label: 'Draw steel and drive them back', cost: 'heart', sub: 'Costs 1 ❤️ — vault protected' },
+    choiceB: { label: 'Pay the toll and walk on',       cost: 'vault', sub: 'Lose gold from Iron Vault — hearts protected' },
     vaultCost: 0.05
   },
   {
     id: 'taxman',
     icon: '📋',
-    title: 'The Tax Collector',
+    title: 'The King\'s Collector',
     zone: 'Road Hazard',
-    desc: 'An officious collector blocks the road, citing your recent large purchase as grounds for an extraordinary levy.',
-    choiceA: { label: 'Contest the levy — spend a Heart', cost: 'heart', sub: 'Costs 1 ❤️ — vault protected' },
-    choiceB: { label: 'Pay without argument',             cost: 'vault', sub: 'Lose gold from Iron Vault — hearts protected' },
+    desc: 'A collector in official colours blocks the road with two armed escorts. He has a ledger. He has already found your name in it. He taps the page and waits.',
+    choiceA: { label: 'Contest the levy — stand your ground', cost: 'heart', sub: 'Costs 1 ❤️ — vault protected' },
+    choiceB: { label: 'Pay the levy and move on',             cost: 'vault', sub: 'Lose gold from Iron Vault — hearts protected' },
     vaultCost: 0.08
   },
   {
-    id: 'wraith',
-    icon: '👻',
-    title: 'The Subscription Wraith',
-    zone: 'Shadow Encounter',
-    desc: 'A pale figure drifts from the mist — a wraith born of forgotten subscriptions and silent recurring charges. It drains as it passes.',
-    choiceA: { label: 'Ward it away — spend a Heart',    cost: 'heart', sub: 'Costs 1 ❤️ — vault protected' },
-    choiceB: { label: 'Let it pass and absorb the drain', cost: 'vault', sub: 'Lose gold from Iron Vault — hearts protected' },
+    id: 'thornambush',
+    icon: '🌑',
+    title: 'Thornwood Ambush',
+    zone: 'Forest Hazard',
+    desc: 'They come from both sides of the path at once — not bandits, something stranger. They do not speak. They only want what you are carrying. The trees press close.',
+    choiceA: { label: 'Fight through — spend a Heart',  cost: 'heart', sub: 'Costs 1 ❤️ — vault protected' },
+    choiceB: { label: 'Buy your way past',              cost: 'vault', sub: 'Lose gold from Iron Vault — hearts protected' },
     vaultCost: 0.06
   },
   {
     id: 'merchant',
     icon: '🛍️',
-    title: 'The Temptation Merchant',
+    title: 'The Silk Road Merchant',
     zone: 'Merchant Encounter',
-    desc: 'A silver-tongued merchant appears with wares you did not know you needed. You already spent more than you planned.',
-    choiceA: { label: 'Resist and spend a Heart to move on', cost: 'heart', sub: 'Costs 1 ❤️ — vault protected' },
-    choiceB: { label: 'Pay the merchant\'s price',           cost: 'vault', sub: 'Lose gold from Iron Vault — hearts protected' },
+    desc: 'A merchant with a wagon full of extraordinary things blocks the narrow road and will not move until you look. You look. He knows his craft. Some of it is remarkable. All of it is expensive.',
+    choiceA: { label: 'Decline and force your way past', cost: 'heart', sub: 'Costs 1 ❤️ — vault protected' },
+    choiceB: { label: 'Pay his price for passage',       cost: 'vault', sub: 'Lose gold from Iron Vault — hearts protected' },
     vaultCost: 0.07
+  },
+  {
+    id: 'gateduty',
+    icon: '⚔️',
+    title: 'The Gate Duty',
+    zone: 'Iron Keep — Entrance Toll',
+    desc: 'The Iron Keep\'s inner gate requires a toll to pass — an old law, rarely enforced, suddenly enforced now. The guard is polite. He is also armoured. The gate does not open until someone pays.',
+    choiceA: { label: 'Argue your right of passage — spend a Heart', cost: 'heart', sub: 'Costs 1 ❤️ — vault protected' },
+    choiceB: { label: 'Pay the toll',                                 cost: 'vault', sub: 'Lose gold from Iron Vault — hearts protected' },
+    vaultCost: 0.09
   }
 ];
 
@@ -1927,35 +2013,34 @@ var FRIENDLY_ENCOUNTERS = [
     icon: '🧭',
     title: 'A Wandering Scout',
     zone: 'Friendly Encounter',
-    desc: 'A road-worn scout shares intelligence: trouble lies ahead on the path. You feel more prepared knowing what\'s coming.',
+    desc: 'A road-worn scout steps from the tree line and walks with you a while. She points out things on the path you would have missed. When she leaves she says: "You\'re making good time. Keep it up." It lands like a compliment from someone who doesn\'t give them easily.',
     reward: { type: 'xp', amount: 40 },
-    rewardDesc: '+40 bonus XP for your vigilance',
-    warning: true
+    rewardDesc: '+40 bonus XP for your vigilance'
   },
   {
     id: 'shrine',
     icon: '🕯️',
     title: 'Ancient Roadside Shrine',
     zone: 'Discovery',
-    desc: 'Half-hidden by moss, an old shrine marks the road. You pause to leave an offering. The road feels lighter afterward.',
+    desc: 'Half-hidden by moss, an old shrine marks the road. You pause. The road feels lighter afterward, in the way that only happens when you\'ve done something you can\'t fully explain.',
     reward: { type: 'heart', amount: 1 },
     rewardDesc: '❤️ Heart restored'
   },
   {
     id: 'journal',
     icon: '📖',
-    title: 'Scout\'s Abandoned Journal',
+    title: 'The Scout\'s Journal',
     zone: 'Discovery',
-    desc: 'Tucked beneath a milestone stone: a weathered journal filled with margin notes on thrift and discipline. You gain from its wisdom.',
+    desc: 'Tucked beneath a milestone stone: a weathered journal. The margins are full of notes in a careful hand — routes, risks, lessons learned the hard way. Whoever left it knew what they were doing. Now some of that knowledge is yours.',
     reward: { type: 'xp', amount: 55 },
     rewardDesc: '+55 bonus XP from the journal\'s wisdom'
   },
   {
     id: 'camp',
     icon: '🏕️',
-    title: 'Abandoned Traveler\'s Camp',
+    title: 'Abandoned Traveler\'s Cache',
     zone: 'Discovery',
-    desc: 'A cold camp, recently left. Whoever was here traveled light and left a small cache of provisions behind.',
+    desc: 'A cold camp, recently left in good order. Whoever was here traveled light and left something behind deliberately — provisions cached under a flat stone, as if for someone who might need it more. That someone is you.',
     reward: { type: 'vault', amount: 25 },
     rewardDesc: '+25 gold sealed in your Iron Vault'
   },
@@ -1964,11 +2049,301 @@ var FRIENDLY_ENCOUNTERS = [
     icon: '🧙',
     title: 'The Road Elder',
     zone: 'Friendly Encounter',
-    desc: 'An ancient wanderer sits by the road, watching travelers pass. She sees your ledger and nods with approval. Her blessing doubles your next XP gain.',
+    desc: 'An ancient wanderer sits by the roadside watching travelers pass. She looks at you for a long moment, then nods once — slowly, deliberately, like someone confirming something they already suspected. She says nothing. She doesn\'t need to.',
     reward: { type: 'xp', amount: 30 },
     rewardDesc: '+30 bonus XP — the elder\'s blessing'
+  },
+  {
+    id: 'griffon',
+    icon: '🦅',
+    title: 'The Griffon Rider\'s Token',
+    zone: 'Friendly Encounter',
+    desc: 'A piece of cloth in guild colours tied to a branch at the roadside — a waymarker left by someone who passed before you. Travelers use these to signal the road is clear. Someone wanted you to know you were on the right path.',
+    reward: { type: 'xp', amount: 35 },
+    rewardDesc: '+35 bonus XP — the road is clear ahead'
   }
 ];
+
+// ── STORY ENCOUNTERS (narrative only — no mechanical effect) ──
+// Organised by zone. Player just reads and dismisses. World-building only.
+var STORY_ENCOUNTERS = {
+  // Zone 1 — Hearthstone Road (positions 0, 1, 2)
+  z1: [
+    {
+      id: 'veteran_tab',
+      icon: '🍺',
+      title: 'The Veteran\'s Tab',
+      zone: 'Hearthstone Village',
+      minPos: 0,
+      desc: 'A one-armed soldier nurses the same drink at the inn\'s longest table. The innkeeper marks the wall each time she refills his cup. He hasn\'t looked at the tally once.'
+    },
+    {
+      id: 'name_on_board',
+      icon: '📌',
+      title: 'The Name on the Board',
+      zone: 'Hearthstone Village',
+      minPos: 0,
+      desc: 'A bounty notice — fresh ink, no portrait, just a description. You passed someone matching it two days ago, moving fast. You think about whether they knew.'
+    },
+    {
+      id: 'hooded_merchant',
+      icon: '🪙',
+      title: 'The Hooded Merchant',
+      zone: 'Hearthstone Village',
+      minPos: 0,
+      desc: 'A figure selling Sundering relics from a velvet case. One piece — an iron coin stamped with a face that belongs to no known king — makes something in your chest go quiet. The price is more than you have. He already knew that.'
+    },
+    {
+      id: 'cartographer',
+      icon: '🗺️',
+      title: 'The Cartographer',
+      zone: 'Harvest Crossing',
+      minPos: 1,
+      desc: 'An old woman selling maps of roads that appear on no official chart. A hooded buyer takes one without haggling and vanishes. She watches the space where he was and says nothing.'
+    },
+    {
+      id: 'griffon_rider',
+      icon: '🦅',
+      title: 'The Griffon Rider',
+      zone: 'Harvest Crossing',
+      minPos: 1,
+      desc: 'A rider camped under the oak, her griffon grounded with a torn wing. She\'s hunting a convoy that left two days ahead of her. When you say you haven\'t seen it: "Then it left the road," she says — to herself, not you.'
+    },
+    {
+      id: 'argument_oak',
+      icon: '⚖️',
+      title: 'The Argument at the Oak',
+      zone: 'Harvest Crossing',
+      minPos: 1,
+      desc: 'Two merchant houses in a standoff under the branches. Both keep glancing at a hooded figure watching from the far side of the trunk. Neither will move until he does. He doesn\'t move.'
+    },
+    {
+      id: 'the_queue',
+      icon: '🪙',
+      title: 'The Queue',
+      zone: 'Stonepath Mill',
+      minPos: 2,
+      desc: 'Six travelers at the toll bridge. The fifth man has been two silvers short for twenty minutes. Oswin waits with the stillness of someone who has outlasted every argument ever made to him.'
+    },
+    {
+      id: 'night_rider',
+      icon: '🌙',
+      title: 'The Night Rider',
+      zone: 'Stonepath Mill',
+      minPos: 2,
+      desc: 'Before dawn a rider hammers on the mill door. Urgent voices, then silence, then hoofbeats fading fast. In the morning there\'s a fresh gouge in the doorframe — the kind a blade makes. Oswin doesn\'t mention it.'
+    },
+    {
+      id: 'stone_beneath',
+      icon: '👑',
+      title: 'The Stone Beneath the Millstone',
+      zone: 'Stonepath Mill',
+      minPos: 2,
+      desc: 'Beneath the millstone: a royal seal carved deep, the name above it chiselled away. "Been there since before me," Oswin says. "I stopped wondering about it." His tone suggests the opposite.'
+    }
+  ],
+  // Zone 2 — Merchant's Pass (positions 3, 4, 5)
+  z2: [
+    {
+      id: 'the_exchange',
+      icon: '🏛️',
+      title: 'The Exchange',
+      zone: "Merchant's Gate",
+      minPos: 3,
+      desc: 'Through the briefly open door: a vast hall of clerks writing in silence under chandeliers that burn too bright for candlelight. The doors close. The man who exited has already vanished into the crowd.'
+    },
+    {
+      id: 'aldenmoor',
+      icon: '🏚️',
+      title: 'The Ruin of House Aldenmoor',
+      zone: "Merchant's Gate",
+      minPos: 3,
+      desc: 'An auction on the steps of what was once a grand merchant house. A woman across the street watches her writing desk get carried away by a stranger. She doesn\'t move for a long time.'
+    },
+    {
+      id: 'aldric_sighting',
+      icon: '👁️',
+      title: 'A Familiar Face',
+      zone: "Merchant's Gate",
+      minPos: 3,
+      desc: 'Aldric Vane — the moneylender from Hearthstone — bent over documents with a man in Exchange colours. A long way from his village. He doesn\'t look up, but somehow you feel accounted for.'
+    },
+    {
+      id: 'toll_daughter',
+      icon: '📒',
+      title: 'The Toll Keeper\'s Daughter',
+      zone: 'Copperbridge',
+      minPos: 4,
+      desc: 'The toll keeper\'s daughter is running the booth while he\'s sick, doing arithmetic faster than he ever did. She keeps a second ledger below the counter. When you catch her eye she holds your gaze. You decide not to ask.'
+    },
+    {
+      id: 'dorvain',
+      icon: '🌊',
+      title: 'The Man on the Parapet',
+      zone: 'Copperbridge',
+      minPos: 4,
+      desc: '"That\'s Dorvain," the merchant beside you says — the way people mention weather. He\'s on the bridge railing, staring at the river. He doesn\'t seem to notice the world moving around him.'
+    },
+    {
+      id: 'plaque_coin',
+      icon: '🪙',
+      title: 'The Coin on the Plaque',
+      zone: 'Copperbridge',
+      minPos: 4,
+      desc: 'A gold coin on the treasurer\'s memorial — it wasn\'t there this morning. Nobody is claiming it. Nobody is taking it. You leave it where it is.'
+    },
+    {
+      id: 'cartographer_2',
+      icon: '🗺️',
+      title: 'The Cartographer Again',
+      zone: "Trader's Camp",
+      minPos: 5,
+      desc: 'The map seller from Harvest Crossing — same satchel, new maps annotated in red. "I took one of my roads," she says when you ask how she got here. "The main Thornwood road has been busy lately with things that aren\'t travelers."'
+    },
+    {
+      id: 'wending_rumour',
+      icon: '🔥',
+      title: 'The Campfire Story',
+      zone: "Trader's Camp",
+      minPos: 5,
+      desc: 'A trader describes something on the Thornwood roads that appears at the edge of firelight and waits — gets closer, he says, the longer you stand still. Most are laughing. One man stares into his cup and says nothing.'
+    },
+    {
+      id: 'dorvain_tent',
+      icon: '⛺',
+      title: 'The Empty Tent',
+      zone: "Trader's Camp",
+      minPos: 5,
+      desc: 'One tent at the camp\'s edge — bedroll laid, fire cold. The traders nearby have moved their fires away. "Dorvain\'s," someone says when you ask. You\'ve heard that name before. You know where.'
+    }
+  ],
+  // Zone 3 — The Thornwood (positions 6, 7, 8)
+  z3: [
+    {
+      id: 'the_cairns',
+      icon: '🪨',
+      title: 'The Cairns',
+      zone: 'Thornwood Edge',
+      minPos: 6,
+      desc: 'More stone markers along the tree line than you expected. One has been knocked over deliberately — the stones scattered in a pattern that doesn\'t look random. You can\'t say why you\'re sure of that, but you are.'
+    },
+    {
+      id: 'ranger_warning',
+      icon: '🏹',
+      title: 'The Ranger\'s Warning',
+      zone: 'Thornwood Edge',
+      minPos: 6,
+      desc: 'A ranger steps from the tree line without sound, scanning the canopy. "Don\'t stop for anything that sounds like someone you know." She\'s gone before you can ask what she means.'
+    },
+    {
+      id: 'old_marker',
+      icon: '🗿',
+      title: 'The Old Marker',
+      zone: 'Thornwood Edge',
+      minPos: 6,
+      desc: 'A waystone older than the road, with a fresh translation scratched beneath the ancient text: HERE THE WENDING TURNED BACK ONCE. The word once is underlined. You keep moving.'
+    },
+    {
+      id: 'abandoned_camp',
+      icon: '🎒',
+      title: 'The Abandoned Camp',
+      zone: 'Darkhollow Path',
+      minPos: 7,
+      desc: 'A cold camp off the path, pack left as if the owner stepped away for a moment. At the bottom: a map marked with a location in the Thornwood\'s centre that doesn\'t match any waypoint you know.'
+    },
+    {
+      id: 'the_sound',
+      icon: '👂',
+      title: 'The Sound',
+      zone: 'Darkhollow Path',
+      minPos: 7,
+      desc: 'You hear your name — quiet, from off the path, deeper in. You stop walking before you\'ve decided to stop. You stand still longer than you should. Then you start moving again, faster.'
+    },
+    {
+      id: 'griffon_camp',
+      icon: '🦅',
+      title: 'The Griffon Rider\'s Camp',
+      zone: 'Darkhollow Path',
+      minPos: 7,
+      desc: 'A camp, several days old. Griffon claw marks on the nearest tree. Guild cloth tied to a branch. The rider from Harvest Crossing was here — she left in order, deliberately. You wonder if she found her convoy, or if it found her.'
+    },
+    {
+      id: 'shrine_offering',
+      icon: '🌸',
+      title: 'The Offering',
+      zone: 'Wayward Shrine',
+      minPos: 8,
+      desc: 'Fresh flowers at the shrine base — someone was here within the hour, but there are no footprints. You leave something of your own. Walking away you feel lighter in a way you couldn\'t explain.'
+    },
+    {
+      id: 'cartographer_map',
+      icon: '📜',
+      title: 'The Cartographer\'s Map',
+      zone: 'Wayward Shrine',
+      minPos: 8,
+      desc: 'Her map, wedged in the shrine stone. In the margin: it has no shadow. if you see it, keep moving. Below that, in different ink: I got out. you can too.'
+    },
+    {
+      id: 'the_wending',
+      icon: '🌑',
+      title: 'The Wending',
+      zone: 'Wayward Shrine',
+      minPos: 8,
+      desc: 'At the shrine\'s edge: something standing where the candlelight ends. Tall. Wrong. Then you understand — there\'s no shadow beneath it. None at all. You\'ve stopped walking without deciding to. You start again immediately.'
+    }
+  ],
+  // Zone 4 — The Iron Keep (positions 9, 10)
+  z4: [
+    {
+      id: 'seren',
+      icon: '🛡️',
+      title: 'Seren',
+      zone: 'Iron Keep Gates',
+      minPos: 9,
+      desc: '"You came through the Thornwood," the Gatekeeper says — not a question. "They always walk differently after." As you pass: "Aldric Vane came through three days ago. First time in fifteen years."'
+    },
+    {
+      id: 'veteran_gates',
+      icon: '🎖️',
+      title: 'An Old Face, Changed',
+      zone: 'Iron Keep Gates',
+      minPos: 9,
+      desc: 'The one-armed soldier from Hearthstone\'s inn — clean clothes, campaign medals, sober and purposeful. He sees you, nods once, says nothing, and walks into the Keep ahead of you. You never learned his name.'
+    },
+    {
+      id: 'wanted_gates',
+      icon: '📌',
+      title: 'The Bounty, Doubled',
+      zone: 'Iron Keep Gates',
+      minPos: 9,
+      desc: 'The same bounty from Hearthstone — reward doubled, the Exchange seal added below. Two powerful interests, one person. Below both notices, in handwriting you recognise: already inside.'
+    },
+    {
+      id: 'black_tower',
+      icon: '🗼',
+      title: 'The Black Tower',
+      zone: 'The Iron Keep',
+      minPos: 10,
+      desc: 'A child on the tower steps, watching the road you came in on. "Waiting to see if it followed you," she says. "It doesn\'t come inside the Keep. It never has." She looks at you. "You kept moving. I can tell."'
+    },
+    {
+      id: 'aldric_keep',
+      icon: '👁️',
+      title: 'Aldric Vane',
+      zone: 'The Iron Keep',
+      minPos: 10,
+      desc: 'You find him in the inner market, alone. When he sees you he looks relieved — stranger than surprise. He says nothing about the Exchange or the documents. Just: "You made it through the Thornwood."'
+    },
+    {
+      id: 'road_ahead',
+      icon: '🌅',
+      title: 'The Road Ahead',
+      zone: 'The Iron Keep',
+      minPos: 10,
+      desc: 'At the Keep\'s far gate: another road, longer and wider, leading somewhere your maps don\'t show. Seren is there. "Where does it go?" She looks at you the way she did when you arrived. "Somewhere worth the journey. If you keep moving."'
+    }
+  ]
+};
 
 // ─────────────────────────
 //  STATE
@@ -1992,7 +2367,10 @@ var state = {
   weekStart: '',
   roadBonusesThisMonth: 0,
   lastEncounterLog: '',
-  pendingEncounter: null
+  pendingEncounter: null,
+  seenStoryEncounters: [],
+  seenArrivals: [],
+  lastMapPosition: -1
 };
 
 // Temp onboarding picks
@@ -2000,10 +2378,28 @@ var obAvatar = '';
 var obClass  = '';
 
 // ─────────────────────────
+//  SUPABASE
+// ─────────────────────────
+var SUPABASE_URL = 'https://czolsfnkwqtnkziakclg.supabase.co';
+var SUPABASE_KEY = 'sb_publishable_zcYS8yzbinVjqmY1P_RM4w_BjOEExwq';
+var sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+var currentUserId = null;
+
+// ─────────────────────────
 //  SAVE / LOAD
 // ─────────────────────────
 function save() {
+  // Always write to localStorage immediately for snappy UI
   localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+  // Then sync to Supabase in background if logged in
+  if (currentUserId) {
+    sb.from('profiles')
+      .upsert({ user_id: currentUserId, save_data: state, updated_at: new Date().toISOString() },
+               { onConflict: 'user_id' })
+      .then(function(res) {
+        if (res.error) console.warn('Supabase save error:', res.error.message);
+      });
+  }
 }
 
 function load() {
@@ -2013,12 +2409,143 @@ function load() {
     var parsed = JSON.parse(raw);
     if (typeof parsed !== 'object' || !parsed) return;
     if (!Array.isArray(parsed.log)) parsed.log = [];
-    // Merge — only copy known keys so we don't corrupt state
-    ['name','avatar','heroClass','xp','streak','lastLogDate','log','monthlyBudget','coinReserve','ironVault','currentMonth','hearts','mapPosition','badges','weekLogDays','weekStart','roadBonusesThisMonth','lastEncounterLog','pendingEncounter'].forEach(function(k) {
+    ['name','avatar','heroClass','xp','streak','lastLogDate','log','monthlyBudget','coinReserve','ironVault','currentMonth','hearts','mapPosition','badges','weekLogDays','weekStart','roadBonusesThisMonth','lastEncounterLog','pendingEncounter','seenStoryEncounters','seenArrivals','lastMapPosition'].forEach(function(k) {
       if (parsed[k] !== undefined) state[k] = parsed[k];
     });
   } catch(e) { console.warn('Load failed:', e); }
 }
+
+async function loadFromSupabase() {
+  if (!currentUserId) return;
+  try {
+    var res = await sb.from('profiles').select('save_data').eq('user_id', currentUserId).single();
+    if (res.error || !res.data || !res.data.save_data) return;
+    var remote = res.data.save_data;
+    if (typeof remote !== 'object') return;
+    if (!Array.isArray(remote.log)) remote.log = [];
+    ['name','avatar','heroClass','xp','streak','lastLogDate','log','monthlyBudget','coinReserve','ironVault','currentMonth','hearts','mapPosition','badges','weekLogDays','weekStart','roadBonusesThisMonth','lastEncounterLog','pendingEncounter','seenStoryEncounters','seenArrivals','lastMapPosition'].forEach(function(k) {
+      if (remote[k] !== undefined) state[k] = remote[k];
+    });
+    // Sync remote state back to localStorage
+    localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+  } catch(e) { console.warn('Supabase load error:', e); }
+}
+
+// ─────────────────────────
+//  AUTH FUNCTIONS
+// ─────────────────────────
+async function sendMagicLink() {
+  var email = document.getElementById('login-email').value.trim();
+  if (!email || !email.includes('@')) {
+    showLoginError('Please enter a valid email address.');
+    return;
+  }
+  var btn = document.querySelector('#login-form .ob-btn');
+  btn.textContent = 'Sending…';
+  btn.disabled = true;
+  var res = await sb.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true } });
+  if (res.error) {
+    showLoginError(res.error.message);
+    btn.textContent = 'Send Magic Link ✉';
+    btn.disabled = false;
+  } else {
+    document.getElementById('sent-email').textContent = email;
+    document.getElementById('login-form').style.display = 'none';
+    document.getElementById('login-sent').style.display = 'block';
+  }
+}
+
+function showLoginError(msg) {
+  var el = document.getElementById('login-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function resetLoginForm() {
+  document.getElementById('login-form').style.display = 'block';
+  document.getElementById('login-sent').style.display = 'none';
+  document.getElementById('login-error').style.display = 'none';
+  document.getElementById('login-email').value = '';
+  var btn = document.querySelector('#login-form .ob-btn');
+  btn.textContent = 'Send Magic Link ✉';
+  btn.disabled = false;
+}
+
+async function signOut() {
+  await sb.auth.signOut();
+  currentUserId = null;
+  // Clear local state
+  localStorage.removeItem(SAVE_KEY);
+  Object.assign(state, {
+    name:'',avatar:'',heroClass:'',xp:0,streak:0,lastLogDate:null,log:[],
+    monthlyBudget:0,coinReserve:0,ironVault:0,currentMonth:'',hearts:3,
+    mapPosition:0,badges:[],weekLogDays:[],weekStart:'',roadBonusesThisMonth:0,
+    lastEncounterLog:'',pendingEncounter:null,seenStoryEncounters:[],
+    seenArrivals:[],lastMapPosition:-1
+  });
+  document.getElementById('header-auth').style.display = 'none';
+  document.getElementById('main').style.display = 'none';
+  document.getElementById('onboarding').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'block';
+  resetLoginForm();
+}
+
+// ─────────────────────────
+//  INIT
+// ─────────────────────────
+async function initApp() {
+  // Listen for auth state changes (handles magic link redirect)
+  sb.auth.onAuthStateChange(async function(event, session) {
+    if (session && session.user) {
+      currentUserId = session.user.id;
+      // Show email + sign out in header
+      document.getElementById('header-email').textContent = session.user.email;
+      document.getElementById('header-auth').style.display = 'block';
+      document.getElementById('login-screen').style.display = 'none';
+
+      // Load from Supabase first (authoritative), fall back to localStorage
+      await loadFromSupabase();
+      // If still nothing, try localStorage
+      if (!state.name) load();
+
+      // Patch any missing fields
+      if (state.hearts === undefined) state.hearts = 3;
+      if (!state.badges) state.badges = [];
+      if (!state.weekLogDays) state.weekLogDays = [];
+      if (state.roadBonusesThisMonth === undefined) state.roadBonusesThisMonth = 0;
+      if (!state.lastEncounterLog) state.lastEncounterLog = '';
+      if (!state.seenStoryEncounters) state.seenStoryEncounters = [];
+      if (!state.seenArrivals) state.seenArrivals = [];
+      if (state.lastMapPosition === undefined) state.lastMapPosition = -1;
+
+      checkStreak();
+      checkMonthReset();
+
+      if (state.name) {
+        document.getElementById('onboarding').style.display = 'none';
+        document.getElementById('main').style.display = 'block';
+        render();
+      } else {
+        document.getElementById('onboarding').style.display = 'block';
+        document.getElementById('main').style.display = 'none';
+      }
+    } else {
+      // No session — show login
+      currentUserId = null;
+      document.getElementById('login-screen').style.display = 'block';
+      document.getElementById('onboarding').style.display = 'none';
+      document.getElementById('main').style.display = 'none';
+      document.getElementById('header-auth').style.display = 'none';
+    }
+  });
+
+  // Re-render map on resize
+  window.addEventListener('resize', function() {
+    if (state.name) renderMap();
+  });
+}
+
+initApp();
 
 // ─────────────────────────
 //  LEVEL HELPERS
@@ -2145,6 +2672,48 @@ function checkWeekRoadBonus() {
   }
 }
 
+function getZoneKey(pos) {
+  if (pos <= 2) return 'z1';
+  if (pos <= 5) return 'z2';
+  if (pos <= 8) return 'z3';
+  return 'z4';
+}
+
+function checkArrival() {
+  var pos = getMapPosition();
+  if (pos === state.lastMapPosition) return;
+  // New position — find waypoint and show arrival text if not seen
+  var wp = getCurrentWaypoint();
+  if (wp && wp.arrival && state.seenArrivals.indexOf(pos) === -1) {
+    state.seenArrivals.push(pos);
+    state.lastMapPosition = pos;
+    save();
+    setTimeout(function() { showArrivalCard(wp); }, 600);
+  } else {
+    state.lastMapPosition = pos;
+    save();
+  }
+}
+
+function showArrivalCard(wp) {
+  var box = document.getElementById('encounter-box');
+  box.className = 'encounter-box arrival';
+  document.getElementById('encounter-zone').textContent  = wp.zoneName || 'The Journey';
+  document.getElementById('encounter-icon').textContent  = wp.icon || '🗺️';
+  document.getElementById('encounter-title').textContent = wp.name.replace('\n', ' ');
+  document.getElementById('encounter-desc').textContent  = wp.arrival;
+  var choices = document.getElementById('encounter-choices');
+  choices.innerHTML = '';
+  var btn = document.createElement('button');
+  btn.className = 'encounter-btn story-choice';
+  btn.innerHTML = 'Press on';
+  btn.onclick = function() {
+    document.getElementById('encounter-overlay').classList.remove('show');
+  };
+  choices.appendChild(btn);
+  document.getElementById('encounter-overlay').classList.add('show');
+}
+
 function checkEncounter(amount) {
   // Don't fire two encounters on the same log entry
   var entryId = String(Date.now());
@@ -2159,40 +2728,33 @@ function checkEncounter(amount) {
   var reservePct = (state.coinReserve || 0) / monthlyBudget;
 
   // ── HOSTILE TRIGGERS ──
-  // These only fire when spending behaviour actually warrants it.
-  // Random chance is NOT a hostile trigger — bad luck should never punish good behaviour.
-
   var hostileType = null;
 
-  // Trigger: Large single expense (>15% of monthly budget) → Tax Collector (index 1)
-  // This is the most narratively specific: "your recent large purchase"
   if (amount > monthlyBudget * 0.15) {
     hostileType = 'large';
   }
-
-  // Trigger: Spending velocity — burned >50% of reserve before 60% of month is gone → Bandits (index 0)
-  // Only fires if the velocity condition is meaningfully bad (not just first few days)
   if (!hostileType && reservePct < 0.5 && monthProgress < 0.6 && monthProgress > 0.1) {
     hostileType = 'velocity';
   }
-
-  // Trigger: Nearly depleted reserve (<15% remaining, any point in month) → Subscription Wraith (index 2)
   if (!hostileType && reservePct < 0.15) {
     hostileType = 'depleted';
   }
 
   if (hostileType) {
-    // Pick the encounter that matches the financial behaviour
+    // Pick zone-appropriate hostile encounter
+    var pos = getMapPosition();
     var hostile;
-    if (hostileType === 'large') {
-      hostile = HOSTILE_ENCOUNTERS[1]; // Tax Collector — triggered by large purchase
+    if (pos >= 9) {
+      hostile = HOSTILE_ENCOUNTERS[4]; // Gate Duty — Iron Keep
+    } else if (pos >= 6) {
+      hostile = HOSTILE_ENCOUNTERS[2]; // Thornwood Ambush
+    } else if (hostileType === 'large') {
+      hostile = HOSTILE_ENCOUNTERS[1]; // King's Collector
     } else if (hostileType === 'velocity') {
-      hostile = HOSTILE_ENCOUNTERS[0]; // Bandits — drawn by spending pace
+      hostile = HOSTILE_ENCOUNTERS[0]; // Bandits
     } else {
-      hostile = HOSTILE_ENCOUNTERS[2]; // Subscription Wraith — silent drain
+      hostile = HOSTILE_ENCOUNTERS[3]; // Silk Road Merchant
     }
-    // Don't fire hostile on every single qualifying log — add a 60% gate so it
-    // feels like a hazard you might encounter, not a guaranteed punishment
     if (Math.random() < 0.60) {
       state.lastEncounterLog = entryId;
       save();
@@ -2201,16 +2763,57 @@ function checkEncounter(amount) {
     }
   }
 
-  // ── FRIENDLY ENCOUNTERS ──
-  // ~1-in-5 chance on any log when no hostile fired.
-  // These are the random serendipitous events: a scout, a shrine, a wise elder.
-  // They reward showing up, regardless of spending behaviour.
+  // ── STORY ENCOUNTER (narrative only, ~30% chance) ──
+  if (Math.random() < 0.30) {
+    var currentPos = getMapPosition();
+    var zoneKey = getZoneKey(currentPos);
+    var pool = STORY_ENCOUNTERS[zoneKey] || [];
+    // Filter to encounters valid for current position AND not yet seen
+    var eligible = pool.filter(function(e) {
+      return e.minPos <= currentPos && state.seenStoryEncounters.indexOf(e.id) === -1;
+    });
+    // If all position-eligible ones seen, allow repeats from eligible-by-position pool only
+    if (eligible.length === 0) {
+      eligible = pool.filter(function(e) { return e.minPos <= currentPos; });
+    }
+    if (eligible.length > 0) {
+      var story = eligible[Math.floor(Math.random() * eligible.length)];
+      if (state.seenStoryEncounters.indexOf(story.id) === -1) {
+        state.seenStoryEncounters.push(story.id);
+      }
+      state.lastEncounterLog = entryId;
+      save();
+      setTimeout(function() { showStoryEncounter(story); }, 1200);
+      return;
+    }
+  }
+
+  // ── FRIENDLY ENCOUNTER (~20% chance when no hostile or story fired) ──
   if (Math.random() < 0.20) {
     var friendly = FRIENDLY_ENCOUNTERS[Math.floor(Math.random() * FRIENDLY_ENCOUNTERS.length)];
     state.lastEncounterLog = entryId;
     save();
     setTimeout(function() { showEncounter(friendly, false); }, 1200);
   }
+}
+
+function showStoryEncounter(enc) {
+  var box = document.getElementById('encounter-box');
+  box.className = 'encounter-box story';
+  document.getElementById('encounter-zone').textContent  = enc.zone;
+  document.getElementById('encounter-icon').textContent  = enc.icon;
+  document.getElementById('encounter-title').textContent = enc.title;
+  document.getElementById('encounter-desc').textContent  = enc.desc;
+  var choices = document.getElementById('encounter-choices');
+  choices.innerHTML = '';
+  var btn = document.createElement('button');
+  btn.className = 'encounter-btn story-choice';
+  btn.innerHTML = 'Continue the journey';
+  btn.onclick = function() {
+    document.getElementById('encounter-overlay').classList.remove('show');
+  };
+  choices.appendChild(btn);
+  document.getElementById('encounter-overlay').classList.add('show');
 }
 
 function showEncounter(enc, isHostile) {
@@ -2300,31 +2903,57 @@ function checkZoneBadge() {
   var pos = getMapPosition();
   var badges = state.badges || [];
 
-  // Zone 1 complete at position 3+ (passed badge node)
   if (pos >= 3 && badges.indexOf('zone1') === -1) {
     badges.push('zone1');
     state.badges = badges;
     save();
-    setTimeout(function() { showBadgeToast('🛡️ Badge Earned: The First Steps'); }, 800);
+    setTimeout(function() {
+      showZoneComplete('🛡️', 'The First Steps', 'You leave the Hearthstone Road behind. It looks smaller from here than it felt while you were on it.');
+    }, 800);
   }
   if (pos >= 6 && badges.indexOf('zone2') === -1) {
     badges.push('zone2');
     state.badges = badges;
     save();
-    setTimeout(function() { showBadgeToast('🪙 Badge Earned: The Disciplined Traveler'); }, 800);
+    setTimeout(function() {
+      showZoneComplete('🪙', 'Disciplined Traveler', "The Merchant's Pass falls behind you. The road ahead grows quieter. That is not entirely reassuring.");
+    }, 800);
   }
   if (pos >= 9 && badges.indexOf('zone3') === -1) {
     badges.push('zone3');
     state.badges = badges;
     save();
-    setTimeout(function() { showBadgeToast('🌿 Badge Earned: The Thornwood Survivor'); }, 800);
+    setTimeout(function() {
+      showZoneComplete('🌿', 'Thornwood Survivor', 'You leave the Thornwood behind. The light on the other side is warmer than you remembered light being. You do not stop moving until you are well clear of the tree line.');
+    }, 800);
   }
   if (pos >= 10 && badges.indexOf('zone4') === -1) {
     badges.push('zone4');
     state.badges = badges;
     save();
-    setTimeout(function() { showBadgeToast('🔒 Badge Earned: Keeper of the Iron Vault'); }, 800);
+    setTimeout(function() {
+      showZoneComplete('🔒', 'Keeper of the Iron Vault', 'You have reached the Iron Keep. The road behind you is longer than it looked when you started. The road ahead is longer still. You do not mind.');
+    }, 800);
   }
+}
+
+function showZoneComplete(icon, badgeName, narrative) {
+  var box = document.getElementById('encounter-box');
+  box.className = 'encounter-box zone-complete';
+  document.getElementById('encounter-zone').textContent  = '✦ Zone Complete';
+  document.getElementById('encounter-icon').textContent  = icon;
+  document.getElementById('encounter-title').textContent = 'Badge Earned: ' + badgeName;
+  document.getElementById('encounter-desc').textContent  = narrative;
+  var choices = document.getElementById('encounter-choices');
+  choices.innerHTML = '';
+  var btn = document.createElement('button');
+  btn.className = 'encounter-btn story-choice';
+  btn.innerHTML = 'March Forward ⚔';
+  btn.onclick = function() {
+    document.getElementById('encounter-overlay').classList.remove('show');
+  };
+  choices.appendChild(btn);
+  document.getElementById('encounter-overlay').classList.add('show');
 }
 
 function showBadgeToast(msg) {
@@ -2728,6 +3357,7 @@ function render() {
   renderCoins();
   renderMap();
   checkZoneBadge();
+  checkArrival();
 }
 
 function renderLog() {
@@ -2999,34 +3629,7 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
-// ─────────────────────────
-//  INIT
-// ─────────────────────────
-load();
-
-// Ensure new state fields exist on old saves
-if (state.hearts === undefined) state.hearts = 3;
-if (!state.badges) state.badges = [];
-if (!state.weekLogDays) state.weekLogDays = [];
-if (state.roadBonusesThisMonth === undefined) state.roadBonusesThisMonth = 0;
-if (!state.lastEncounterLog) state.lastEncounterLog = '';
-
-checkStreak();
-checkMonthReset();
-
-// Re-render map on resize (SVG coordinate recalc)
-window.addEventListener('resize', function() {
-  if (state.name) renderMap();
-});
-
-if (state.name) {
-  document.getElementById('onboarding').style.display = 'none';
-  document.getElementById('main').style.display = 'block';
-  render();
-} else {
-  document.getElementById('onboarding').style.display = 'block';
-  document.getElementById('main').style.display = 'none';
-}
+// keyboard shortcut handled above
 </script>
 
 
