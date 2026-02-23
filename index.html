@@ -2384,6 +2384,7 @@ var SUPABASE_URL = 'https://czolsfnkwqtnkziakclg.supabase.co';
 var SUPABASE_KEY = 'sb_publishable_zcYS8yzbinVjqmY1P_RM4w_BjOEExwq';
 var sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 var currentUserId = null;
+var isSigningOut = false;
 
 // ─────────────────────────
 //  SAVE / LOAD
@@ -2472,9 +2473,13 @@ function resetLoginForm() {
 }
 
 async function signOut() {
-  await sb.auth.signOut();
+  isSigningOut = true;
+  try {
+    await sb.auth.signOut();
+  } catch(e) {
+    console.warn('Sign out error:', e);
+  }
   currentUserId = null;
-  // Clear local state
   localStorage.removeItem(SAVE_KEY);
   Object.assign(state, {
     name:'',avatar:'',heroClass:'',xp:0,streak:0,lastLogDate:null,log:[],
@@ -2488,6 +2493,7 @@ async function signOut() {
   document.getElementById('onboarding').style.display = 'none';
   document.getElementById('login-screen').style.display = 'block';
   resetLoginForm();
+  isSigningOut = false;
 }
 
 // ─────────────────────────
@@ -2496,6 +2502,7 @@ async function signOut() {
 async function initApp() {
   // Listen for auth state changes (handles magic link redirect)
   sb.auth.onAuthStateChange(async function(event, session) {
+    if (isSigningOut) return;
     if (session && session.user) {
       currentUserId = session.user.id;
       // Show email + sign out in header
