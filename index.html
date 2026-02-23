@@ -1,30 +1,50 @@
 <!DOCTYPE html>
-<html lang="en"><head>
+<html lang="en">
+<head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Budget Quest</title>
-<link href="Budget%20Quest_22226_files/css2.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
-  --bg: #0e0c0a;
-  --surface: #181410;
-  --surface2: #201c14;
-  --border: #3d3520;
-  --border-gold: #7a6530;
-  --gold: #c9a84c;
-  --gold-light: #e8c96a;
-  --gold-dim: #9a7d3a;
-  --red: #c0392b;
-  --red-dim: #5a1a14;
-  --green: #27ae60;
-  --green-dim: #1a6b3c;
-  --text: #e8dfc8;
-  --text-dim: #b0a080;
-  --text-dark: #8a7a62;
-  --xp-color: #4a9eff;
-  --xp-dim: #1a3a6b;
+  --bg:           #0d0f18;
+  --bg2:          #111420;
+  --surface:      #161925;
+  --surface2:     #1c2033;
+  --surface3:     #222640;
+  --border:       #2a2f4a;
+  --border-mid:   #353b5e;
+  --border-hi:    #454c78;
+
+  --purple:       #7c5cfc;
+  --purple-light: #a78bfa;
+  --purple-dim:   #3d2e7e;
+  --purple-glow:  rgba(124,92,252,0.25);
+
+  --teal:         #22d3ee;
+  --teal-dim:     #0e5a6b;
+  --teal-glow:    rgba(34,211,238,0.2);
+
+  --gold:         #f59e0b;
+  --gold-light:   #fcd34d;
+  --gold-dim:     #78480b;
+  --gold-glow:    rgba(245,158,11,0.2);
+
+  --green:        #22c55e;
+  --green-dim:    #14532d;
+  --red:          #ef4444;
+  --red-dim:      #7f1d1d;
+  --orange:       #f97316;
+
+  --xp:           var(--purple);
+  --xp-track:     var(--purple-dim);
+
+  --text:         #e2e8f0;
+  --text-mid:     #94a3b8;
+  --text-dim:     #64748b;
+  --text-dark:    #3f4a6b;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -32,1458 +52,897 @@
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Crimson Text', serif;
-  font-size: 16px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
   min-height: 100vh;
   background-image:
-    radial-gradient(ellipse at 20% 0%, rgba(201,168,76,0.05) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 100%, rgba(74,158,255,0.04) 0%, transparent 60%);
-}
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1000;
-  opacity: 0.025;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    radial-gradient(ellipse 60% 40% at 15% 0%, rgba(124,92,252,0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 30% at 85% 100%, rgba(34,211,238,0.05) 0%, transparent 70%);
 }
 
-.app { max-width: 680px; margin: 0 auto; padding: 32px 16px 100px; }
+.app { max-width: 660px; margin: 0 auto; padding: 28px 16px 120px; }
 
 /* ── HEADER ── */
 .header {
-  text-align: center;
-  padding: 32px 0 24px;
-  border-bottom: 1px solid var(--border-gold);
-  margin-bottom: 28px;
-  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border);
 }
-.header::before, .header::after {
-  content: '⬡';
-  color: var(--gold-dim);
-  font-size: 12px;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
+.header-brand { display: flex; align-items: center; gap: 12px; }
+.header-icon {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--purple), #5b21b6);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 0 20px var(--purple-glow);
 }
-.header::before { left: 0; }
-.header::after { right: 0; }
 .header h1 {
   font-family: 'Cinzel', serif;
-  font-size: clamp(24px, 5vw, 40px);
-  color: var(--gold);
-  letter-spacing: 0.1em;
-  text-shadow: 0 0 40px rgba(201,168,76,0.35);
+  font-size: 22px;
+  color: var(--text);
+  letter-spacing: 0.03em;
 }
-.header .tagline {
-  color: var(--text-dim);
-  font-size: 14px;
-  margin-top: 6px;
-  font-style: italic;
+.header-auth {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12px; color: var(--text-dim);
 }
-
-/* ── LAWS OF THE REALM ── */
-.laws-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 22px;
-}
-.law-card {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
+.header-auth-email { color: var(--text-mid); }
+.signout-btn {
   background: var(--surface2);
   border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 13px 15px;
-  transition: border-color 0.2s;
-}
-.law-card { cursor: default; }
-.law-icon {
-  font-size: 22px;
-  flex-shrink: 0;
-  width: 32px;
-  text-align: center;
-  margin-top: 1px;
-}
-.law-body { flex: 1; }
-.law-title {
-  font-family: 'Cinzel', serif;
-  font-size: 12px;
-  color: var(--gold);
-  margin-bottom: 4px;
-  line-height: 1.4;
-}
-.law-plain {
-  font-size: 13px;
   color: var(--text-dim);
-  line-height: 1.6;
+  padding: 4px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 11px;
+  font-family: inherit;
+  transition: all 0.2s;
 }
+.signout-btn:hover { border-color: var(--border-mid); color: var(--text); }
 
-/* ── ONBOARDING CARD ── */
-.onboarding-card {
+/* ── CARDS ── */
+.card {
   background: var(--surface);
-  border: 1px solid var(--border-gold);
-  border-radius: 4px;
-  padding: 32px 28px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
   position: relative;
   overflow: hidden;
-  animation: fadeUp 0.5s ease both;
 }
-.onboarding-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
+.card-accent-top {
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--purple), transparent);
+}
+.card-accent-teal {
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--teal), transparent);
+}
+.card-accent-gold {
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
   background: linear-gradient(90deg, transparent, var(--gold), transparent);
 }
 
-/* Step dots */
-.steps-row {
+/* ── LOGIN ── */
+#login-screen { max-width: 420px; margin: 0 auto; }
+.login-hero { text-align: center; margin-bottom: 28px; }
+.login-hero-icon {
+  width: 72px; height: 72px;
+  background: linear-gradient(135deg, var(--purple), #3b1fd8);
+  border-radius: 20px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 36px;
+  margin-bottom: 16px;
+  box-shadow: 0 0 40px var(--purple-glow);
+}
+.login-title {
+  font-family: 'Cinzel', serif;
+  font-size: 24px;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.login-sub { color: var(--text-dim); font-size: 14px; }
+
+.tab-row {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  margin-bottom: 28px;
+  background: var(--surface2);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 20px;
+  gap: 4px;
+}
+.tab-btn {
+  flex: 1; padding: 8px; border-radius: 8px;
+  border: none; cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px; font-weight: 600;
+  transition: all 0.2s;
+}
+.tab-btn.active {
+  background: var(--purple);
+  color: #fff;
+  box-shadow: 0 2px 8px var(--purple-glow);
+}
+.tab-btn:not(.active) { background: transparent; color: var(--text-dim); }
+
+.form-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.field-label { font-size: 12px; font-weight: 600; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.06em; }
+.field-input {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 15px;
+  padding: 11px 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+.field-input:focus {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px rgba(124,92,252,0.15);
+}
+.field-input::placeholder { color: var(--text-dark); }
+
+.btn-primary {
+  width: 100%;
+  background: linear-gradient(135deg, var(--purple), #5b21b6);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px; font-weight: 700;
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 20px var(--purple-glow); }
+.btn-primary:active { transform: translateY(0); }
+
+.btn-secondary {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  color: var(--text-mid);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px; font-weight: 600;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-secondary:hover { border-color: var(--border-mid); color: var(--text); }
+
+.login-err { color: var(--red); font-size: 13px; text-align: center; margin-top: 8px; display: none; }
+
+/* ── ONBOARDING ── */
+.ob-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px 28px;
+  animation: fadeUp 0.4s ease both;
+}
+
+.steps-row {
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px; margin-bottom: 28px;
 }
 .step-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--border);
-  transition: all 0.3s;
-  flex-shrink: 0;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--border-mid); transition: all 0.3s; flex-shrink: 0;
 }
-.step-dot.active { background: var(--gold); box-shadow: 0 0 8px rgba(201,168,76,0.6); }
-.step-dot.done { background: var(--gold-dim); }
-.step-line { width: 28px; height: 1px; background: var(--border); flex-shrink: 0; }
+.step-dot.active { background: var(--purple); box-shadow: 0 0 8px var(--purple-glow); width: 24px; border-radius: 4px; }
+.step-dot.done { background: var(--purple-dim); }
+.step-line { width: 20px; height: 1px; background: var(--border); flex-shrink: 0; }
 
-/* Steps */
 .ob-step { display: none; }
 .ob-step.active { display: block; animation: fadeUp 0.3s ease both; }
 
+.ob-icon { text-align: center; font-size: 48px; margin-bottom: 12px; }
 .ob-title {
   font-family: 'Cinzel', serif;
-  color: var(--gold);
-  font-size: 18px;
-  text-align: center;
-  margin-bottom: 8px;
+  font-size: 20px; color: var(--text);
+  text-align: center; margin-bottom: 8px;
 }
 .ob-sub {
-  color: var(--text-dim);
-  font-style: italic;
-  font-size: 14px;
-  text-align: center;
-  line-height: 1.65;
-  margin-bottom: 22px;
-  max-width: 480px;
-  margin-left: auto;
-  margin-right: auto;
+  color: var(--text-mid); font-size: 14px;
+  text-align: center; line-height: 1.6;
+  margin-bottom: 24px; max-width: 420px;
+  margin-left: auto; margin-right: auto;
 }
 
 /* Name input */
 .name-row {
-  display: flex;
-  gap: 0;
+  display: flex; gap: 0;
   justify-content: center;
-  max-width: 340px;
-  margin: 0 auto;
+  max-width: 360px; margin: 0 auto;
 }
 .hero-name-input {
   background: var(--surface2);
-  border: 1px solid var(--border-gold);
+  border: 1.5px solid var(--border);
   border-right: none;
-  border-radius: 3px 0 0 3px;
+  border-radius: 10px 0 0 10px;
   color: var(--text);
-  font-family: 'Crimson Text', serif;
-  font-size: 17px;
-  padding: 11px 16px;
-  outline: none;
-  flex: 1;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 15px; padding: 11px 16px;
+  outline: none; flex: 1;
   transition: border-color 0.2s;
 }
-.hero-name-input:focus { border-color: var(--gold); }
+.hero-name-input:focus { border-color: var(--purple); }
 .hero-name-input::placeholder { color: var(--text-dark); }
+.name-btn {
+  background: var(--purple);
+  border: none; border-radius: 0 10px 10px 0;
+  color: #fff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px; font-weight: 700;
+  padding: 11px 20px;
+  cursor: pointer; white-space: nowrap;
+  transition: background 0.2s;
+}
+.name-btn:hover { background: var(--purple-light); color: var(--bg); }
 
 /* Avatar picker */
 .avatar-grid {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
+  display: flex; gap: 12px;
+  justify-content: center; margin-bottom: 24px; flex-wrap: wrap;
 }
 .avatar-opt {
   width: 72px; height: 72px;
   border: 2px solid var(--border);
-  border-radius: 4px;
+  border-radius: 16px;
   background: var(--surface2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 34px;
-  cursor: pointer;
-  transition: all 0.2s;
-  position: relative;
-  user-select: none;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 34px; cursor: pointer;
+  transition: all 0.2s; position: relative; user-select: none;
 }
-.avatar-opt:hover { border-color: var(--gold-dim); background: #2a2418; transform: translateY(-2px); }
+.avatar-opt:hover { border-color: var(--purple); transform: translateY(-2px); }
 .avatar-opt.selected {
-  border-color: var(--gold);
-  box-shadow: 0 0 16px rgba(201,168,76,0.4);
-  background: #2a2418;
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px var(--purple-glow), 0 0 20px var(--purple-glow);
+  background: var(--surface3);
 }
 .avatar-opt.selected::after {
   content: '✓';
-  position: absolute;
-  bottom: 3px; right: 5px;
-  font-size: 10px;
-  font-family: 'Cinzel', serif;
-  color: var(--gold);
+  position: absolute; bottom: 4px; right: 6px;
+  font-size: 10px; font-weight: 800; color: var(--purple);
 }
 
 /* Class picker */
-.class-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-  margin-bottom: 22px;
-}
+.class-grid { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
 .class-opt {
   background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 13px 16px;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  user-select: none;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; gap: 14px; user-select: none;
 }
-.class-opt:hover { border-color: var(--gold-dim); background: #272118; }
-.class-opt.selected { border-color: var(--gold); background: #272118; box-shadow: inset 3px 0 0 var(--gold); }
+.class-opt:hover { border-color: var(--border-mid); background: var(--surface3); }
+.class-opt.selected {
+  border-color: var(--purple);
+  background: rgba(124,92,252,0.08);
+  box-shadow: inset 3px 0 0 var(--purple);
+}
 .class-emoji { font-size: 26px; flex-shrink: 0; width: 36px; text-align: center; }
 .class-info { flex: 1; }
-.class-name { font-family: 'Cinzel', serif; font-size: 13px; color: var(--gold); margin-bottom: 2px; }
-.class-desc { font-size: 12px; color: var(--text-dim); font-style: italic; line-height: 1.5; }
+.class-name { font-weight: 700; font-size: 14px; color: var(--text); margin-bottom: 2px; }
+.class-desc { font-size: 12px; color: var(--text-mid); line-height: 1.5; }
 .class-trait {
-  font-size: 10px;
-  color: var(--xp-color);
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  background: rgba(74,158,255,0.1);
-  border: 1px solid rgba(74,158,255,0.2);
-  padding: 2px 8px;
-  border-radius: 10px;
-  white-space: nowrap;
-  flex-shrink: 0;
+  font-size: 11px; color: var(--purple-light);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  background: rgba(124,92,252,0.12);
+  border: 1px solid rgba(124,92,252,0.25);
+  padding: 2px 8px; border-radius: 20px;
+  white-space: nowrap; flex-shrink: 0; font-weight: 600;
 }
 
-/* Nav buttons */
+/* Budget input */
+.budget-row {
+  display: flex; max-width: 340px; margin: 0 auto;
+}
+.budget-prefix {
+  background: var(--surface2);
+  border: 1.5px solid var(--border); border-right: none;
+  border-radius: 10px 0 0 10px;
+  padding: 11px 14px;
+  color: var(--gold); font-weight: 700; font-size: 16px;
+  display: flex; align-items: center;
+}
+.budget-input {
+  background: var(--surface2);
+  border: 1.5px solid var(--border); border-left: none; border-right: none;
+  color: var(--text);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 15px; padding: 11px 16px;
+  outline: none; flex: 1;
+  transition: border-color 0.2s;
+}
+.budget-input:focus { border-color: var(--purple); }
+.budget-input::placeholder { color: var(--text-dark); }
+.budget-btn {
+  background: var(--purple);
+  border: none; border-radius: 0 10px 10px 0;
+  color: #fff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px; font-weight: 700;
+  padding: 11px 20px; cursor: pointer;
+  white-space: nowrap; transition: background 0.2s;
+}
+.budget-btn:hover { background: var(--purple-light); color: var(--bg); }
+
+/* Nav */
 .ob-nav {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 6px;
+  display: flex; justify-content: center; gap: 10px; margin-top: 20px;
 }
-.ob-btn {
-  background: var(--gold-dim);
-  border: 1px solid var(--gold);
-  color: var(--gold-light);
-  font-family: 'Cinzel', serif;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  padding: 11px 28px;
-  border-radius: 3px;
-  cursor: pointer;
-  transition: all 0.2s;
+
+/* Laws grid */
+.laws-grid { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+.law-card {
+  display: flex; align-items: flex-start; gap: 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 16px;
 }
-.ob-btn:hover { background: var(--gold); color: var(--bg); }
-.ob-btn.secondary {
-  background: transparent;
-  border-color: var(--border-gold);
-  color: var(--text-dim);
-}
-.ob-btn.secondary:hover { border-color: var(--gold-dim); color: var(--text); }
+.law-icon { font-size: 20px; flex-shrink: 0; width: 28px; text-align: center; margin-top: 1px; }
+.law-body { flex: 1; }
+.law-title { font-weight: 700; font-size: 13px; color: var(--text); margin-bottom: 3px; }
+.law-plain { font-size: 12px; color: var(--text-mid); line-height: 1.55; }
 
 /* ── CHARACTER CARD ── */
+.hero-block { margin-bottom: 16px; }
 .character-card {
   background: var(--surface);
-  border: 1px solid var(--border-gold);
-  border-radius: 4px;
+  border: 1px solid var(--border);
+  border-radius: 16px 16px 0 0;
   padding: 20px;
-  margin-bottom: 20px;
-  position: relative;
-  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+  position: relative; overflow: hidden;
   animation: fadeUp 0.4s ease both;
 }
-.character-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-}
 .char-top {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 18px;
+  display: flex; align-items: center; gap: 16px; margin-bottom: 18px;
 }
 .char-avatar {
-  width: 60px; height: 60px;
-  border: 2px solid var(--border-gold);
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 30px;
-  background: var(--surface2);
-  flex-shrink: 0;
+  width: 56px; height: 56px;
+  border: 2px solid var(--border-mid);
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  background: var(--surface2); flex-shrink: 0;
 }
 .char-info { flex: 1; min-width: 0; }
 .char-name {
-  font-family: 'Cinzel', serif;
-  font-size: 19px;
-  color: var(--gold);
-  margin-bottom: 3px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-weight: 800; font-size: 18px; color: var(--text);
+  margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.char-class {
-  font-size: 13px;
-  color: var(--text);
-  font-style: italic;
-}
+.char-class { font-size: 13px; color: var(--purple-light); font-weight: 500; }
 .char-level { text-align: right; flex-shrink: 0; }
 .level-num {
   font-family: 'Cinzel', serif;
-  font-size: 32px;
-  color: var(--gold-light);
-  line-height: 1;
+  font-size: 30px; color: var(--gold-light); line-height: 1;
 }
-.level-label {
-  font-size: 11px;
-  color: var(--text);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
+.level-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; }
 
-/* ── XP BAR (salient) ── */
-.xp-label-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 7px;
+/* XP Bar */
+.bar-label-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 6px;
 }
-.xp-title-text {
-  font-family: 'Cinzel', serif;
-  font-size: 11px;
-  color: var(--xp-color);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
+.bar-label-title {
+  font-size: 11px; font-weight: 700; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 0.1em;
 }
-.xp-count-text { font-size: 18px; color: var(--text-dim); }
-.xp-count-text strong {
-  font-family: 'Cinzel', serif;
-  font-size: 18px !important;
-  color: var(--xp-color);
-  
+.bar-label-count { font-size: 14px; color: var(--text-mid); }
+.bar-label-count strong { color: var(--purple-light); font-weight: 700; }
+
+.bar-track {
+  height: 10px;
+  background: var(--surface3);
+  border-radius: 100px;
+  overflow: hidden; position: relative;
 }
-.xp-bar-track {
-  height: 28px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  overflow: hidden;
-  position: relative;
-}
-.xp-bar-fill {
+.bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #152d5e 0%, #2560b8 55%, #4a9eff 100%);
-  border-radius: 14px;
+  border-radius: 100px;
   transition: width 0.85s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
   min-width: 0;
 }
+.bar-fill.xp { background: linear-gradient(90deg, var(--purple-dim), var(--purple), var(--purple-light)); }
+.bar-fill.coin { background: linear-gradient(90deg, var(--gold-dim), var(--gold)); }
+.bar-fill.coin.danger { background: linear-gradient(90deg, #7f1d1d, var(--red)); }
+.bar-fill.coin.warning { background: linear-gradient(90deg, #78350f, var(--orange)); }
 
+.bar-subrow {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-top: 4px;
+}
+.bar-hint { font-size: 11px; color: var(--text-dim); }
+.bar-next { font-size: 11px; color: var(--text-dim); text-align: right; }
+
+/* Divider */
+.card-divider {
+  display: flex; align-items: center; gap: 10px;
+  margin: 16px 0 14px;
+}
+.card-divider::before, .card-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+.card-divider-label {
+  font-size: 10px; font-weight: 700; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 0.14em; white-space: nowrap;
+}
+
+/* Coin reserve */
+.coin-reserve-section { margin-top: 14px; }
+.coin-status { font-size: 11px; color: var(--text-dim); text-align: right; }
+.coin-status.danger { color: var(--red); }
+.coin-status.warning { color: var(--orange); }
+
+/* Iron Vault row */
+.iron-vault-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 12px; padding: 12px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  position: relative; overflow: hidden;
+}
+.iron-vault-row::before {
+  content: ''; position: absolute;
+  left: 0; top: 0; bottom: 0; width: 3px;
+  background: linear-gradient(180deg, var(--gold), var(--gold-dim));
+}
+.vault-left { display: flex; align-items: center; gap: 10px; }
+.vault-icon { font-size: 18px; }
+.vault-title { font-size: 11px; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px; }
+.vault-subtitle { font-size: 11px; color: var(--text-dim); }
+.vault-amount { font-weight: 700; font-size: 16px; color: var(--gold-light); }
+.vault-amount.empty { color: var(--text-dark); font-size: 13px; font-weight: 500; }
+
+/* Coin float */
+.coin-float {
+  position: fixed; font-size: 13px; font-weight: 700;
+  color: var(--gold); pointer-events: none; z-index: 9000; opacity: 0;
+}
+.coin-float.pop { animation: coinDrain 1.1s ease-out forwards; }
+@keyframes coinDrain {
+  0%   { opacity: 1; transform: translateX(-50%) translateY(0); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(22px); }
+}
 
 /* ── STREAK BANNER ── */
 .streak-banner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 13px 18px;
-  margin-bottom: 16px;
-  border-radius: 4px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px; margin-bottom: 14px;
+  border-radius: 14px;
   border: 1px solid var(--border);
   background: var(--surface);
-  position: relative;
-  overflow: hidden;
+  position: relative; overflow: hidden;
   animation: fadeUp 0.4s 0.05s ease both;
   transition: border-color 0.3s, background 0.3s;
 }
-.streak-banner::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #e8622a, transparent);
-  opacity: 0.7;
-}
 .streak-banner.alive {
-  border-color: rgba(232, 98, 42, 0.45);
-  background: linear-gradient(90deg, rgba(232,98,42,0.06) 0%, var(--surface) 60%);
+  border-color: rgba(249,115,22,0.45);
+  background: linear-gradient(90deg, rgba(249,115,22,0.06) 0%, var(--surface) 60%);
 }
 .streak-banner.danger {
-  border-color: rgba(232, 98, 42, 0.25);
-  background: var(--surface);
+  border-color: rgba(249,115,22,0.2);
 }
-.streak-banner-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
+.streak-banner-left { display: flex; align-items: center; gap: 12px; }
 .streak-banner-flame {
-  font-size: 26px;
-  line-height: 1;
-  filter: drop-shadow(0 0 6px rgba(232,98,42,0.5));
+  font-size: 24px; line-height: 1;
+  filter: drop-shadow(0 0 6px rgba(249,115,22,0.5));
 }
-.streak-banner-flame.cold {
-  filter: grayscale(0.8);
-  opacity: 0.5;
-}
-.streak-banner-text {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
+.streak-banner-flame.cold { filter: grayscale(0.8); opacity: 0.4; }
+.streak-banner-text { display: flex; align-items: baseline; gap: 8px; }
 .streak-banner-count {
-  font-family: 'Cinzel', serif;
-  font-size: 28px;
-  color: #e8622a;
-  line-height: 1;
+  font-family: 'Cinzel', serif; font-size: 26px;
+  color: var(--orange); line-height: 1;
 }
 .streak-banner-count.cold { color: var(--text-dark); }
-.streak-banner-label {
-  font-size: 13px;
-  color: var(--text-dim);
-  font-style: italic;
-}
-.streak-banner-right {
-  font-size: 11px;
-  color: var(--text-dark);
-  font-family: 'Cinzel', serif;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  text-align: right;
-}
-.streak-banner-right.logged {
-  color: var(--green);
-}
-.streak-banner-right.urgent {
-  color: #e8622a;
-  animation: urgentPulse 2s ease-in-out infinite;
-}
-@keyframes urgentPulse {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.5; }
+.streak-banner-label { font-size: 13px; color: var(--text-mid); }
+.streak-banner-right { font-size: 11px; font-weight: 700; color: var(--text-dim); text-align: right; text-transform: uppercase; letter-spacing: 0.06em; }
+.streak-banner-right.logged { color: var(--green); }
+.streak-banner-right.urgent { color: var(--orange); animation: urgentPulse 2s ease-in-out infinite; }
+@keyframes urgentPulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+/* ── MAP PANEL ── */
+.map-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 16px 16px;
+  padding: 18px 20px 16px;
+  position: relative; overflow: hidden;
+  animation: fadeUp 0.4s 0.05s ease both;
 }
 
-.xp-next-row {
-  display: flex;
+.map-top-bar {
+  display: flex; align-items: flex-start;
   justify-content: space-between;
-  align-items: baseline;
-  margin-top: 5px;
+  margin-bottom: 14px; gap: 12px;
 }
-.xp-earn-hint {
-  font-size: 11px;
-  color: var(--text-dim);
-  font-style: italic;
+.map-top-left { display: flex; flex-direction: column; gap: 2px; }
+.map-section-label {
+  font-size: 10px; font-weight: 700; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 0.12em;
 }
-.xp-next-msg {
-  font-size: 12px;
-  color: var(--text-dim);
-  font-style: italic;
-  text-align: right;
-}
+.map-current-loc { font-weight: 700; font-size: 15px; color: var(--text); }
+.map-zone-tag { font-size: 12px; color: var(--text-mid); }
 
-/* Treasury Divider */
-.card-divider {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 18px 0 14px;
-}
-.card-divider::before,
-.card-divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
-.card-divider-label {
-  font-family: 'Cinzel', serif;
-  font-size: 10px;
-  color: var(--text-dark);
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  white-space: nowrap;
-}
+.map-right-col { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.map-hearts { display: flex; align-items: center; gap: 5px; }
+.map-heart { font-size: 15px; transition: all 0.3s; filter: drop-shadow(0 0 3px rgba(239,68,68,0.4)); }
+.map-heart.empty { filter: grayscale(1) opacity(0.2); }
 
-/* Coin status row */
-.coin-status-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-top: 5px;
-  gap: 8px;
+.map-badges-row { display: flex; gap: 6px; }
+.badge-slot {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: var(--surface2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; position: relative; cursor: default; transition: all 0.3s;
 }
-.coin-earn-hint {
-  font-size: 11px;
-  color: var(--text-dim);
-  font-style: italic;
-  flex-shrink: 0;
+.badge-slot.earned { border-color: var(--gold); box-shadow: 0 0 10px var(--gold-glow); }
+.badge-slot.locked { opacity: 0.2; }
+.badge-slot .badge-tip {
+  display: none; position: absolute;
+  bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+  background: var(--surface3); border: 1px solid var(--border-mid);
+  border-radius: 6px; padding: 4px 8px;
+  font-size: 10px; color: var(--text-mid);
+  white-space: nowrap; z-index: 100; pointer-events: none;
+  font-weight: 600;
 }
+.badge-slot:hover .badge-tip { display: block; }
 
-/* ── COIN RESERVE ── */
-.coin-reserve-section {
-  margin-top: 16px;
-  padding-top: 16px;
+/* Map viewport */
+.map-viewport {
+  position: relative;
+  height: 220px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+}
+.node-map {
+  position: relative; width: 100%;
+  transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+.node-map svg { position: absolute; top: 0; left: 0; width: 100%; }
+.node-map-inner { position: absolute; top: 0; left: 0; width: 100%; }
+
+.map-node-wrap {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  cursor: default; z-index: 2;
+}
+.map-node-circle {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; transition: all 0.3s;
+  border: 2px solid var(--border);
+  background: var(--surface2);
+}
+.map-node-circle.done {
+  border-color: var(--purple-dim);
+  background: rgba(124,92,252,0.15);
+  opacity: 0.7;
+}
+.map-node-circle.current {
+  border-color: var(--purple);
+  background: rgba(124,92,252,0.2);
+  box-shadow: 0 0 0 4px rgba(124,92,252,0.15), 0 0 20px var(--purple-glow);
+  animation: currentPulse 2.5s ease-in-out infinite;
+}
+@keyframes currentPulse {
+  0%,100% { box-shadow: 0 0 0 4px rgba(124,92,252,0.15), 0 0 20px var(--purple-glow); }
+  50%     { box-shadow: 0 0 0 8px rgba(124,92,252,0.08), 0 0 30px var(--purple-glow); }
+}
+.map-node-circle.ahead { opacity: 0.3; }
+.map-node-circle.badge-node {
+  width: 34px; height: 34px; border-radius: 8px; font-size: 14px;
+}
+.map-node-circle.badge-node.earned {
+  border-color: var(--gold);
+  background: rgba(245,158,11,0.15);
+  box-shadow: 0 0 12px var(--gold-glow);
+}
+.map-node-circle.badge-node.ahead { opacity: 0.2; }
+.map-node-label {
+  font-size: 10px; font-weight: 600; color: var(--text-dim);
+  text-align: center; white-space: nowrap;
+  background: rgba(13,15,24,0.85);
+  padding: 2px 6px; border-radius: 4px;
+}
+.map-node-wrap.current .map-node-label { color: var(--purple-light); }
+
+.map-more-arrow {
+  position: absolute; bottom: 8px; right: 12px;
+  font-size: 10px; font-weight: 700; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  animation: bounceDown 2s ease-in-out infinite;
+}
+.map-more-arrow.hidden { display: none; }
+@keyframes bounceDown { 0%,100%{transform:translateY(0)} 50%{transform:translateY(3px)} }
+
+/* Road bonus */
+.road-bonus-track {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 12px; padding-top: 12px;
   border-top: 1px solid var(--border);
 }
-.coin-label-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 7px;
+.road-bonus-label { font-size: 11px; color: var(--text-dim); }
+.road-bonus-pips { display: flex; gap: 5px; }
+.road-pip {
+  width: 18px; height: 8px; border-radius: 100px;
+  background: var(--border); transition: all 0.3s;
 }
-.coin-title-text {
-  font-family: 'Cinzel', serif;
-  font-size: 11px;
-  color: var(--gold);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-}
-.coin-count-text { font-size: 15px; color: var(--text-dim); }
-.coin-count-text strong {
-  font-family: 'Cinzel', serif;
-  font-size: 16px;
-  color: var(--gold);
-}
-.coin-bar-track {
-  height: 18px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 9px;
-  overflow: hidden;
-  position: relative;
-}
-.coin-bar-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #5a3e10 0%, #a06c1a 55%, #c9a84c 100%);
-  border-radius: 9px;
-  transition: width 0.85s cubic-bezier(0.4, 0, 0.2, 1);
-  min-width: 0;
-}
-.coin-bar-fill.danger {
-  background: linear-gradient(90deg, #5a1a14 0%, #a03020 55%, #c0392b 100%);
-}
-.coin-bar-fill.warning {
-  background: linear-gradient(90deg, #5a3e10 0%, #b07820 55%, #e8a820 100%);
-}
-.coin-status {
-  font-size: 12px;
-  color: var(--text-dim);
-  text-align: right;
-  margin-top: 5px;
-  font-style: italic;
-}
-.coin-status.danger { color: var(--red); }
-.coin-status.warning { color: #e8a820; }
+.road-pip.earned { background: var(--teal); box-shadow: 0 0 6px var(--teal-glow); }
 
-/* ── IRON VAULT ── */
-.iron-vault-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 14px;
-  padding: 11px 14px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  position: relative;
-  overflow: hidden;
-}
-.iron-vault-row::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 3px;
-  background: linear-gradient(180deg, var(--gold-dim), var(--border-gold));
-}
-.vault-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.vault-icon { font-size: 18px; }
-.vault-label-wrap {}
-.vault-title {
-  font-family: 'Cinzel', serif;
-  font-size: 11px;
-  color: var(--gold-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  line-height: 1;
-  margin-bottom: 2px;
-}
-.vault-subtitle {
-  font-size: 11px;
-  color: var(--text-dim);
-  font-style: italic;
-}
-.vault-amount {
-  font-family: 'Cinzel', serif;
-  font-size: 18px;
-  color: var(--gold);
-  text-align: right;
-}
-.vault-amount.empty { color: var(--text-dark); font-size: 14px; }
-
-/* ── COIN FLOAT ── */
-.coin-float {
-  position: fixed;
-  font-family: 'Cinzel', serif;
-  font-size: 14px;
-  color: var(--gold);
-  pointer-events: none;
-  z-index: 9000;
-  opacity: 0;
-  font-weight: bold;
-}
-.coin-float.pop {
-  animation: coinDrain 1.1s ease-out forwards;
-}
-@keyframes coinDrain {
-  0%   { opacity: 1; transform: translateX(-50%) translateY(0);   }
-  100% { opacity: 0; transform: translateX(-50%) translateY(28px); }
-}
-
-/* ── MONTH RESET OVERLAY ── */
-.reset-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.92);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.4s;
-}
-.reset-overlay.show { opacity: 1; pointer-events: all; }
-.reset-box {
-  background: var(--surface);
-  border: 1px solid var(--border-gold);
-  border-radius: 6px;
-  padding: 44px 48px;
-  text-align: center;
-  max-width: 400px;
-  width: 90%;
-  position: relative;
-  overflow: hidden;
-  transform: scale(0.85) translateY(20px);
-  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.reset-overlay.show .reset-box { transform: scale(1) translateY(0); }
-.reset-box::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-}
-.reset-icon { font-size: 40px; margin-bottom: 12px; }
-.reset-label {
-  font-family: 'Cinzel', serif;
-  font-size: 11px;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.22em;
-  margin-bottom: 8px;
-}
-.reset-title {
-  font-family: 'Cinzel', serif;
-  font-size: 22px;
-  color: var(--gold);
-  margin-bottom: 16px;
-  text-shadow: 0 0 30px rgba(201,168,76,0.4);
-}
-.reset-breakdown {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 14px 18px;
-  margin-bottom: 20px;
-  text-align: left;
-}
-.reset-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 14px;
-  color: var(--text);
-  padding: 4px 0;
-}
-.reset-row.highlight { color: var(--gold); font-family: 'Cinzel', serif; font-size: 13px; }
-.reset-row span:last-child { color: var(--text); }
-.reset-row.highlight span:last-child { color: var(--gold); }
-.reset-msg {
-  font-style: italic;
-  color: var(--text-dim);
-  font-size: 13px;
-  line-height: 1.7;
-  margin-bottom: 24px;
-}
-.reset-close {
-  background: var(--gold-dim);
-  border: 1px solid var(--gold);
-  color: var(--gold-light);
-  font-family: 'Cinzel', serif;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  padding: 11px 28px;
-  border-radius: 3px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.reset-close:hover { background: var(--gold); color: var(--bg); }
-
-/* ── LOG SECTION ── */
+/* ── LOG FORM ── */
 .log-section {
   background: var(--surface);
-  border: 1px solid var(--border-gold);
-  border-radius: 4px;
-  padding: 20px;
-  margin-bottom: 20px;
-  position: relative;
-  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px; margin-bottom: 14px;
+  position: relative; overflow: hidden;
   animation: fadeUp 0.4s 0.08s ease both;
-}
-.log-section::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--xp-color), transparent);
 }
 
 .section-head {
-  font-family: 'Cinzel', serif;
-  font-size: 11px;
-  color: var(--gold);
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
+  font-size: 11px; font-weight: 700; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 0.1em;
   margin-bottom: 14px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  display: flex; align-items: center; gap: 10px;
 }
 .section-head::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
 .log-form-grid {
-  display: grid;
-  grid-template-columns: 1fr 110px auto;
-  gap: 10px;
-  align-items: end;
+  display: grid; grid-template-columns: 1fr 100px auto;
+  gap: 10px; align-items: end;
 }
 @media (max-width: 500px) {
   .log-form-grid { grid-template-columns: 1fr 1fr; }
   .log-btn-wrap  { grid-column: 1 / -1; }
 }
-
 .form-group { display: flex; flex-direction: column; gap: 5px; }
-.form-label  { font-size: 10px; color: var(--text); text-transform: uppercase; letter-spacing: 0.08em; }
+.form-label { font-size: 11px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; }
 .form-input {
   background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 3px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
   color: var(--text);
-  font-family: 'Crimson Text', serif;
-  font-size: 15px;
-  padding: 9px 11px;
-  outline: none;
-  transition: border-color 0.2s;
-  width: 100%;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 15px; padding: 10px 12px;
+  outline: none; width: 100%;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
-.form-input:focus { border-color: var(--gold-dim); }
+.form-input:focus {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px rgba(124,92,252,0.12);
+}
 .form-input::placeholder { color: var(--text-dark); }
 
 .log-btn {
-  background: var(--gold-dim);
-  border: 1px solid var(--gold);
-  color: var(--gold-light);
-  font-family: 'Cinzel', serif;
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  padding: 9px 18px;
-  border-radius: 3px;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-  width: 100%;
+  background: linear-gradient(135deg, var(--purple), #5b21b6);
+  border: none; border-radius: 10px;
+  color: #fff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px; font-weight: 700;
+  padding: 10px 16px;
+  cursor: pointer; white-space: nowrap; width: 100%;
+  transition: all 0.2s; letter-spacing: 0.02em;
 }
-.log-btn:hover  { background: var(--gold); color: var(--bg); }
-.log-btn:active { transform: scale(0.97); }
+.log-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px var(--purple-glow); }
+.log-btn:active { transform: translateY(0); }
 
-.xp-hint {
-  margin-top: 11px;
-  font-size: 12px;
-  color: var(--text-dim);
-  font-style: italic;
-  text-align: center;
-}
+.xp-hint { margin-top: 10px; font-size: 12px; color: var(--text-dim); text-align: center; }
 
-/* ── CHRONICLE ── */
-.log-list-wrap { margin-bottom: 20px; animation: fadeUp 0.4s 0.16s ease both; }
+/* ── LOG LIST ── */
+.log-list-wrap { margin-bottom: 20px; animation: fadeUp 0.4s 0.14s ease both; }
 .log-list {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 4px;
-  overflow: hidden;
+  border-radius: 14px; overflow: hidden;
 }
-.log-empty {
-  padding: 24px;
-  text-align: center;
-  color: var(--text-dark);
-  font-style: italic;
-  font-size: 14px;
-}
+.log-empty { padding: 24px; text-align: center; color: var(--text-dim); font-size: 13px; }
 .log-item {
-  display: grid;
-  grid-template-columns: 28px 1fr auto;
-  gap: 10px;
-  align-items: center;
-  padding: 11px 14px;
+  display: grid; grid-template-columns: 28px 1fr auto;
+  gap: 10px; align-items: center;
+  padding: 12px 16px;
   border-bottom: 1px solid var(--border);
-  animation: slideIn 0.3s ease both;
+  animation: slideIn 0.25s ease both;
 }
 .log-item:last-child { border-bottom: none; }
-.log-icon  { font-size: 16px; text-align: center; }
-.log-desc  { font-size: 14px; color: var(--text); }
-.log-meta  { font-size: 11px; color: var(--text-dim); font-style: italic; }
+.log-icon { font-size: 15px; text-align: center; }
+.log-desc { font-size: 14px; font-weight: 500; color: var(--text); }
+.log-meta { font-size: 11px; color: var(--text-dim); }
 .log-right { text-align: right; }
-.log-amount { font-family: 'Cinzel', serif; font-size: 13px; }
-.log-xp    { font-size: 12px; color: var(--xp-color); }
+.log-amount { font-weight: 700; font-size: 13px; color: var(--text); }
+.log-xp { font-size: 11px; color: var(--purple-light); font-weight: 600; }
 
-
-/* ── LEVEL UP ── */
-.levelup-overlay {
+/* ── XP FLOAT ── */
+.xp-float {
   position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.87);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-size: 13px; font-weight: 800;
+  color: var(--purple-light);
+  pointer-events: none; z-index: 9000; opacity: 0;
+}
+.xp-float.pop { animation: xpFloat 1.2s ease-out forwards; }
+@keyframes xpFloat {
+  0%   { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+  20%  { opacity: 1; transform: translateX(-50%) translateY(-12px) scale(1.15); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-40px) scale(0.9); }
+}
+.xp-bar-fill.pulse { animation: barPulse 0.7s ease; }
+@keyframes barPulse {
+  0%,100% { filter: brightness(1); }
+  50%     { filter: brightness(1.5); }
+}
+
+/* ── OVERLAYS ── */
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(7,9,18,0.9);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
   z-index: 9999;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.35s;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s;
 }
-.levelup-overlay.show { opacity: 1; pointer-events: all; }
-.levelup-box {
+.overlay.show { opacity: 1; pointer-events: all; }
+
+.overlay-box {
   background: var(--surface);
-  border: 1px solid var(--gold);
-  border-radius: 6px;
-  padding: 44px 52px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  transform: scale(0.8) translateY(20px);
-  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
-  max-width: 380px;
-  width: 90%;
-}
-.levelup-overlay.show .levelup-box { transform: scale(1) translateY(0); }
-.levelup-box::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-}
-.levelup-sparkles { font-size: 30px; letter-spacing: 6px; margin-bottom: 10px; }
-.levelup-label {
-  font-family: 'Cinzel', serif;
-  font-size: 12px;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.22em;
-  margin-bottom: 4px;
-}
-.levelup-num {
-  font-family: 'Cinzel', serif;
-  font-size: 62px;
-  color: var(--gold);
-  line-height: 1;
-  margin: 2px 0 8px;
-  text-shadow: 0 0 40px rgba(201,168,76,0.55);
-}
-.levelup-rank {
-  font-family: 'Cinzel', serif;
-  font-size: 16px;
-  color: var(--gold-light);
-  margin-bottom: 14px;
-}
-.levelup-msg {
-  font-style: italic;
-  color: var(--text-dim);
-  font-size: 14px;
-  line-height: 1.7;
-  margin-bottom: 24px;
-  padding: 0 8px;
-}
-.levelup-close {
-  background: var(--gold-dim);
-  border: 1px solid var(--gold);
-  color: var(--gold-light);
-  font-family: 'Cinzel', serif;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  padding: 11px 28px;
-  border-radius: 3px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.levelup-close:hover { background: var(--gold); color: var(--bg); }
-
-/* ── TEASERS ── */
-.teasers { margin-top: 28px; animation: fadeUp 0.5s 0.3s ease both; }
-.teasers-head {
-  font-family: 'Cinzel', serif;
-  font-size: 11px;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  margin-bottom: 14px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.teasers-head::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-.teaser-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-  gap: 10px;
-}
-.teaser-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 14px 16px;
-  opacity: 0.38;
-  filter: saturate(0.2);
-  position: relative;
-  transition: opacity 0.2s, filter 0.2s;
-}
-.teaser-card:hover { opacity: 0.55; filter: saturate(0.4); }
-.teaser-lock { position: absolute; top: 9px; right: 10px; font-size: 11px; color: var(--text-dark); }
-.teaser-icon { font-size: 22px; margin-bottom: 7px; }
-.teaser-name { font-family: 'Cinzel', serif; font-size: 12px; color: var(--gold-dim); margin-bottom: 4px; }
-.teaser-hint { font-size: 11px; color: var(--text-dim); font-style: italic; line-height: 1.5; }
-.teaser-unlock { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 8px; }
-
-/* ── ENCOUNTER BOX VARIANTS ── */
-.encounter-box.story {
-  border-color: var(--border-gold);
-}
-.encounter-box.story .encounter-zone {
-  color: var(--gold-dim);
-}
-.encounter-box.arrival {
-  border-color: #4a9eff;
-  box-shadow: 0 0 32px rgba(74,158,255,0.15);
-}
-.encounter-box.arrival .encounter-zone {
-  color: #4a9eff;
-}
-.encounter-box.zone-complete {
-  border-color: var(--gold);
-  box-shadow: 0 0 40px rgba(201,168,76,0.25);
-}
-.encounter-box.zone-complete .encounter-zone {
-  color: var(--gold);
-  font-size: 13px;
-}
-.encounter-box.zone-complete .encounter-title {
-  color: var(--gold-light);
-}
-.encounter-btn.story-choice {
-  background: var(--surface2);
-  border-color: var(--border-gold);
-  color: var(--text-dim);
-}
-.encounter-btn.story-choice:hover {
-  background: var(--surface);
-  border-color: var(--gold-dim);
-  color: var(--text);
-}
-.map-hearts {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.map-heart {
-  font-size: 16px;
-  transition: all 0.3s;
-  filter: drop-shadow(0 0 3px rgba(192,57,43,0.5));
-  line-height: 1;
-}
-.map-heart.empty {
-  filter: grayscale(1) opacity(0.2);
-}
-
-/* ── BADGES (compact on character card) ── */
-.badges-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid var(--border);
-}
-.badges-label {
-  font-family: 'Cinzel', serif;
-  font-size: 10px;
-  color: var(--text-dark);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-right: 4px;
-  flex-shrink: 0;
-}
-.badge-slot {
-  width: 30px; height: 30px;
-  border-radius: 50%;
-  border: 1px solid var(--border);
-  background: var(--surface2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  position: relative;
-  transition: all 0.3s;
-  cursor: default;
-}
-.badge-slot.earned {
-  border-color: var(--gold);
-  box-shadow: 0 0 8px rgba(201,168,76,0.4);
-}
-.badge-slot.locked { opacity: 0.2; }
-.badge-slot .badge-tip {
-  display: none;
-  position: absolute;
-  bottom: calc(100% + 6px);
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--surface);
-  border: 1px solid var(--border-gold);
-  border-radius: 3px;
-  padding: 4px 8px;
-  font-size: 10px;
-  color: var(--text-dim);
-  white-space: nowrap;
-  font-family: 'Cinzel', serif;
-  z-index: 100;
-  pointer-events: none;
-}
-.badge-slot:hover .badge-tip { display: block; }
-
-/* ── NODE MAP ── */
-.map-panel {
-  background: var(--surface);
-  border: 1px solid var(--border-gold);
-  border-radius: 0 0 4px 4px;
-  padding: 20px 20px 16px;
-  position: relative;
-  overflow: hidden;
-  border-top: none;
-}
-.map-panel::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
-}
-.map-top-bar {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 14px;
-  gap: 12px;
-}
-.map-top-left {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.map-section-label {
-  font-family: 'Cinzel', serif;
-  font-size: 10px;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-}
-.map-current-loc {
-  font-family: 'Cinzel', serif;
-  font-size: 14px;
-  color: var(--gold);
-}
-.map-zone-tag {
-  font-size: 12px;
-  color: var(--text);
-  font-style: italic;
-  opacity: 0.7;
-}
-
-/* Map right column (hearts + badges stacked) */
-.map-right-col {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
-  flex-shrink: 0;
-}
-.map-badges-row {
-  display: flex;
-  gap: 5px;
-  align-items: center;
-}
-
-/* Map viewport — windowed view, clips to show ~5 nodes at a time */
-.map-viewport {
-  position: relative;
-  width: 100%;
-  height: 260px;
-  overflow: hidden;
-  border-radius: 4px;
-}
-/* Top fade — reveals content came from above */
-.map-viewport::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 40px;
-  background: linear-gradient(180deg, var(--surface) 0%, transparent 100%);
-  z-index: 10;
-  pointer-events: none;
-  transition: opacity 0.5s;
-}
-/* Bottom fade — signals map continues below */
-.map-viewport::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 48px;
-  background: linear-gradient(0deg, var(--surface) 0%, transparent 100%);
-  z-index: 10;
-  pointer-events: none;
-}
-/* "More ahead" arrow at bottom of viewport */
-.map-more-arrow {
-  position: absolute;
-  bottom: 6px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 20;
-  font-size: 11px;
-  color: var(--gold-dim);
-  font-family: 'Cinzel', serif;
-  letter-spacing: 0.1em;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1px;
-  pointer-events: none;
-  animation: arrowBob 2s ease-in-out infinite;
-  opacity: 0.7;
-}
-.map-more-arrow.hidden { display: none; }
-@keyframes arrowBob {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50%       { transform: translateX(-50%) translateY(3px); }
-}
-
-/* The scrollable world inside the viewport */
-.node-map {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%;
-  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.node-map svg {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%;
-  pointer-events: none;
-}
-.node-map-inner {
-  position: relative;
-  z-index: 2;
-}
-
-/* Individual map nodes */
-.map-node-wrap {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  transform: translate(-50%, -50%);
-  cursor: default;
-}
-.map-node-circle {
-  width: 48px; height: 48px;
-  border-radius: 50%;
-  border: 2px solid var(--border);
-  background: var(--surface2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  transition: all 0.4s;
-  position: relative;
-}
-.map-node-circle.done {
-  border-color: var(--gold-dim);
-  background: #1c1808;
-  opacity: 0.65;
-}
-.map-node-circle.current {
-  border-color: var(--gold);
-  background: #2a2010;
-  box-shadow: 0 0 18px rgba(201,168,76,0.55);
-  animation: nodeGlow 2.5s ease-in-out infinite;
-}
-.map-node-circle.ahead {
-  opacity: 0.28;
-  filter: saturate(0.15);
-}
-.map-node-circle.badge-node {
-  width: 42px; height: 42px;
-  font-size: 18px;
-  border-style: dashed;
-}
-.map-node-circle.badge-node.earned {
-  border-color: var(--gold);
-  border-style: solid;
-  box-shadow: 0 0 14px rgba(201,168,76,0.5);
-  opacity: 1;
-  filter: none;
-}
-@keyframes nodeGlow {
-  0%, 100% { box-shadow: 0 0 14px rgba(201,168,76,0.4); }
-  50%       { box-shadow: 0 0 28px rgba(201,168,76,0.75); }
-}
-.map-node-label {
-  font-family: 'Cinzel', serif;
-  font-size: 9px;
-  color: var(--text-dark);
-  text-align: center;
-  line-height: 1.3;
-  max-width: 60px;
-  white-space: nowrap;
-}
-.map-node-wrap.current .map-node-label { color: var(--gold-dim); }
-
-/* Zone region labels */
-.zone-region-label {
-  position: absolute;
-  font-family: 'Cinzel', serif;
-  font-size: 8px;
-  color: var(--text-dark);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-/* Road bonus row */
-.road-bonus-track {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 14px;
-  padding-top: 12px;
-  border-top: 1px solid var(--border);
-}
-.road-bonus-label {
-  font-size: 11px;
-  color: var(--text-dim);
-  font-style: italic;
-  flex: 1;
-}
-.road-bonus-pips {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-}
-.road-pip {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--border);
-  transition: all 0.3s;
-}
-.road-pip.earned {
-  background: var(--gold);
-  box-shadow: 0 0 5px rgba(201,168,76,0.5);
-}
-
-/* Character card + map as unified block */
-.hero-block {
-  margin-bottom: 20px;
-  animation: fadeUp 0.4s ease both;
-}
-.hero-block .character-card {
-  border-radius: 4px 4px 0 0;
-  margin-bottom: 0;
-  border-bottom: 1px solid var(--border);
-  animation: none;
-}
-
-/* ── ENCOUNTER OVERLAY ── */
-.encounter-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.92);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.35s;
-}
-.encounter-overlay.show { opacity: 1; pointer-events: all; }
-.encounter-box {
-  background: var(--surface);
-  border-radius: 6px;
+  border: 1px solid var(--border-mid);
+  border-radius: 20px;
   padding: 36px 40px;
   text-align: center;
-  max-width: 400px;
-  width: 90%;
-  position: relative;
-  overflow: hidden;
-  transform: scale(0.85) translateY(20px);
-  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-width: 400px; width: 90%;
+  position: relative; overflow: hidden;
+  transform: scale(0.9) translateY(16px);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-.encounter-overlay.show .encounter-box { transform: scale(1) translateY(0); }
-.encounter-box.hostile {
-  border: 1px solid var(--red);
-}
-.encounter-box.hostile::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, var(--red), transparent);
-}
-.encounter-box.friendly {
-  border: 1px solid var(--green);
-}
-.encounter-box.friendly::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, var(--green), transparent);
-}
-.encounter-zone {
-  font-family: 'Cinzel', serif;
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  margin-bottom: 6px;
-}
-.encounter-box.hostile .encounter-zone { color: var(--red); }
-.encounter-box.friendly .encounter-zone { color: var(--green); }
-.encounter-icon { font-size: 44px; margin-bottom: 12px; line-height: 1; }
-.encounter-title {
-  font-family: 'Cinzel', serif;
-  font-size: 18px;
-  color: var(--text);
-  margin-bottom: 10px;
-}
-.encounter-desc {
-  font-size: 14px;
-  color: var(--text);
-  font-style: italic;
-  line-height: 1.7;
-  margin-bottom: 22px;
-}
-.encounter-choices { display: flex; flex-direction: column; gap: 9px; }
-.encounter-btn {
-  background: transparent;
-  border: 1px solid var(--border-gold);
-  color: var(--text);
-  font-family: 'Cinzel', serif;
-  font-size: 11px;
-  letter-spacing: 0.07em;
-  padding: 12px 20px;
-  border-radius: 3px;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-align: left;
-  line-height: 1.5;
-}
-.encounter-btn:hover { background: var(--surface2); border-color: var(--gold-dim); }
-.encounter-btn.hostile-choice { border-color: rgba(192,57,43,0.4); }
-.encounter-btn.hostile-choice:hover { border-color: var(--red); background: rgba(192,57,43,0.08); }
-.encounter-btn.friendly-choice { border-color: rgba(39,174,96,0.4); }
-.encounter-btn.friendly-choice:hover { border-color: var(--green); background: rgba(39,174,96,0.08); }
-.encounter-btn-cost {
-  display: block;
-  font-size: 10px;
-  color: var(--text-dark);
-  margin-top: 3px;
-  letter-spacing: 0.05em;
-}
-.encounter-btn-disabled {
-  opacity: 0.38;
-  cursor: not-allowed;
-  border-color: var(--border) !important;
-  background: transparent !important;
-}
-.encounter-btn-disabled:hover {
-  background: transparent !important;
-  border-color: var(--border) !important;
+.overlay.show .overlay-box { transform: scale(1) translateY(0); }
+
+.overlay-box.hostile { border-color: rgba(239,68,68,0.4); }
+.overlay-box.hostile::before { background: linear-gradient(90deg, transparent, var(--red), transparent); }
+.overlay-box.friendly { border-color: rgba(34,197,94,0.4); }
+.overlay-box.friendly::before { background: linear-gradient(90deg, transparent, var(--green), transparent); }
+.overlay-box.story { border-color: var(--border-mid); }
+.overlay-box.zone-complete { border-color: rgba(245,158,11,0.4); }
+.overlay-box.zone-complete::before { background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+.overlay-box.levelup { border-color: var(--purple); box-shadow: 0 0 40px var(--purple-glow); }
+.overlay-box.levelup::before { background: linear-gradient(90deg, transparent, var(--purple), transparent); }
+.overlay-box::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--border-mid), transparent);
 }
 
-/* ── TOAST ── */
-.toast {
-  position: fixed;
-  bottom: 28px;
-  left: 50%;
-  transform: translateX(-50%) translateY(16px);
-  background: var(--surface);
-  border: 1px solid var(--border-gold);
+.overlay-zone-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.2em;
+  text-transform: uppercase; margin-bottom: 8px; color: var(--text-dim);
+}
+.overlay-box.hostile .overlay-zone-label { color: var(--red); }
+.overlay-box.friendly .overlay-zone-label { color: var(--green); }
+.overlay-box.zone-complete .overlay-zone-label { color: var(--gold); }
+
+.overlay-icon { font-size: 44px; margin-bottom: 12px; line-height: 1; }
+.overlay-title {
+  font-size: 18px; font-weight: 800; color: var(--text);
+  margin-bottom: 10px;
+}
+.overlay-desc {
+  font-size: 14px; color: var(--text-mid);
+  line-height: 1.65; margin-bottom: 20px;
+}
+.overlay-choices { display: flex; flex-direction: column; gap: 8px; }
+.overlay-btn {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
   color: var(--text);
-  font-size: 13px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px; font-weight: 600;
+  padding: 12px 18px;
+  cursor: pointer; transition: all 0.2s; text-align: left; line-height: 1.5;
+}
+.overlay-btn:hover { border-color: var(--border-mid); background: var(--surface3); }
+.overlay-btn.hostile-choice { border-color: rgba(239,68,68,0.3); }
+.overlay-btn.hostile-choice:hover { border-color: var(--red); background: rgba(239,68,68,0.08); }
+.overlay-btn.friendly-choice { border-color: rgba(34,197,94,0.3); }
+.overlay-btn.friendly-choice:hover { border-color: var(--green); background: rgba(34,197,94,0.08); }
+.overlay-btn.primary-choice {
+  background: linear-gradient(135deg, var(--purple), #5b21b6);
+  border-color: var(--purple); color: #fff;
+}
+.overlay-btn.primary-choice:hover { box-shadow: 0 4px 16px var(--purple-glow); }
+.overlay-btn-cost {
+  display: block; font-size: 11px; color: var(--text-dim); margin-top: 2px;
+}
+.overlay-btn-disabled {
+  opacity: 0.3; cursor: not-allowed;
+  border-color: var(--border) !important; background: transparent !important;
+}
+.overlay-btn-disabled:hover { background: transparent !important; border-color: var(--border) !important; }
+
+/* Level-up specific */
+.levelup-sparkles { font-size: 26px; letter-spacing: 8px; margin-bottom: 8px; }
+.levelup-label { font-size: 11px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 4px; }
+.levelup-num {
+  font-family: 'Cinzel', serif; font-size: 64px; color: var(--purple-light);
+  line-height: 1; margin: 4px 0 10px;
+  text-shadow: 0 0 40px var(--purple-glow);
+}
+.levelup-rank { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 12px; }
+.levelup-msg { font-size: 14px; color: var(--text-mid); line-height: 1.65; margin-bottom: 22px; padding: 0 8px; }
+
+/* Month reset */
+.reset-icon { font-size: 40px; margin-bottom: 12px; }
+.reset-label { font-size: 10px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 8px; }
+.reset-title { font-family: 'Cinzel', serif; font-size: 22px; color: var(--gold-light); margin-bottom: 16px; }
+.reset-breakdown {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; text-align: left;
+}
+.reset-row { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-mid); padding: 4px 0; }
+.reset-row.highlight { color: var(--gold); font-weight: 700; font-size: 13px; }
+.reset-row.highlight span:last-child { color: var(--gold-light); }
+.reset-msg { font-size: 13px; color: var(--text-dim); line-height: 1.65; margin-bottom: 20px; }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 28px; left: 50%;
+  transform: translateX(-50%) translateY(16px);
+  background: var(--surface3);
+  border: 1px solid var(--border-mid);
+  color: var(--text);
+  font-size: 13px; font-weight: 500;
   padding: 10px 20px;
-  border-radius: 3px;
-  opacity: 0;
-  pointer-events: none;
-  z-index: 8000;
-  transition: all 0.3s;
-  white-space: nowrap;
+  border-radius: 100px;
+  opacity: 0; pointer-events: none;
+  z-index: 8000; transition: all 0.3s; white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* ── UTILS ── */
+/* Teasers */
+.teasers { margin-top: 28px; animation: fadeUp 0.5s 0.3s ease both; }
+.teasers-head {
+  font-size: 11px; font-weight: 700; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin-bottom: 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.teasers-head::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.teaser-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; }
+.teaser-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px;
+  opacity: 0.3; filter: saturate(0.2);
+  position: relative; transition: opacity 0.2s, filter 0.2s;
+}
+.teaser-card:hover { opacity: 0.5; filter: saturate(0.4); }
+.teaser-lock { position: absolute; top: 10px; right: 12px; font-size: 11px; color: var(--text-dim); }
+.teaser-icon { font-size: 20px; margin-bottom: 6px; }
+.teaser-name { font-size: 12px; font-weight: 700; color: var(--text-mid); margin-bottom: 3px; }
+.teaser-hint { font-size: 11px; color: var(--text-dim); line-height: 1.4; }
+.teaser-unlock { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 6px; font-weight: 600; }
+
+/* Animations */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -1499,52 +958,62 @@ body::after {
 
   <!-- HEADER -->
   <div class="header">
-    <h1>⚔ Budget Quest</h1>
-    <div class="tagline">Turn financial discipline into heroic progress.</div>
-    <div id="header-auth" style="display:none;margin-top:8px;font-size:12px;color:var(--text-dark);">
-      <span id="header-email"></span>
-      <button onclick="signOut()" style="margin-left:12px;background:none;border:1px solid var(--border);color:var(--text-dark);padding:3px 10px;border-radius:3px;cursor:pointer;font-size:11px;">Sign Out</button>
+    <div class="header-brand">
+      <div class="header-icon">⚔</div>
+      <h1>Budget Quest</h1>
+    </div>
+    <div id="header-auth" class="header-auth" style="display:none;">
+      <span class="header-auth-email" id="header-email"></span>
+      <button class="signout-btn" onclick="signOut()">Sign Out</button>
     </div>
   </div>
 
   <!-- ── LOGIN ── -->
   <div id="login-screen" style="display:none;">
-    <div class="onboarding-card" style="max-width:400px;margin:0 auto;">
-      <div style="text-align:center;font-size:48px;margin-bottom:16px">🛡️</div>
-      <div class="ob-title">Enter the Realm</div>
+    <div class="login-hero">
+      <div class="login-hero-icon">⚔</div>
+      <div class="login-title">Welcome Back, Hero</div>
+      <div class="login-sub">Track your spending. Level up. Build your treasury.</div>
+    </div>
+    <div class="card" style="max-width:420px;margin:0 auto;">
+      <div class="card-accent-top"></div>
 
-      <!-- Tab switcher -->
-      <div style="display:flex;gap:0;margin-bottom:20px;border:1px solid var(--border);border-radius:4px;overflow:hidden;">
-        <button id="tab-password" onclick="switchLoginTab('password')" style="flex:1;padding:9px;background:var(--gold);color:#1a1400;border:none;cursor:pointer;font-family:'Cinzel',serif;font-size:12px;font-weight:bold;">Password</button>
-        <button id="tab-magic" onclick="switchLoginTab('magic')" style="flex:1;padding:9px;background:var(--surface2);color:var(--text-dim);border:none;cursor:pointer;font-family:'Cinzel',serif;font-size:12px;">Magic Link</button>
+      <div class="tab-row">
+        <button id="tab-password" class="tab-btn active" onclick="switchLoginTab('password')">Password</button>
+        <button id="tab-magic" class="tab-btn" onclick="switchLoginTab('magic')">Magic Link</button>
       </div>
 
       <!-- Password login -->
       <div id="login-password-panel">
         <div id="login-form-password">
-          <div style="display:flex;flex-direction:column;gap:10px;">
-            <input class="hero-name-input" id="login-email-pw" type="email" placeholder="your@email.com" autocomplete="email" style="border-radius:3px;width:100%;">
-            <input class="hero-name-input" id="login-password" type="password" placeholder="Password" autocomplete="current-password" style="border-radius:3px;width:100%;">
-            <button class="ob-btn" style="width:100%;justify-content:center;" onclick="signInWithPassword()">Enter the Realm ⚔</button>
+          <div class="form-field">
+            <label class="field-label">Email</label>
+            <input class="field-input" id="login-email-pw" type="email" placeholder="your@email.com" autocomplete="email">
           </div>
-          <div id="login-error-pw" style="color:var(--red);font-size:13px;text-align:center;margin-top:10px;display:none;"></div>
+          <div class="form-field">
+            <label class="field-label">Password</label>
+            <input class="field-input" id="login-password" type="password" placeholder="Password" autocomplete="current-password">
+          </div>
+          <button class="btn-primary" onclick="signInWithPassword()">Enter the Realm ⚔</button>
+          <div id="login-error-pw" class="login-err"></div>
         </div>
       </div>
 
       <!-- Magic link login -->
       <div id="login-magic-panel" style="display:none;">
         <div id="login-form-magic">
-          <div style="display:flex;flex-direction:column;gap:10px;">
-            <input class="hero-name-input" id="login-email" type="email" placeholder="your@email.com" autocomplete="email" style="border-radius:3px;width:100%;">
-            <button class="ob-btn" style="width:100%;justify-content:center;" onclick="sendMagicLink()">Send Magic Link ✉</button>
+          <div class="form-field">
+            <label class="field-label">Email</label>
+            <input class="field-input" id="login-email" type="email" placeholder="your@email.com" autocomplete="email">
           </div>
-          <div id="login-error" style="color:var(--red);font-size:13px;text-align:center;margin-top:10px;display:none;"></div>
+          <button class="btn-primary" onclick="sendMagicLink()">Send Magic Link ✉</button>
+          <div id="login-error" class="login-err"></div>
         </div>
         <div id="login-sent" style="display:none;text-align:center;">
           <div style="font-size:36px;margin-bottom:12px">✉️</div>
-          <div style="color:var(--gold);font-family:'Cinzel',serif;font-size:16px;margin-bottom:8px;">Your summons has been sent</div>
-          <div style="color:var(--text-dim);font-size:14px;line-height:1.6;">A magic link rides to <strong id="sent-email" style="color:var(--text)"></strong>.<br>Click it to enter the realm and begin your journey.</div>
-          <button onclick="resetLoginForm()" style="margin-top:16px;background:none;border:none;color:var(--text-dark);font-size:12px;cursor:pointer;text-decoration:underline;">Use a different email</button>
+          <div style="font-weight:700;color:var(--purple-light);font-size:16px;margin-bottom:8px;">Magic link sent!</div>
+          <div style="color:var(--text-mid);font-size:14px;line-height:1.6;">Check your inbox at <strong id="sent-email" style="color:var(--text)"></strong> and click the link to begin your quest.</div>
+          <button onclick="resetLoginForm()" style="margin-top:16px;background:none;border:none;color:var(--text-dim);font-size:12px;cursor:pointer;text-decoration:underline;font-family:inherit;">Use a different email</button>
         </div>
       </div>
 
@@ -1553,7 +1022,7 @@ body::after {
 
   <!-- ── ONBOARDING ── -->
   <div id="onboarding" style="display: none;">
-    <div class="onboarding-card">
+    <div class="ob-card">
 
       <div class="steps-row">
         <div class="step-dot done" id="dot-0"></div>
@@ -1569,40 +1038,40 @@ body::after {
 
       <!-- Step 1: Name -->
       <div class="ob-step active" id="step-0">
-        <div style="text-align:center;font-size:44px;margin-bottom:14px">🛡️</div>
-        <div class="ob-title">Your Legend Begins</div>
-        <div class="ob-sub">Every coin you track is an act of discipline. Every logged expense builds your power. What name shall history remember?</div>
+        <div class="ob-icon">⚔️</div>
+        <div class="ob-title">Choose Your Name</div>
+        <div class="ob-sub">Every expense you log earns XP. Every level moves you forward on the map. What should the chronicles call you?</div>
         <div class="name-row">
-          <input class="hero-name-input" id="hero-name-input" type="text" placeholder="Name your hero…" maxlength="24" autocomplete="off" value="Timli">
-          <button class="ob-btn" style="border-radius:0 3px 3px 0;white-space:nowrap" onclick="goStep(1)">Next →</button>
+          <input class="hero-name-input" id="hero-name-input" type="text" placeholder="Your hero's name…" maxlength="24" autocomplete="off" value="Timli">
+          <button class="name-btn" onclick="goStep(1)">Next →</button>
         </div>
       </div>
 
       <!-- Step 2: Avatar -->
       <div class="ob-step" id="step-1">
-        <div class="ob-title">Choose Your Form</div>
-        <div class="ob-sub">How shall you appear in the chronicles of the realm?</div>
+        <div class="ob-title">Pick Your Avatar</div>
+        <div class="ob-sub">How do you appear in the chronicles?</div>
         <div class="avatar-grid" id="avatar-grid">
           <div class="avatar-opt" data-avatar="🧙" onclick="selectAvatar(this)">🧙</div>
           <div class="avatar-opt" data-avatar="🧝‍♀️" onclick="selectAvatar(this)">🧝‍♀️</div>
           <div class="avatar-opt" data-avatar="🧔" onclick="selectAvatar(this)">🧔</div>
         </div>
-       <div class="ob-nav">
-  <button class="ob-btn secondary" onclick="goStep(0)">← Back</button>
-  <button class="ob-btn" onclick="goStep(2)">Choose Class →</button>
-</div>
+        <div class="ob-nav">
+          <button class="btn-secondary" onclick="goStep(0)">← Back</button>
+          <button class="btn-primary" style="width:auto;" onclick="goStep(2)">Pick Your Class →</button>
+        </div>
       </div>
 
       <!-- Step 3: Class -->
       <div class="ob-step" id="step-2">
         <div class="ob-title">Choose Your Class</div>
-        <div class="ob-sub">Your class shapes the path ahead. All roads lead to mastery.</div>
+        <div class="ob-sub">Your class is your style — all paths lead to the Iron Keep.</div>
         <div class="class-grid" id="class-grid">
           <div class="class-opt" data-class="Mage" onclick="selectClass(this)">
             <div class="class-emoji">🔮</div>
             <div class="class-info">
               <div class="class-name">Mage of the Archive</div>
-              <div class="class-desc">You wield knowledge as a weapon. Subscriptions and hidden fees hold no power over you.</div>
+              <div class="class-desc">Knowledge is power. No subscription or hidden fee escapes your eye.</div>
             </div>
             <div class="class-trait">Wisdom</div>
           </div>
@@ -1610,7 +1079,7 @@ body::after {
             <div class="class-emoji">🏹</div>
             <div class="class-info">
               <div class="class-name">Ranger of the Forest</div>
-              <div class="class-desc">Discipline is your nature. You log daily, break no streaks, and spend only with intention.</div>
+              <div class="class-desc">Disciplined and consistent. You log daily and never break your streak.</div>
             </div>
             <div class="class-trait">Discipline</div>
           </div>
@@ -1618,7 +1087,7 @@ body::after {
             <div class="class-emoji">🐺</div>
             <div class="class-info">
               <div class="class-name">Hunter of Surplus</div>
-              <div class="class-desc">You pursue savings aggressively. Every budget you beat is a trophy on your wall.</div>
+              <div class="class-desc">Every budget you crush is a trophy. Savings are your prey.</div>
             </div>
             <div class="class-trait">Willpower</div>
           </div>
@@ -1626,7 +1095,7 @@ body::after {
             <div class="class-emoji">🗡️</div>
             <div class="class-info">
               <div class="class-name">Knight of the Keep</div>
-              <div class="class-desc">You defend your budget with honor. Overspending is a foe that shall not pass.</div>
+              <div class="class-desc">Your budget is your fortress. Overspending shall not pass.</div>
             </div>
             <div class="class-trait">Discipline</div>
           </div>
@@ -1634,78 +1103,78 @@ body::after {
             <div class="class-emoji">❤️‍🩹</div>
             <div class="class-info">
               <div class="class-name">Healer of Debts</div>
-              <div class="class-desc">Recovery is your power. You restore what was lost and patience is your greatest asset.</div>
+              <div class="class-desc">Patience and recovery are your superpowers. Every setback can be undone.</div>
             </div>
             <div class="class-trait">Wisdom</div>
           </div>
         </div>
         <div class="ob-nav">
-          <button class="ob-btn secondary" onclick="goStep(1)">← Back</button>
-          <button class="ob-btn" onclick="goStep(3)">The Laws of the Realm →</button>
+          <button class="btn-secondary" onclick="goStep(1)">← Back</button>
+          <button class="btn-primary" style="width:auto;" onclick="goStep(3)">The Rules →</button>
         </div>
       </div>
 
-      <!-- Step 4: Laws of the Realm -->
+      <!-- Step 4: How it works -->
       <div class="ob-step" id="step-3">
-        <div style="text-align:center;font-size:36px;margin-bottom:10px">📜</div>
-        <div class="ob-title">The Laws of the Realm</div>
-        <div class="ob-sub">Five laws govern your journey. Know them before you ride.</div>
+        <div class="ob-icon">🗺️</div>
+        <div class="ob-title">How It Works</div>
+        <div class="ob-sub">Five simple rules for the road ahead.</div>
         <div class="laws-grid">
           <div class="law-card">
             <div class="law-icon">⚔️</div>
             <div class="law-body">
-              <div class="law-title">Log Expenses → Earn XP</div>
-              <div class="law-plain">Every purchase you record earns experience. The amount doesn't matter — the act of tracking does.</div>
+              <div class="law-title">Log expenses → earn XP</div>
+              <div class="law-plain">Every purchase you record earns experience — the amount doesn't matter, the habit does.</div>
             </div>
           </div>
           <div class="law-card">
             <div class="law-icon">🔥</div>
             <div class="law-body">
-              <div class="law-title">Log Daily → Build Your Streak</div>
-              <div class="law-plain">Log at least once every day to grow your streak. Streaks boost your XP. Miss a day and it resets to zero.</div>
+              <div class="law-title">Log daily → build your streak</div>
+              <div class="law-plain">Log at least once a day to grow your streak. Streaks boost XP. Miss a day and you start over.</div>
             </div>
           </div>
           <div class="law-card">
             <div class="law-icon">🔒</div>
             <div class="law-body">
-              <div class="law-title">Stay Under Budget → Fill the Iron Vault</div>
-              <div class="law-plain">Your monthly budget is your Coin Reserve. Any gold left unspent at month's end is sealed in the Iron Vault — your trophy of discipline.</div>
+              <div class="law-title">Stay under budget → fill the Vault</div>
+              <div class="law-plain">Any budget left unspent at month's end gets sealed in the Iron Vault — your real-life savings trophy.</div>
             </div>
           </div>
           <div class="law-card">
             <div class="law-icon">🗺️</div>
             <div class="law-body">
-              <div class="law-title">Level Up → Advance the Map</div>
-              <div class="law-plain">Each level moves you forward on The Journey — a world map of 14 locations across 4 zones. Log well and earn Road Bonuses that accelerate your progress.</div>
+              <div class="law-title">Level up → advance the map</div>
+              <div class="law-plain">Each level moves you along a 14-location journey. Earn Road Bonuses to travel faster.</div>
             </div>
           </div>
           <div class="law-card">
             <div class="law-icon">❤️</div>
             <div class="law-body">
-              <div class="law-title">Hearts Protect You on the Road</div>
-              <div class="law-plain">The road has hazards — bandits, tax collectors, temptation merchants. You start with 3 hearts. Spend one to block a threat, or pay from your Iron Vault instead. Shrines and scouts restore them.</div>
+              <div class="law-title">Hearts protect you on the road</div>
+              <div class="law-plain">Random encounters test your resolve. Spend a heart to brush off a threat, or pay from your Vault. Shrines restore hearts.</div>
             </div>
           </div>
         </div>
         <div class="ob-nav">
-          <button class="ob-btn secondary" onclick="goStep(2)">← Back</button>
-          <button class="ob-btn" onclick="goStep(4)">Set Your Treasury →</button>
+          <button class="btn-secondary" onclick="goStep(2)">← Back</button>
+          <button class="btn-primary" style="width:auto;" onclick="goStep(4)">Set Your Budget →</button>
         </div>
       </div>
 
       <!-- Step 5: Monthly Budget -->
       <div class="ob-step" id="step-4">
-        <div style="text-align:center;font-size:44px;margin-bottom:14px">🏦</div>
-        <div class="ob-title">Forge Your Monthly Treasury</div>
-        <div class="ob-sub">What is your monthly budget? This becomes your Coin Reserve — your gold to spend each month. Any surplus at month's end is sealed in the Iron Vault.</div>
-        <div class="name-row">
-          <span style="background:var(--surface2);border:1px solid var(--border-gold);border-right:none;border-radius:3px 0 0 3px;padding:11px 14px;color:var(--gold-dim);font-family:'Cinzel',serif;font-size:15px;">$</span>
-          <input class="hero-name-input" id="budget-input" type="number" min="1" step="1" placeholder="e.g. 2000" style="border-radius:0;border-left:none;" autocomplete="off">
-          <button class="ob-btn" style="border-radius:0 3px 3px 0;white-space:nowrap" onclick="beginJourney()">Begin the Quest ⚔</button>
+        <div class="ob-icon">🏦</div>
+        <div class="ob-title">Set Your Monthly Budget</div>
+        <div class="ob-sub">This becomes your Coin Reserve — track your spending against it each month. Unspent gold goes to the Iron Vault.</div>
+        <div class="budget-row">
+          <span class="budget-prefix">$</span>
+          <input class="budget-input" id="budget-input" type="number" min="1" step="1" placeholder="e.g. 2000" autocomplete="off">
+          <button class="budget-btn" onclick="beginJourney()">Start Quest ⚔</button>
         </div>
-        <div style="text-align:center;margin-top:14px;font-size:12px;color:var(--text-dark);font-style:italic;">You can update this anytime. No judgment — only discipline.</div>
-        <div class="ob-nav" style="margin-top:18px;">
-          <button class="ob-btn secondary" onclick="goStep(3)">← Back</button>
+        <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--text-dim);">You can update this anytime.</div>
+        <div class="ob-nav" style="margin-top:16px;">
+          <button class="btn-secondary" onclick="goStep(3)">← Back</button>
         </div>
       </div>
 
@@ -1715,11 +1184,12 @@ body::after {
   <!-- ── MAIN ── -->
   <div id="main" style="display: block;">
 
-    <!-- ── HERO BLOCK: character card + map panel as one unified unit ── -->
+    <!-- HERO BLOCK -->
     <div class="hero-block">
 
-      <!-- Character Card (top half) -->
+      <!-- Character Card -->
       <div class="character-card">
+        <div class="card-accent-top"></div>
         <div class="char-top">
           <div class="char-avatar" id="char-avatar">🧙</div>
           <div class="char-info">
@@ -1732,33 +1202,32 @@ body::after {
           </div>
         </div>
 
-        <!-- XP -->
-        <div class="xp-label-row">
-          <span class="xp-title-text">⚔ Experience (XP)</span>
-          <span class="xp-count-text"><strong id="xp-current">0</strong> / <span id="xp-next-val">80</span> XP</span>
+        <!-- XP Bar -->
+        <div class="bar-label-row">
+          <span class="bar-label-title">✦ Experience</span>
+          <span class="bar-label-count"><strong id="xp-current">0</strong> / <span id="xp-next-val">80</span> XP</span>
         </div>
-        <div class="xp-bar-track">
-          <div class="xp-bar-fill" id="xp-fill" style="width:0%"></div>
+        <div class="bar-track">
+          <div class="bar-fill xp" id="xp-fill" style="width:0%"></div>
         </div>
-        <div class="xp-next-row">
-          <span class="xp-earn-hint">Earned by logging expenses</span>
-          <span class="xp-next-msg" id="xp-next-msg">80 XP until Level 2</span>
+        <div class="bar-subrow">
+          <span class="bar-hint">Earned by logging expenses</span>
+          <span class="bar-next" id="xp-next-msg">80 XP to Level 2</span>
         </div>
 
-        <!-- Treasury Divider -->
+        <!-- Treasury -->
         <div class="card-divider"><span class="card-divider-label">Treasury</span></div>
 
-        <!-- Coin Reserve -->
         <div class="coin-reserve-section" id="coin-reserve-section">
-          <div class="coin-label-row">
-            <span class="coin-title-text">⚜ Monthly Coin Reserve</span>
-            <span class="coin-count-text"><strong id="coin-current">0</strong> / <span id="coin-max">0</span> gold</span>
+          <div class="bar-label-row">
+            <span class="bar-label-title">⚜ Monthly Budget</span>
+            <span class="bar-label-count" style="color:var(--gold-light)"><strong id="coin-current" style="color:var(--gold-light)">0</strong><span style="color:var(--text-dim);font-size:13px;"> / <span id="coin-max">0</span> gold</span></span>
           </div>
-          <div class="coin-bar-track">
-            <div class="coin-bar-fill" id="coin-fill" style="width:100%"></div>
+          <div class="bar-track" style="height:8px;">
+            <div class="bar-fill coin" id="coin-fill" style="width:100%"></div>
           </div>
-          <div class="coin-status-row">
-            <span class="coin-earn-hint">Your monthly budget — depletes as you spend</span>
+          <div class="bar-subrow">
+            <span class="bar-hint">Depletes as you spend</span>
             <span class="coin-status" id="coin-status"></span>
           </div>
 
@@ -1766,9 +1235,9 @@ body::after {
           <div class="iron-vault-row">
             <div class="vault-left">
               <div class="vault-icon">🔒</div>
-              <div class="vault-label-wrap">
+              <div>
                 <div class="vault-title">Iron Vault</div>
-                <div class="vault-subtitle">Unspent gold sealed here at month's end — reward for staying under budget</div>
+                <div class="vault-subtitle">Unspent budget sealed here at month's end</div>
               </div>
             </div>
             <div class="vault-amount" id="vault-amount">Empty</div>
@@ -1777,7 +1246,7 @@ body::after {
 
       </div><!-- /character-card -->
 
-      <!-- Map Panel (bottom half, connected) -->
+      <!-- Map Panel -->
       <div class="map-panel" id="map-section">
         <div class="map-top-bar">
           <div class="map-top-left">
@@ -1814,7 +1283,7 @@ body::after {
 
         <!-- Road Bonus -->
         <div class="road-bonus-track">
-          <span class="road-bonus-label" id="road-bonus-label">Road Bonus — log well this week to move faster</span>
+          <span class="road-bonus-label" id="road-bonus-label">Road Bonus — log every day this week to move faster</span>
           <div class="road-bonus-pips">
             <div class="road-pip" id="road-pip-1"></div>
             <div class="road-pip" id="road-pip-2"></div>
@@ -1839,7 +1308,8 @@ body::after {
 
     <!-- Log Form -->
     <div class="log-section">
-      <div class="section-head">Record an Expense</div>
+      <div class="card-accent-teal"></div>
+      <div class="section-head">Log an Expense</div>
       <div class="log-form-grid">
         <div class="form-group">
           <label class="form-label">What did you spend on?</label>
@@ -1854,7 +1324,7 @@ body::after {
           <button class="log-btn" id="log-btn" onclick="logExpense()">⚔ Log It</button>
         </div>
       </div>
-      <div class="xp-hint">Log an expense → earn XP → level up → advance the map</div>
+      <div class="xp-hint">Log → earn XP → level up → advance the map ✦</div>
     </div>
 
     <!-- Expense Chronicle -->
@@ -1873,27 +1343,39 @@ body::after {
 <div class="coin-float" id="coin-float"></div>
 
 <!-- Month Reset Overlay -->
-<div class="reset-overlay" id="reset-overlay">
-  <div class="reset-box">
-    <div class="reset-icon">🏦</div>
-    <div class="reset-label">A New Campaign Begins</div>
-    <div class="reset-title">Monthly Reset</div>
-    <div class="reset-breakdown" id="reset-breakdown">
-      <!-- filled dynamically -->
+<div class="overlay" id="reset-overlay">
+  <div class="overlay-box" style="border-color:rgba(245,158,11,0.3);">
+    <div class="overlay-box" style="all:unset;">
+      <div class="reset-icon">🏦</div>
+      <div class="reset-label">New Campaign</div>
+      <div class="reset-title">Monthly Reset</div>
+      <div class="reset-breakdown" id="reset-breakdown"></div>
+      <div class="reset-msg" id="reset-msg">Your treasury has been replenished. The Vault holds your surplus. Spend wisely, hero.</div>
+      <button class="overlay-btn primary-choice" onclick="closeReset()" style="width:100%;text-align:center;">March Forward ⚔</button>
     </div>
-    <div class="reset-msg" id="reset-msg">Your treasury has been replenished. The Iron Vault holds your surplus. Spend wisely, hero.</div>
-    <button class="reset-close" onclick="closeReset()">March Forward ⚔</button>
   </div>
 </div>
 
 <!-- Level Up Overlay -->
-<div class="levelup-overlay" id="levelup-overlay">
-  <div class="levelup-box">
-    <div class="levelup-sparkles">✦ ✧ ✦</div>
-    <div class="levelup-label">Level Up</div>
+<div class="overlay" id="levelup-overlay">
+  <div class="overlay-box levelup">
+    <div class="levelup-sparkles">✦ ✧ ✦</div>
+    <div class="levelup-label">Level Up!</div>
     <div class="levelup-num" id="lu-level">2</div>
-    <div class="levelup-rank" id="lu-rank">Apprentice</div>    <div class="levelup-msg" id="lu-msg">Your discipline grows stronger. The realm notices.</div>
-    <button class="levelup-close" onclick="closeLevelUp()">Continue the Quest</button>
+    <div class="levelup-rank" id="lu-rank">Apprentice</div>
+    <div class="levelup-msg" id="lu-msg">Your discipline grows. The realm takes notice.</div>
+    <button class="overlay-btn primary-choice" onclick="closeLevelUp()" style="width:100%;text-align:center;">Continue the Quest ✦</button>
+  </div>
+</div>
+
+<!-- Encounter Overlay -->
+<div class="overlay" id="encounter-overlay">
+  <div class="overlay-box" id="encounter-box">
+    <div class="overlay-zone-label" id="encounter-zone">Encounter</div>
+    <div class="overlay-icon" id="encounter-icon">⚔️</div>
+    <div class="overlay-title" id="encounter-title">Bandits on the Road</div>
+    <div class="overlay-desc" id="encounter-desc">A band of cutpurses blocks your path.</div>
+    <div class="overlay-choices" id="encounter-choices"></div>
   </div>
 </div>
 
@@ -1919,15 +1401,15 @@ var CLASS_TITLES = {
 
 var LEVEL_MSGS = [
   'The realm whispers your name with growing respect.',
-  'Enemies stir in the shadows. Your discipline unnerves them.',
-  'Ancient powers take note of your consistency.',
-  'A darkness begins to sense you. It fears the disciplined.',
-  'Merchants speak of a keeper who cannot be broken.',
-  'The old ones said this path would find no hero. They were wrong.',
-  'Your ledger has become a weapon. Your restraint, a shield.',
+  'Your consistency is starting to turn heads.',
+  'Ancient powers take note. The disciplined are rare.',
+  'Merchants speak of a tracker who cannot be broken.',
   'Guild halls echo with tales of your perseverance.',
-  'You approach the upper tiers of mastery. Few have come this far.',
-  'The realm is yours to protect. You have become legend.',
+  'You\'re building something real. Keep going.',
+  'Your ledger has become a weapon. Your restraint, a shield.',
+  'You\'ve come further than most heroes ever do.',
+  'You approach true mastery. Few reach this far.',
+  'The realm is yours to command. You are legend.',
 ];
 
 var LOG_ICONS = ['💰','🛒','🍖','🧪','⚔️','📜','🐎','🏰','🔮','💎','🌿','🎒'];
@@ -1938,158 +1420,139 @@ var LOG_ICONS = ['💰','🛒','🍖','🧪','⚔️','📜','🐎','🏰','🔮
 var MAP_WAYPOINTS = [
   // Zone 1 — The Hearthstone Road (levels 1-3)
   { id: 0,  icon: '🏘️', name: 'Hearthstone\nVillage',  zone: 1, zoneName: 'The Hearthstone Road',
-    arrival: 'Your journey begins in Hearthstone — a village built on old scorch marks that nobody talks about. Log your expenses to earn XP, level up, and move down the road.' },
+    arrival: 'Your journey begins in Hearthstone Village. Log your first expense, earn XP, and hit the road. The Iron Keep awaits.' },
   { id: 1,  icon: '🌾', name: 'Harvest\nCrossing',      zone: 1, zoneName: 'The Hearthstone Road',
-    arrival: 'The Oldfather Oak is larger than you expected. Three guilds claim ownership of it. None of them are here.' },
+    arrival: 'Harvest Crossing — farmers, traders, and three guilds arguing over the same oak tree. You keep moving.' },
   { id: 2,  icon: '🪨', name: 'Stonepath\nMill',        zone: 1, zoneName: 'The Hearthstone Road',
-    arrival: 'The miller takes coin only. No credit, no exceptions. The sign above his door has been there longer than he has.' },
+    arrival: 'Stonepath Mill. The miller takes exact coin only — no credit, no exceptions. You respect that.' },
   { id: 'z1', icon: '🛡️', name: 'Zone Badge',          zone: 'badge1', badge: 'zone1', zoneName: 'The Hearthstone Road',
-    zoneComplete: 'You leave the Hearthstone Road behind. It looks smaller from here than it felt while you were on it.' },
-  // Zone 2 — The Merchant\'s Pass (levels 4-6)
+    zoneComplete: 'You clear the Hearthstone Road. First zone down. It feels smaller looking back than it did walking through it.' },
+  // Zone 2 — The Merchant's Pass (levels 4-6)
   { id: 3,  icon: '🏪', name: "Merchant's\nGate",       zone: 2, zoneName: "The Merchant's Pass",
-    arrival: 'The original gate collapsed centuries ago. The market that grew up around the ruin never stopped.' },
+    arrival: 'The Merchant\'s Gate never sleeps. Stalls, deals, and haggling on every corner. Watch your coin purse.' },
   { id: 4,  icon: '🌉', name: 'Copperbridge',           zone: 2, zoneName: "The Merchant's Pass",
-    arrival: 'The copper plating was stripped and sold by a treasurer hiding a deficit. Someone still leaves coins on the memorial plaque.' },
+    arrival: 'Copperbridge — the copper plating was sold off years ago. Someone still leaves coins on the memorial plaque.' },
   { id: 5,  icon: '⛺', name: "Trader's\nCamp",         zone: 2, zoneName: "The Merchant's Pass",
-    arrival: 'The Thornwood begins fifty yards past the last tent. At night you can\'t tell where the camp ends and the forest starts.' },
-  { id: 'z2', icon: '🪙', name: 'Zone Badge',           zone: 'badge2', badge: 'zone2', zoneName: "The Merchant's Pass",
-    zoneComplete: "The Merchant's Pass falls behind you. The road ahead grows quieter. That is not entirely reassuring." },
+    arrival: 'A crossroads camp full of traders swapping stories. Good place to resupply and rest before the Thornwood.' },
+  { id: 'z2', icon: '🪙', name: 'Zone Badge',          zone: 'badge2', badge: 'zone2', zoneName: "The Merchant's Pass",
+    zoneComplete: "The Merchant's Pass is behind you. You navigated the markets and kept your budget intact. Well played." },
   // Zone 3 — The Thornwood (levels 7-9)
   { id: 6,  icon: '🌲', name: 'Thornwood\nEdge',        zone: 3, zoneName: 'The Thornwood',
-    arrival: 'The tree line begins without warning. You mark your entry point with stones, the way experienced travelers do. You don\'t ask why.' },
+    arrival: 'The Thornwood. Dense, quiet, and known for testing travelers. Keep your streak alive and you\'ll be fine.' },
   { id: 7,  icon: '🌑', name: 'Darkhollow\nPath',       zone: 3, zoneName: 'The Thornwood',
-    arrival: 'The path narrows. The light here has a grey, used quality. You notice you\'re walking faster without having decided to.' },
-  { id: 8,  icon: '🕯️', name: 'Wayward\nShrine',       zone: 3, zoneName: 'The Thornwood',
-    arrival: 'Nobody built this shrine. The candles burn without being lit. The offerings left by travelers disappear by morning.' },
-  { id: 'z3', icon: '🌿', name: 'Zone Badge',           zone: 'badge3', badge: 'zone3', zoneName: 'The Thornwood',
-    zoneComplete: 'You leave the Thornwood behind. The light on the other side is warmer than you remembered light being.' },
-  // Zone 4 — The Iron Keep (level 10+)
-  { id: 9,  icon: '⚔️', name: 'Iron Keep\nGates',       zone: 4, zoneName: 'The Iron Keep',
-    arrival: 'These gates have never been closed — not during wars, not during sieges, not once. You walk through them.' },
-  { id: 10, icon: '🏰', name: 'The Iron\nKeep',         zone: 4, zoneName: 'The Iron Keep',
-    arrival: 'From a distance it looked like a fortress. Up close it\'s a city. At its heart: a black tower whose windows are lit by a light with no source.' },
-  { id: 'z4', icon: '🔒', name: 'Zone Badge',           zone: 'badge4', badge: 'zone4', zoneName: 'The Iron Keep',
-    zoneComplete: 'You have reached the Iron Keep. The road behind you is longer than it looked when you started. You do not mind.' },
+    arrival: 'Darkhollow Path winds deep into the forest. The road narrows. Your discipline is your compass here.' },
+  { id: 8,  icon: '🌸', name: 'Wayward\nShrine',        zone: 3, zoneName: 'The Thornwood',
+    arrival: 'The Wayward Shrine — travelers leave offerings and walk away feeling lighter. You leave one too.' },
+  { id: 'z3', icon: '🌿', name: 'Zone Badge',          zone: 'badge3', badge: 'zone3', zoneName: 'The Thornwood',
+    zoneComplete: 'You emerge from the Thornwood. The light on the other side is warmer than you remembered light being.' },
+  // Zone 4 — The Iron Keep (levels 10+)
+  { id: 9,  icon: '🏰', name: 'Iron Keep\nGates',       zone: 4, zoneName: 'The Iron Keep',
+    arrival: 'The Iron Keep Gates. Gatekeepers who\'ve seen a thousand travelers — and can always tell who made it through the Thornwood.' },
+  { id: 10, icon: '⚔️', name: 'The Iron\nKeep',         zone: 4, zoneName: 'The Iron Keep',
+    arrival: 'You\'ve reached the Iron Keep. Few heroes make it this far. From here, the road ahead is longer and wider than any map shows.' },
+  { id: 'z4', icon: '🔒', name: 'Zone Badge',          zone: 'badge4', badge: 'zone4', zoneName: 'The Iron Keep',
+    zoneComplete: 'You\'ve reached the Iron Keep. Your budget discipline has carried you further than most ever go. This is just the beginning.' },
 ];
 
-// Map position is 0-10 (numeric waypoints only)
-// Level thresholds for map advancement: level X unlocks map position Y
-var LEVEL_TO_MAP = [0,0,1,2,3,4,5,6,7,8,9,10];
-
+// ─────────────────────────
+//  HOSTILE ENCOUNTERS
+// ─────────────────────────
 var HOSTILE_ENCOUNTERS = [
   {
     id: 'bandits',
     icon: '🗡️',
-    title: 'Bandits on the Road',
-    zone: 'Road Hazard',
-    desc: 'Three figures step from the shadows ahead, blades drawn. They have been watching the road. They have been watching you. One holds out a hand.',
-    choiceA: { label: 'Draw steel and drive them back', cost: 'heart', sub: 'Costs 1 ❤️ — vault protected' },
-    choiceB: { label: 'Pay the toll and walk on',       cost: 'vault', sub: 'Lose gold from Iron Vault — hearts protected' },
-    vaultCost: 0.05
+    title: 'Road Bandits',
+    zone: 'Ambush',
+    desc: 'A crew of bandits steps out of the shadows, eyeing your coin purse. "Toll for the road," the big one says. Your hearts or your Vault — your call.',
+    choiceA: { label: '🛡️ Block them with a Heart', sub: 'Spend 1 Heart to drive them off' },
+    choiceB: { label: '💰 Pay them off from your Vault', sub: 'Lose gold from Iron Vault' },
+    vaultCost: 0.12
   },
   {
-    id: 'taxman',
-    icon: '📋',
-    title: 'The King\'s Collector',
-    zone: 'Road Hazard',
-    desc: 'A collector in official colours blocks the road with two armed escorts. He has a ledger. He has already found your name in it. He taps the page and waits.',
-    choiceA: { label: 'Contest the levy — stand your ground', cost: 'heart', sub: 'Costs 1 ❤️ — vault protected' },
-    choiceB: { label: 'Pay the levy and move on',             cost: 'vault', sub: 'Lose gold from Iron Vault — hearts protected' },
-    vaultCost: 0.08
-  },
-  {
-    id: 'thornambush',
-    icon: '🌑',
-    title: 'Thornwood Ambush',
-    zone: 'Forest Hazard',
-    desc: 'They come from both sides of the path at once — not bandits, something stranger. They do not speak. They only want what you are carrying. The trees press close.',
-    choiceA: { label: 'Fight through — spend a Heart',  cost: 'heart', sub: 'Costs 1 ❤️ — vault protected' },
-    choiceB: { label: 'Buy your way past',              cost: 'vault', sub: 'Lose gold from Iron Vault — hearts protected' },
-    vaultCost: 0.06
+    id: 'tax',
+    icon: '📜',
+    title: 'Tax Collector',
+    zone: 'Official Business',
+    desc: 'A collector with a fresh ledger and an outstretched hand. "Irregular levy," he says cheerfully, "very legal." Very annoying.',
+    choiceA: { label: '🛡️ Dispute the claim (Heart)', sub: 'Spend 1 Heart — he backs down' },
+    choiceB: { label: '💰 Just pay and move on', sub: 'Lose gold from Iron Vault' },
+    vaultCost: 0.10
   },
   {
     id: 'merchant',
-    icon: '🛍️',
-    title: 'The Silk Road Merchant',
-    zone: 'Merchant Encounter',
-    desc: 'A merchant with a wagon full of extraordinary things blocks the narrow road and will not move until you look. You look. He knows his craft. Some of it is remarkable. All of it is expensive.',
-    choiceA: { label: 'Decline and force your way past', cost: 'heart', sub: 'Costs 1 ❤️ — vault protected' },
-    choiceB: { label: 'Pay his price for passage',       cost: 'vault', sub: 'Lose gold from Iron Vault — hearts protected' },
-    vaultCost: 0.07
+    icon: '🪙',
+    title: 'Temptation Merchant',
+    zone: 'Marketplace',
+    desc: 'A silver-tongued merchant with a cart of "extraordinary bargains." Everything is priced just within reach. Your Vault shudders nervously.',
+    choiceA: { label: '🛡️ Walk away (Heart)', sub: 'Spend 1 Heart — willpower costs something' },
+    choiceB: { label: '💰 Buy something small', sub: 'Lose some Vault gold' },
+    vaultCost: 0.08
   },
   {
-    id: 'gateduty',
-    icon: '⚔️',
-    title: 'The Gate Duty',
-    zone: 'Iron Keep — Entrance Toll',
-    desc: 'The Iron Keep\'s inner gate requires a toll to pass — an old law, rarely enforced, suddenly enforced now. The guard is polite. He is also armoured. The gate does not open until someone pays.',
-    choiceA: { label: 'Argue your right of passage — spend a Heart', cost: 'heart', sub: 'Costs 1 ❤️ — vault protected' },
-    choiceB: { label: 'Pay the toll',                                 cost: 'vault', sub: 'Lose gold from Iron Vault — hearts protected' },
+    id: 'storm',
+    icon: '⛈️',
+    title: 'Unexpected Storm',
+    zone: 'Bad Luck',
+    desc: 'Rain, delays, a broken wagon wheel. The road costs you either rest or coin today. Part of the journey.',
+    choiceA: { label: '🛡️ Push through (Heart)', sub: 'Spend 1 Heart — you make it through tired' },
+    choiceB: { label: '💰 Pay for shelter and repairs', sub: 'Lose gold from Iron Vault' },
     vaultCost: 0.09
-  }
+  },
 ];
 
+// ─────────────────────────
+//  FRIENDLY ENCOUNTERS
+// ─────────────────────────
 var FRIENDLY_ENCOUNTERS = [
   {
-    id: 'scout',
-    icon: '🧭',
-    title: 'A Wandering Scout',
-    zone: 'Friendly Encounter',
-    desc: 'A road-worn scout steps from the tree line and walks with you a while. She points out things on the path you would have missed. When she leaves she says: "You\'re making good time. Keep it up." It lands like a compliment from someone who doesn\'t give them easily.',
-    reward: { type: 'xp', amount: 40 },
-    rewardDesc: '+40 bonus XP for your vigilance'
-  },
-  {
     id: 'shrine',
-    icon: '🕯️',
-    title: 'Ancient Roadside Shrine',
+    icon: '🌸',
+    title: 'Roadside Shrine',
     zone: 'Discovery',
-    desc: 'Half-hidden by moss, an old shrine marks the road. You pause. The road feels lighter afterward, in the way that only happens when you\'ve done something you can\'t fully explain.',
+    desc: 'A small shrine off the path, half-hidden by moss. You pause for a moment. The road feels lighter when you leave.',
     reward: { type: 'heart', amount: 1 },
     rewardDesc: '❤️ Heart restored'
   },
   {
     id: 'journal',
     icon: '📖',
-    title: 'The Scout\'s Journal',
+    title: 'Scout\'s Journal',
     zone: 'Discovery',
-    desc: 'Tucked beneath a milestone stone: a weathered journal. The margins are full of notes in a careful hand — routes, risks, lessons learned the hard way. Whoever left it knew what they were doing. Now some of that knowledge is yours.',
+    desc: 'Tucked under a milestone stone: a worn journal filled with smart routes and hard-won lessons. Someone left it here for you.',
     reward: { type: 'xp', amount: 55 },
-    rewardDesc: '+55 bonus XP from the journal\'s wisdom'
+    rewardDesc: '+55 bonus XP'
   },
   {
     id: 'camp',
     icon: '🏕️',
-    title: 'Abandoned Traveler\'s Cache',
+    title: 'Traveler\'s Cache',
     zone: 'Discovery',
-    desc: 'A cold camp, recently left in good order. Whoever was here traveled light and left something behind deliberately — provisions cached under a flat stone, as if for someone who might need it more. That someone is you.',
+    desc: 'A cold camp, recently left in good order. Provisions cached under a flat stone — deliberately left for whoever came next. That\'s you.',
     reward: { type: 'vault', amount: 25 },
-    rewardDesc: '+25 gold sealed in your Iron Vault'
+    rewardDesc: '+25 gold to Iron Vault'
   },
   {
     id: 'elder',
     icon: '🧙',
     title: 'The Road Elder',
     zone: 'Friendly Encounter',
-    desc: 'An ancient wanderer sits by the roadside watching travelers pass. She looks at you for a long moment, then nods once — slowly, deliberately, like someone confirming something they already suspected. She says nothing. She doesn\'t need to.',
+    desc: 'An old wanderer watches travelers pass. She looks at you for a long moment, nods slowly, like confirming something she already suspected. A blessing follows.',
     reward: { type: 'xp', amount: 30 },
     rewardDesc: '+30 bonus XP — the elder\'s blessing'
   },
   {
     id: 'griffon',
     icon: '🦅',
-    title: 'The Griffon Rider\'s Token',
+    title: 'Griffon Rider\'s Token',
     zone: 'Friendly Encounter',
-    desc: 'A piece of cloth in guild colours tied to a branch at the roadside — a waymarker left by someone who passed before you. Travelers use these to signal the road is clear. Someone wanted you to know you were on the right path.',
+    desc: 'Guild cloth tied to a roadside branch — a waymarker left by someone who passed before you. The road is clear ahead.',
     reward: { type: 'xp', amount: 35 },
-    rewardDesc: '+35 bonus XP — the road is clear ahead'
+    rewardDesc: '+35 bonus XP — the road is clear'
   }
 ];
 
-// ── STORY ENCOUNTERS (narrative only — no mechanical effect) ──
-// Organised by zone. Player just reads and dismisses. World-building only.
+// ── STORY ENCOUNTERS (narrative flavor — no mechanical effect) ──
 var STORY_ENCOUNTERS = {
-  // Zone 1 — Hearthstone Road (positions 0, 1, 2)
   z1: [
     {
       id: 'veteran_tab',
@@ -2097,47 +1560,31 @@ var STORY_ENCOUNTERS = {
       title: 'The Veteran\'s Tab',
       zone: 'Hearthstone Village',
       minPos: 0,
-      desc: 'A one-armed soldier nurses the same drink at the inn\'s longest table. The innkeeper marks the wall each time she refills his cup. He hasn\'t looked at the tally once.'
+      desc: 'A one-armed soldier at the inn\'s longest table, nursing the same drink all evening. The innkeeper marks the wall each refill. He hasn\'t looked at the tally once.'
     },
     {
       id: 'name_on_board',
       icon: '📌',
-      title: 'The Name on the Board',
+      title: 'Wanted Notice',
       zone: 'Hearthstone Village',
       minPos: 0,
-      desc: 'A bounty notice — fresh ink, no portrait, just a description. You passed someone matching it two days ago, moving fast. You think about whether they knew.'
-    },
-    {
-      id: 'hooded_merchant',
-      icon: '🪙',
-      title: 'The Hooded Merchant',
-      zone: 'Hearthstone Village',
-      minPos: 0,
-      desc: 'A figure selling Sundering relics from a velvet case. One piece — an iron coin stamped with a face that belongs to no known king — makes something in your chest go quiet. The price is more than you have. He already knew that.'
+      desc: 'A fresh bounty notice — no portrait, just a description. You passed someone matching it two days ago, moving fast.'
     },
     {
       id: 'cartographer',
       icon: '🗺️',
-      title: 'The Cartographer',
+      title: 'The Map Seller',
       zone: 'Harvest Crossing',
       minPos: 1,
-      desc: 'An old woman selling maps of roads that appear on no official chart. A hooded buyer takes one without haggling and vanishes. She watches the space where he was and says nothing.'
+      desc: 'An old woman selling maps of roads that appear on no official chart. A buyer takes one without haggling and vanishes.'
     },
     {
       id: 'griffon_rider',
       icon: '🦅',
-      title: 'The Griffon Rider',
+      title: 'Grounded Griffon Rider',
       zone: 'Harvest Crossing',
       minPos: 1,
-      desc: 'A rider camped under the oak, her griffon grounded with a torn wing. She\'s hunting a convoy that left two days ahead of her. When you say you haven\'t seen it: "Then it left the road," she says — to herself, not you.'
-    },
-    {
-      id: 'argument_oak',
-      icon: '⚖️',
-      title: 'The Argument at the Oak',
-      zone: 'Harvest Crossing',
-      minPos: 1,
-      desc: 'Two merchant houses in a standoff under the branches. Both keep glancing at a hooded figure watching from the far side of the trunk. Neither will move until he does. He doesn\'t move.'
+      desc: 'A rider camped under the oak, griffon grounded with a torn wing. She\'s hunting a convoy two days ahead. When you say you haven\'t seen it: "Then it left the road," she says.'
     },
     {
       id: 'the_queue',
@@ -2145,26 +1592,9 @@ var STORY_ENCOUNTERS = {
       title: 'The Queue',
       zone: 'Stonepath Mill',
       minPos: 2,
-      desc: 'Six travelers at the toll bridge. The fifth man has been two silvers short for twenty minutes. Oswin waits with the stillness of someone who has outlasted every argument ever made to him.'
+      desc: 'Six travelers at the toll bridge. The fifth man has been two silvers short for twenty minutes. The tollkeeper waits with infinite patience.'
     },
-    {
-      id: 'night_rider',
-      icon: '🌙',
-      title: 'The Night Rider',
-      zone: 'Stonepath Mill',
-      minPos: 2,
-      desc: 'Before dawn a rider hammers on the mill door. Urgent voices, then silence, then hoofbeats fading fast. In the morning there\'s a fresh gouge in the doorframe — the kind a blade makes. Oswin doesn\'t mention it.'
-    },
-    {
-      id: 'stone_beneath',
-      icon: '👑',
-      title: 'The Stone Beneath the Millstone',
-      zone: 'Stonepath Mill',
-      minPos: 2,
-      desc: 'Beneath the millstone: a royal seal carved deep, the name above it chiselled away. "Been there since before me," Oswin says. "I stopped wondering about it." His tone suggests the opposite.'
-    }
   ],
-  // Zone 2 — Merchant's Pass (positions 3, 4, 5)
   z2: [
     {
       id: 'the_exchange',
@@ -2172,189 +1602,59 @@ var STORY_ENCOUNTERS = {
       title: 'The Exchange',
       zone: "Merchant's Gate",
       minPos: 3,
-      desc: 'Through the briefly open door: a vast hall of clerks writing in silence under chandeliers that burn too bright for candlelight. The doors close. The man who exited has already vanished into the crowd.'
-    },
-    {
-      id: 'aldenmoor',
-      icon: '🏚️',
-      title: 'The Ruin of House Aldenmoor',
-      zone: "Merchant's Gate",
-      minPos: 3,
-      desc: 'An auction on the steps of what was once a grand merchant house. A woman across the street watches her writing desk get carried away by a stranger. She doesn\'t move for a long time.'
-    },
-    {
-      id: 'aldric_sighting',
-      icon: '👁️',
-      title: 'A Familiar Face',
-      zone: "Merchant's Gate",
-      minPos: 3,
-      desc: 'Aldric Vane — the moneylender from Hearthstone — bent over documents with a man in Exchange colours. A long way from his village. He doesn\'t look up, but somehow you feel accounted for.'
-    },
-    {
-      id: 'toll_daughter',
-      icon: '📒',
-      title: 'The Toll Keeper\'s Daughter',
-      zone: 'Copperbridge',
-      minPos: 4,
-      desc: 'The toll keeper\'s daughter is running the booth while he\'s sick, doing arithmetic faster than he ever did. She keeps a second ledger below the counter. When you catch her eye she holds your gaze. You decide not to ask.'
+      desc: 'Through a briefly open door: a vast hall of clerks writing in silence under chandeliers that burn too bright. The doors close. The man who exited has already vanished.'
     },
     {
       id: 'dorvain',
       icon: '🌊',
-      title: 'The Man on the Parapet',
+      title: 'The Man on the Bridge',
       zone: 'Copperbridge',
       minPos: 4,
-      desc: '"That\'s Dorvain," the merchant beside you says — the way people mention weather. He\'s on the bridge railing, staring at the river. He doesn\'t seem to notice the world moving around him.'
-    },
-    {
-      id: 'plaque_coin',
-      icon: '🪙',
-      title: 'The Coin on the Plaque',
-      zone: 'Copperbridge',
-      minPos: 4,
-      desc: 'A gold coin on the treasurer\'s memorial — it wasn\'t there this morning. Nobody is claiming it. Nobody is taking it. You leave it where it is.'
-    },
-    {
-      id: 'cartographer_2',
-      icon: '🗺️',
-      title: 'The Cartographer Again',
-      zone: "Trader's Camp",
-      minPos: 5,
-      desc: 'The map seller from Harvest Crossing — same satchel, new maps annotated in red. "I took one of my roads," she says when you ask how she got here. "The main Thornwood road has been busy lately with things that aren\'t travelers."'
+      desc: '"That\'s Dorvain," the merchant beside you says — the way people mention weather. He\'s on the railing, staring at the river, not moving.'
     },
     {
       id: 'wending_rumour',
       icon: '🔥',
-      title: 'The Campfire Story',
+      title: 'Campfire Story',
       zone: "Trader's Camp",
       minPos: 5,
-      desc: 'A trader describes something on the Thornwood roads that appears at the edge of firelight and waits — gets closer, he says, the longer you stand still. Most are laughing. One man stares into his cup and says nothing.'
+      desc: 'A trader at camp describes something on the Thornwood roads that appears at the edge of firelight and waits. Most are laughing. One man stares into his cup and says nothing.'
     },
-    {
-      id: 'dorvain_tent',
-      icon: '⛺',
-      title: 'The Empty Tent',
-      zone: "Trader's Camp",
-      minPos: 5,
-      desc: 'One tent at the camp\'s edge — bedroll laid, fire cold. The traders nearby have moved their fires away. "Dorvain\'s," someone says when you ask. You\'ve heard that name before. You know where.'
-    }
   ],
-  // Zone 3 — The Thornwood (positions 6, 7, 8)
   z3: [
-    {
-      id: 'the_cairns',
-      icon: '🪨',
-      title: 'The Cairns',
-      zone: 'Thornwood Edge',
-      minPos: 6,
-      desc: 'More stone markers along the tree line than you expected. One has been knocked over deliberately — the stones scattered in a pattern that doesn\'t look random. You can\'t say why you\'re sure of that, but you are.'
-    },
     {
       id: 'ranger_warning',
       icon: '🏹',
       title: 'The Ranger\'s Warning',
       zone: 'Thornwood Edge',
       minPos: 6,
-      desc: 'A ranger steps from the tree line without sound, scanning the canopy. "Don\'t stop for anything that sounds like someone you know." She\'s gone before you can ask what she means.'
-    },
-    {
-      id: 'old_marker',
-      icon: '🗿',
-      title: 'The Old Marker',
-      zone: 'Thornwood Edge',
-      minPos: 6,
-      desc: 'A waystone older than the road, with a fresh translation scratched beneath the ancient text: HERE THE WENDING TURNED BACK ONCE. The word once is underlined. You keep moving.'
-    },
-    {
-      id: 'abandoned_camp',
-      icon: '🎒',
-      title: 'The Abandoned Camp',
-      zone: 'Darkhollow Path',
-      minPos: 7,
-      desc: 'A cold camp off the path, pack left as if the owner stepped away for a moment. At the bottom: a map marked with a location in the Thornwood\'s centre that doesn\'t match any waypoint you know.'
+      desc: 'A ranger steps from the trees silently. "Don\'t stop for anything that sounds like someone you know." She\'s gone before you can ask what she means.'
     },
     {
       id: 'the_sound',
       icon: '👂',
-      title: 'The Sound',
+      title: 'A Sound from the Trees',
       zone: 'Darkhollow Path',
       minPos: 7,
-      desc: 'You hear your name — quiet, from off the path, deeper in. You stop walking before you\'ve decided to stop. You stand still longer than you should. Then you start moving again, faster.'
-    },
-    {
-      id: 'griffon_camp',
-      icon: '🦅',
-      title: 'The Griffon Rider\'s Camp',
-      zone: 'Darkhollow Path',
-      minPos: 7,
-      desc: 'A camp, several days old. Griffon claw marks on the nearest tree. Guild cloth tied to a branch. The rider from Harvest Crossing was here — she left in order, deliberately. You wonder if she found her convoy, or if it found her.'
+      desc: 'You hear your name — quiet, from off the path, deeper in. You stop walking before you\'ve decided to. Then you start moving again. Faster.'
     },
     {
       id: 'shrine_offering',
       icon: '🌸',
-      title: 'The Offering',
+      title: 'The Fresh Offering',
       zone: 'Wayward Shrine',
       minPos: 8,
-      desc: 'Fresh flowers at the shrine base — someone was here within the hour, but there are no footprints. You leave something of your own. Walking away you feel lighter in a way you couldn\'t explain.'
+      desc: 'Fresh flowers at the shrine base — someone was here within the hour, but there are no footprints. You leave something of your own.'
     },
-    {
-      id: 'cartographer_map',
-      icon: '📜',
-      title: 'The Cartographer\'s Map',
-      zone: 'Wayward Shrine',
-      minPos: 8,
-      desc: 'Her map, wedged in the shrine stone. In the margin: it has no shadow. if you see it, keep moving. Below that, in different ink: I got out. you can too.'
-    },
-    {
-      id: 'the_wending',
-      icon: '🌑',
-      title: 'The Wending',
-      zone: 'Wayward Shrine',
-      minPos: 8,
-      desc: 'At the shrine\'s edge: something standing where the candlelight ends. Tall. Wrong. Then you understand — there\'s no shadow beneath it. None at all. You\'ve stopped walking without deciding to. You start again immediately.'
-    }
   ],
-  // Zone 4 — The Iron Keep (positions 9, 10)
   z4: [
     {
       id: 'seren',
       icon: '🛡️',
-      title: 'Seren',
+      title: 'The Gatekeeper',
       zone: 'Iron Keep Gates',
       minPos: 9,
-      desc: '"You came through the Thornwood," the Gatekeeper says — not a question. "They always walk differently after." As you pass: "Aldric Vane came through three days ago. First time in fifteen years."'
-    },
-    {
-      id: 'veteran_gates',
-      icon: '🎖️',
-      title: 'An Old Face, Changed',
-      zone: 'Iron Keep Gates',
-      minPos: 9,
-      desc: 'The one-armed soldier from Hearthstone\'s inn — clean clothes, campaign medals, sober and purposeful. He sees you, nods once, says nothing, and walks into the Keep ahead of you. You never learned his name.'
-    },
-    {
-      id: 'wanted_gates',
-      icon: '📌',
-      title: 'The Bounty, Doubled',
-      zone: 'Iron Keep Gates',
-      minPos: 9,
-      desc: 'The same bounty from Hearthstone — reward doubled, the Exchange seal added below. Two powerful interests, one person. Below both notices, in handwriting you recognise: already inside.'
-    },
-    {
-      id: 'black_tower',
-      icon: '🗼',
-      title: 'The Black Tower',
-      zone: 'The Iron Keep',
-      minPos: 10,
-      desc: 'A child on the tower steps, watching the road you came in on. "Waiting to see if it followed you," she says. "It doesn\'t come inside the Keep. It never has." She looks at you. "You kept moving. I can tell."'
-    },
-    {
-      id: 'aldric_keep',
-      icon: '👁️',
-      title: 'Aldric Vane',
-      zone: 'The Iron Keep',
-      minPos: 10,
-      desc: 'You find him in the inner market, alone. When he sees you he looks relieved — stranger than surprise. He says nothing about the Exchange or the documents. Just: "You made it through the Thornwood."'
+      desc: '"You came through the Thornwood," the Gatekeeper says — not a question. "They always walk differently after."'
     },
     {
       id: 'road_ahead',
@@ -2362,8 +1662,8 @@ var STORY_ENCOUNTERS = {
       title: 'The Road Ahead',
       zone: 'The Iron Keep',
       minPos: 10,
-      desc: 'At the Keep\'s far gate: another road, longer and wider, leading somewhere your maps don\'t show. Seren is there. "Where does it go?" She looks at you the way she did when you arrived. "Somewhere worth the journey. If you keep moving."'
-    }
+      desc: 'At the Keep\'s far gate: another road, longer and wider, leading somewhere your maps don\'t show. "Where does it go?" The Gatekeeper smiles. "Somewhere worth the journey."'
+    },
   ]
 };
 
@@ -2392,7 +1692,9 @@ var state = {
   pendingEncounter: null,
   seenStoryEncounters: [],
   seenArrivals: [],
-  lastMapPosition: -1
+  lastMapPosition: -1,
+  encounterLogCount: 0,
+  lastEncounterAtLog: 0
 };
 
 // Temp onboarding picks
@@ -2412,9 +1714,7 @@ var isSigningOut = false;
 //  SAVE / LOAD
 // ─────────────────────────
 function save() {
-  // Always write to localStorage immediately for snappy UI
   localStorage.setItem(SAVE_KEY, JSON.stringify(state));
-  // Then sync to Supabase in background if logged in
   if (currentUserId) {
     sb.from('profiles')
       .upsert({ user_id: currentUserId, save_data: state, updated_at: new Date().toISOString() },
@@ -2432,7 +1732,7 @@ function load() {
     var parsed = JSON.parse(raw);
     if (typeof parsed !== 'object' || !parsed) return;
     if (!Array.isArray(parsed.log)) parsed.log = [];
-    ['name','avatar','heroClass','xp','streak','lastLogDate','log','monthlyBudget','coinReserve','ironVault','currentMonth','hearts','mapPosition','badges','weekLogDays','weekStart','roadBonusesThisMonth','lastEncounterLog','pendingEncounter','seenStoryEncounters','seenArrivals','lastMapPosition'].forEach(function(k) {
+    ['name','avatar','heroClass','xp','streak','lastLogDate','log','monthlyBudget','coinReserve','ironVault','currentMonth','hearts','mapPosition','badges','weekLogDays','weekStart','roadBonusesThisMonth','lastEncounterLog','pendingEncounter','seenStoryEncounters','seenArrivals','lastMapPosition','encounterLogCount','lastEncounterAtLog'].forEach(function(k) {
       if (parsed[k] !== undefined) state[k] = parsed[k];
     });
   } catch(e) { console.warn('Load failed:', e); }
@@ -2446,10 +1746,9 @@ async function loadFromSupabase() {
     var remote = res.data.save_data;
     if (typeof remote !== 'object') return;
     if (!Array.isArray(remote.log)) remote.log = [];
-    ['name','avatar','heroClass','xp','streak','lastLogDate','log','monthlyBudget','coinReserve','ironVault','currentMonth','hearts','mapPosition','badges','weekLogDays','weekStart','roadBonusesThisMonth','lastEncounterLog','pendingEncounter','seenStoryEncounters','seenArrivals','lastMapPosition'].forEach(function(k) {
+    ['name','avatar','heroClass','xp','streak','lastLogDate','log','monthlyBudget','coinReserve','ironVault','currentMonth','hearts','mapPosition','badges','weekLogDays','weekStart','roadBonusesThisMonth','lastEncounterLog','pendingEncounter','seenStoryEncounters','seenArrivals','lastMapPosition','encounterLogCount','lastEncounterAtLog'].forEach(function(k) {
       if (remote[k] !== undefined) state[k] = remote[k];
     });
-    // Sync remote state back to localStorage
     localStorage.setItem(SAVE_KEY, JSON.stringify(state));
   } catch(e) { console.warn('Supabase load error:', e); }
 }
@@ -2461,10 +1760,8 @@ function switchLoginTab(tab) {
   var isPassword = tab === 'password';
   document.getElementById('login-password-panel').style.display = isPassword ? 'block' : 'none';
   document.getElementById('login-magic-panel').style.display   = isPassword ? 'none' : 'block';
-  document.getElementById('tab-password').style.background = isPassword ? 'var(--gold)' : 'var(--surface2)';
-  document.getElementById('tab-password').style.color      = isPassword ? '#1a1400' : 'var(--text-dim)';
-  document.getElementById('tab-magic').style.background    = isPassword ? 'var(--surface2)' : 'var(--gold)';
-  document.getElementById('tab-magic').style.color         = isPassword ? 'var(--text-dim)' : '#1a1400';
+  document.getElementById('tab-password').className = 'tab-btn' + (isPassword ? ' active' : '');
+  document.getElementById('tab-magic').className    = 'tab-btn' + (!isPassword ? ' active' : '');
 }
 
 async function signInWithPassword() {
@@ -2478,7 +1775,7 @@ async function signInWithPassword() {
     errEl.style.display = 'block';
     return;
   }
-  var btn = document.querySelector('#login-form-password .ob-btn');
+  var btn = document.querySelector('#login-form-password .btn-primary');
   btn.textContent = 'Entering…';
   btn.disabled = true;
 
@@ -2491,7 +1788,6 @@ async function signInWithPassword() {
     btn.textContent = 'Enter the Realm ⚔';
     btn.disabled = false;
   }
-  // Success is handled by onAuthStateChange
 }
 
 async function sendMagicLink() {
@@ -2500,7 +1796,7 @@ async function sendMagicLink() {
     showLoginError('Please enter a valid email address.');
     return;
   }
-  var btn = document.querySelector('#login-form .ob-btn');
+  var btn = document.querySelector('#login-form-magic .btn-primary');
   btn.textContent = 'Sending…';
   btn.disabled = true;
   var res = await sb.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true } });
@@ -2510,7 +1806,7 @@ async function sendMagicLink() {
     btn.disabled = false;
   } else {
     document.getElementById('sent-email').textContent = email;
-    document.getElementById('login-form').style.display = 'none';
+    document.getElementById('login-form-magic').style.display = 'none';
     document.getElementById('login-sent').style.display = 'block';
   }
 }
@@ -2522,22 +1818,18 @@ function showLoginError(msg) {
 }
 
 function resetLoginForm() {
-  document.getElementById('login-form').style.display = 'block';
+  document.getElementById('login-form-magic').style.display = 'block';
   document.getElementById('login-sent').style.display = 'none';
   document.getElementById('login-error').style.display = 'none';
   document.getElementById('login-email').value = '';
-  var btn = document.querySelector('#login-form .ob-btn');
+  var btn = document.querySelector('#login-form-magic .btn-primary');
   btn.textContent = 'Send Magic Link ✉';
   btn.disabled = false;
 }
 
 async function signOut() {
   isSigningOut = true;
-  try {
-    await sb.auth.signOut();
-  } catch(e) {
-    console.warn('Sign out error:', e);
-  }
+  try { await sb.auth.signOut(); } catch(e) { console.warn('Sign out error:', e); }
   currentUserId = null;
   localStorage.removeItem(SAVE_KEY);
   Object.assign(state, {
@@ -2545,7 +1837,8 @@ async function signOut() {
     monthlyBudget:0,coinReserve:0,ironVault:0,currentMonth:'',hearts:3,
     mapPosition:0,badges:[],weekLogDays:[],weekStart:'',roadBonusesThisMonth:0,
     lastEncounterLog:'',pendingEncounter:null,seenStoryEncounters:[],
-    seenArrivals:[],lastMapPosition:-1
+    seenArrivals:[],lastMapPosition:-1,
+    encounterLogCount:0,lastEncounterAtLog:0
   });
   document.getElementById('header-auth').style.display = 'none';
   document.getElementById('main').style.display = 'none';
@@ -2559,22 +1852,17 @@ async function signOut() {
 //  INIT
 // ─────────────────────────
 async function initApp() {
-  // Listen for auth state changes (handles magic link redirect)
   sb.auth.onAuthStateChange(async function(event, session) {
     if (isSigningOut) return;
     if (session && session.user) {
       currentUserId = session.user.id;
-      // Show email + sign out in header
       document.getElementById('header-email').textContent = session.user.email;
-      document.getElementById('header-auth').style.display = 'block';
+      document.getElementById('header-auth').style.display = 'flex';
       document.getElementById('login-screen').style.display = 'none';
 
-      // Load from Supabase first (authoritative), fall back to localStorage
       await loadFromSupabase();
-      // If still nothing, try localStorage
       if (!state.name) load();
 
-      // Patch any missing fields
       if (state.hearts === undefined) state.hearts = 3;
       if (!state.badges) state.badges = [];
       if (!state.weekLogDays) state.weekLogDays = [];
@@ -2596,25 +1884,53 @@ async function initApp() {
         document.getElementById('main').style.display = 'none';
       }
     } else {
-      // No session — show login
       currentUserId = null;
-      document.getElementById('login-screen').style.display = 'block';
-      document.getElementById('onboarding').style.display = 'none';
-      document.getElementById('main').style.display = 'none';
       document.getElementById('header-auth').style.display = 'none';
+      document.getElementById('login-screen').style.display = 'block';
+      document.getElementById('main').style.display = 'none';
+      document.getElementById('onboarding').style.display = 'none';
     }
-  });
-
-  // Re-render map on resize
-  window.addEventListener('resize', function() {
-    if (state.name) renderMap();
   });
 }
 
 initApp();
 
 // ─────────────────────────
-//  LEVEL HELPERS
+//  STREAK / DATE HELPERS
+// ─────────────────────────
+function getToday() { return new Date().toDateString(); }
+function getYesterday() {
+  var d = new Date(); d.setDate(d.getDate() - 1); return d.toDateString();
+}
+
+function checkStreak() {
+  var today = getToday();
+  var yesterday = getYesterday();
+  var last = state.lastLogDate;
+  if (!last) return;
+  if (last === today) return; // fine
+  if (last === yesterday) return; // fine — streak intact until end of today
+  // More than 1 day gap — streak broken
+  if (last !== yesterday && last !== today) {
+    state.streak = 0;
+    save();
+  }
+}
+
+function markLoggedToday() {
+  var today = getToday();
+  if (state.lastLogDate === today) return; // already logged today
+  var yesterday = getYesterday();
+  if (state.lastLogDate === yesterday || state.streak === 0) {
+    state.streak = (state.streak || 0) + 1;
+  } else if (!state.lastLogDate) {
+    state.streak = 1;
+  }
+  state.lastLogDate = today;
+}
+
+// ─────────────────────────
+//  XP / LEVEL HELPERS
 // ─────────────────────────
 function getLevelData(xp) {
   var level = 1;
@@ -2622,14 +1938,13 @@ function getLevelData(xp) {
     if (xp >= LEVEL_XP[i]) { level = i + 1; break; }
   }
   level = Math.min(level, LEVEL_XP.length);
-
   var xpAtStart = LEVEL_XP[level - 1] || 0;
-  var xpAtEnd   = LEVEL_XP[level] || (xpAtStart + 1000);
-  var span      = xpAtEnd - xpAtStart;
-  var progress  = xp - xpAtStart;
-  var pct       = Math.min(100, Math.max(0, (progress / span) * 100));
-
-  return { level: level, xpAtStart: xpAtStart, xpAtEnd: xpAtEnd, pct: pct, toNext: xpAtEnd - xp };
+  var xpAtEnd   = level < LEVEL_XP.length ? LEVEL_XP[level] : LEVEL_XP[LEVEL_XP.length - 1];
+  var inLevel   = xp - xpAtStart;
+  var needed    = xpAtEnd - xpAtStart;
+  var pct       = needed > 0 ? Math.min(100, (inLevel / needed) * 100) : 100;
+  var toNext    = Math.max(0, xpAtEnd - xp);
+  return { level: level, xpAtEnd: xpAtEnd, pct: pct, toNext: toNext };
 }
 
 function getTitle(heroClass, level) {
@@ -2639,231 +1954,153 @@ function getTitle(heroClass, level) {
 }
 
 // ─────────────────────────
-//  STREAK
+//  MAP HELPERS
 // ─────────────────────────
-function checkStreak() {
-  if (!state.lastLogDate) return;
-  var today     = new Date().toDateString();
-  var yesterday = new Date(Date.now() - 86400000).toDateString();
-  if (state.lastLogDate !== today && state.lastLogDate !== yesterday) {
-    state.streak = 0;
-    save();
-  }
-}
-
-function markLoggedToday() {
-  var today     = new Date().toDateString();
-  var yesterday = new Date(Date.now() - 86400000).toDateString();
-  if (state.lastLogDate === today) return; // already counted today
-  if (state.lastLogDate === yesterday) {
-    state.streak = (state.streak || 0) + 1;
-  } else {
-    state.streak = 1;
-  }
-  state.lastLogDate = today;
-}
-
-// ─────────────────────────
-//  MAP & ENCOUNTER LOGIC
-// ─────────────────────────
-
-function getMapPosition() {
-  var ld = getLevelData(state.xp);
-  var lvl = Math.min(ld.level, LEVEL_TO_MAP.length - 1);
-  return LEVEL_TO_MAP[lvl] || 0;
-}
+function getMapPosition() { return state.mapPosition || 0; }
 
 function getCurrentWaypoint() {
   var pos = getMapPosition();
-  // Find the numeric waypoint with id === pos
   for (var i = 0; i < MAP_WAYPOINTS.length; i++) {
     if (MAP_WAYPOINTS[i].id === pos) return MAP_WAYPOINTS[i];
   }
   return MAP_WAYPOINTS[0];
 }
 
-function getZoneForPos(pos) {
-  for (var i = 0; i < MAP_WAYPOINTS.length; i++) {
-    if (MAP_WAYPOINTS[i].id === pos) return MAP_WAYPOINTS[i].zone;
+function advanceMap() {
+  var pos = getMapPosition();
+  // numeric positions: 0-10
+  var maxNumeric = 10;
+  if (typeof pos === 'number' && pos < maxNumeric) {
+    state.mapPosition = pos + 1;
+    state.lastMapPosition = pos;
+    save();
+    return true;
   }
-  return 1;
+  return false;
+}
+
+// ─────────────────────────
+//  WEEK ROAD BONUS
+// ─────────────────────────
+function getWeekStart() {
+  var d = new Date();
+  var day = d.getDay(); // 0=Sun
+  d.setDate(d.getDate() - day);
+  return d.toDateString();
 }
 
 function checkWeekRoadBonus() {
-  // Road bonus: earned if player logged >= 5 days this week AND stayed under budget pace
-  var today = new Date().toDateString();
-  if (!Array.isArray(state.weekLogDays)) state.weekLogDays = [];
-
-  // Get start of current week (Sunday)
-  var now = new Date();
-  var dayOfWeek = now.getDay();
-  var weekStart = new Date(now);
-  weekStart.setDate(now.getDate() - dayOfWeek);
-  weekStart.setHours(0,0,0,0);
-  var weekStartStr = weekStart.toDateString();
-
-  // Reset week tracking if new week
-  if (state.weekStart !== weekStartStr) {
-    // Evaluate last week before resetting
-    if (state.weekStart && state.weekLogDays.length >= 5) {
-      // Check budget pace — were they under 25% of monthly budget this week?
-      var weeklyBudgetPace = state.monthlyBudget * 0.25;
-      var weekSpend = 0;
-      var weekStartDate = new Date(state.weekStart);
-      var weekEndDate = new Date(weekStartDate);
-      weekEndDate.setDate(weekStartDate.getDate() + 7);
-      if (Array.isArray(state.log)) {
-        state.log.forEach(function(entry) {
-          var ts = new Date(entry.ts);
-          if (ts >= weekStartDate && ts < weekEndDate) weekSpend += parseFloat(entry.amount) || 0;
-        });
-      }
-      if (weekSpend <= weeklyBudgetPace || state.weekLogDays.length >= 6) {
-        // Earned road bonus
-        state.xp += 50;
-        state.roadBonusesThisMonth = (state.roadBonusesThisMonth || 0) + 1;
-        save();
-        showToast('🌟 Road Bonus earned — +50 XP for disciplined travel!');
-      }
-    }
-    state.weekStart = weekStartStr;
+  var ws = getWeekStart();
+  if (state.weekStart !== ws) {
+    state.weekStart   = ws;
     state.weekLogDays = [];
-    save();
   }
-
-  // Add today to week log days if not already there
+  var today = getToday();
   if (state.weekLogDays.indexOf(today) === -1) {
     state.weekLogDays.push(today);
-    save();
+  }
+  // 5+ unique days this week → road bonus (up to 3 per month)
+  if (state.weekLogDays.length >= 5 && (state.roadBonusesThisMonth || 0) < 3) {
+    state.roadBonusesThisMonth = (state.roadBonusesThisMonth || 0) + 1;
+    state.weekLogDays = []; // reset so they can earn next week
+    showToast('🗺️ Road Bonus earned! Advancing the map...');
+    setTimeout(function() {
+      if (advanceMap()) { render(); checkZoneBadge(); checkArrival(); }
+    }, 1400);
   }
 }
 
-function getZoneKey(pos) {
-  if (pos <= 2) return 'z1';
-  if (pos <= 5) return 'z2';
-  if (pos <= 8) return 'z3';
-  return 'z4';
-}
-
+// ─────────────────────────
+//  ARRIVAL POPUPS
+// ─────────────────────────
 function checkArrival() {
   var pos = getMapPosition();
   if (pos === state.lastMapPosition) return;
-  // New position — find waypoint and show arrival text if not seen
   var wp = getCurrentWaypoint();
-  if (wp && wp.arrival && state.seenArrivals.indexOf(pos) === -1) {
-    state.seenArrivals.push(pos);
-    state.lastMapPosition = pos;
-    save();
-    setTimeout(function() { showArrivalCard(wp); }, 600);
-  } else {
-    state.lastMapPosition = pos;
-    save();
+  if (!wp) return;
+  if (!Array.isArray(state.seenArrivals)) state.seenArrivals = [];
+  var aid = 'arr_' + wp.id;
+  if (state.seenArrivals.indexOf(aid) !== -1) return;
+  state.seenArrivals.push(aid);
+  save();
+
+  if (wp.zoneComplete) {
+    // already handled by checkZoneBadge
+    return;
+  }
+  if (wp.arrival) {
+    setTimeout(function() {
+      showStoryEncounter('🗺️', wp.name.replace('\n',' '), wp.arrival, 'story');
+    }, 600);
   }
 }
 
-function showArrivalCard(wp) {
+function showStoryEncounter(icon, title, desc, type) {
   var box = document.getElementById('encounter-box');
-  box.className = 'encounter-box arrival';
-  document.getElementById('encounter-zone').textContent  = wp.zoneName || 'The Journey';
-  document.getElementById('encounter-icon').textContent  = wp.icon || '🗺️';
-  document.getElementById('encounter-title').textContent = wp.name.replace('\n', ' ');
-  document.getElementById('encounter-desc').textContent  = wp.arrival;
+  box.className = 'overlay-box story';
+  document.getElementById('encounter-zone').textContent  = '📍 New Location';
+  document.getElementById('encounter-icon').textContent  = icon;
+  document.getElementById('encounter-title').textContent = title;
+  document.getElementById('encounter-desc').textContent  = desc;
   var choices = document.getElementById('encounter-choices');
   choices.innerHTML = '';
   var btn = document.createElement('button');
-  btn.className = 'encounter-btn story-choice';
-  btn.innerHTML = 'Press on';
-  btn.onclick = function() {
-    document.getElementById('encounter-overlay').classList.remove('show');
-  };
+  btn.className = 'overlay-btn primary-choice';
+  btn.style.textAlign = 'center';
+  btn.innerHTML = 'Onward ⚔';
+  btn.onclick = function() { document.getElementById('encounter-overlay').classList.remove('show'); };
   choices.appendChild(btn);
   document.getElementById('encounter-overlay').classList.add('show');
 }
 
+// ─────────────────────────
+//  RANDOM ENCOUNTERS
+// ─────────────────────────
 function checkEncounter(amount) {
-  // Don't fire two encounters on the same log entry
-  var entryId = String(Date.now());
-  if (state.lastEncounterLog === entryId) return;
+  // Cooldown: skip if last encounter was within the last 2 logs
+  if (!state.encounterLogCount) state.encounterLogCount = 0;
+  state.encounterLogCount++;
+  var lastAt = state.lastEncounterAtLog || 0;
+  if (state.encounterLogCount - lastAt < 2) return; // minimum 2 logs between encounters
 
-  var monthlyBudget = state.monthlyBudget || 0;
-  if (monthlyBudget === 0) return;
+  // 45% chance per eligible expense
+  if (Math.random() > 0.45) return;
 
-  var dayOfMonth = new Date().getDate();
-  var daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
-  var monthProgress = dayOfMonth / daysInMonth;
-  var reservePct = (state.coinReserve || 0) / monthlyBudget;
+  // Mark that an encounter fired at this log count
+  state.lastEncounterAtLog = state.encounterLogCount;
+  save();
 
-  // ── HOSTILE TRIGGERS ──
-  var hostileType = null;
+  // Check for unseen story encounters first (priority)
+  var pos = getMapPosition();
+  var zone = pos <= 2 ? 'z1' : pos <= 5 ? 'z2' : pos <= 8 ? 'z3' : 'z4';
+  var storyPool = STORY_ENCOUNTERS[zone] || [];
+  var available = storyPool.filter(function(e) {
+    return e.minPos <= pos && (state.seenStoryEncounters || []).indexOf(e.id) === -1;
+  });
 
-  // Reserve below 50% — spending velocity is too high
-  if (reservePct < 0.50) {
-    hostileType = 'velocity';
-  }
-  // Reserve critically low (<15%)
-  if (reservePct < 0.15) {
-    hostileType = 'depleted';
-  }
-
-  if (hostileType) {
-    // Pick zone-appropriate hostile encounter
-    var pos = getMapPosition();
-    var hostile;
-    if (pos >= 9) {
-      hostile = HOSTILE_ENCOUNTERS[4];
-    } else if (pos >= 6) {
-      hostile = HOSTILE_ENCOUNTERS[2];
-    } else if (hostileType === 'depleted') {
-      hostile = HOSTILE_ENCOUNTERS[3]; // Silk Road Merchant — scraping the barrel
-    } else {
-      hostile = HOSTILE_ENCOUNTERS[0]; // Bandits — burning through reserves
-    }
-    // Always fire — the pattern warrants it
-    if (Math.random() < 0.70) {
-      state.lastEncounterLog = entryId;
-      save();
-      setTimeout(function() { showEncounter(hostile, true); }, 1200);
-      return;
-    }
-  }
-
-  // ── STORY ENCOUNTER (narrative only, ~30% chance) ──
-  if (Math.random() < 0.30) {
-    var currentPos = getMapPosition();
-    var zoneKey = getZoneKey(currentPos);
-    var pool = STORY_ENCOUNTERS[zoneKey] || [];
-    // Filter to encounters valid for current position AND not yet seen
-    var eligible = pool.filter(function(e) {
-      return e.minPos <= currentPos && state.seenStoryEncounters.indexOf(e.id) === -1;
-    });
-    // If all position-eligible ones seen, allow repeats from eligible-by-position pool only
-    if (eligible.length === 0) {
-      eligible = pool.filter(function(e) { return e.minPos <= currentPos; });
-    }
-    if (eligible.length > 0) {
-      var story = eligible[Math.floor(Math.random() * eligible.length)];
-      if (state.seenStoryEncounters.indexOf(story.id) === -1) {
-        state.seenStoryEncounters.push(story.id);
-      }
-      state.lastEncounterLog = entryId;
-      save();
-      setTimeout(function() { showStoryEncounter(story); }, 1200);
-      return;
-    }
-  }
-
-  // ── FRIENDLY ENCOUNTER (~20% chance when no hostile or story fired) ──
-  if (Math.random() < 0.20) {
-    var friendly = FRIENDLY_ENCOUNTERS[Math.floor(Math.random() * FRIENDLY_ENCOUNTERS.length)];
-    state.lastEncounterLog = entryId;
+  // 60% chance to show a story encounter if one is available
+  if (available.length > 0 && Math.random() < 0.6) {
+    var enc = available[Math.floor(Math.random() * available.length)];
+    if (!state.seenStoryEncounters) state.seenStoryEncounters = [];
+    state.seenStoryEncounters.push(enc.id);
     save();
-    setTimeout(function() { showEncounter(friendly, false); }, 1200);
+    setTimeout(function() { showStoryEncounterFull(enc); }, 900);
+    return;
+  }
+
+  // Otherwise hostile (40%) or friendly (60%)
+  if (Math.random() < 0.40) {
+    var hostile = HOSTILE_ENCOUNTERS[Math.floor(Math.random() * HOSTILE_ENCOUNTERS.length)];
+    setTimeout(function() { showEncounter(hostile, true); }, 900);
+  } else {
+    var friendly = FRIENDLY_ENCOUNTERS[Math.floor(Math.random() * FRIENDLY_ENCOUNTERS.length)];
+    setTimeout(function() { showEncounter(friendly, false); }, 900);
   }
 }
 
-function showStoryEncounter(enc) {
+function showStoryEncounterFull(enc) {
   var box = document.getElementById('encounter-box');
-  box.className = 'encounter-box story';
+  box.className = 'overlay-box story';
   document.getElementById('encounter-zone').textContent  = enc.zone;
   document.getElementById('encounter-icon').textContent  = enc.icon;
   document.getElementById('encounter-title').textContent = enc.title;
@@ -2871,18 +2108,17 @@ function showStoryEncounter(enc) {
   var choices = document.getElementById('encounter-choices');
   choices.innerHTML = '';
   var btn = document.createElement('button');
-  btn.className = 'encounter-btn story-choice';
-  btn.innerHTML = 'Continue the journey';
-  btn.onclick = function() {
-    document.getElementById('encounter-overlay').classList.remove('show');
-  };
+  btn.className = 'overlay-btn primary-choice';
+  btn.style.textAlign = 'center';
+  btn.innerHTML = 'Keep Moving ⚔';
+  btn.onclick = function() { document.getElementById('encounter-overlay').classList.remove('show'); };
   choices.appendChild(btn);
   document.getElementById('encounter-overlay').classList.add('show');
 }
 
 function showEncounter(enc, isHostile) {
   var box = document.getElementById('encounter-box');
-  box.className = 'encounter-box ' + (isHostile ? 'hostile' : 'friendly');
+  box.className = 'overlay-box ' + (isHostile ? 'hostile' : 'friendly');
 
   document.getElementById('encounter-zone').textContent  = enc.zone;
   document.getElementById('encounter-icon').textContent  = enc.icon;
@@ -2893,23 +2129,23 @@ function showEncounter(enc, isHostile) {
   choices.innerHTML = '';
 
   if (isHostile) {
-    var currentVault  = state.ironVault || 0;
-    var vaultPenalty  = Math.round(currentVault * enc.vaultCost);
-    var vaultViable   = vaultPenalty >= 5;
+    var currentVault = state.ironVault || 0;
+    var vaultPenalty = Math.round(currentVault * enc.vaultCost);
+    var vaultViable  = vaultPenalty >= 5;
 
     var btnA = document.createElement('button');
-    btnA.className = 'encounter-btn hostile-choice';
-    btnA.innerHTML = enc.choiceA.label + '<span class="encounter-btn-cost">' + enc.choiceA.sub + '</span>';
+    btnA.className = 'overlay-btn hostile-choice';
+    btnA.innerHTML = enc.choiceA.label + '<span class="overlay-btn-cost">' + enc.choiceA.sub + '</span>';
     btnA.onclick = function() { resolveHostile('heart', enc); };
 
     var btnB = document.createElement('button');
     if (vaultViable) {
-      btnB.className = 'encounter-btn';
-      btnB.innerHTML = enc.choiceB.label + '<span class="encounter-btn-cost">Lose ' + vaultPenalty + ' gold from Iron Vault</span>';
+      btnB.className = 'overlay-btn';
+      btnB.innerHTML = enc.choiceB.label + '<span class="overlay-btn-cost">Lose ' + vaultPenalty + ' gold from Iron Vault</span>';
       btnB.onclick = function() { resolveHostile('vault', enc); };
     } else {
-      btnB.className = 'encounter-btn encounter-btn-disabled';
-      btnB.innerHTML = enc.choiceB.label + '<span class="encounter-btn-cost">Iron Vault is empty — build your surplus to unlock this option</span>';
+      btnB.className = 'overlay-btn overlay-btn-disabled';
+      btnB.innerHTML = enc.choiceB.label + '<span class="overlay-btn-cost">Iron Vault is empty — build your surplus to unlock this</span>';
       btnB.disabled = true;
     }
 
@@ -2917,8 +2153,8 @@ function showEncounter(enc, isHostile) {
     choices.appendChild(btnB);
   } else {
     var btn = document.createElement('button');
-    btn.className = 'encounter-btn friendly-choice';
-    btn.innerHTML = 'Continue the journey<span class="encounter-btn-cost">' + enc.rewardDesc + '</span>';
+    btn.className = 'overlay-btn friendly-choice';
+    btn.innerHTML = 'Accept the reward<span class="overlay-btn-cost">' + enc.rewardDesc + '</span>';
     btn.onclick = function() { resolveFriendly(enc); };
     choices.appendChild(btn);
   }
@@ -2935,9 +2171,8 @@ function resolveHostile(choice, enc) {
     var currentVault = state.ironVault || 0;
     var penalty = Math.round(currentVault * enc.vaultCost);
     if (penalty < 5) {
-      // Vault too empty — shouldn't happen (button is disabled) but guard anyway
       state.hearts = Math.max(0, (state.hearts || 3) - 1);
-      showToast('❤️ Vault empty — heart spent instead.');
+      showToast('❤️ Vault too empty — heart spent instead.');
     } else {
       state.ironVault = Math.max(0, currentVault - penalty);
       showToast('💰 ' + penalty + ' gold taken from Iron Vault.');
@@ -2968,42 +2203,34 @@ function checkZoneBadge() {
   var badges = state.badges || [];
 
   if (pos >= 3 && badges.indexOf('zone1') === -1) {
-    badges.push('zone1');
-    state.badges = badges;
-    save();
+    badges.push('zone1'); state.badges = badges; save();
     setTimeout(function() {
-      showZoneComplete('🛡️', 'The First Steps', 'You leave the Hearthstone Road behind. It looks smaller from here than it felt while you were on it.');
+      showZoneComplete('🛡️', 'The First Steps', 'You clear the Hearthstone Road. First zone down. It feels smaller looking back.');
     }, 800);
   }
   if (pos >= 6 && badges.indexOf('zone2') === -1) {
-    badges.push('zone2');
-    state.badges = badges;
-    save();
+    badges.push('zone2'); state.badges = badges; save();
     setTimeout(function() {
-      showZoneComplete('🪙', 'Disciplined Traveler', "The Merchant's Pass falls behind you. The road ahead grows quieter. That is not entirely reassuring.");
+      showZoneComplete('🪙', 'Disciplined Traveler', "The Merchant's Pass is behind you. You navigated the markets and kept your budget intact.");
     }, 800);
   }
   if (pos >= 9 && badges.indexOf('zone3') === -1) {
-    badges.push('zone3');
-    state.badges = badges;
-    save();
+    badges.push('zone3'); state.badges = badges; save();
     setTimeout(function() {
-      showZoneComplete('🌿', 'Thornwood Survivor', 'You leave the Thornwood behind. The light on the other side is warmer than you remembered light being. You do not stop moving until you are well clear of the tree line.');
+      showZoneComplete('🌿', 'Thornwood Survivor', 'You emerge from the Thornwood. The light on the other side is warmer than you remembered light being.');
     }, 800);
   }
   if (pos >= 10 && badges.indexOf('zone4') === -1) {
-    badges.push('zone4');
-    state.badges = badges;
-    save();
+    badges.push('zone4'); state.badges = badges; save();
     setTimeout(function() {
-      showZoneComplete('🔒', 'Keeper of the Iron Vault', 'You have reached the Iron Keep. The road behind you is longer than it looked when you started. The road ahead is longer still. You do not mind.');
+      showZoneComplete('🔒', 'Keeper of the Iron Vault', 'You have reached the Iron Keep. The road ahead is longer and wider than any map shows. You are ready.');
     }, 800);
   }
 }
 
 function showZoneComplete(icon, badgeName, narrative) {
   var box = document.getElementById('encounter-box');
-  box.className = 'encounter-box zone-complete';
+  box.className = 'overlay-box zone-complete';
   document.getElementById('encounter-zone').textContent  = '✦ Zone Complete';
   document.getElementById('encounter-icon').textContent  = icon;
   document.getElementById('encounter-title').textContent = 'Badge Earned: ' + badgeName;
@@ -3011,28 +2238,21 @@ function showZoneComplete(icon, badgeName, narrative) {
   var choices = document.getElementById('encounter-choices');
   choices.innerHTML = '';
   var btn = document.createElement('button');
-  btn.className = 'encounter-btn story-choice';
+  btn.className = 'overlay-btn primary-choice';
+  btn.style.textAlign = 'center';
   btn.innerHTML = 'March Forward ⚔';
-  btn.onclick = function() {
-    document.getElementById('encounter-overlay').classList.remove('show');
-  };
+  btn.onclick = function() { document.getElementById('encounter-overlay').classList.remove('show'); };
   choices.appendChild(btn);
   document.getElementById('encounter-overlay').classList.add('show');
 }
 
-function showBadgeToast(msg) {
-  var t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(function() { t.classList.remove('show'); }, 4000);
-}
-
+// ─────────────────────────
+//  RENDER MAP
+// ─────────────────────────
 function renderMap() {
   var pos = getMapPosition();
   var wp  = getCurrentWaypoint();
 
-  // Update header text
   if (wp) {
     document.getElementById('map-location-name').textContent = wp.name.replace('\n',' ');
     var zoneNums = ['I','II','III','IV'];
@@ -3041,34 +2261,25 @@ function renderMap() {
       'Zone ' + (zoneNums[zoneIdx] || 'I') + ' — ' + (wp.zoneName || '');
   }
 
-  // ── NODE LAYOUT ──
-  // Vertical map: all positions as % of total map height (which is taller than viewport)
-  // X positions spread nodes horizontally; Y flows top→bottom
-  // TOTAL MAP HEIGHT = 820px, VIEWPORT = 260px
-  // Camera pans to keep current node ~35% from top of viewport
-  var TOTAL_H = 820;
-  var VIEWPORT_H = 260;
+  var TOTAL_H   = 820;
+  var VIEWPORT_H = 220;
 
   var NODE_LAYOUT = [
-    // Zone 1 — Hearthstone Road
-    { id:0,   pct:[50, 4]  },   // Hearthstone Village — center
-    { id:1,   pct:[22, 13] },   // Harvest Crossing — left
-    { id:2,   pct:[78, 13] },   // Stonepath Mill — right
-    { id:'z1',pct:[50, 22] },   // Zone 1 badge
-    // Zone 2 — Merchant's Pass
-    { id:3,   pct:[20, 33] },   // Merchant's Gate — left
-    { id:4,   pct:[50, 33] },   // Copperbridge — center
-    { id:5,   pct:[80, 33] },   // Trader's Camp — right
-    { id:'z2',pct:[50, 43] },   // Zone 2 badge
-    // Zone 3 — Thornwood
-    { id:6,   pct:[22, 55] },   // Thornwood Edge — left
-    { id:7,   pct:[78, 55] },   // Darkhollow Path — right
-    { id:8,   pct:[50, 63] },   // Wayward Shrine — center
-    { id:'z3',pct:[50, 72] },   // Zone 3 badge
-    // Zone 4 — Iron Keep
-    { id:9,   pct:[50, 83] },   // Iron Keep Gates
-    { id:10,  pct:[50, 92] },   // The Iron Keep
-    { id:'z4',pct:[78, 83] },   // Zone 4 badge
+    { id:0,   pct:[50, 4]  },
+    { id:1,   pct:[22, 13] },
+    { id:2,   pct:[78, 13] },
+    { id:'z1',pct:[50, 22] },
+    { id:3,   pct:[20, 33] },
+    { id:4,   pct:[50, 33] },
+    { id:5,   pct:[80, 33] },
+    { id:'z2',pct:[50, 43] },
+    { id:6,   pct:[22, 55] },
+    { id:7,   pct:[78, 55] },
+    { id:8,   pct:[50, 63] },
+    { id:'z3',pct:[50, 72] },
+    { id:9,   pct:[50, 83] },
+    { id:10,  pct:[50, 92] },
+    { id:'z4',pct:[78, 83] },
   ];
 
   var CONNECTIONS = [
@@ -3097,7 +2308,6 @@ function renderMap() {
   svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
   svg.style.height = H + 'px';
 
-  // Build pixel position lookup
   var posMap = {};
   NODE_LAYOUT.forEach(function(n) {
     posMap[n.id] = {
@@ -3106,24 +2316,16 @@ function renderMap() {
     };
   });
 
-  // ── CAMERA PAN ──
-  // Find current node Y position, pan so it appears at ~30% from top of viewport
-  var currentNodeY = 0;
-  var currentLayout = NODE_LAYOUT.find ? NODE_LAYOUT.find(function(n){ return n.id === pos; }) : null;
-  if (!currentLayout) {
-    for (var ci = 0; ci < NODE_LAYOUT.length; ci++) {
-      if (NODE_LAYOUT[ci].id === pos) { currentLayout = NODE_LAYOUT[ci]; break; }
-    }
+  // Camera pan
+  var currentLayout = null;
+  for (var ci = 0; ci < NODE_LAYOUT.length; ci++) {
+    if (NODE_LAYOUT[ci].id === pos) { currentLayout = NODE_LAYOUT[ci]; break; }
   }
-  if (currentLayout) {
-    currentNodeY = Math.round(H * currentLayout.pct[1] / 100);
-  }
-  // Target: current node appears at 30% from top of viewport
+  var currentNodeY = currentLayout ? Math.round(H * currentLayout.pct[1] / 100) : 0;
   var targetScrollTop = currentNodeY - Math.round(VIEWPORT_H * 0.30);
   targetScrollTop = Math.max(0, Math.min(H - VIEWPORT_H, targetScrollTop));
   container.style.transform = 'translateY(' + (-targetScrollTop) + 'px)';
 
-  // Show/hide "more ahead" arrow — show if there are nodes below viewport bottom
   var viewportBottom = targetScrollTop + VIEWPORT_H;
   var hasNodesBelow = false;
   NODE_LAYOUT.forEach(function(n) {
@@ -3134,7 +2336,7 @@ function renderMap() {
   });
   if (moreArrow) moreArrow.className = 'map-more-arrow' + (hasNodesBelow ? '' : ' hidden');
 
-  // ── SVG CONNECTIONS ──
+  // SVG connections
   svg.innerHTML = '';
 
   function isReached(id) {
@@ -3143,35 +2345,36 @@ function renderMap() {
     return pos >= (bm[id] || 999);
   }
 
-  // Draw zone watermark text
+  // Zone watermarks
   var zoneWatermarks = [
-    { text:'HEARTHSTONE ROAD', y: 8  },
-    { text:"MERCHANT'S PASS",  y: 30 },
-    { text:'THORNWOOD',        y: 52 },
-    { text:'IRON KEEP',        y: 79 },
+    { text:'HEARTHSTONE', y: 8  },
+    { text:"MERCHANT'S PASS", y: 30 },
+    { text:'THORNWOOD', y: 52 },
+    { text:'IRON KEEP', y: 79 },
   ];
   zoneWatermarks.forEach(function(zw) {
     var t = document.createElementNS('http://www.w3.org/2000/svg','text');
-    t.setAttribute('x', '4%');
+    t.setAttribute('x', '3%');
     t.setAttribute('y', zw.y + '%');
-    t.setAttribute('fill', '#221c0e');
-    t.setAttribute('font-size', '8');
-    t.setAttribute('font-family', 'Cinzel, serif');
+    t.setAttribute('fill', '#1c2033');
+    t.setAttribute('font-size', '9');
+    t.setAttribute('font-family', 'Plus Jakarta Sans, sans-serif');
+    t.setAttribute('font-weight', '800');
     t.setAttribute('letter-spacing', '2');
     t.textContent = zw.text;
     svg.appendChild(t);
   });
 
-  // Draw horizontal zone separator lines
+  // Zone separator lines
   var zoneSepY = [26, 49, 77];
   zoneSepY.forEach(function(pct) {
     var line = document.createElementNS('http://www.w3.org/2000/svg','line');
     var y = Math.round(H * pct / 100);
     line.setAttribute('x1', '0'); line.setAttribute('y1', y);
     line.setAttribute('x2', W);   line.setAttribute('y2', y);
-    line.setAttribute('stroke', '#201a0a');
+    line.setAttribute('stroke', '#1c2033');
     line.setAttribute('stroke-width', '1');
-    line.setAttribute('stroke-dasharray', '3 6');
+    line.setAttribute('stroke-dasharray', '3 8');
     svg.appendChild(line);
   });
 
@@ -3182,14 +2385,14 @@ function renderMap() {
     line.setAttribute('x1', a.x); line.setAttribute('y1', a.y);
     line.setAttribute('x2', b.x); line.setAttribute('y2', b.y);
     var traveled = isReached(conn[0]) && isReached(conn[1]);
-    line.setAttribute('stroke', traveled ? '#7a6530' : '#1e1808');
+    line.setAttribute('stroke', traveled ? '#5b21b6' : '#1c2033');
     line.setAttribute('stroke-width', traveled ? '2.5' : '1.5');
-    if (!traveled) line.setAttribute('stroke-dasharray', '4 5');
+    if (!traveled) line.setAttribute('stroke-dasharray', '4 6');
     line.setAttribute('stroke-linecap', 'round');
     svg.appendChild(line);
   });
 
-  // ── NODE DOM ELEMENTS ──
+  // Node DOM elements
   inner.innerHTML = '';
   inner.style.height = H + 'px';
 
@@ -3200,11 +2403,10 @@ function renderMap() {
     }
     if (!wpData) return;
 
-    var isBadge  = typeof layout.id === 'string';
-    var isEarned = isBadge && (state.badges||[]).indexOf(wpData.badge) !== -1;
-    var isDone   = !isBadge && layout.id < pos;
-    var isCurrent= !isBadge && layout.id === pos;
-    var isAhead  = isBadge ? !isEarned : layout.id > pos;
+    var isBadge   = typeof layout.id === 'string';
+    var isEarned  = isBadge && (state.badges||[]).indexOf(wpData.badge) !== -1;
+    var isDone    = !isBadge && layout.id < pos;
+    var isCurrent = !isBadge && layout.id === pos;
 
     var px = posMap[layout.id];
 
@@ -3223,7 +2425,7 @@ function renderMap() {
     var label = document.createElement('div');
     label.className = 'map-node-label';
     label.textContent = isBadge
-      ? (isEarned ? '★ ' + wpData.zoneName.split(' ').pop() : '?')
+      ? (isEarned ? '★ Badge' : '?')
       : wpData.name.replace('\n',' ');
 
     wrap.appendChild(circle);
@@ -3231,14 +2433,14 @@ function renderMap() {
     inner.appendChild(wrap);
   });
 
-  // ── ROAD BONUS PIPS ──
+  // Road bonus pips
   var bonuses = Math.min(3, state.roadBonusesThisMonth || 0);
   for (var i = 1; i <= 3; i++) {
     var pip = document.getElementById('road-pip-' + i);
     if (pip) pip.className = 'road-pip' + (i <= bonuses ? ' earned' : '');
   }
 
-  // ── HEARTS ──
+  // Hearts
   for (var h = 1; h <= 3; h++) {
     var heart = document.getElementById('heart-' + h);
     if (heart) {
@@ -3248,14 +2450,13 @@ function renderMap() {
     }
   }
 
-  // ── BADGE SLOTS ──
+  // Badge slots
   ['zone1','zone2','zone3','zone4'].forEach(function(bid) {
     var slot = document.getElementById('badge-' + bid);
     if (!slot) return;
     slot.className = (state.badges||[]).indexOf(bid) !== -1 ? 'badge-slot earned' : 'badge-slot locked';
   });
 }
-
 
 // ─────────────────────────
 //  RENDER
@@ -3268,7 +2469,6 @@ function getCurrentMonth() {
 function checkMonthReset() {
   var thisMonth = getCurrentMonth();
   if (!state.currentMonth) {
-    // First time — just set the month, no ceremony
     state.currentMonth = thisMonth;
     if (state.monthlyBudget > 0 && state.coinReserve === 0) {
       state.coinReserve = state.monthlyBudget;
@@ -3277,17 +2477,14 @@ function checkMonthReset() {
     return;
   }
   if (state.currentMonth !== thisMonth) {
-    // New month! Calculate surplus
     var surplus = Math.max(0, state.coinReserve);
     var prevMonth = state.currentMonth;
     state.ironVault += surplus;
     state.coinReserve = state.monthlyBudget;
     state.currentMonth = thisMonth;
+    state.roadBonusesThisMonth = 0;
     save();
-    // Show reset ceremony
-    if (state.name) {
-      showMonthReset(prevMonth, surplus);
-    }
+    if (state.name) { showMonthReset(prevMonth, surplus); }
   }
 }
 
@@ -3298,8 +2495,8 @@ function showMonthReset(prevMonth, surplus) {
 
   var bd = document.getElementById('reset-breakdown');
   var surplusLine = surplus > 0
-    ? '<div class="reset-row highlight"><span>Sealed in Iron Vault</span><span>+' + surplus + ' gold</span></div>'
-    : '<div class="reset-row"><span>Surplus</span><span>None — fight harder.</span></div>';
+    ? '<div class="reset-row highlight"><span>Sealed in Iron Vault</span><span>+' + surplus + ' gold ✦</span></div>'
+    : '<div class="reset-row"><span>Surplus</span><span>None this month</span></div>';
 
   bd.innerHTML =
     '<div class="reset-row"><span>Campaign</span><span>' + monthName + '</span></div>' +
@@ -3309,8 +2506,8 @@ function showMonthReset(prevMonth, surplus) {
     '<div class="reset-row"><span>Iron Vault Total</span><span>' + state.ironVault + ' gold</span></div>';
 
   var msg = surplus > 0
-    ? 'You ended the campaign with ' + surplus + ' gold unspent. It has been sealed in the Iron Vault. Your treasury has been replenished for the new month.'
-    : 'You spent every coin last month. A new treasury awaits. May this campaign bring more discipline — and surplus for the Vault.';
+    ? 'You ended ' + monthName + ' with ' + surplus + ' gold unspent — sealed in the Iron Vault. A new treasury awaits.'
+    : 'You spent the full budget last month. A fresh reserve awaits. This month, build that surplus.';
   document.getElementById('reset-msg').textContent = msg;
   document.getElementById('reset-overlay').classList.add('show');
 }
@@ -3335,7 +2532,7 @@ function renderCoins() {
 
   var fill = document.getElementById('coin-fill');
   fill.style.width = pct + '%';
-  fill.className = 'coin-bar-fill';
+  fill.className = 'bar-fill coin';
 
   var statusEl = document.getElementById('coin-status');
   statusEl.className = 'coin-status';
@@ -3343,26 +2540,25 @@ function renderCoins() {
   if (pct <= 10) {
     fill.classList.add('danger');
     statusEl.classList.add('danger');
-    statusEl.textContent = 'Reserves critically low — the realm grows uneasy.';
+    statusEl.textContent = 'Running on fumes — spend carefully!';
   } else if (pct <= 30) {
     fill.classList.add('warning');
     statusEl.classList.add('warning');
-    statusEl.textContent = 'Coins dwindling — spend with care, hero.';
+    statusEl.textContent = 'Getting low — watch your spending.';
   } else if (pct >= 90) {
-    statusEl.textContent = 'Treasury nearly full — discipline holds strong.';
+    statusEl.textContent = 'Looking strong — great discipline!';
   } else {
-    statusEl.textContent = Math.round(pct) + '% of monthly treasury remaining.';
+    statusEl.textContent = Math.round(pct) + '% of monthly budget remaining.';
   }
 
   var vaultEl = document.getElementById('vault-amount');
   if (state.ironVault > 0) {
-    vaultEl.textContent = state.ironVault + ' gold';
+    vaultEl.textContent = '$' + state.ironVault + ' saved';
     vaultEl.className = 'vault-amount';
   } else {
     vaultEl.textContent = 'Empty';
     vaultEl.className = 'vault-amount empty';
   }
-
 }
 
 function render() {
@@ -3377,22 +2573,21 @@ function render() {
   document.getElementById('xp-next-val').textContent = ld.xpAtEnd;
   document.getElementById('xp-fill').style.width     = ld.pct + '%';
 
-  var nextTitle = getTitle(state.heroClass, ld.level + 1);
   document.getElementById('xp-next-msg').textContent =
     ld.level < LEVEL_XP.length
-      ? ld.toNext + ' XP until Level ' + (ld.level + 1)
-      : 'Maximum rank achieved';
+      ? ld.toNext + ' XP to Level ' + (ld.level + 1)
+      : 'Maximum rank achieved!';
 
-  var today = new Date().toDateString();
+  var today      = new Date().toDateString();
   var loggedToday = state.lastLogDate === today;
   var streakCount = state.streak || 0;
 
   document.getElementById('streak-count').textContent = streakCount;
 
-  var banner     = document.getElementById('streak-banner');
-  var flameEl    = document.getElementById('streak-banner-flame');
-  var countEl    = document.getElementById('streak-count');
-  var rightEl    = document.getElementById('streak-banner-right');
+  var banner  = document.getElementById('streak-banner');
+  var flameEl = document.getElementById('streak-banner-flame');
+  var countEl = document.getElementById('streak-count');
+  var rightEl = document.getElementById('streak-banner-right');
 
   banner.className = 'streak-banner';
   flameEl.className = 'streak-banner-flame';
@@ -3404,7 +2599,7 @@ function render() {
     rightEl.classList.add('logged');
     rightEl.textContent = '✓ Logged today';
     document.getElementById('streak-label').textContent =
-      streakCount > 1 ? 'day streak — burning bright' : 'day streak — great start!';
+      streakCount > 1 ? 'day streak — keep it going!' : 'day streak — great start!';
   } else if (streakCount > 0) {
     banner.classList.add('danger');
     rightEl.classList.add('urgent');
@@ -3414,7 +2609,7 @@ function render() {
     flameEl.classList.add('cold');
     countEl.classList.add('cold');
     rightEl.textContent = 'Start your streak today';
-    document.getElementById('streak-label').textContent = 'day streak — begin yours';
+    document.getElementById('streak-label').textContent = 'day streak — log to begin';
   }
 
   renderLog();
@@ -3426,17 +2621,16 @@ function render() {
 
 function renderLog() {
   var list = document.getElementById('log-list');
-  list.innerHTML = ''; // always clear and rebuild
+  list.innerHTML = '';
 
   if (!state.log || state.log.length === 0) {
     var empty = document.createElement('div');
     empty.className = 'log-empty';
-    empty.textContent = 'No entries yet. Log your first expense above.';
+    empty.textContent = 'No entries yet. Log your first expense above to earn XP!';
     list.appendChild(empty);
     return;
   }
 
-  // Show most recent first, up to 20
   var items = state.log.slice().reverse().slice(0, 20);
   items.forEach(function(entry) {
     var el = document.createElement('div');
@@ -3480,7 +2674,7 @@ function goStep(n) {
       if (!name) { showToast('Name your hero first.'); return; }
     }
     if (currentStep === 1) {
-      if (!obAvatar) { showToast('Choose your form first.'); return; }
+      if (!obAvatar) { showToast('Choose your avatar first.'); return; }
     }
     if (currentStep === 2) {
       if (!obClass) { showToast('Choose your class first.'); return; }
@@ -3495,7 +2689,7 @@ function goStep(n) {
     var dot = document.getElementById('dot-' + i);
     if (!dot) continue;
     dot.className = 'step-dot';
-    if (i < currentStep)       dot.classList.add('done');
+    if (i < currentStep)        dot.classList.add('done');
     else if (i === currentStep) dot.classList.add('active');
   }
 
@@ -3550,27 +2744,19 @@ function logExpense() {
   var desc     = descEl.value.trim();
   var amount   = parseFloat(amountEl.value);
 
-  if (!desc)               { showToast('Describe your expense.'); return; }
+  if (!desc)                { showToast('Describe your expense.'); return; }
   if (!amount || amount <= 0) { showToast('Enter a valid amount.'); return; }
 
   var prevLevel = getLevelData(state.xp).level;
 
-  // XP calculation: flat base + streak bonus, NOT proportional to dollar amount
   var streakBonus = Math.min(5, Math.floor((state.streak || 0) / 5));
   var currentLevel = getLevelData(state.xp).level;
-  var baseXp;
-  if (currentLevel <= 3) {
-  baseXp = 30;
-  } else {
-  baseXp = 15;
-}
+  var baseXp = currentLevel <= 3 ? 30 : 15;
   var xpGained = baseXp + streakBonus;
 
-  // Update streak BEFORE saving
   markLoggedToday();
   state.xp += xpGained;
 
-  // Build entry object
   var entry = {
     id:       String(Date.now()) + String(Math.floor(Math.random() * 10000)),
     desc:     desc,
@@ -3580,44 +2766,31 @@ function logExpense() {
     ts:       new Date().toISOString()
   };
 
-  // Push to log (guaranteed array)
   if (!Array.isArray(state.log)) state.log = [];
   state.log.push(entry);
 
-  // Drain coin reserve
   if (state.monthlyBudget > 0) {
     state.coinReserve = Math.max(0, (state.coinReserve || 0) - amount);
     fireCoinFloat('-' + amount.toFixed(0) + ' gold');
   }
 
-  // Road bonus week tracking
   checkWeekRoadBonus();
-
-  // Encounter check
   checkEncounter(amount);
-
-  // Save and render
   save();
   render();
 
-  // Clear inputs
   descEl.value   = '';
   amountEl.value = '';
   descEl.focus();
 
-  // === Feedback ===
-
-  // 1. XP float above the bar
   fireXpFloat('+' + xpGained + ' XP');
 
-  // 2. XP bar pulse
-var fill = document.getElementById('xp-fill');
-fill.classList.remove('pulse');
-void fill.offsetWidth;
-fill.classList.add('pulse');
-setTimeout(function() { fill.classList.remove('pulse'); }, 800);
+  var fill = document.getElementById('xp-fill');
+  fill.classList.remove('pulse');
+  void fill.offsetWidth;
+  fill.classList.add('pulse');
+  setTimeout(function() { fill.classList.remove('pulse'); }, 800);
 
-  // 3. Level up check
   var newLevel = getLevelData(state.xp).level;
   if (newLevel > prevLevel) {
     setTimeout(function() { showLevelUp(newLevel); }, 900);
@@ -3634,7 +2807,7 @@ function fireXpFloat(text) {
   floatEl.textContent = text;
 
   floatEl.classList.remove('pop');
-  void floatEl.offsetWidth; // reflow to restart animation
+  void floatEl.offsetWidth;
   floatEl.classList.add('pop');
 }
 
@@ -3652,7 +2825,6 @@ function fireCoinFloat(text) {
   void floatEl.offsetWidth;
   floatEl.classList.add('pop');
 }
-
 
 // ─────────────────────────
 //  LEVEL UP
@@ -3692,36 +2864,7 @@ document.addEventListener('keydown', function(e) {
     logExpense();
   }
 });
-
-// keyboard shortcut handled above
 </script>
 
-
-
-
-<!-- Encounter Overlay -->
-<div class="encounter-overlay" id="encounter-overlay">
-  <div class="encounter-box" id="encounter-box">
-    <div class="encounter-zone" id="encounter-zone">Encounter</div>
-    <div class="encounter-icon" id="encounter-icon">⚔️</div>
-    <div class="encounter-title" id="encounter-title">Bandits on the Road</div>
-    <div class="encounter-desc" id="encounter-desc">A band of cutpurses blocks your path, demanding tribute for your recent spending.</div>
-    <div class="encounter-choices" id="encounter-choices">
-      <!-- filled dynamically -->
-    </div>
-  </div>
-</div>
-
-
-<!-- Encounter Overlay -->
-<div class="encounter-overlay" id="encounter-overlay">
-  <div class="encounter-box" id="encounter-box">
-    <div class="encounter-zone" id="encounter-zone">Encounter</div>
-    <div class="encounter-icon" id="encounter-icon">⚔️</div>
-    <div class="encounter-title" id="encounter-title">Bandits on the Road</div>
-    <div class="encounter-desc" id="encounter-desc">A band of cutpurses blocks your path.</div>
-    <div class="encounter-choices" id="encounter-choices"></div>
-  </div>
-</div>
-
-</body></html>
+</body>
+</html>
