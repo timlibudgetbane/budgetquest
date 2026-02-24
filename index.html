@@ -507,7 +507,45 @@ body {
 .vault-amount { font-weight: 700; font-size: 16px; color: var(--gold-light); }
 .vault-amount.empty { color: var(--text-dark); font-size: 13px; font-weight: 500; }
 
+
+/* Broken / 0-hearts overlay */
+.overlay-box.broken { border-color: rgba(239,68,68,0.5); }
+.overlay-box.broken::before { background: linear-gradient(90deg, transparent, rgba(239,68,68,0.6), transparent); }
+.broken-icon { font-size: 52px; margin: 8px 0 16px; text-align: center; }
+.broken-title { font-family: 'Cinzel', serif; font-size: 22px; color: var(--red); text-align: center; margin-bottom: 8px; }
+.broken-msg { font-size: 14px; color: var(--text-mid); text-align: center; line-height: 1.6; margin-bottom: 20px; }
+.broken-gold { font-size: 28px; font-weight: 800; color: var(--gold-light); text-align: center; margin-bottom: 6px; }
+.broken-cost { font-size: 12px; color: var(--text-dim); text-align: center; margin-bottom: 20px; }
+
+/* Road Gold row */
+.road-gold-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 8px; padding: 12px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  position: relative; overflow: hidden;
+}
+.road-gold-row::before {
+  content: ''; position: absolute;
+  left: 0; top: 0; bottom: 0; width: 3px;
+  background: linear-gradient(180deg, #f59e0b, #92400e);
+}
+.gold-amount { font-weight: 700; font-size: 16px; color: var(--gold-light); }
+.gold-amount.empty { color: var(--text-dark); font-size: 13px; font-weight: 500; }
+.gold-float {
+  position: fixed; font-size: 13px; font-weight: 700;
+  color: var(--gold); pointer-events: none; z-index: 9000; opacity: 0;
+}
+.gold-float.pop { animation: goldPop 1.2s ease-out forwards; }
+@keyframes goldPop {
+  0%   { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+  20%  { opacity: 1; transform: translateX(-50%) translateY(-12px) scale(1.15); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-30px) scale(0.9); }
+}
+
 /* Coin float */
+
 .coin-float {
   position: fixed; font-size: 13px; font-weight: 700;
   color: var(--gold); pointer-events: none; z-index: 9000; opacity: 0;
@@ -1040,7 +1078,7 @@ body {
       <div class="ob-step active" id="step-0">
         <div class="ob-icon">⚔️</div>
         <div class="ob-title">Choose Your Name</div>
-        <div class="ob-sub">Every expense you log earns XP. Every level moves you forward on the map. What should the chronicles call you?</div>
+        <div class="ob-sub">Log expenses, earn XP, level up, move down the road. Simple as that. What do they call you?</div>
         <div class="name-row">
           <input class="hero-name-input" id="hero-name-input" type="text" placeholder="Your hero's name…" maxlength="24" autocomplete="off" value="Timli">
           <button class="name-btn" onclick="goStep(1)">Next →</button>
@@ -1050,7 +1088,7 @@ body {
       <!-- Step 2: Avatar -->
       <div class="ob-step" id="step-1">
         <div class="ob-title">Pick Your Avatar</div>
-        <div class="ob-sub">How do you appear in the chronicles?</div>
+        <div class="ob-sub">Pick your look.</div>
         <div class="avatar-grid" id="avatar-grid">
           <div class="avatar-opt" data-avatar="🧙" onclick="selectAvatar(this)">🧙</div>
           <div class="avatar-opt" data-avatar="🧝‍♀️" onclick="selectAvatar(this)">🧝‍♀️</div>
@@ -1065,7 +1103,7 @@ body {
       <!-- Step 3: Class -->
       <div class="ob-step" id="step-2">
         <div class="ob-title">Choose Your Class</div>
-        <div class="ob-sub">Your class is your style — all paths lead to the Iron Keep.</div>
+        <div class="ob-sub">Pick your class. All paths lead to the Iron Keep.</div>
         <div class="class-grid" id="class-grid">
           <div class="class-opt" data-class="Mage" onclick="selectClass(this)">
             <div class="class-emoji">🔮</div>
@@ -1118,7 +1156,7 @@ body {
       <div class="ob-step" id="step-3">
         <div class="ob-icon">🗺️</div>
         <div class="ob-title">How It Works</div>
-        <div class="ob-sub">Five simple rules for the road ahead.</div>
+        <div class="ob-sub">Five things worth knowing before you start.</div>
         <div class="laws-grid">
           <div class="law-card">
             <div class="law-icon">⚔️</div>
@@ -1137,8 +1175,8 @@ body {
           <div class="law-card">
             <div class="law-icon">🔒</div>
             <div class="law-body">
-              <div class="law-title">Stay under budget → fill the Vault</div>
-              <div class="law-plain">Any budget left unspent at month's end gets sealed in the Iron Vault — your real-life savings trophy.</div>
+              <div class="law-title">Earn gold → build your Iron Vault</div>
+              <div class="law-plain">You earn Iron Vault gold from encounters on the road. Spend it to survive threats or save it for gear and upgrades.</div>
             </div>
           </div>
           <div class="law-card">
@@ -1152,7 +1190,7 @@ body {
             <div class="law-icon">❤️</div>
             <div class="law-body">
               <div class="law-title">Hearts protect you on the road</div>
-              <div class="law-plain">Random encounters test your resolve. Spend a heart to brush off a threat, or pay from your Vault. Shrines restore hearts.</div>
+              <div class="law-plain">You have 3 hearts. Hostile encounters cost a heart — or spend Iron Vault gold instead. Lose all 3 hearts and spend gold to revive, or take an XP hit and carry on.</div>
             </div>
           </div>
         </div>
@@ -1166,7 +1204,7 @@ body {
       <div class="ob-step" id="step-4">
         <div class="ob-icon">🏦</div>
         <div class="ob-title">Set Your Monthly Budget</div>
-        <div class="ob-sub">This becomes your Coin Reserve — track your spending against it each month. Unspent gold goes to the Iron Vault.</div>
+        <div class="ob-sub">This is your monthly budget. Track spending against it each month.</div>
         <div class="budget-row">
           <span class="budget-prefix">$</span>
           <input class="budget-input" id="budget-input" type="number" min="1" step="1" placeholder="e.g. 2000" autocomplete="off">
@@ -1221,7 +1259,7 @@ body {
         <div class="coin-reserve-section" id="coin-reserve-section">
           <div class="bar-label-row">
             <span class="bar-label-title">⚜ Monthly Budget</span>
-            <span class="bar-label-count" style="color:var(--gold-light)"><strong id="coin-current" style="color:var(--gold-light)">0</strong><span style="color:var(--text-dim);font-size:13px;"> / <span id="coin-max">0</span> gold</span></span>
+            <span class="bar-label-count" style="color:var(--gold-light)"><strong id="coin-current" style="color:var(--gold-light)">$0</strong><span style="color:var(--text-dim);font-size:13px;"> / $<span id="coin-max">0</span></span></span>
           </div>
           <div class="bar-track" style="height:8px;">
             <div class="bar-fill coin" id="coin-fill" style="width:100%"></div>
@@ -1237,11 +1275,12 @@ body {
               <div class="vault-icon">🔒</div>
               <div>
                 <div class="vault-title">Iron Vault</div>
-                <div class="vault-subtitle">Unspent budget sealed here at month's end</div>
+                <div class="vault-subtitle">Spend on threats • save for gear &amp; upgrades</div>
               </div>
             </div>
-            <div class="vault-amount" id="vault-amount">Empty</div>
+            <div class="vault-amount" id="vault-amount">0 🪙</div>
           </div>
+          <div class="gold-float" id="gold-float"></div>
         </div>
 
       </div><!-- /character-card -->
@@ -1350,9 +1389,22 @@ body {
       <div class="reset-label">New Campaign</div>
       <div class="reset-title">Monthly Reset</div>
       <div class="reset-breakdown" id="reset-breakdown"></div>
-      <div class="reset-msg" id="reset-msg">Your treasury has been replenished. The Vault holds your surplus. Spend wisely, hero.</div>
+      <div class="reset-msg" id="reset-msg">New month, fresh budget. Your Iron Vault gold carries over — keep earning on the road.</div>
       <button class="overlay-btn primary-choice" onclick="closeReset()" style="width:100%;text-align:center;">March Forward ⚔</button>
     </div>
+  </div>
+</div>
+
+
+<!-- Broken / 0-Hearts Overlay -->
+<div class="overlay" id="broken-overlay">
+  <div class="overlay-box broken" style="max-width:380px;">
+    <div class="broken-icon">💀</div>
+    <div class="broken-title">Fallen</div>
+    <div class="broken-msg">You've taken too many hits on the road. Your last heart is gone. Spend Iron Vault gold to get back on your feet — or face the XP penalty and carry on broke.</div>
+    <div class="broken-gold" id="broken-gold-display">0 🪙</div>
+    <div class="broken-cost">Iron Vault balance</div>
+    <div id="broken-choices"></div>
   </div>
 </div>
 
@@ -1400,16 +1452,16 @@ var CLASS_TITLES = {
 };
 
 var LEVEL_MSGS = [
-  'The realm whispers your name with growing respect.',
-  'Your consistency is starting to turn heads.',
-  'Ancient powers take note. The disciplined are rare.',
-  'Merchants speak of a tracker who cannot be broken.',
-  'Guild halls echo with tales of your perseverance.',
-  'You\'re building something real. Keep going.',
-  'Your ledger has become a weapon. Your restraint, a shield.',
-  'You\'ve come further than most heroes ever do.',
-  'You approach true mastery. Few reach this far.',
-  'The realm is yours to command. You are legend.',
+  'Level two. Streak intact. The road is just getting started.',
+  'Your habit is forming. That is harder than it sounds.',
+  'Three levels in and you are still logging. Most people have quit by now.',
+  'Merchants are starting to recognise someone who knows their numbers.',
+  'Halfway there. Your Iron Vault is watching.',
+  'You\'re building something real here. Keep going.',
+  'Clean logs, intact budget, growing streak. This is what mastery looks like.',
+  'You have come further than most travellers ever get. That is not nothing.',
+  'Top tier. Your ledger speaks for itself at this point.',
+  'Maximum rank. The Iron Keep knows your name.',
 ];
 
 var LOG_ICONS = ['💰','🛒','🍖','🧪','⚔️','📜','🐎','🏰','🔮','💎','🌿','🎒'];
@@ -1420,38 +1472,38 @@ var LOG_ICONS = ['💰','🛒','🍖','🧪','⚔️','📜','🐎','🏰','🔮
 var MAP_WAYPOINTS = [
   // Zone 1 — The Hearthstone Road (levels 1-3)
   { id: 0,  icon: '🏘️', name: 'Hearthstone\nVillage',  zone: 1, zoneName: 'The Hearthstone Road',
-    arrival: 'Your journey begins in Hearthstone Village. Log your first expense, earn XP, and hit the road. The Iron Keep awaits.' },
+    arrival: 'First stop: Hearthstone Village. Log an expense, earn XP, and get moving. The Iron Keep is a long way from here.' },
   { id: 1,  icon: '🌾', name: 'Harvest\nCrossing',      zone: 1, zoneName: 'The Hearthstone Road',
-    arrival: 'Harvest Crossing — farmers, traders, and three guilds arguing over the same oak tree. You keep moving.' },
+    arrival: 'Harvest Crossing. Three guilds are in a standoff over a landmark oak tree. The dispute has been ongoing for six years. You eat something and keep walking.' },
   { id: 2,  icon: '🪨', name: 'Stonepath\nMill',        zone: 1, zoneName: 'The Hearthstone Road',
-    arrival: 'Stonepath Mill. The miller takes exact coin only — no credit, no exceptions. You respect that.' },
+    arrival: 'Stonepath Mill. The miller takes exact coin only, no credit, no tabs, no rounding up. Honestly? You respect the discipline.' },
   { id: 'z1', icon: '🛡️', name: 'Zone Badge',          zone: 'badge1', badge: 'zone1', zoneName: 'The Hearthstone Road',
-    zoneComplete: 'You clear the Hearthstone Road. First zone down. It feels smaller looking back than it did walking through it.' },
+    zoneComplete: 'Hearthstone Road cleared. First zone done. Logged, levelled, and nothing back there could stop you.' },
   // Zone 2 — The Merchant's Pass (levels 4-6)
   { id: 3,  icon: '🏪', name: "Merchant's\nGate",       zone: 2, zoneName: "The Merchant's Pass",
-    arrival: 'The Merchant\'s Gate never sleeps. Stalls, deals, and haggling on every corner. Watch your coin purse.' },
+    arrival: 'Merchant\'s Gate. Stalls everywhere, deals flying, someone trying to upsell you every ten steps. Great place to practice saying no.' },
   { id: 4,  icon: '🌉', name: 'Copperbridge',           zone: 2, zoneName: "The Merchant's Pass",
-    arrival: 'Copperbridge — the copper plating was sold off years ago. Someone still leaves coins on the memorial plaque.' },
+    arrival: 'Copperbridge. The copper was sold off years ago to cover a deficit. Someone still leaves coins on the plaque anyway. Some habits stick.' },
   { id: 5,  icon: '⛺', name: "Trader's\nCamp",         zone: 2, zoneName: "The Merchant's Pass",
-    arrival: 'A crossroads camp full of traders swapping stories. Good place to resupply and rest before the Thornwood.' },
+    arrival: 'Trader\'s Camp. Half the people here are heading into the Thornwood. The other half just came out and look smug about it. Encouraging, actually.' },
   { id: 'z2', icon: '🪙', name: 'Zone Badge',          zone: 'badge2', badge: 'zone2', zoneName: "The Merchant's Pass",
-    zoneComplete: "The Merchant's Pass is behind you. You navigated the markets and kept your budget intact. Well played." },
+    zoneComplete: "Merchant's Pass cleared. You walked through a gauntlet of deals and toll collectors and your budget is still intact. Well played." },
   // Zone 3 — The Thornwood (levels 7-9)
   { id: 6,  icon: '🌲', name: 'Thornwood\nEdge',        zone: 3, zoneName: 'The Thornwood',
-    arrival: 'The Thornwood. Dense, quiet, and known for testing travelers. Keep your streak alive and you\'ll be fine.' },
+    arrival: 'The Thornwood. Reputationally spooky, actually just very quiet. For some reason it makes you want to open your ledger and get everything straight.' },
   { id: 7,  icon: '🌑', name: 'Darkhollow\nPath',       zone: 3, zoneName: 'The Thornwood',
-    arrival: 'Darkhollow Path winds deep into the forest. The road narrows. Your discipline is your compass here.' },
+    arrival: 'Darkhollow Path. The road narrows and your options narrow with it. Good moment to get clear on what you actually need versus what you just kind of want.' },
   { id: 8,  icon: '🌸', name: 'Wayward\nShrine',        zone: 3, zoneName: 'The Thornwood',
-    arrival: 'The Wayward Shrine — travelers leave offerings and walk away feeling lighter. You leave one too.' },
+    arrival: 'The Wayward Shrine. Travelers leave small things here as they pass through. You leave a coin. The road does feel a bit lighter after. Hard to explain.' },
   { id: 'z3', icon: '🌿', name: 'Zone Badge',          zone: 'badge3', badge: 'zone3', zoneName: 'The Thornwood',
-    zoneComplete: 'You emerge from the Thornwood. The light on the other side is warmer than you remembered light being.' },
+    zoneComplete: 'Thornwood cleared. Turns out it is just a forest when you keep your streak alive. You come out the other side in one piece.' },
   // Zone 4 — The Iron Keep (levels 10+)
   { id: 9,  icon: '🏰', name: 'Iron Keep\nGates',       zone: 4, zoneName: 'The Iron Keep',
-    arrival: 'The Iron Keep Gates. Gatekeepers who\'ve seen a thousand travelers — and can always tell who made it through the Thornwood.' },
+    arrival: 'Iron Keep Gates. The guards here can clock a disciplined traveler immediately. You are waved through without a second look.' },
   { id: 10, icon: '⚔️', name: 'The Iron\nKeep',         zone: 4, zoneName: 'The Iron Keep',
-    arrival: 'You\'ve reached the Iron Keep. Few heroes make it this far. From here, the road ahead is longer and wider than any map shows.' },
+    arrival: 'The Iron Keep. You made it. The quartermaster asks for your expense log before trading. You hand it over without hesitation. Clean books open doors.' },
   { id: 'z4', icon: '🔒', name: 'Zone Badge',          zone: 'badge4', badge: 'zone4', zoneName: 'The Iron Keep',
-    zoneComplete: 'You\'ve reached the Iron Keep. Your budget discipline has carried you further than most ever go. This is just the beginning.' },
+    zoneComplete: 'You reached the Iron Keep. Most people never get here. Your log, your vault, your streak — all of it got you here. There is still more road ahead.' },
 ];
 
 // ─────────────────────────
@@ -1463,40 +1515,40 @@ var HOSTILE_ENCOUNTERS = [
     icon: '🗡️',
     title: 'Road Bandits',
     zone: 'Ambush',
-    desc: 'A crew of bandits steps out of the shadows, eyeing your coin purse. "Toll for the road," the big one says. Your hearts or your Vault — your call.',
-    choiceA: { label: '🛡️ Block them with a Heart', sub: 'Spend 1 Heart to drive them off' },
-    choiceB: { label: '💰 Pay them off from your Vault', sub: 'Lose gold from Iron Vault' },
-    vaultCost: 0.12
+    desc: 'A group of self-declared road toll collectors steps into your path. The big one grins. "Everyone pays." Technically optional. Practically not.',
+    choiceA: { label: '🛡️ Block with a Heart', sub: 'Spend 1 Heart — they back off' },
+    choiceB: { label: '🪙 Bribe them off', sub: 'Spend 20 🪙 — no heart lost' },
+    goldCost: 20
   },
   {
     id: 'tax',
     icon: '📜',
     title: 'Tax Collector',
     zone: 'Official Business',
-    desc: 'A collector with a fresh ledger and an outstretched hand. "Irregular levy," he says cheerfully, "very legal." Very annoying.',
+    desc: 'A tax collector with a suspiciously new ledger. "Irregular travel levy," he announces. "Totally standard." It is neither. But here he is anyway.',
     choiceA: { label: '🛡️ Dispute the claim (Heart)', sub: 'Spend 1 Heart — he backs down' },
-    choiceB: { label: '💰 Just pay and move on', sub: 'Lose gold from Iron Vault' },
-    vaultCost: 0.10
+    choiceB: { label: '🪙 Just pay the levy', sub: 'Spend 15 🪙 — annoying but quick' },
+    goldCost: 15
   },
   {
     id: 'merchant',
     icon: '🪙',
     title: 'Temptation Merchant',
     zone: 'Marketplace',
-    desc: 'A silver-tongued merchant with a cart of "extraordinary bargains." Everything is priced just within reach. Your Vault shudders nervously.',
+    desc: 'A merchant with a cart of incredible deals appears at exactly the wrong moment. Everything is priced to be just within reach. Your budget eye-twitches.',
     choiceA: { label: '🛡️ Walk away (Heart)', sub: 'Spend 1 Heart — willpower costs something' },
-    choiceB: { label: '💰 Buy something small', sub: 'Lose some Vault gold' },
-    vaultCost: 0.08
+    choiceB: { label: '🪙 Buy something small', sub: 'Spend 10 🪙 — small splurge, no heart lost' },
+    goldCost: 10
   },
   {
     id: 'storm',
     icon: '⛈️',
     title: 'Unexpected Storm',
     zone: 'Bad Luck',
-    desc: 'Rain, delays, a broken wagon wheel. The road costs you either rest or coin today. Part of the journey.',
+    desc: 'Wheel broken, weather bad, everything running late. Classic bad-luck day. The road does not care about your schedule, only what you do next.',
     choiceA: { label: '🛡️ Push through (Heart)', sub: 'Spend 1 Heart — you make it through tired' },
-    choiceB: { label: '💰 Pay for shelter and repairs', sub: 'Lose gold from Iron Vault' },
-    vaultCost: 0.09
+    choiceB: { label: '🪙 Pay for shelter', sub: 'Spend 18 🪙 — wait it out in comfort' },
+    goldCost: 18
   },
 ];
 
@@ -1509,7 +1561,7 @@ var FRIENDLY_ENCOUNTERS = [
     icon: '🌸',
     title: 'Roadside Shrine',
     zone: 'Discovery',
-    desc: 'A small shrine off the path, half-hidden by moss. You pause for a moment. The road feels lighter when you leave.',
+    desc: 'A small shrine tucked off the path. You stop, breathe, recalibrate. Whatever was stressing you out before feels smaller when you get back on the road.',
     reward: { type: 'heart', amount: 1 },
     rewardDesc: '❤️ Heart restored'
   },
@@ -1518,7 +1570,7 @@ var FRIENDLY_ENCOUNTERS = [
     icon: '📖',
     title: 'Scout\'s Journal',
     zone: 'Discovery',
-    desc: 'Tucked under a milestone stone: a worn journal filled with smart routes and hard-won lessons. Someone left it here for you.',
+    desc: 'Tucked under a milestone: a battered journal full of route notes, money tips, and lessons from a traveler who came before you. Left deliberately. Useful stuff.',
     reward: { type: 'xp', amount: 55 },
     rewardDesc: '+55 bonus XP'
   },
@@ -1527,25 +1579,25 @@ var FRIENDLY_ENCOUNTERS = [
     icon: '🏕️',
     title: 'Traveler\'s Cache',
     zone: 'Discovery',
-    desc: 'A cold camp, recently left in good order. Provisions cached under a flat stone — deliberately left for whoever came next. That\'s you.',
-    reward: { type: 'vault', amount: 25 },
-    rewardDesc: '+25 gold to Iron Vault'
+    desc: 'A recently vacated camp, left in perfect order. Under a flat stone: a small coin pouch with a note. \"For the next one.\" Someone paid it forward. Today that is you.',
+    reward: { type: 'gold', amount: 25 },
+    rewardDesc: '+25 🪙 Iron Vault gold'
   },
   {
     id: 'elder',
     icon: '🧙',
     title: 'The Road Elder',
     zone: 'Friendly Encounter',
-    desc: 'An old wanderer watches travelers pass. She looks at you for a long moment, nods slowly, like confirming something she already suspected. A blessing follows.',
-    reward: { type: 'xp', amount: 30 },
-    rewardDesc: '+30 bonus XP — the elder\'s blessing'
+    desc: 'An elder traveler on the roadside watches people go by. She looks at you and gives a slow nod — the kind that means she has seen a lot of people and can tell who is going to make it. She presses a coin into your hand.',
+    reward: { type: 'gold', amount: 15 },
+    rewardDesc: '+15 🪙 Iron Vault gold'
   },
   {
     id: 'griffon',
     icon: '🦅',
     title: 'Griffon Rider\'s Token',
     zone: 'Friendly Encounter',
-    desc: 'Guild cloth tied to a roadside branch — a waymarker left by someone who passed before you. The road is clear ahead.',
+    desc: 'Guild cloth tied to a roadside branch — a waymarker from someone who came through before you. Road ahead is clear. Someone looked out for you without knowing you.',
     reward: { type: 'xp', amount: 35 },
     rewardDesc: '+35 bonus XP — the road is clear'
   }
@@ -1560,7 +1612,7 @@ var STORY_ENCOUNTERS = {
       title: 'The Veteran\'s Tab',
       zone: 'Hearthstone Village',
       minPos: 0,
-      desc: 'A one-armed soldier at the inn\'s longest table, nursing the same drink all evening. The innkeeper marks the wall each refill. He hasn\'t looked at the tally once.'
+      desc: 'A retired guard running an open tab at the inn. The innkeeper marks the wall each round. The guard has not looked at the tally once all night. You make a note to always know your balance.'
     },
     {
       id: 'name_on_board',
@@ -1568,7 +1620,7 @@ var STORY_ENCOUNTERS = {
       title: 'Wanted Notice',
       zone: 'Hearthstone Village',
       minPos: 0,
-      desc: 'A fresh bounty notice — no portrait, just a description. You passed someone matching it two days ago, moving fast.'
+      desc: 'Bounty notice on the board: merchant debt dodger, reward posted. The reward is less than the original debt. Classic. You check your own ledger out of pure reflex.'
     },
     {
       id: 'cartographer',
@@ -1576,7 +1628,7 @@ var STORY_ENCOUNTERS = {
       title: 'The Map Seller',
       zone: 'Harvest Crossing',
       minPos: 1,
-      desc: 'An old woman selling maps of roads that appear on no official chart. A buyer takes one without haggling and vanishes.'
+      desc: 'A cartographer selling maps of back-roads and shortcuts. Claims the fastest route is rarely the cheapest one. You do not buy anything but you remember the line.'
     },
     {
       id: 'griffon_rider',
@@ -1584,7 +1636,7 @@ var STORY_ENCOUNTERS = {
       title: 'Grounded Griffon Rider',
       zone: 'Harvest Crossing',
       minPos: 1,
-      desc: 'A rider camped under the oak, griffon grounded with a torn wing. She\'s hunting a convoy two days ahead. When you say you haven\'t seen it: "Then it left the road," she says.'
+      desc: 'A griffon rider camped under the oak, waiting on a torn wing to heal. Could be a week. "Patience is cheaper than a second mistake," she says. You file that away.'
     },
     {
       id: 'the_queue',
@@ -1592,7 +1644,7 @@ var STORY_ENCOUNTERS = {
       title: 'The Queue',
       zone: 'Stonepath Mill',
       minPos: 2,
-      desc: 'Six travelers at the toll bridge. The fifth man has been two silvers short for twenty minutes. The tollkeeper waits with infinite patience.'
+      desc: 'Six people in the toll queue. The fifth one is two silvers short and visibly surprised by this. The tollkeeper has the face of someone who has seen this exact moment every single day. You pay your toll and move on.'
     },
   ],
   z2: [
@@ -1602,7 +1654,7 @@ var STORY_ENCOUNTERS = {
       title: 'The Exchange',
       zone: "Merchant's Gate",
       minPos: 3,
-      desc: 'Through a briefly open door: a vast hall of clerks writing in silence under chandeliers that burn too bright. The doors close. The man who exited has already vanished.'
+      desc: 'A briefly open door reveals an entire floor of ledger-keepers, heads down, total silence. One looks up, spots your expense log, gives a small nod of professional respect. You nod back.'
     },
     {
       id: 'dorvain',
@@ -1610,7 +1662,7 @@ var STORY_ENCOUNTERS = {
       title: 'The Man on the Bridge',
       zone: 'Copperbridge',
       minPos: 4,
-      desc: '"That\'s Dorvain," the merchant beside you says — the way people mention weather. He\'s on the railing, staring at the river, not moving.'
+      desc: 'A merchant on the bridge is staring at the water doing sums in his head. "Rough quarter," his companion says by way of explanation. You have been there. You keep walking.'
     },
     {
       id: 'wending_rumour',
@@ -1618,7 +1670,7 @@ var STORY_ENCOUNTERS = {
       title: 'Campfire Story',
       zone: "Trader's Camp",
       minPos: 5,
-      desc: 'A trader at camp describes something on the Thornwood roads that appears at the edge of firelight and waits. Most are laughing. One man stares into his cup and says nothing.'
+      desc: 'Traders around the fire swapping road stories. Someone swears they found a full coin pouch on a milestone with no owner in sight. Nobody believes them. "Keep your eyes open anyway," they say.'
     },
   ],
   z3: [
@@ -1628,7 +1680,7 @@ var STORY_ENCOUNTERS = {
       title: 'The Ranger\'s Warning',
       zone: 'Thornwood Edge',
       minPos: 6,
-      desc: 'A ranger steps from the trees silently. "Don\'t stop for anything that sounds like someone you know." She\'s gone before you can ask what she means.'
+      desc: 'A ranger steps out from the treeline. "Thornwood is easy," she says. "Just keep moving. The people who stop and second-guess everything are the ones who get lost." Then she is back in the trees.'
     },
     {
       id: 'the_sound',
@@ -1636,7 +1688,7 @@ var STORY_ENCOUNTERS = {
       title: 'A Sound from the Trees',
       zone: 'Darkhollow Path',
       minPos: 7,
-      desc: 'You hear your name — quiet, from off the path, deeper in. You stop walking before you\'ve decided to. Then you start moving again. Faster.'
+      desc: 'Deep in the Thornwood: no stalls, no merchants, no deals to evaluate. Just the path. You find yourself thinking more clearly about your finances than you have in weeks. Quiet does that.'
     },
     {
       id: 'shrine_offering',
@@ -1644,7 +1696,7 @@ var STORY_ENCOUNTERS = {
       title: 'The Fresh Offering',
       zone: 'Wayward Shrine',
       minPos: 8,
-      desc: 'Fresh flowers at the shrine base — someone was here within the hour, but there are no footprints. You leave something of your own.'
+      desc: 'Fresh flowers at the Wayward Shrine, left by someone just ahead of you on the road. You add a coin. The road genuinely feels shorter after. Cannot explain it.'
     },
   ],
   z4: [
@@ -1654,7 +1706,7 @@ var STORY_ENCOUNTERS = {
       title: 'The Gatekeeper',
       zone: 'Iron Keep Gates',
       minPos: 9,
-      desc: '"You came through the Thornwood," the Gatekeeper says — not a question. "They always walk differently after."'
+      desc: 'The Iron Keep gatekeeper looks you over. "Thornwood route?" "And the Merchant Pass," you say. She raises an eyebrow and stamps your pass. "Clean record too. In you go."'
     },
     {
       id: 'road_ahead',
@@ -1662,7 +1714,7 @@ var STORY_ENCOUNTERS = {
       title: 'The Road Ahead',
       zone: 'The Iron Keep',
       minPos: 10,
-      desc: 'At the Keep\'s far gate: another road, longer and wider, leading somewhere your maps don\'t show. "Where does it go?" The Gatekeeper smiles. "Somewhere worth the journey."'
+      desc: 'The Keep quartermaster flips through your expense log before agreeing to trade. "Most people fumble around finding theirs," he says. "You just handed it over." He nods approvingly. Good habits read well.'
     },
   ]
 };
@@ -2029,9 +2081,7 @@ function checkArrival() {
     return;
   }
   if (wp.arrival) {
-    setTimeout(function() {
-      showStoryEncounter('🗺️', wp.name.replace('\n',' '), wp.arrival, 'story');
-    }, 600);
+    queueOverlay(function() { showStoryEncounter('🗺️', wp.name.replace('\n',' '), wp.arrival, 'story'); });
   }
 }
 
@@ -2048,9 +2098,89 @@ function showStoryEncounter(icon, title, desc, type) {
   btn.className = 'overlay-btn primary-choice';
   btn.style.textAlign = 'center';
   btn.innerHTML = 'Onward ⚔';
-  btn.onclick = function() { document.getElementById('encounter-overlay').classList.remove('show'); };
+  btn.onclick = function() { document.getElementById('encounter-overlay').classList.remove('show'); overlayDismissed(); };
   choices.appendChild(btn);
   document.getElementById('encounter-overlay').classList.add('show');
+}
+
+
+// ─────────────────────────
+//  BROKEN (0 HEARTS)
+// ─────────────────────────
+var REVIVE_COST = 30; // gold cost to revive with 3 hearts
+var XP_PENALTY  = 50; // xp lost if reviving broke
+
+function checkBroken() {
+  if ((state.hearts || 0) <= 0) {
+    queueOverlay(function() { showBroken(); });
+  }
+}
+
+function showBroken() {
+  var gold = state.ironVault || 0;
+  document.getElementById('broken-gold-display').textContent = gold + ' 🪙';
+
+  var choices = document.getElementById('broken-choices');
+  choices.innerHTML = '';
+
+  if (gold >= REVIVE_COST) {
+    var btnA = document.createElement('button');
+    btnA.className = 'overlay-btn hostile-choice';
+    btnA.style.width = '100%'; btnA.style.textAlign = 'center';
+    btnA.innerHTML = '🪙 Spend ' + REVIVE_COST + ' gold to revive<span class="overlay-btn-cost">Hearts restored to full — road continues</span>';
+    btnA.onclick = function() { resolveRevive('gold'); };
+    choices.appendChild(btnA);
+  }
+
+  var btnB = document.createElement('button');
+  btnB.className = 'overlay-btn';
+  btnB.style.width = '100%'; btnB.style.textAlign = 'center';
+  btnB.innerHTML = '💀 Carry on broke<span class="overlay-btn-cost">Lose ' + XP_PENALTY + ' XP — hearts restored, vault untouched</span>';
+  btnB.onclick = function() { resolveRevive('xp'); };
+  choices.appendChild(btnB);
+
+  document.getElementById('broken-overlay').classList.add('show');
+}
+
+function resolveRevive(method) {
+  document.getElementById('broken-overlay').classList.remove('show');
+  overlayDismissed();
+  state.hearts = 3;
+  if (method === 'gold') {
+    state.ironVault = Math.max(0, (state.ironVault || 0) - REVIVE_COST);
+    showToast('🪙 ' + REVIVE_COST + ' gold spent — back on your feet.');
+    fireGoldFloat('-' + REVIVE_COST + ' 🪙');
+  } else {
+    state.xp = Math.max(0, (state.xp || 0) - XP_PENALTY);
+    showToast('💀 Carried on broke — ' + XP_PENALTY + ' XP lost. Hearts restored.');
+  }
+  save();
+  render();
+}
+
+// ─────────────────────────
+//  OVERLAY QUEUE
+// ─────────────────────────
+var _overlayQueue = [];
+var _overlayActive = false;
+
+function queueOverlay(fn) {
+  _overlayQueue.push(fn);
+  _drainQueue();
+}
+
+function _drainQueue() {
+  if (_overlayActive || _overlayQueue.length === 0) return;
+  _overlayActive = true;
+  var next = _overlayQueue.shift();
+  next();
+}
+
+// Call this at the END of every overlay dismiss handler
+function overlayDismissed() {
+  _overlayActive = false;
+  // Small gap so the transition plays out before next one appears
+  setTimeout(_drainQueue, 350);
 }
 
 // ─────────────────────────
@@ -2084,17 +2214,17 @@ function checkEncounter(amount) {
     if (!state.seenStoryEncounters) state.seenStoryEncounters = [];
     state.seenStoryEncounters.push(enc.id);
     save();
-    setTimeout(function() { showStoryEncounterFull(enc); }, 900);
+    queueOverlay(function() { showStoryEncounterFull(enc); });
     return;
   }
 
   // Otherwise hostile (40%) or friendly (60%)
   if (Math.random() < 0.40) {
     var hostile = HOSTILE_ENCOUNTERS[Math.floor(Math.random() * HOSTILE_ENCOUNTERS.length)];
-    setTimeout(function() { showEncounter(hostile, true); }, 900);
+    queueOverlay(function() { showEncounter(hostile, true); });
   } else {
     var friendly = FRIENDLY_ENCOUNTERS[Math.floor(Math.random() * FRIENDLY_ENCOUNTERS.length)];
-    setTimeout(function() { showEncounter(friendly, false); }, 900);
+    queueOverlay(function() { showEncounter(friendly, false); });
   }
 }
 
@@ -2111,7 +2241,7 @@ function showStoryEncounterFull(enc) {
   btn.className = 'overlay-btn primary-choice';
   btn.style.textAlign = 'center';
   btn.innerHTML = 'Keep Moving ⚔';
-  btn.onclick = function() { document.getElementById('encounter-overlay').classList.remove('show'); };
+  btn.onclick = function() { document.getElementById('encounter-overlay').classList.remove('show'); overlayDismissed(); };
   choices.appendChild(btn);
   document.getElementById('encounter-overlay').classList.add('show');
 }
@@ -2129,23 +2259,21 @@ function showEncounter(enc, isHostile) {
   choices.innerHTML = '';
 
   if (isHostile) {
-    var currentVault = state.ironVault || 0;
-    var vaultPenalty = Math.round(currentVault * enc.vaultCost);
-    var vaultViable  = vaultPenalty >= 5;
-
     var btnA = document.createElement('button');
     btnA.className = 'overlay-btn hostile-choice';
     btnA.innerHTML = enc.choiceA.label + '<span class="overlay-btn-cost">' + enc.choiceA.sub + '</span>';
     btnA.onclick = function() { resolveHostile('heart', enc); };
 
     var btnB = document.createElement('button');
-    if (vaultViable) {
+    var goldCost = enc.goldCost || 0;
+    var hasGold  = (state.ironVault || 0) >= goldCost;
+    if (hasGold) {
       btnB.className = 'overlay-btn';
-      btnB.innerHTML = enc.choiceB.label + '<span class="overlay-btn-cost">Lose ' + vaultPenalty + ' gold from Iron Vault</span>';
-      btnB.onclick = function() { resolveHostile('vault', enc); };
+      btnB.innerHTML = enc.choiceB.label + '<span class="overlay-btn-cost">' + enc.choiceB.sub + ' (' + (state.ironVault || 0) + ' 🪙 available)</span>';
+      btnB.onclick = function() { resolveHostile('gold', enc); };
     } else {
       btnB.className = 'overlay-btn overlay-btn-disabled';
-      btnB.innerHTML = enc.choiceB.label + '<span class="overlay-btn-cost">Iron Vault is empty — build your surplus to unlock this</span>';
+      btnB.innerHTML = enc.choiceB.label + '<span class="overlay-btn-cost">Need ' + goldCost + ' 🪙 Road Gold — you have ' + (state.ironVault || 0) + '</span>';
       btnB.disabled = true;
     }
 
@@ -2164,35 +2292,34 @@ function showEncounter(enc, isHostile) {
 
 function resolveHostile(choice, enc) {
   document.getElementById('encounter-overlay').classList.remove('show');
+  overlayDismissed();
   if (choice === 'heart') {
     state.hearts = Math.max(0, (state.hearts || 3) - 1);
     showToast('❤️ Heart spent — the threat is driven back.');
-  } else {
-    var currentVault = state.ironVault || 0;
-    var penalty = Math.round(currentVault * enc.vaultCost);
-    if (penalty < 5) {
-      state.hearts = Math.max(0, (state.hearts || 3) - 1);
-      showToast('❤️ Vault too empty — heart spent instead.');
-    } else {
-      state.ironVault = Math.max(0, currentVault - penalty);
-      showToast('💰 ' + penalty + ' gold taken from Iron Vault.');
-    }
+  } else if (choice === 'gold') {
+    var cost = enc.goldCost || 0;
+    state.ironVault = Math.max(0, (state.ironVault || 0) - cost);
+    showToast('🪙 ' + cost + ' gold spent — problem solved.');
+    fireGoldFloat('-' + cost + ' 🪙');
   }
   save();
   render();
+  checkBroken();
 }
 
 function resolveFriendly(enc) {
   document.getElementById('encounter-overlay').classList.remove('show');
+  overlayDismissed();
   if (enc.reward.type === 'xp') {
     state.xp += enc.reward.amount;
     showToast('✨ +' + enc.reward.amount + ' bonus XP!');
   } else if (enc.reward.type === 'heart') {
     state.hearts = Math.min(3, (state.hearts || 0) + 1);
     showToast('❤️ Heart restored!');
-  } else if (enc.reward.type === 'vault') {
+  } else if (enc.reward.type === 'gold') {
     state.ironVault = (state.ironVault || 0) + enc.reward.amount;
-    showToast('🔒 +' + enc.reward.amount + ' gold sealed in Iron Vault!');
+    showToast('🪙 +' + enc.reward.amount + ' Iron Vault gold earned!');
+    fireGoldFloat('+' + enc.reward.amount + ' 🪙');
   }
   save();
   render();
@@ -2204,27 +2331,19 @@ function checkZoneBadge() {
 
   if (pos >= 3 && badges.indexOf('zone1') === -1) {
     badges.push('zone1'); state.badges = badges; save();
-    setTimeout(function() {
-      showZoneComplete('🛡️', 'The First Steps', 'You clear the Hearthstone Road. First zone down. It feels smaller looking back.');
-    }, 800);
+    queueOverlay(function() { showZoneComplete('🛡️', 'The First Steps', 'You clear the Hearthstone Road. First zone down. It feels smaller looking back.'); });
   }
   if (pos >= 6 && badges.indexOf('zone2') === -1) {
     badges.push('zone2'); state.badges = badges; save();
-    setTimeout(function() {
-      showZoneComplete('🪙', 'Disciplined Traveler', "The Merchant's Pass is behind you. You navigated the markets and kept your budget intact.");
-    }, 800);
+    queueOverlay(function() { showZoneComplete('🪙', 'Disciplined Traveler', "The Merchant's Pass is behind you. You navigated the markets and kept your budget intact."); });
   }
   if (pos >= 9 && badges.indexOf('zone3') === -1) {
     badges.push('zone3'); state.badges = badges; save();
-    setTimeout(function() {
-      showZoneComplete('🌿', 'Thornwood Survivor', 'You emerge from the Thornwood. The light on the other side is warmer than you remembered light being.');
-    }, 800);
+    queueOverlay(function() { showZoneComplete('🌿', 'Thornwood Survivor', 'Thornwood cleared. Turns out it is just a forest when you keep your streak alive. You come out the other side in one piece.'); });
   }
   if (pos >= 10 && badges.indexOf('zone4') === -1) {
     badges.push('zone4'); state.badges = badges; save();
-    setTimeout(function() {
-      showZoneComplete('🔒', 'Keeper of the Iron Vault', 'You have reached the Iron Keep. The road ahead is longer and wider than any map shows. You are ready.');
-    }, 800);
+    queueOverlay(function() { showZoneComplete('🔒', 'Keeper of the Iron Vault', 'You have reached the Iron Keep. The road ahead is longer and wider than any map shows. You are ready.'); });
   }
 }
 
@@ -2241,7 +2360,7 @@ function showZoneComplete(icon, badgeName, narrative) {
   btn.className = 'overlay-btn primary-choice';
   btn.style.textAlign = 'center';
   btn.innerHTML = 'March Forward ⚔';
-  btn.onclick = function() { document.getElementById('encounter-overlay').classList.remove('show'); };
+  btn.onclick = function() { document.getElementById('encounter-overlay').classList.remove('show'); overlayDismissed(); };
   choices.appendChild(btn);
   document.getElementById('encounter-overlay').classList.add('show');
 }
@@ -2477,43 +2596,34 @@ function checkMonthReset() {
     return;
   }
   if (state.currentMonth !== thisMonth) {
-    var surplus = Math.max(0, state.coinReserve);
     var prevMonth = state.currentMonth;
-    state.ironVault += surplus;
     state.coinReserve = state.monthlyBudget;
     state.currentMonth = thisMonth;
     state.roadBonusesThisMonth = 0;
     save();
-    if (state.name) { showMonthReset(prevMonth, surplus); }
+    if (state.name) { showMonthReset(prevMonth); }
   }
 }
 
-function showMonthReset(prevMonth, surplus) {
+function showMonthReset(prevMonth) {
   var parts = prevMonth.split('-');
   var monthName = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, 1)
     .toLocaleString('default', { month: 'long', year: 'numeric' });
 
   var bd = document.getElementById('reset-breakdown');
-  var surplusLine = surplus > 0
-    ? '<div class="reset-row highlight"><span>Sealed in Iron Vault</span><span>+' + surplus + ' gold ✦</span></div>'
-    : '<div class="reset-row"><span>Surplus</span><span>None this month</span></div>';
-
   bd.innerHTML =
     '<div class="reset-row"><span>Campaign</span><span>' + monthName + '</span></div>' +
-    '<div class="reset-row"><span>Monthly Budget</span><span>' + state.monthlyBudget + ' gold</span></div>' +
-    surplusLine +
-    '<div class="reset-row highlight"><span>New Reserve</span><span>' + state.monthlyBudget + ' gold</span></div>' +
-    '<div class="reset-row"><span>Iron Vault Total</span><span>' + state.ironVault + ' gold</span></div>';
+    '<div class="reset-row"><span>Monthly Budget</span><span>$' + state.monthlyBudget + '</span></div>' +
+    '<div class="reset-row highlight"><span>New Reserve</span><span>$' + state.monthlyBudget + '</span></div>' +
+    '<div class="reset-row"><span>Iron Vault 🪙</span><span>' + (state.ironVault || 0) + ' gold</span></div>';
 
-  var msg = surplus > 0
-    ? 'You ended ' + monthName + ' with ' + surplus + ' gold unspent — sealed in the Iron Vault. A new treasury awaits.'
-    : 'You spent the full budget last month. A fresh reserve awaits. This month, build that surplus.';
-  document.getElementById('reset-msg').textContent = msg;
+  document.getElementById('reset-msg').textContent = 'New month, fresh budget. Your Iron Vault gold carries over — keep earning on the road.';
   document.getElementById('reset-overlay').classList.add('show');
 }
 
 function closeReset() {
   document.getElementById('reset-overlay').classList.remove('show');
+  overlayDismissed();
 }
 
 function renderCoins() {
@@ -2552,13 +2662,9 @@ function renderCoins() {
   }
 
   var vaultEl = document.getElementById('vault-amount');
-  if (state.ironVault > 0) {
-    vaultEl.textContent = '$' + state.ironVault + ' saved';
-    vaultEl.className = 'vault-amount';
-  } else {
-    vaultEl.textContent = 'Empty';
-    vaultEl.className = 'vault-amount empty';
-  }
+  var vaultGold = state.ironVault || 0;
+  vaultEl.textContent = vaultGold + ' 🪙';
+  vaultEl.className = vaultGold > 0 ? 'vault-amount' : 'vault-amount empty';
 }
 
 function render() {
@@ -2771,7 +2877,7 @@ function logExpense() {
 
   if (state.monthlyBudget > 0) {
     state.coinReserve = Math.max(0, (state.coinReserve || 0) - amount);
-    fireCoinFloat('-' + amount.toFixed(0) + ' gold');
+    fireCoinFloat('-$' + amount.toFixed(0));
   }
 
   checkWeekRoadBonus();
@@ -2800,13 +2906,22 @@ function logExpense() {
       state.lastMapPosition = targetPos - 1;
       save();
     }
-    setTimeout(function() {
-      showLevelUp(newLevel);
-      render();
-      checkZoneBadge();
-      setTimeout(function() { checkArrival(); }, 500);
-    }, 900);
+    queueOverlay(function() { showLevelUp(newLevel); });
   }
+}
+
+function fireGoldFloat(text) {
+  var floatEl = document.getElementById('gold-float');
+  if (!floatEl) return;
+  var track = document.getElementById('vault-amount');
+  if (!track) return;
+  var rect = track.getBoundingClientRect();
+  floatEl.style.left = Math.round(rect.left + rect.width / 2) + 'px';
+  floatEl.style.top  = Math.round(rect.top + window.scrollY) + 'px';
+  floatEl.textContent = text;
+  floatEl.classList.remove('pop');
+  void floatEl.offsetWidth;
+  floatEl.classList.add('pop');
 }
 
 function fireXpFloat(text) {
@@ -2852,6 +2967,10 @@ function showLevelUp(level) {
 
 function closeLevelUp() {
   document.getElementById('levelup-overlay').classList.remove('show');
+  render();
+  checkZoneBadge();
+  setTimeout(function() { checkArrival(); }, 400);
+  overlayDismissed();
 }
 
 // ─────────────────────────
