@@ -48,7 +48,7 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: 'Crimson Text', serif;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.5;
   min-height: 100vh;
 }
@@ -91,19 +91,19 @@ body::after {
 }
 .header h1 {
   font-family: 'Cinzel', serif;
-  font-size: 16px;
+  font-size: 18px;
   color: var(--gold);
   letter-spacing: 0.18em;
   line-height: 1;
 }
 .header-tagline {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text-dark);
   font-style: italic;
 }
 .header-auth {
   display: flex; align-items: center; gap: 10px;
-  font-size: 13px; color: var(--text-dark);
+  font-size: 15px; color: var(--text-dark);
 }
 .header-auth-email { font-style: italic; }
 .signout-btn {
@@ -113,7 +113,7 @@ body::after {
   padding: 3px 10px; border-radius: 2px;
   cursor: pointer;
   font-family: 'Cinzel', serif;
-  font-size: 11px; letter-spacing: 0.08em;
+  font-size: 13px; letter-spacing: 0.08em;
   transition: all 0.2s;
 }
 .signout-btn:hover { border-color: var(--border-gold); color: var(--text-mid); }
@@ -135,7 +135,7 @@ body::after {
 .col-right {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
   min-width: 0;
 }
 @media (max-width: 820px) {
@@ -150,7 +150,7 @@ body::after {
   border-radius: 2px;
   color: var(--text);
   font-family: 'Crimson Text', serif;
-  font-size: 17px;
+  font-size: 21px;
   padding: 9px 12px;
   outline: none;
   transition: border-color 0.2s;
@@ -169,7 +169,7 @@ body::after {
   border-radius: 2px;
   color: var(--gold-light);
   font-family: 'Cinzel', serif;
-  font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+  font-size: 14px; font-weight: 700; letter-spacing: 0.1em;
   padding: 11px 24px; cursor: pointer; transition: all 0.2s;
 }
 .btn-primary:hover { background: var(--gold); border-color: var(--gold); color: var(--bg); }
@@ -178,7 +178,7 @@ body::after {
   border: 1px solid var(--border);
   border-radius: 2px; color: var(--text-dim);
   font-family: 'Cinzel', serif;
-  font-size: 12px; letter-spacing: 0.08em;
+  font-size: 14px; letter-spacing: 0.08em;
   padding: 9px 18px; cursor: pointer; transition: all 0.2s;
 }
 .btn-secondary:hover { border-color: var(--border-gold); color: var(--text-mid); }
@@ -186,7 +186,7 @@ body::after {
 /* ── Panel section label ── */
 .panel-head {
   font-family: 'Cinzel', serif;
-  font-size: 11px; color: var(--text-dark);
+  font-size: 13px; color: var(--text-dark);
   text-transform: uppercase; letter-spacing: 0.18em;
   margin-bottom: 14px;
   display: flex; align-items: center; gap: 8px;
@@ -223,10 +223,10 @@ body::after {
 }
 .char-name {
   font-family: 'Cinzel', serif;
-  font-size: 17px; color: var(--gold);
+  font-size: 21px; color: var(--gold);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.char-class { font-size: 14px; color: var(--text-dim); font-style: italic; margin-top: 1px; }
+.char-class { font-size: 16px; color: var(--text-dim); font-style: italic; margin-top: 1px; }
 .char-level-badge { margin-left: auto; flex-shrink: 0; text-align: right; }
 .level-num {
   font-family: 'Cinzel', serif;
@@ -235,7 +235,7 @@ body::after {
 }
 .level-label {
   font-family: 'Cinzel', serif;
-  font-size: 10px; color: var(--text-dark);
+  font-size: 12px; color: var(--text-dark);
   text-transform: uppercase; letter-spacing: 0.12em;
 }
 
@@ -247,11 +247,11 @@ body::after {
 }
 .stat-label {
   font-family: 'Cinzel', serif;
-  font-size: 10px; color: var(--text-dark);
+  font-size: 12px; color: var(--text-dark);
   text-transform: uppercase; letter-spacing: 0.14em;
 }
-.stat-value { font-size: 15px; color: var(--text-dim); }
-.stat-value strong { color: var(--xp); font-family: 'Cinzel', serif; font-size: 15px; }
+.stat-value { font-size: 17px; color: var(--text-dim); }
+.stat-value strong { color: var(--xp); font-family: 'Cinzel', serif; font-size: 17px; }
 .stat-value.gold-val strong { color: var(--gold); }
 
 .bar-track {
@@ -273,9 +273,9 @@ body::after {
 .stat-sub {
   display: flex; justify-content: space-between;
   margin-top: 3px;
-  font-size: 12px; color: var(--text-dark); font-style: italic;
+  font-size: 14px; color: var(--text-dark); font-style: italic;
 }
-.coin-status { font-size: 12px; font-style: italic; }
+.coin-status { font-size: 14px; font-style: italic; }
 .coin-status.danger  { color: var(--red); }
 .coin-status.warning { color: var(--orange); }
 
@@ -283,7 +283,7 @@ body::after {
 .rule { height: 1px; background: var(--border); margin: 14px 0 10px; }
 .rule-label {
   font-family: 'Cinzel', serif;
-  font-size: 10px; color: var(--text-dark);
+  font-size: 12px; color: var(--text-dark);
   text-transform: uppercase; letter-spacing: 0.18em;
   text-align: center; margin: -17px 0 12px;
 }
@@ -304,21 +304,21 @@ body::after {
 }
 .vault-label {
   font-family: 'Cinzel', serif;
-  font-size: 10px; color: var(--text-dark);
+  font-size: 12px; color: var(--text-dark);
   text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 1px;
 }
-.vault-sub  { font-size: 13px; color: var(--text-dim); font-style: italic; }
+.vault-sub  { font-size: 15px; color: var(--text-dim); font-style: italic; }
 .vault-amount {
   font-family: 'Cinzel', serif;
-  font-size: 22px; color: var(--gold);
+  font-size: 24px; color: var(--gold);
   text-shadow: 0 0 12px var(--gold-glow);
 }
-.vault-amount.empty { color: var(--text-dark); font-size: 16px; text-shadow: none; }
+.vault-amount.empty { color: var(--text-dark); font-size: 18px; text-shadow: none; }
 
 /* Floats */
 .gold-float, .coin-float, .xp-float {
   position: fixed;
-  font-family: 'Cinzel', serif; font-size: 14px;
+  font-family: 'Cinzel', serif; font-size: 16px;
   pointer-events: none; z-index: 9990; opacity: 0;
 }
 .gold-float { color: var(--gold); }
@@ -355,15 +355,15 @@ body::after {
 .map-loc-block { display: flex; flex-direction: column; gap: 1px; }
 .map-section-label {
   font-family: 'Cinzel', serif;
-  font-size: 10px; color: var(--text-dark);
+  font-size: 12px; color: var(--text-dark);
   text-transform: uppercase; letter-spacing: 0.16em;
 }
-.map-current-loc { font-family: 'Cinzel', serif; font-size: 15px; color: var(--gold); }
-.map-zone-tag    { font-size: 13px; color: var(--text-dim); font-style: italic; }
+.map-current-loc { font-family: 'Cinzel', serif; font-size: 17px; color: var(--gold); }
+.map-zone-tag    { font-size: 15px; color: var(--text-dim); font-style: italic; }
 
 .map-right-col  { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
 .map-hearts     { display: flex; gap: 3px; }
-.map-heart      { font-size: 14px; transition: all 0.3s; }
+.map-heart      { font-size: 16px; transition: all 0.3s; }
 .map-heart.empty { filter: grayscale(1) opacity(0.2); }
 
 .map-badges-row { display: flex; gap: 4px; }
@@ -371,7 +371,7 @@ body::after {
   width: 22px; height: 22px; border-radius: 50%;
   border: 1px solid var(--border); background: var(--surface2);
   display: flex; align-items: center; justify-content: center;
-  font-size: 12px; position: relative; cursor: default; transition: all 0.3s;
+  font-size: 14px; position: relative; cursor: default; transition: all 0.3s;
 }
 .badge-slot.earned { border-color: var(--gold); box-shadow: 0 0 7px var(--gold-glow); }
 .badge-slot.locked { opacity: 0.2; }
@@ -380,24 +380,22 @@ body::after {
   bottom: calc(100% + 5px); left: 50%; transform: translateX(-50%);
   background: var(--surface3); border: 1px solid var(--border-mid);
   border-radius: 2px; padding: 3px 7px;
-  font-size: 11px; color: var(--text-mid); white-space: nowrap;
+  font-size: 13px; color: var(--text-mid); white-space: nowrap;
   z-index: 100; pointer-events: none;
   font-family: 'Cinzel', serif;
 }
 .badge-slot:hover .badge-tip { display: block; }
 
 .map-viewport {
-  position: relative; height: 210px;
+  position: relative;
   overflow: hidden;
-  background: var(--bg);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
+  border-radius: 4px;
+  border: 1px solid var(--border-gold);
 }
 .node-map {
   position: relative; width: 100%;
-  transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);
 }
-.node-map svg { position: absolute; top: 0; left: 0; width: 100%; }
+.node-map svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 .node-map-inner { position: absolute; top: 0; left: 0; width: 100%; }
 
 .map-node-wrap {
@@ -406,11 +404,12 @@ body::after {
   cursor: default; z-index: 2;
 }
 .map-node-circle {
-  width: 34px; height: 34px; border-radius: 50%;
+  width: 38px; height: 38px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 17px; transition: all 0.3s;
-  border: 1px solid var(--border);
-  background: var(--surface2);
+  font-size: 22px; transition: all 0.3s;
+  border: 1.5px solid var(--border);
+  background: rgba(15,13,11,0.85);
+  backdrop-filter: blur(2px);
 }
 .map-node-circle.done   { border-color: var(--gold-dim); opacity: 0.55; background: rgba(122,98,48,0.1); }
 .map-node-circle.zone1  { border-color: rgba(180,140,60,0.6); }
@@ -431,23 +430,28 @@ body::after {
   50%     { box-shadow: 0 0 0 6px rgba(196,162,74,0.04), 0 0 20px var(--gold-glow); }
 }
 .map-node-circle.ahead  { opacity: 0.2; }
-.map-node-circle.badge-node { width: 28px; height: 28px; border-radius: 2px; font-size: 14px; }
+.map-node-circle.badge-node { width: 28px; height: 28px; border-radius: 2px; font-size: 16px; }
 .map-node-circle.badge-node.earned { border-color: var(--gold); box-shadow: 0 0 8px var(--gold-glow); }
 .map-node-circle.badge-node.ahead  { opacity: 0.15; }
 
 .map-node-label {
   font-family: 'Cinzel', serif;
-  font-size: 10px; color: var(--text-dim);
+  font-size: 11px; color: var(--text-dim);
   text-align: center; white-space: nowrap;
-  background: rgba(15,13,11,0.9);
-  padding: 1px 5px; border-radius: 2px;
+  background: rgba(10,8,6,0.82);
+  padding: 2px 6px; border-radius: 2px;
+  letter-spacing: 0.04em;
+  border: 1px solid rgba(90,70,30,0.3);
 }
-.map-node-wrap.current .map-node-label { color: var(--gold-light); }
+.map-node-wrap.current .map-node-label {
+  color: var(--gold-light);
+  border-color: rgba(196,162,74,0.4);
+}
 
 .map-more-arrow {
   position: absolute; bottom: 5px; right: 9px;
   font-family: 'Cinzel', serif;
-  font-size: 10px; color: var(--text-dark);
+  font-size: 12px; color: var(--text-dark);
   text-transform: uppercase; letter-spacing: 0.06em;
   display: flex; flex-direction: column; align-items: center; gap: 1px;
   animation: bounceDown 2s ease-in-out infinite;
@@ -461,7 +465,7 @@ body::after {
 }
 .road-bonus-label {
   font-family: 'Cinzel', serif;
-  font-size: 10px; color: var(--text-dark);
+  font-size: 12px; color: var(--text-dark);
   text-transform: uppercase; letter-spacing: 0.1em;
 }
 .road-bonus-pips { display: flex; gap: 4px; }
@@ -489,7 +493,7 @@ body::after {
 .streak-panel.alive::before { opacity: 0.45; }
 .streak-left  { display: flex; align-items: center; gap: 10px; }
 .streak-flame {
-  font-size: 20px; line-height: 1;
+  font-size: 22px; line-height: 1;
   filter: drop-shadow(0 0 4px rgba(212,98,42,0.4));
 }
 .streak-flame.cold { filter: grayscale(0.9); opacity: 0.3; }
@@ -498,10 +502,10 @@ body::after {
   font-size: 26px; color: var(--orange); line-height: 1;
 }
 .streak-num.cold { color: var(--text-dark); }
-.streak-tag { font-size: 15px; color: var(--text-mid); font-style: italic; }
+.streak-tag { font-size: 17px; color: var(--text-mid); font-style: italic; }
 .streak-right {
   font-family: 'Cinzel', serif;
-  font-size: 11px; color: var(--text-dark);
+  font-size: 13px; color: var(--text-dark);
   text-transform: uppercase; letter-spacing: 0.08em; text-align: right;
 }
 .streak-right.logged { color: var(--green); }
@@ -534,7 +538,7 @@ body::after {
 .form-group { display: flex; flex-direction: column; gap: 4px; }
 .form-label {
   font-family: 'Cinzel', serif;
-  font-size: 10px; color: var(--text-dark);
+  font-size: 12px; color: var(--text-dark);
   text-transform: uppercase; letter-spacing: 0.12em;
 }
 .log-btn {
@@ -542,12 +546,23 @@ body::after {
   border: 1px solid var(--gold-dim); border-radius: 2px;
   color: var(--gold-light);
   font-family: 'Cinzel', serif;
-  font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+  font-size: 14px; font-weight: 700; letter-spacing: 0.1em;
   padding: 9px 14px; cursor: pointer; white-space: nowrap; width: 100%;
   transition: all 0.18s;
 }
 .log-btn:hover { background: var(--gold); border-color: var(--gold); color: var(--bg); }
-.xp-hint { margin-top: 10px; font-size: 13px; color: var(--text-dark); font-style: italic; }
+.log-btn.streak-danger {
+  border-color: var(--orange);
+  box-shadow: 0 0 12px rgba(212,98,42,0.3);
+  animation: streakDanger 2s ease-in-out infinite;
+}
+.log-btn.logged-today {
+  border-color: var(--green);
+  color: var(--green);
+  background: rgba(58,158,106,0.08);
+}
+@keyframes streakDanger { 0%,100%{box-shadow:0 0 8px rgba(212,98,42,0.3)} 50%{box-shadow:0 0 18px rgba(212,98,42,0.6)} }
+.xp-hint { margin-top: 10px; font-size: 15px; color: var(--text-dark); font-style: italic; }
 
 /* ══════════════════════════════════════════════
    LOG LIST (right col)
@@ -558,7 +573,7 @@ body::after {
   border: 1px solid var(--border);
   border-radius: 3px; overflow: hidden;
 }
-.log-empty { padding: 28px; text-align: center; color: var(--text-dark); font-size: 15px; font-style: italic; }
+.log-empty { padding: 28px; text-align: center; color: var(--text-dark); font-size: 17px; font-style: italic; }
 .log-item {
   display: grid; grid-template-columns: 22px 1fr auto;
   gap: 10px; align-items: center;
@@ -567,22 +582,29 @@ body::after {
   animation: slideIn 0.22s ease both;
 }
 .log-item:last-child { border-bottom: none; }
-.log-icon   { font-size: 15px; text-align: center; opacity: 0.65; }
-.log-desc   { font-size: 16px; color: var(--text); }
-.log-meta   { font-size: 12px; color: var(--text-dark); font-style: italic; }
+.log-icon   { font-size: 17px; text-align: center; opacity: 0.65; }
+.log-desc   { font-size: 18px; color: var(--text); }
+.log-meta   { font-size: 14px; color: var(--text-dark); font-style: italic; }
 .log-right  { text-align: right; }
-.log-amount { font-family: 'Cinzel', serif; font-size: 15px; color: var(--text-mid); }
-.log-xp     { font-size: 12px; color: var(--xp); }
+.log-amount { font-family: 'Cinzel', serif; font-size: 17px; color: var(--text-mid); }
+.log-xp     { font-size: 14px; color: var(--xp); }
 
 /* section-head alias */
 .section-head {
   font-family: 'Cinzel', serif;
-  font-size: 11px; color: var(--text-dark);
+  font-size: 13px; color: var(--text-dark);
   text-transform: uppercase; letter-spacing: 0.18em;
   margin-bottom: 10px;
   display: flex; align-items: center; gap: 8px;
 }
 .section-head::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.chronicle-head {
+  font-size: 15px;
+  color: var(--gold-dim);
+  letter-spacing: 0.22em;
+  margin-top: 6px;
+}
+.chronicle-head::after { background: var(--border-gold); }
 
 /* ══════════════════════════════════════════════
    LOGIN
@@ -597,9 +619,9 @@ body::after {
   display: inline-flex; align-items: center; justify-content: center;
   font-size: 28px; margin-bottom: 14px;
 }
-.login-title { font-family: 'Cinzel', serif; font-size: 20px; color: var(--gold); margin-bottom: 6px; }
-.login-sub   { color: var(--text-dim); font-size: 16px; font-style: italic; }
-.login-err   { color: var(--red); font-size: 15px; text-align: center; margin-top: 8px; display: none; }
+.login-title { font-family: 'Cinzel', serif; font-size: 22px; color: var(--gold); margin-bottom: 6px; }
+.login-sub   { color: var(--text-dim); font-size: 18px; font-style: italic; }
+.login-err   { color: var(--red); font-size: 17px; text-align: center; margin-top: 8px; display: none; }
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -610,22 +632,10 @@ body::after {
   position: absolute; top: 0; left: 0; right: 0; height: 1px;
   background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
 }
-.tab-row {
-  display: flex; background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 2px; padding: 3px; margin-bottom: 18px; gap: 2px;
-}
-.tab-btn {
-  flex: 1; padding: 7px; border-radius: 1px;
-  border: none; cursor: pointer;
-  font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.1em;
-  transition: all 0.2s; background: transparent; color: var(--text-dim);
-}
-.tab-btn.active { background: var(--gold-dim); color: var(--gold-light); }
 .form-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
 .field-label {
   font-family: 'Cinzel', serif;
-  font-size: 11px; color: var(--text-dark);
+  font-size: 13px; color: var(--text-dark);
   text-transform: uppercase; letter-spacing: 0.12em;
 }
 .field-input { width: 100%; }
@@ -659,9 +669,9 @@ body::after {
 .ob-step { display: none; }
 .ob-step.active { display: block; animation: fadeUp 0.3s ease both; }
 .ob-icon  { text-align: center; font-size: 42px; margin-bottom: 14px; }
-.ob-title { font-family: 'Cinzel', serif; font-size: 17px; color: var(--gold); text-align: center; margin-bottom: 8px; }
+.ob-title { font-family: 'Cinzel', serif; font-size: 21px; color: var(--gold); text-align: center; margin-bottom: 8px; }
 .ob-sub {
-  color: var(--text-dim); font-size: 16px; font-style: italic;
+  color: var(--text-dim); font-size: 18px; font-style: italic;
   text-align: center; line-height: 1.65; margin-bottom: 24px;
   max-width: 400px; margin-left: auto; margin-right: auto;
 }
@@ -672,7 +682,7 @@ body::after {
 .name-btn {
   background: var(--gold-dim); border: 1px solid var(--gold-dim); border-left: none;
   border-radius: 0 2px 2px 0; color: var(--gold-light);
-  font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.1em;
+  font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 0.1em;
   padding: 9px 16px; cursor: pointer; transition: all 0.2s; white-space: nowrap;
 }
 .name-btn:hover { background: var(--gold); color: var(--bg); }
@@ -693,7 +703,7 @@ body::after {
 .avatar-opt.selected { border-color: var(--gold); box-shadow: 0 0 12px var(--gold-glow); }
 .avatar-opt.selected::after {
   content: '✓'; position: absolute; bottom: 3px; right: 5px;
-  font-family: 'Cinzel', serif; font-size: 11px; color: var(--gold);
+  font-family: 'Cinzel', serif; font-size: 13px; color: var(--gold);
 }
 
 .class-grid { display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px; }
@@ -704,12 +714,12 @@ body::after {
 }
 .class-opt:hover     { border-color: var(--border-mid); background: var(--surface3); }
 .class-opt.selected  { border-color: var(--gold); background: var(--surface3); border-left-width: 3px; }
-.class-emoji { font-size: 22px; flex-shrink: 0; width: 30px; text-align: center; }
+.class-emoji { font-size: 24px; flex-shrink: 0; width: 30px; text-align: center; }
 .class-info  { flex: 1; }
-.class-name  { font-family: 'Cinzel', serif; font-size: 14px; color: var(--gold); margin-bottom: 2px; }
-.class-desc  { font-size: 15px; color: var(--text-dim); font-style: italic; line-height: 1.45; }
+.class-name  { font-family: 'Cinzel', serif; font-size: 16px; color: var(--gold); margin-bottom: 2px; }
+.class-desc  { font-size: 17px; color: var(--text-dim); font-style: italic; line-height: 1.45; }
 .class-trait {
-  font-size: 10px; color: var(--xp);
+  font-size: 12px; color: var(--xp);
   text-transform: uppercase; letter-spacing: 0.1em;
   background: rgba(91,143,204,0.1); border: 1px solid rgba(91,143,204,0.2);
   padding: 2px 7px; border-radius: 2px; white-space: nowrap; flex-shrink: 0;
@@ -719,14 +729,14 @@ body::after {
 .budget-prefix {
   background: var(--surface2); border: 1px solid var(--border-mid); border-right: none;
   border-radius: 2px 0 0 2px; padding: 9px 12px;
-  color: var(--gold); font-family: 'Cinzel', serif; font-size: 17px;
+  color: var(--gold); font-family: 'Cinzel', serif; font-size: 21px;
   display: flex; align-items: center;
 }
 .budget-input { border-left: none; border-right: none; border-radius: 0; flex: 1; }
 .budget-btn {
   background: var(--gold-dim); border: 1px solid var(--gold-dim); border-left: none;
   border-radius: 0 2px 2px 0; color: var(--gold-light);
-  font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.1em;
+  font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 0.1em;
   padding: 9px 16px; cursor: pointer; transition: all 0.2s; white-space: nowrap;
 }
 .budget-btn:hover { background: var(--gold); color: var(--bg); }
@@ -737,10 +747,10 @@ body::after {
   background: var(--surface2); border: 1px solid var(--border);
   border-radius: 2px; padding: 10px 13px;
 }
-.law-icon  { font-size: 17px; flex-shrink: 0; width: 24px; text-align: center; margin-top: 2px; opacity: 0.75; }
+.law-icon  { font-size: 21px; flex-shrink: 0; width: 24px; text-align: center; margin-top: 2px; opacity: 0.75; }
 .law-body  { flex: 1; }
-.law-title { font-family: 'Cinzel', serif; font-size: 11px; color: var(--gold-dim); letter-spacing: 0.08em; margin-bottom: 3px; text-transform: uppercase; }
-.law-plain { font-size: 15px; color: var(--text-dim); font-style: italic; line-height: 1.55; }
+.law-title { font-family: 'Cinzel', serif; font-size: 13px; color: var(--gold-dim); letter-spacing: 0.08em; margin-bottom: 3px; text-transform: uppercase; }
+.law-plain { font-size: 17px; color: var(--text-dim); font-style: italic; line-height: 1.55; }
 
 /* ══════════════════════════════════════════════
    OVERLAYS
@@ -779,7 +789,7 @@ body::after {
 .overlay-box.broken::before { background: linear-gradient(90deg, transparent, var(--red), transparent); }
 
 .overlay-zone-label {
-  font-family: 'Cinzel', serif; font-size: 10px;
+  font-family: 'Cinzel', serif; font-size: 12px;
   letter-spacing: 0.2em; text-transform: uppercase;
   margin-bottom: 10px; color: var(--text-dark);
 }
@@ -787,13 +797,13 @@ body::after {
 .overlay-box.friendly .overlay-zone-label { color: var(--green); }
 .overlay-box.zone-complete .overlay-zone-label { color: var(--gold); }
 .overlay-icon  { font-size: 40px; margin-bottom: 10px; line-height: 1; }
-.overlay-title { font-family: 'Cinzel', serif; font-size: 17px; color: var(--gold); margin-bottom: 10px; }
-.overlay-desc  { font-size: 16px; color: var(--text-dim); font-style: italic; line-height: 1.7; margin-bottom: 18px; }
+.overlay-title { font-family: 'Cinzel', serif; font-size: 21px; color: var(--gold); margin-bottom: 10px; }
+.overlay-desc  { font-size: 18px; color: var(--text-dim); font-style: italic; line-height: 1.7; margin-bottom: 18px; }
 .overlay-choices { display: flex; flex-direction: column; gap: 7px; }
 .overlay-btn {
   background: var(--surface2); border: 1px solid var(--border-mid);
   border-radius: 2px; color: var(--text);
-  font-family: 'Crimson Text', serif; font-size: 16px;
+  font-family: 'Crimson Text', serif; font-size: 18px;
   padding: 11px 16px; cursor: pointer; transition: all 0.18s;
   text-align: left; line-height: 1.5;
 }
@@ -804,40 +814,40 @@ body::after {
 .overlay-btn.friendly-choice:hover { border-color: var(--green); background: rgba(58,158,106,0.07); }
 .overlay-btn.primary-choice {
   background: var(--gold-dim); border-color: var(--gold-dim); color: var(--gold-light);
-  font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 0.1em; text-align: center;
+  font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 0.1em; text-align: center;
 }
 .overlay-btn.primary-choice:hover { background: var(--gold); border-color: var(--gold); color: var(--bg); }
-.overlay-btn-cost { display: block; font-size: 13px; color: var(--text-dim); margin-top: 2px; font-style: italic; }
+.overlay-btn-cost { display: block; font-size: 15px; color: var(--text-dim); margin-top: 2px; font-style: italic; }
 .overlay-btn-disabled { opacity: 0.3; cursor: not-allowed; }
 .overlay-btn-disabled:hover { background: var(--surface2) !important; border-color: var(--border-mid) !important; }
 
-.levelup-sparkles { font-size: 20px; letter-spacing: 12px; margin-bottom: 10px; color: var(--gold-dim); }
-.levelup-label { font-family: 'Cinzel', serif; font-size: 10px; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 4px; }
+.levelup-sparkles { font-size: 22px; letter-spacing: 12px; margin-bottom: 10px; color: var(--gold-dim); }
+.levelup-label { font-family: 'Cinzel', serif; font-size: 12px; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 4px; }
 .levelup-num {
   font-family: 'Cinzel', serif; font-size: 58px; color: var(--gold-light);
   line-height: 1; margin: 4px 0 8px; text-shadow: 0 0 28px var(--gold-glow);
 }
-.levelup-rank { font-family: 'Cinzel', serif; font-size: 16px; color: var(--gold); margin-bottom: 10px; }
-.levelup-msg  { font-size: 16px; color: var(--text-dim); font-style: italic; line-height: 1.7; margin-bottom: 20px; }
+.levelup-rank { font-family: 'Cinzel', serif; font-size: 18px; color: var(--gold); margin-bottom: 10px; }
+.levelup-msg  { font-size: 18px; color: var(--text-dim); font-style: italic; line-height: 1.7; margin-bottom: 20px; }
 
 .reset-icon  { font-size: 34px; margin-bottom: 10px; }
-.reset-label { font-family: 'Cinzel', serif; font-size: 10px; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 6px; }
-.reset-title { font-family: 'Cinzel', serif; font-size: 19px; color: var(--gold-light); margin-bottom: 14px; }
+.reset-label { font-family: 'Cinzel', serif; font-size: 12px; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 6px; }
+.reset-title { font-family: 'Cinzel', serif; font-size: 21px; color: var(--gold-light); margin-bottom: 14px; }
 .reset-breakdown { background: var(--surface2); border: 1px solid var(--border); border-radius: 2px; padding: 11px 13px; margin-bottom: 14px; text-align: left; }
-.reset-row { display: flex; justify-content: space-between; font-size: 15px; color: var(--text-dim); padding: 3px 0; }
+.reset-row { display: flex; justify-content: space-between; font-size: 17px; color: var(--text-dim); padding: 3px 0; }
 .reset-row.highlight { color: var(--gold); }
 .reset-row.highlight span:last-child { color: var(--gold-light); }
-.reset-msg { font-size: 15px; color: var(--text-dim); font-style: italic; line-height: 1.65; margin-bottom: 16px; }
+.reset-msg { font-size: 17px; color: var(--text-dim); font-style: italic; line-height: 1.65; margin-bottom: 16px; }
 .reset-overlay-box { border-color: rgba(196,162,74,0.35); max-width: 400px; }
-.reset-title { font-family: 'Cinzel', serif; font-size: 20px; color: var(--gold); margin-bottom: 16px; text-align: center; }
-.reset-label { font-family: 'Cinzel', serif; font-size: 10px; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.18em; text-align: center; margin-bottom: 8px; }
+.reset-title { font-family: 'Cinzel', serif; font-size: 22px; color: var(--gold); margin-bottom: 16px; text-align: center; }
+.reset-label { font-family: 'Cinzel', serif; font-size: 12px; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.18em; text-align: center; margin-bottom: 8px; }
 .reset-icon { font-size: 32px; text-align: center; margin-bottom: 10px; }
 
 .broken-icon  { font-size: 44px; margin: 6px 0 12px; }
-.broken-title { font-family: 'Cinzel', serif; font-size: 19px; color: var(--red); margin-bottom: 8px; }
-.broken-msg   { font-size: 16px; color: var(--text-dim); font-style: italic; line-height: 1.6; margin-bottom: 16px; }
+.broken-title { font-family: 'Cinzel', serif; font-size: 21px; color: var(--red); margin-bottom: 8px; }
+.broken-msg   { font-size: 18px; color: var(--text-dim); font-style: italic; line-height: 1.6; margin-bottom: 16px; }
 .broken-gold  { font-family: 'Cinzel', serif; font-size: 24px; color: var(--gold-light); margin-bottom: 4px; }
-.broken-cost  { font-size: 13px; color: var(--text-dim); font-style: italic; margin-bottom: 16px; }
+.broken-cost  { font-size: 15px; color: var(--text-dim); font-style: italic; margin-bottom: 16px; }
 
 /* ══════════════════════════════════════════════
    TOAST
@@ -846,7 +856,7 @@ body::after {
   position: fixed; bottom: 24px; left: 50%;
   transform: translateX(-50%) translateY(14px);
   background: var(--surface2); border: 1px solid var(--border-gold);
-  color: var(--text-mid); font-family: 'Crimson Text', serif; font-size: 16px;
+  color: var(--text-mid); font-family: 'Crimson Text', serif; font-size: 18px;
   padding: 9px 20px; border-radius: 2px;
   opacity: 0; pointer-events: none; z-index: 8000;
   transition: all 0.26s; white-space: nowrap;
@@ -859,7 +869,7 @@ body::after {
 ══════════════════════════════════════════════ */
 .teasers { }
 .teasers-head {
-  font-family: 'Cinzel', serif; font-size: 11px; color: var(--text-dark);
+  font-family: 'Cinzel', serif; font-size: 13px; color: var(--text-dark);
   text-transform: uppercase; letter-spacing: 0.16em;
   margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
 }
@@ -871,11 +881,11 @@ body::after {
   opacity: 0.28; filter: saturate(0.15); position: relative; transition: all 0.2s;
 }
 .teaser-card:hover { opacity: 0.44; filter: saturate(0.28); }
-.teaser-lock   { position: absolute; top: 8px; right: 10px; font-size: 12px; color: var(--text-dark); }
-.teaser-icon   { font-size: 17px; margin-bottom: 4px; }
-.teaser-name   { font-family: 'Cinzel', serif; font-size: 11px; color: var(--text-mid); margin-bottom: 2px; }
-.teaser-hint   { font-size: 13px; color: var(--text-dim); font-style: italic; line-height: 1.4; }
-.teaser-unlock { font-family: 'Cinzel', serif; font-size: 11px; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+.teaser-lock   { position: absolute; top: 8px; right: 10px; font-size: 14px; color: var(--text-dark); }
+.teaser-icon   { font-size: 21px; margin-bottom: 4px; }
+.teaser-name   { font-family: 'Cinzel', serif; font-size: 13px; color: var(--text-mid); margin-bottom: 2px; }
+.teaser-hint   { font-size: 15px; color: var(--text-dim); font-style: italic; line-height: 1.4; }
+.teaser-unlock { font-family: 'Cinzel', serif; font-size: 13px; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
 
 /* ══════════════════════════════════════════════
    ANIMATIONS
@@ -913,11 +923,11 @@ body::after {
 }
 .treasury-label {
   font-family: 'Cinzel', serif;
-  font-size: 10px; color: var(--gold-dim);
+  font-size: 12px; color: var(--gold-dim);
   text-transform: uppercase; letter-spacing: 0.2em;
 }
 .treasury-status {
-  font-size: 13px; color: var(--text-dim); font-style: italic;
+  font-size: 15px; color: var(--text-dim); font-style: italic;
 }
 .treasury-status.danger  { color: var(--red); }
 .treasury-status.warning { color: var(--orange); }
@@ -929,18 +939,18 @@ body::after {
 }
 .treasury-remaining {
   font-family: 'Cinzel', serif;
-  font-size: 36px; line-height: 1; color: var(--gold-light);
+  font-size: 40px; line-height: 1; color: var(--gold-light);
   text-shadow: 0 0 20px var(--gold-glow);
   transition: color 0.35s;
 }
 .treasury-remaining.danger  { color: var(--red);    text-shadow: none; }
 .treasury-remaining.warning { color: var(--orange); text-shadow: none; }
 .treasury-of {
-  font-size: 14px; color: var(--text-dark); font-style: italic;
+  font-size: 16px; color: var(--text-dark); font-style: italic;
 }
 .treasury-budget {
   font-family: 'Cinzel', serif;
-  font-size: 16px; color: var(--text-dim);
+  font-size: 18px; color: var(--text-dim);
 }
 .treasury-bar-track {
   height: 6px;
@@ -956,7 +966,7 @@ body::after {
 .treasury-bar-fill.danger  { background: linear-gradient(90deg, #4a1810, var(--red)); }
 .treasury-bar-fill.warning { background: linear-gradient(90deg, #4a3010, var(--orange)); }
 .treasury-sub {
-  font-size: 13px; color: var(--text-dark); font-style: italic;
+  font-size: 15px; color: var(--text-dark); font-style: italic;
 }
 
 /* Char panel rule (between vault and XP) */
@@ -984,7 +994,7 @@ body::after {
   border-radius: 2px;
   color: var(--text-dim);
   font-family: 'Cinzel', serif;
-  font-size: 11px; letter-spacing: 0.1em;
+  font-size: 13px; letter-spacing: 0.1em;
   text-transform: uppercase;
   padding: 6px 14px; cursor: pointer;
   transition: all 0.2s;
@@ -994,7 +1004,7 @@ body::after {
   opacity: 0.3; cursor: default;
 }
 .log-pagination-count {
-  font-size: 13px; color: var(--text-dark); font-style: italic;
+  font-size: 15px; color: var(--text-dark); font-style: italic;
 }
 
 
@@ -1012,17 +1022,17 @@ body::after {
 .vault-inline-icon { font-size: 18px; line-height: 1; }
 .vault-inline-name {
   font-family: 'Cinzel', serif;
-  font-size: 12px; color: var(--gold-dim);
+  font-size: 14px; color: var(--gold-dim);
   text-transform: uppercase; letter-spacing: 0.1em;
   margin-bottom: 2px;
 }
-.vault-inline-hint { font-size: 13px; color: var(--text-dark); font-style: italic; }
+.vault-inline-hint { font-size: 15px; color: var(--text-dark); font-style: italic; }
 
 /* ── Map hearts label ── */
 .map-hearts-block { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
 .map-hearts-label {
   font-family: 'Cinzel', serif;
-  font-size: 10px; color: var(--text-dark);
+  font-size: 12px; color: var(--text-dark);
   text-transform: uppercase; letter-spacing: 0.12em;
 }
 
@@ -1036,7 +1046,7 @@ body::after {
 }
 .dev-tools-label {
   font-family: 'Cinzel', serif;
-  font-size: 10px; color: var(--text-dark);
+  font-size: 12px; color: var(--text-dark);
   text-transform: uppercase; letter-spacing: 0.12em;
   margin-right: 4px;
 }
@@ -1046,7 +1056,7 @@ body::after {
   border-radius: 2px;
   color: var(--text-dark);
   font-family: 'Cinzel', serif;
-  font-size: 10px; letter-spacing: 0.08em;
+  font-size: 12px; letter-spacing: 0.08em;
   text-transform: uppercase;
   padding: 4px 10px; cursor: pointer;
   transition: all 0.2s;
@@ -1060,6 +1070,37 @@ body::after {
   opacity: 0.4;
 }
 .treasury-remaining.over { color: var(--red); }
+
+/* ── Wounded mode ── */
+.char-panel.wounded {
+  border-color: rgba(184,60,46,0.35);
+}
+.char-panel.wounded::before {
+  background: linear-gradient(90deg, transparent, rgba(184,60,46,0.25), transparent) !important;
+  opacity: 1 !important;
+}
+.recovery-track {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(184,60,46,0.2);
+}
+.recovery-track.hidden { display: none; }
+.recovery-label {
+  font-family: 'Cinzel', serif;
+  font-size: 11px; color: rgba(200,80,60,0.75);
+  text-transform: uppercase; letter-spacing: 0.12em;
+}
+.recovery-pips { display: flex; gap: 5px; }
+.recovery-pip {
+  width: 18px; height: 4px; border-radius: 100px;
+  background: rgba(184,60,46,0.2);
+  transition: all 0.3s;
+}
+.recovery-pip.earned {
+  background: rgba(200,80,60,0.7);
+  box-shadow: 0 0 5px rgba(200,80,60,0.35);
+}
 
 
 /* ══════════════════════════════════════════════
@@ -1094,7 +1135,7 @@ body::after {
   border: 1px solid var(--border);
   background: var(--surface3);
   display: flex; align-items: center; justify-content: center;
-  font-size: 16px;
+  font-size: 18px;
   transition: all 0.35s;
   position: relative;
 }
@@ -1118,7 +1159,7 @@ body::after {
 }
 .badge-rail-label {
   font-family: 'Cinzel', serif;
-  font-size: 9px;
+  font-size: 11px;
   color: var(--text-dark);
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -1139,19 +1180,19 @@ body::after {
 }
 .xp-label {
   font-family: 'Cinzel', serif;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--text-dim);
   text-transform: uppercase;
   letter-spacing: 0.14em;
 }
 .xp-nums {
-  font-size: 15px;
+  font-size: 17px;
   color: var(--text-dim);
 }
 .xp-nums strong {
   color: var(--xp);
   font-family: 'Cinzel', serif;
-  font-size: 20px;
+  font-size: 22px;
 }
 .xp-bar-track {
   height: 10px;
@@ -1171,18 +1212,18 @@ body::after {
   display: flex;
   justify-content: space-between;
   margin-top: 4px;
-  font-size: 13px;
+  font-size: 15px;
   color: var(--text-dark);
   font-style: italic;
 }
 
 .ob-budget-hint {
   text-align: center; margin-top: 10px;
-  font-size: 13px; color: var(--text-dark);
+  font-size: 15px; color: var(--text-dark);
   font-style: italic;
 }
 .streak-right-col { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
-.streak-best { font-size: 11px; color: var(--text-dark); font-style: italic; }
+.streak-best { font-size: 13px; color: var(--text-dark); font-style: italic; }
 </style>
 </head>
 <body>
@@ -1213,11 +1254,6 @@ body::after {
     <div class="card" style="max-width:420px;margin:0 auto;">
       <div class="card-accent-top"></div>
 
-      <div class="tab-row">
-        <button id="tab-password" class="tab-btn active" onclick="switchLoginTab('password')">Password</button>
-        <button id="tab-magic" class="tab-btn" onclick="switchLoginTab('magic')">Magic Link</button>
-      </div>
-
       <!-- Password login -->
       <div id="login-password-panel">
         <div id="login-form-password">
@@ -1234,23 +1270,7 @@ body::after {
         </div>
       </div>
 
-      <!-- Magic link login -->
-      <div id="login-magic-panel" style="display:none;">
-        <div id="login-form-magic">
-          <div class="form-field">
-            <label class="field-label">Email</label>
-            <input class="field-input" id="login-email" type="email" placeholder="your@email.com" autocomplete="email">
-          </div>
-          <button class="btn-primary" onclick="sendMagicLink()">Send Magic Link ✉</button>
-          <div id="login-error" class="login-err"></div>
-        </div>
-        <div id="login-sent" style="display:none;text-align:center;">
-          <div style="font-size:36px;margin-bottom:12px">✉️</div>
-          <div style="font-weight:700;color:var(--gold-light);font-size:16px;margin-bottom:8px;">Magic link sent!</div>
-          <div style="color:var(--text-mid);font-size:14px;line-height:1.6;">Check your inbox at <strong id="sent-email" style="color:var(--text)"></strong> and click the link to begin your quest.</div>
-          <button onclick="resetLoginForm()" style="margin-top:16px;background:none;border:none;color:var(--text-dim);font-size:12px;cursor:pointer;text-decoration:underline;font-family:inherit;">Use a different email</button>
-        </div>
-      </div>
+
 
     </div>
   </div>
@@ -1464,7 +1484,7 @@ body::after {
                   <div class="vault-inline-hint">Your road insurance — spend on threats, save for rough stretches</div>
                 </div>
               </div>
-              <div class="vault-amount" id="vault-amount">0 🪙</div>
+              <div class="vault-amount" id="vault-amount">0 💰</div>
             </div>
           </div>
 
@@ -1481,6 +1501,28 @@ body::after {
               <span id="xp-bonus-msg"></span>
               <span id="xp-next-msg">80 XP to Level 2</span>
             </div>
+            <!-- Recovery track — only visible when wounded -->
+            <div class="recovery-track hidden" id="recovery-track">
+              <div class="recovery-label" id="recovery-label">Treasury wounded</div>
+              <div class="recovery-pips">
+                <div class="recovery-pip" id="rpip-1"></div>
+                <div class="recovery-pip" id="rpip-2"></div>
+                <div class="recovery-pip" id="rpip-3"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Streak — character stat -->
+          <div class="streak-panel" id="streak-banner">
+            <div class="streak-left">
+              <span class="streak-flame" id="streak-banner-flame">🔥</span>
+              <span class="streak-num" id="streak-count">0</span>
+              <span class="streak-tag" id="streak-label">day streak — begin yours</span>
+            </div>
+            <div class="streak-right-col">
+              <div class="streak-right" id="streak-banner-right">Start your streak today</div>
+              <div class="streak-best" id="streak-best"></div>
+            </div>
           </div>
 
           <!-- Dev tools — testing only -->
@@ -1494,6 +1536,43 @@ body::after {
 
           <div class="gold-float" id="gold-float"></div>
         </div>
+
+
+
+      </div><!-- /col-left -->
+
+      <!-- RIGHT COLUMN -->
+      <div class="col-right">
+
+        <!-- Log form -->
+        <div class="log-panel">
+          <div class="panel-head">Record Your Spending</div>
+          <div class="log-form-grid">
+            <div class="form-group">
+              <label class="form-label">What did you spend on?</label>
+              <input class="form-input" id="desc-input" type="text" placeholder="e.g. Morning coffee" autocomplete="off">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Amount ($)</label>
+              <input class="form-input" id="amount-input" type="number" min="0.01" step="0.01" placeholder="0.00">
+            </div>
+            <div class="log-btn-wrap">
+              <label class="form-label" style="visibility:hidden">Log</label>
+              <button class="log-btn" id="log-btn" onclick="logExpense()">⚔ Log It</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Expense Chronicle — paginated -->
+        <div class="log-list-wrap">
+          <div class="section-head chronicle-head">✦ Expense Chronicle</div>
+          <div class="log-list" id="log-list"></div>
+          <div class="log-pagination" id="log-pagination" style="display:none;">
+            <button class="log-more-btn" id="log-more-btn" onclick="showMoreLog()">Show more entries</button>
+            <span class="log-pagination-count" id="log-pagination-count"></span>
+          </div>
+        </div>
+
 
         <!-- Map panel -->
         <div class="map-panel" id="map-section">
@@ -1554,54 +1633,6 @@ body::after {
               <div class="road-pip" id="road-pip-2"></div>
               <div class="road-pip" id="road-pip-3"></div>
             </div>
-          </div>
-        </div>
-
-      </div><!-- /col-left -->
-
-      <!-- RIGHT COLUMN -->
-      <div class="col-right">
-
-        <!-- Streak -->
-        <div class="streak-panel" id="streak-banner">
-          <div class="streak-left">
-            <span class="streak-flame" id="streak-banner-flame">🔥</span>
-            <span class="streak-num" id="streak-count">0</span>
-            <span class="streak-tag" id="streak-label">day streak — begin yours</span>
-          </div>
-          <div class="streak-right-col">
-            <div class="streak-right" id="streak-banner-right">Start your streak today</div>
-            <div class="streak-best" id="streak-best"></div>
-          </div>
-        </div>
-
-        <!-- Log form -->
-        <div class="log-panel">
-          <div class="panel-head">Log an Expense</div>
-          <div class="log-form-grid">
-            <div class="form-group">
-              <label class="form-label">What did you spend on?</label>
-              <input class="form-input" id="desc-input" type="text" placeholder="e.g. Morning coffee" autocomplete="off">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Amount ($)</label>
-              <input class="form-input" id="amount-input" type="number" min="0.01" step="0.01" placeholder="0.00">
-            </div>
-            <div class="log-btn-wrap">
-              <label class="form-label" style="visibility:hidden">Log</label>
-              <button class="log-btn" id="log-btn" onclick="logExpense()">⚔ Log It</button>
-            </div>
-          </div>
-          <div class="xp-hint">Log → earn XP → level up → advance the map ✦</div>
-        </div>
-
-        <!-- Expense Chronicle — paginated -->
-        <div class="log-list-wrap">
-          <div class="section-head">Expense Chronicle</div>
-          <div class="log-list" id="log-list"></div>
-          <div class="log-pagination" id="log-pagination" style="display:none;">
-            <button class="log-more-btn" id="log-more-btn" onclick="showMoreLog()">Show more entries</button>
-            <span class="log-pagination-count" id="log-pagination-count"></span>
           </div>
         </div>
 
@@ -1880,7 +1911,7 @@ var STORY_ENCOUNTERS = {
       title: 'The Cartographer\'s Wisdom',
       zone: 'Harvest Crossing',
       minPos: 1,
-      desc: 'A gnome cartographer is selling enchanted road maps from a cart that\'s clearly larger on the inside. \'The short path costs more than it shows,\' she says, rolling a map you didn\'t ask for. You don\'t buy one. You do write that down.'
+      desc: 'A gnome cartographer has set up her cart at the crossroads — the cart is visibly larger on the inside than the outside, which she declines to explain. She unfurls a map of three alternate routes, each annotated with toll costs, detour fees, and hidden levies. \'Every shortcut has a price. Mine just shows you what it is.\' You buy nothing. You leave better informed.'
     },
     {
       id: 'griffon_rider',
@@ -2036,7 +2067,7 @@ function load() {
     var parsed = JSON.parse(raw);
     if (typeof parsed !== 'object' || !parsed) return;
     if (!Array.isArray(parsed.log)) parsed.log = [];
-    ['name','avatar','heroClass','xp','streak','lastLogDate','log','monthlyBudget','coinReserve','ironVault','currentMonth','hearts','mapPosition','badges','weekLogDays','weekStart','roadBonusesThisMonth','lastEncounterLog','pendingEncounter','seenStoryEncounters','seenArrivals','lastMapPosition','encounterLogCount','lastEncounterAtLog','firedOverBudgetEncounter','bestStreak'].forEach(function(k) {
+    ['name','avatar','heroClass','xp','streak','lastLogDate','log','monthlyBudget','coinReserve','ironVault','currentMonth','hearts','mapPosition','badges','weekLogDays','weekStart','roadBonusesThisMonth','lastEncounterLog','pendingEncounter','seenStoryEncounters','seenArrivals','lastMapPosition','encounterLogCount','lastEncounterAtLog','firedOverBudgetEncounter','bestStreak','woundedMode','cleanDayStreak','lastCleanDay','woundedDayStartReserve'].forEach(function(k) {
       if (parsed[k] !== undefined) state[k] = parsed[k];
     });
   } catch(e) { console.warn('Load failed:', e); }
@@ -2050,7 +2081,7 @@ async function loadFromSupabase() {
     var remote = res.data.save_data;
     if (typeof remote !== 'object') return;
     if (!Array.isArray(remote.log)) remote.log = [];
-    ['name','avatar','heroClass','xp','streak','lastLogDate','log','monthlyBudget','coinReserve','ironVault','currentMonth','hearts','mapPosition','badges','weekLogDays','weekStart','roadBonusesThisMonth','lastEncounterLog','pendingEncounter','seenStoryEncounters','seenArrivals','lastMapPosition','encounterLogCount','lastEncounterAtLog','firedOverBudgetEncounter','bestStreak'].forEach(function(k) {
+    ['name','avatar','heroClass','xp','streak','lastLogDate','log','monthlyBudget','coinReserve','ironVault','currentMonth','hearts','mapPosition','badges','weekLogDays','weekStart','roadBonusesThisMonth','lastEncounterLog','pendingEncounter','seenStoryEncounters','seenArrivals','lastMapPosition','encounterLogCount','lastEncounterAtLog','firedOverBudgetEncounter','bestStreak','woundedMode','cleanDayStreak','lastCleanDay','woundedDayStartReserve'].forEach(function(k) {
       if (remote[k] !== undefined) state[k] = remote[k];
     });
     localStorage.setItem(SAVE_KEY, JSON.stringify(state));
@@ -2060,13 +2091,7 @@ async function loadFromSupabase() {
 // ─────────────────────────
 //  AUTH FUNCTIONS
 // ─────────────────────────
-function switchLoginTab(tab) {
-  var isPassword = tab === 'password';
-  document.getElementById('login-password-panel').style.display = isPassword ? 'block' : 'none';
-  document.getElementById('login-magic-panel').style.display   = isPassword ? 'none' : 'block';
-  document.getElementById('tab-password').className = 'tab-btn' + (isPassword ? ' active' : '');
-  document.getElementById('tab-magic').className    = 'tab-btn' + (!isPassword ? ' active' : '');
-}
+
 
 async function signInWithPassword() {
   var email    = document.getElementById('login-email-pw').value.trim();
@@ -2094,26 +2119,7 @@ async function signInWithPassword() {
   }
 }
 
-async function sendMagicLink() {
-  var email = document.getElementById('login-email').value.trim();
-  if (!email || !email.includes('@')) {
-    showLoginError('Please enter a valid email address.');
-    return;
-  }
-  var btn = document.querySelector('#login-form-magic .btn-primary');
-  btn.textContent = 'Sending…';
-  btn.disabled = true;
-  var res = await sb.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true } });
-  if (res.error) {
-    showLoginError(res.error.message);
-    btn.textContent = 'Send Magic Link ✉';
-    btn.disabled = false;
-  } else {
-    document.getElementById('sent-email').textContent = email;
-    document.getElementById('login-form-magic').style.display = 'none';
-    document.getElementById('login-sent').style.display = 'block';
-  }
-}
+
 
 function showLoginError(msg) {
   var el = document.getElementById('login-error');
@@ -2121,15 +2127,7 @@ function showLoginError(msg) {
   el.style.display = 'block';
 }
 
-function resetLoginForm() {
-  document.getElementById('login-form-magic').style.display = 'block';
-  document.getElementById('login-sent').style.display = 'none';
-  document.getElementById('login-error').style.display = 'none';
-  document.getElementById('login-email').value = '';
-  var btn = document.querySelector('#login-form-magic .btn-primary');
-  btn.textContent = 'Send Magic Link ✉';
-  btn.disabled = false;
-}
+
 
 async function signOut() {
   isSigningOut = true;
@@ -2142,19 +2140,21 @@ async function signOut() {
     mapPosition:0,badges:[],weekLogDays:[],weekStart:'',roadBonusesThisMonth:0,
     lastEncounterLog:'',pendingEncounter:null,seenStoryEncounters:[],
     seenArrivals:[],lastMapPosition:-1,
-    encounterLogCount:0,lastEncounterAtLog:0,firedOverBudgetEncounter:false
+    encounterLogCount:0,lastEncounterAtLog:0,firedOverBudgetEncounter:false,
+  woundedMode:false,cleanDayStreak:0,lastCleanDay:'',woundedDayStartReserve:null
   });
   document.getElementById('header-auth').style.display = 'none';
   document.getElementById('main').style.display = 'none';
   document.getElementById('onboarding').style.display = 'none';
   document.getElementById('login-screen').style.display = 'block';
-  resetLoginForm();
   isSigningOut = false;
 }
 
 // ─────────────────────────
 //  INIT
 // ─────────────────────────
+var _appInitDone = false; // guard: only run full init once per page load
+
 async function initApp() {
   sb.auth.onAuthStateChange(async function(event, session) {
     if (isSigningOut) return;
@@ -2164,18 +2164,34 @@ async function initApp() {
       document.getElementById('header-auth').style.display = 'flex';
       document.getElementById('login-screen').style.display = 'none';
 
-      await loadFromSupabase();
-      if (!state.name) load();
+      // Only run the full load sequence once per page load.
+      // onAuthStateChange can fire multiple times (INITIAL_SESSION, SIGNED_IN, TOKEN_REFRESHED)
+      // Re-running load() each time would reset state mid-session.
+      if (_appInitDone) return;
+      _appInitDone = true;
 
-      if (state.hearts === undefined) state.hearts = 3;
-      if (!state.badges) state.badges = [];
-      if (!state.weekLogDays) state.weekLogDays = [];
+      // Load localStorage FIRST — instant, always available
+      load();
+
+      // Then overlay Supabase on top — authoritative remote save
+      await loadFromSupabase();
+
+      // Defensive defaults for any missing fields
+      if (state.hearts === undefined)              state.hearts = 3;
+      if (!state.badges)                           state.badges = [];
+      if (!state.weekLogDays)                      state.weekLogDays = [];
       if (state.roadBonusesThisMonth === undefined) state.roadBonusesThisMonth = 0;
-    state.firedOverBudgetEncounter = false;
-      if (!state.lastEncounterLog) state.lastEncounterLog = '';
-      if (!state.seenStoryEncounters) state.seenStoryEncounters = [];
-      if (!state.seenArrivals) state.seenArrivals = [];
-      if (state.lastMapPosition === undefined) state.lastMapPosition = -1;
+      if (!state.lastEncounterLog)                 state.lastEncounterLog = '';
+      if (!state.seenStoryEncounters)              state.seenStoryEncounters = [];
+      if (!state.seenArrivals)                     state.seenArrivals = [];
+      if (state.lastMapPosition === undefined)     state.lastMapPosition = -1;
+      if (state.bestStreak === undefined)          state.bestStreak = 0;
+      if (state.woundedMode === undefined)           state.woundedMode = false;
+      if (state.cleanDayStreak === undefined)        state.cleanDayStreak = 0;
+      if (!state.lastCleanDay)                       state.lastCleanDay = '';
+      if (state.woundedDayStartReserve === undefined) state.woundedDayStartReserve = null;
+      // NOTE: do NOT unconditionally reset firedOverBudgetEncounter here —
+      // that caused over-budget encounters to re-fire on every refresh
 
       checkStreak();
       checkMonthReset();
@@ -2235,6 +2251,71 @@ function markLoggedToday() {
   // Track personal best
   if (state.streak > (state.bestStreak || 0)) {
     state.bestStreak = state.streak;
+  }
+}
+
+// ─────────────────────────
+//  WOUNDED MODE
+// ─────────────────────────
+function enterWoundedMode() {
+  if (state.woundedMode) return; // already wounded
+  state.woundedMode    = true;
+  state.cleanDayStreak = 0;
+  state.lastCleanDay   = '';
+  save();
+}
+
+function checkCleanDay() {
+  // Called after each log. A "clean day" = today's logs don't push reserve
+  // further negative than it was at start of day, OR reserve is already >= 0.
+  // Simpler definition: reserve didn't get MORE negative today.
+  // Track by comparing start-of-log-day reserve against current.
+  // We use: if reserve is still negative but we logged today without
+  // making it worse — that counts. We track via lastCleanDay date.
+  if (!state.woundedMode) return;
+
+  var today = new Date().toDateString();
+
+  // Check if today is already counted
+  if (state.lastCleanDay === today) return;
+
+  // Today qualifies as clean if coinReserve didn't drop further than yesterday's close.
+  // We approximate: if the player logged at least once today and reserve >= what it was
+  // at the start of the session, we credit a clean day.
+  // Simplest rule: if they didn't push reserve MORE negative today vs when they started logging.
+  // We track via state.woundedDayStartReserve set at first log each day.
+  if (state.woundedDayStartReserve === undefined || state.woundedDayStartReserve === null) {
+    state.woundedDayStartReserve = state.coinReserve;
+    return; // first log today — set baseline, don't credit yet
+  }
+
+  // Credit clean day if reserve didn't worsen today
+  if (state.coinReserve >= state.woundedDayStartReserve) {
+    state.lastCleanDay   = today;
+    state.cleanDayStreak = (state.cleanDayStreak || 0) + 1;
+    if (state.cleanDayStreak >= 3) {
+      // Recovery!
+      state.woundedMode            = false;
+      state.cleanDayStreak         = 0;
+      state.lastCleanDay           = '';
+      state.woundedDayStartReserve = null;
+      save();
+      setTimeout(function() {
+        showToast('Treasury recovering. The road opens back up. ✦');
+        render();
+      }, 400);
+      return;
+    }
+    save();
+  }
+}
+
+function resetWoundedDayBaseline() {
+  // Called at start of each new logging day while wounded
+  var today = new Date().toDateString();
+  if (state.woundedMode && state.lastCleanDay !== today) {
+    // New day — reset the day baseline to current reserve
+    state.woundedDayStartReserve = state.coinReserve;
   }
 }
 
@@ -2677,38 +2758,30 @@ function renderMap() {
       'Zone ' + (zoneNums[zoneIdx] || 'I') + ' — ' + (wp.zoneName || '');
   }
 
-  var TOTAL_H   = 820;
-  var VIEWPORT_H = 220;
+  // ── MAP DIMENSIONS — full height, no scroll ─────────────────────────
+  var W_base = (document.getElementById('map-viewport') || {}).offsetWidth || 340;
+  var W = W_base;
+  var H = Math.round(W * 2.1); // tall portrait — like a real map
+  H = Math.max(460, Math.min(H, 620));
 
+  // Pure linear zig-zag — always forward, no badge spurs
   var NODE_LAYOUT = [
-    { id:0,   pct:[50, 4]  },
-    { id:1,   pct:[22, 13] },
-    { id:2,   pct:[78, 13] },
-    { id:'z1',pct:[50, 22] },
-    { id:3,   pct:[20, 33] },
-    { id:4,   pct:[50, 33] },
-    { id:5,   pct:[80, 33] },
-    { id:'z2',pct:[50, 43] },
-    { id:6,   pct:[22, 55] },
-    { id:7,   pct:[78, 55] },
-    { id:8,   pct:[50, 63] },
-    { id:'z3',pct:[50, 72] },
-    { id:9,   pct:[50, 83] },
-    { id:10,  pct:[50, 92] },
-    { id:'z4',pct:[78, 83] },
+    { id:0,  pct:[50,  4] },   // Hearthstone Village — center top
+    { id:1,  pct:[72, 13] },   // Harvest Crossing — right
+    { id:2,  pct:[30, 22] },   // Stonepath Mill — left
+    { id:3,  pct:[68, 33] },   // Merchant's Gate — right
+    { id:4,  pct:[32, 43] },   // Copperbridge — left
+    { id:5,  pct:[65, 53] },   // Trader's Camp — right
+    { id:6,  pct:[35, 63] },   // Thornwood Edge — left
+    { id:7,  pct:[68, 72] },   // Darkhollow Path — right
+    { id:8,  pct:[38, 81] },   // Wayward Shrine — left
+    { id:9,  pct:[62, 90] },   // Iron Keep Gates — right
+    { id:10, pct:[50, 97] },   // The Iron Keep — center bottom
   ];
 
+  // Single continuous road — always forward
   var CONNECTIONS = [
-    [0,1],[0,2],
-    [1,'z1'],[2,'z1'],
-    ['z1',3],['z1',4],
-    [3,4],[4,5],
-    [4,'z2'],[5,'z2'],
-    ['z2',6],['z2',7],
-    [6,8],[7,8],
-    [8,'z3'],
-    ['z3',9],
-    [9,10],[9,'z4'],
+    [0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],
   ];
 
   var container  = document.getElementById('node-map');
@@ -2718,11 +2791,11 @@ function renderMap() {
   var moreArrow  = document.getElementById('map-more-arrow');
   if (!container || !inner || !svg || !viewport) return;
 
-  var W = viewport.offsetWidth || 400;
-  var H = TOTAL_H;
   container.style.height = H + 'px';
+  viewport.style.height  = H + 'px'; // full height — no clipping
   svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
   svg.style.height = H + 'px';
+  svg.style.width  = '100%';
 
   var posMap = {};
   NODE_LAYOUT.forEach(function(n) {
@@ -2732,28 +2805,9 @@ function renderMap() {
     };
   });
 
-  // Camera pan
-  var currentLayout = null;
-  for (var ci = 0; ci < NODE_LAYOUT.length; ci++) {
-    if (NODE_LAYOUT[ci].id === pos) { currentLayout = NODE_LAYOUT[ci]; break; }
-  }
-  var currentNodeY = currentLayout ? Math.round(H * currentLayout.pct[1] / 100) : 0;
-  var targetScrollTop = currentNodeY - Math.round(VIEWPORT_H * 0.30);
-  targetScrollTop = Math.max(0, Math.min(H - VIEWPORT_H, targetScrollTop));
-  container.style.transform = 'translateY(' + (-targetScrollTop) + 'px)';
-
-  var viewportBottom = targetScrollTop + VIEWPORT_H;
-  var hasNodesBelow = false;
-  NODE_LAYOUT.forEach(function(n) {
-    if (typeof n.id === 'number' && n.id > pos) {
-      var ny = Math.round(H * n.pct[1] / 100);
-      if (ny > viewportBottom - 60) hasNodesBelow = true;
-    }
-  });
-  if (moreArrow) moreArrow.className = 'map-more-arrow' + (hasNodesBelow ? '' : ' hidden');
-
-  // SVG connections
-  svg.innerHTML = '';
+  // No camera pan needed — full map visible
+  container.style.transform = 'none';
+  if (moreArrow) moreArrow.className = 'map-more-arrow hidden';
 
   function isReached(id) {
     if (typeof id === 'number') return id <= pos;
@@ -2761,62 +2815,309 @@ function renderMap() {
     return pos >= (bm[id] || 999);
   }
 
-  // Zone watermarks
-  var zoneWatermarks = [
-    { text:'HEARTHSTONE ROAD', y: 8,  color:'#2a2310' },
-    { text:"MERCHANT'S PASS",  y: 30, color:'#251a10' },
-    { text:'THE THORNWOOD',    y: 52, color:'#0d2018' },
-    { text:'THE IRON KEEP',    y: 79, color:'#1a102a' },
+  // ── SVG DEFS — parchment filter + terrain symbols ──────────────────
+  svg.innerHTML = '';
+
+  var defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
+
+  // Parchment noise filter
+  defs.innerHTML = [
+    '<filter id="road-blur"><feGaussianBlur stdDeviation="0.8"/></filter>',
+    '<radialGradient id="vignette" cx="50%" cy="50%" r="60%">',
+    '<stop offset="0%" stop-color="transparent"/>',
+    '<stop offset="100%" stop-color="rgba(8,6,4,0.55)"/>',
+    '</radialGradient>',
+    '<radialGradient id="zone1-bg" cx="50%" cy="20%" r="55%">',
+    '<stop offset="0%" stop-color="#2a1f0a" stop-opacity="0.9"/>',
+    '<stop offset="100%" stop-color="#1a1208" stop-opacity="0.9"/>',
+    '</radialGradient>',
+    '<radialGradient id="zone2-bg" cx="50%" cy="50%" r="55%">',
+    '<stop offset="0%" stop-color="#251608" stop-opacity="0.9"/>',
+    '<stop offset="100%" stop-color="#1a1005" stop-opacity="0.9"/>',
+    '</radialGradient>',
+    '<radialGradient id="zone3-bg" cx="50%" cy="50%" r="55%">',
+    '<stop offset="0%" stop-color="#0a1a0e" stop-opacity="0.92"/>',
+    '<stop offset="100%" stop-color="#060d08" stop-opacity="0.92"/>',
+    '</radialGradient>',
+    '<radialGradient id="zone4-bg" cx="50%" cy="80%" r="55%">',
+    '<stop offset="0%" stop-color="#140a22" stop-opacity="0.94"/>',
+    '<stop offset="100%" stop-color="#0a0614" stop-opacity="0.94"/>',
+    '</radialGradient>'
+  ].join('');
+  svg.appendChild(defs);
+
+  // ── ZONE BACKGROUNDS ────────────────────────────────────────────────
+  var zoneBands = [
+    { y1: 0,  y2: 24, fill: 'url(#zone1-bg)' },
+    { y1: 24, y2: 46, fill: 'url(#zone2-bg)' },
+    { y1: 46, y2: 75, fill: 'url(#zone3-bg)' },
+    { y1: 75, y2: 100, fill: 'url(#zone4-bg)' },
   ];
-  zoneWatermarks.forEach(function(zw) {
-    // Zone band background
-    var rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
-    rect.setAttribute('x', '0'); rect.setAttribute('y', (zw.y - 2) + '%');
-    rect.setAttribute('width', '100%'); rect.setAttribute('height', '4%');
-    rect.setAttribute('fill', zw.color); rect.setAttribute('opacity', '0.5');
-    svg.appendChild(rect);
-    // Zone label
+  zoneBands.forEach(function(zb) {
+    var r = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    r.setAttribute('x', '0');
+    r.setAttribute('y', Math.round(H * zb.y1/100) + '');
+    r.setAttribute('width', W + '');
+    r.setAttribute('height', Math.round(H * (zb.y2-zb.y1)/100) + '');
+    r.setAttribute('fill', zb.fill);
+    svg.appendChild(r);
+  });
+
+  // ── SUBTLE TEXTURE OVERLAY — crosshatch pattern ──────────────────────
+  // Use a tiny SVG pattern for aged-parchment feel (no filter = no pixelation)
+  var patDef = document.createElementNS('http://www.w3.org/2000/svg','pattern');
+  patDef.setAttribute('id','hatch'); patDef.setAttribute('width','6');
+  patDef.setAttribute('height','6'); patDef.setAttribute('patternUnits','userSpaceOnUse');
+  var pl = document.createElementNS('http://www.w3.org/2000/svg','path');
+  pl.setAttribute('d','M0,6 L6,0 M-1,1 L1,-1 M5,7 L7,5');
+  pl.setAttribute('stroke','rgba(180,140,60,0.04)'); pl.setAttribute('stroke-width','0.5');
+  patDef.appendChild(pl);
+  defs.appendChild(patDef);
+  var texRect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+  texRect.setAttribute('x','0'); texRect.setAttribute('y','0');
+  texRect.setAttribute('width',W+''); texRect.setAttribute('height',H+'');
+  texRect.setAttribute('fill','url(#hatch)');
+  svg.appendChild(texRect);
+
+  // ── ZONE SEPARATOR RULES ────────────────────────────────────────────
+  var sepPcts = [24, 46, 75];
+  sepPcts.forEach(function(pct) {
+    var y = Math.round(H * pct/100);
+    // Decorative rule — double line with gap
+    [-1,1].forEach(function(offset) {
+      var l = document.createElementNS('http://www.w3.org/2000/svg','line');
+      l.setAttribute('x1','8'); l.setAttribute('y1', y+offset+'');
+      l.setAttribute('x2', W-8+''); l.setAttribute('y2', y+offset+'');
+      l.setAttribute('stroke','rgba(196,162,74,0.18)');
+      l.setAttribute('stroke-width','0.5');
+      svg.appendChild(l);
+    });
+    // Center ornament
+    var diamond = document.createElementNS('http://www.w3.org/2000/svg','polygon');
+    var cx = Math.round(W/2), cy = y;
+    diamond.setAttribute('points', cx+','+( cy-4)+' '+(cx+4)+','+cy+' '+cx+','+(cy+4)+' '+(cx-4)+','+cy);
+    diamond.setAttribute('fill','rgba(196,162,74,0.35)');
+    svg.appendChild(diamond);
+  });
+
+  // ── ZONE NAME LABELS ────────────────────────────────────────────────
+  var zoneLabels = [
+    { text:'Hearthstone Road', pct: 3,  anchor:'start', x: 10 },
+    { text:"Merchant's Pass",  pct: 26, anchor:'start', x: 10 },
+    { text:'The Thornwood',    pct: 48, anchor:'start', x: 10 },
+    { text:'The Iron Keep',    pct: 77, anchor:'start', x: 10 },
+  ];
+  zoneLabels.forEach(function(zl) {
     var t = document.createElementNS('http://www.w3.org/2000/svg','text');
-    t.setAttribute('x', '4%');
-    t.setAttribute('y', zw.y + '%');
-    t.setAttribute('fill', '#ffffff');
-    t.setAttribute('opacity', '0.12');
-    t.setAttribute('font-size', '11');
-    t.setAttribute('font-family', 'serif');
-    t.setAttribute('font-weight', '700');
-    t.setAttribute('letter-spacing', '3');
-    t.textContent = zw.text;
+    t.setAttribute('x', zl.x+'');
+    t.setAttribute('y', Math.round(H * zl.pct/100) + 14 + '');
+    t.setAttribute('fill','rgba(196,162,74,0.55)');
+    t.setAttribute('font-size','11');
+    t.setAttribute('font-family',"'Cinzel', serif");
+    t.setAttribute('font-weight','700');
+    t.setAttribute('letter-spacing','2.5');
+    t.setAttribute('text-anchor', zl.anchor);
+    t.textContent = zl.text.toUpperCase();
     svg.appendChild(t);
   });
 
-  // Zone separator lines
-  var zoneSepY = [26, 49, 77];
-  zoneSepY.forEach(function(pct) {
-    var line = document.createElementNS('http://www.w3.org/2000/svg','line');
-    var y = Math.round(H * pct / 100);
-    line.setAttribute('x1', '0'); line.setAttribute('y1', y);
-    line.setAttribute('x2', W);   line.setAttribute('y2', y);
-    line.setAttribute('stroke', '#1c2033');
-    line.setAttribute('stroke-width', '1');
-    line.setAttribute('stroke-dasharray', '3 8');
-    svg.appendChild(line);
-  });
+  // ── LotR-STYLE CARTOGRAPHIC ILLUSTRATIONS ──────────────────────────
+
+  function svgEl(tag, attrs) {
+    var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    for (var k in attrs) el.setAttribute(k, attrs[k]);
+    svg.appendChild(el);
+    return el;
+  }
+
+  function line(x1,y1,x2,y2,stroke,sw,opacity) {
+    svgEl('line',{x1:x1,y1:y1,x2:x2,y2:y2,stroke:stroke,'stroke-width':sw||1,opacity:opacity||1,'stroke-linecap':'round'});
+  }
+
+  // LotR-style tree: trunk + radiating branch strokes (top-down cartographic symbol)
+  function cartTree(cx, cy, sz, op) {
+    var col = 'rgba(45,75,40,'+op+')';
+    // trunk
+    line(cx, cy+sz*0.3, cx, cy-sz*0.1, col, sz*0.18);
+    // canopy circle
+    svgEl('circle',{cx:cx,cy:cy-sz*0.15,r:sz*0.55,fill:'rgba(35,65,32,'+(op*0.7)+')',stroke:col,'stroke-width':sz*0.12});
+    // radiating lines from canopy center
+    for (var a=0; a<6; a++) {
+      var ang = (a/6)*Math.PI*2;
+      var r1=sz*0.1, r2=sz*0.52;
+      line(cx+Math.cos(ang)*r1, cy-sz*0.15+Math.sin(ang)*r1,
+           cx+Math.cos(ang)*r2, cy-sz*0.15+Math.sin(ang)*r2,
+           'rgba(55,90,48,'+(op*0.6)+')', sz*0.08);
+    }
+  }
+
+  function treeLine(x1,y1,x2,y2,count,sz,op) {
+    for (var i=0; i<count; i++) {
+      var t = i/(Math.max(count-1,1));
+      cartTree(x1+(x2-x1)*t, y1+(y2-y1)*t, sz, op);
+    }
+  }
+
+  // LotR hill: overlapping stippled mound with contour lines
+  function hill(cx, cy, rx, ry, op) {
+    var col = 'rgba(110,90,60,'+op+')';
+    var col2 = 'rgba(80,65,42,'+(op*0.7)+')';
+    // Base ellipse
+    svgEl('ellipse',{cx:cx,cy:cy,rx:rx,ry:ry*0.6,fill:'rgba(90,72,48,'+(op*0.35)+')',stroke:col,'stroke-width':0.8});
+    // Contour lines — 3 progressively smaller arcs drawn as paths
+    for (var t=1; t<=3; t++) {
+      var scale = 1 - t*0.22;
+      var yo = -ry*0.12*t;
+      var path = svgEl('path',{
+        d:'M '+(cx-rx*scale)+','+(cy+yo)+' Q '+cx+','+(cy-ry*scale*0.9+yo)+' '+(cx+rx*scale)+','+(cy+yo),
+        fill:'none', stroke:col2, 'stroke-width':0.7, opacity:op*0.8
+      });
+    }
+    // Stipple dots on the mound
+    for (var d=0; d<8; d++) {
+      var ang = (d/8)*Math.PI;
+      var dx = Math.cos(ang)*rx*0.55, dy = -Math.abs(Math.sin(ang))*ry*0.45;
+      svgEl('circle',{cx:cx+dx,cy:cy+dy,r:0.8,fill:col,opacity:op*0.9});
+      svgEl('circle',{cx:cx-dx*0.5,cy:cy+dy*0.7,r:0.6,fill:col,opacity:op*0.7});
+    }
+  }
+
+  // Keep/fortress symbol: cross-shaped fortification
+  function castle(cx, cy, sz, op) {
+    var col = 'rgba(130,105,70,'+op+')';
+    var col2 = 'rgba(90,70,45,'+(op*0.8)+')';
+    // Main keep body
+    svgEl('rect',{x:cx-sz*0.35,y:cy-sz*0.7,width:sz*0.7,height:sz*0.9,fill:'rgba(100,80,55,'+(op*0.5)+')',stroke:col,'stroke-width':0.8});
+    // Tower left
+    svgEl('rect',{x:cx-sz*0.6,y:cy-sz*0.5,width:sz*0.28,height:sz*0.7,fill:'rgba(110,88,58,'+(op*0.4)+')',stroke:col,'stroke-width':0.7});
+    // Tower right
+    svgEl('rect',{x:cx+sz*0.32,y:cy-sz*0.5,width:sz*0.28,height:sz*0.7,fill:'rgba(110,88,58,'+(op*0.4)+')',stroke:col,'stroke-width':0.7});
+    // Battlement notches — main keep
+    for (var b=0; b<4; b++) {
+      var bx = cx - sz*0.28 + b*sz*0.18;
+      svgEl('rect',{x:bx,y:cy-sz*0.82,width:sz*0.1,height:sz*0.15,fill:col});
+    }
+    // Battlement notches — left tower
+    svgEl('rect',{x:cx-sz*0.57,y:cy-sz*0.62,width:sz*0.08,height:sz*0.13,fill:col});
+    svgEl('rect',{x:cx-sz*0.42,y:cy-sz*0.62,width:sz*0.08,height:sz*0.13,fill:col});
+    // Gate arch
+    svgEl('path',{d:'M '+(cx-sz*0.12)+','+(cy+sz*0.2)+' Q '+cx+','+(cy-sz*0.05)+' '+(cx+sz*0.12)+','+(cy+sz*0.2),
+      fill:'rgba(20,14,8,'+(op*1.5)+')',stroke:col2,'stroke-width':0.5});
+    // Cross window
+    line(cx, cy-sz*0.45, cx, cy-sz*0.15, col2, sz*0.07, op);
+    line(cx-sz*0.12, cy-sz*0.32, cx+sz*0.12, cy-sz*0.32, col2, sz*0.07, op);
+  }
+
+  // Compass rose — bottom right corner
+  function compass(cx, cy, sz) {
+    var col = 'rgba(196,162,74,0.55)';
+    var colFaint = 'rgba(196,162,74,0.25)';
+    // Cardinal spokes
+    var dirs = [[0,-1],[1,0],[0,1],[-1,0]];
+    dirs.forEach(function(d) {
+      line(cx+d[0]*sz*0.25, cy+d[1]*sz*0.25, cx+d[0]*sz, cy+d[1]*sz, col, 0.8);
+    });
+    // Intercardinal spokes (shorter)
+    [[1,-1],[1,1],[-1,1],[-1,-1]].forEach(function(d) {
+      var n = Math.sqrt(2);
+      line(cx+d[0]/n*sz*0.2, cy+d[1]/n*sz*0.2, cx+d[0]/n*sz*0.7, cy+d[1]/n*sz*0.7, colFaint, 0.6);
+    });
+    // N arrow tip (diamond)
+    svgEl('polygon',{
+      points: cx+','+(cy-sz)+' '+(cx-sz*0.15)+','+(cy-sz*0.55)+' '+cx+','+(cy-sz*0.2)+' '+(cx+sz*0.15)+','+(cy-sz*0.55),
+      fill:col
+    });
+    // Center dot
+    svgEl('circle',{cx:cx,cy:cy,r:sz*0.12,fill:col});
+    // N label
+    var t = svgEl('text',{x:cx,y:cy-sz*1.15,'text-anchor':'middle',fill:col,'font-size':sz*0.55,'font-family':"'Cinzel',serif",'font-weight':'700'});
+    t.textContent = 'N';
+  }
+
+  // ── PLACE ILLUSTRATIONS ──────────────────────────────────────────────
+
+  // Zone 1 — Hearthstone Road: rolling hills flanking the path
+  var z1y = Math.round(H * 0.10);
+  hill(Math.round(W*0.12), z1y+5, 22, 14, 0.55);
+  hill(Math.round(W*0.22), z1y+12, 18, 11, 0.4);
+  hill(Math.round(W*0.85), z1y+5,  22, 14, 0.55);
+  hill(Math.round(W*0.75), z1y+12, 18, 11, 0.4);
+  // Smaller hills mid-zone
+  hill(Math.round(W*0.10), Math.round(H*0.18), 14, 9, 0.35);
+  hill(Math.round(W*0.88), Math.round(H*0.18), 14, 9, 0.35);
+
+  // Zone 2 — Merchant's Pass: sparse trees, merchant camp suggestion
+  treeLine(Math.round(W*0.08), Math.round(H*0.30), Math.round(W*0.08), Math.round(H*0.42), 4, 7, 0.45);
+  treeLine(Math.round(W*0.92), Math.round(H*0.30), Math.round(W*0.92), Math.round(H*0.42), 4, 7, 0.45);
+
+  // Zone 3 — Thornwood: dense forest both sides
+  treeLine(Math.round(W*0.06), Math.round(H*0.50), Math.round(W*0.10), Math.round(H*0.72), 6, 8, 0.55);
+  treeLine(Math.round(W*0.14), Math.round(H*0.52), Math.round(W*0.10), Math.round(H*0.70), 4, 6, 0.38);
+  treeLine(Math.round(W*0.90), Math.round(H*0.50), Math.round(W*0.88), Math.round(H*0.72), 6, 8, 0.55);
+  treeLine(Math.round(W*0.82), Math.round(H*0.52), Math.round(W*0.86), Math.round(H*0.70), 4, 6, 0.38);
+  // Extra tree depth
+  treeLine(Math.round(W*0.06), Math.round(H*0.60), Math.round(W*0.12), Math.round(H*0.65), 3, 5, 0.28);
+  treeLine(Math.round(W*0.88), Math.round(H*0.60), Math.round(W*0.94), Math.round(H*0.65), 3, 5, 0.28);
+
+  // Zone 4 — Iron Keep: castle illustration center-top of zone
+  castle(Math.round(W*0.50), Math.round(H*0.83), 20, 0.65);
+  // Flanking towers (smaller)
+  castle(Math.round(W*0.15), Math.round(H*0.87), 12, 0.45);
+  castle(Math.round(W*0.85), Math.round(H*0.87), 12, 0.45);
+
+  // Compass rose — bottom-right
+  compass(W - 28, H - 28, 16);
+
+  // ── ROAD CONNECTIONS — curved bezier paths ──────────────────────────
+  function makePath(a, b) {
+    // Gentle S-curve between two points
+    var dx = b.x - a.x, dy = b.y - a.y;
+    var mx1 = a.x + dx*0.25 + dy*0.08;
+    var my1 = a.y + dy*0.4  - dx*0.05;
+    var mx2 = b.x - dx*0.25 + dy*0.08;
+    var my2 = b.y - dy*0.4  - dx*0.05;
+    return 'M '+a.x+' '+a.y+' C '+mx1+' '+my1+', '+mx2+' '+my2+', '+b.x+' '+b.y;
+  }
 
   CONNECTIONS.forEach(function(conn) {
     var a = posMap[conn[0]], b = posMap[conn[1]];
     if (!a || !b) return;
-    var line = document.createElementNS('http://www.w3.org/2000/svg','line');
-    line.setAttribute('x1', a.x); line.setAttribute('y1', a.y);
-    line.setAttribute('x2', b.x); line.setAttribute('y2', b.y);
     var traveled = isReached(conn[0]) && isReached(conn[1]);
-    line.setAttribute('stroke', traveled ? '#5b21b6' : '#1c2033');
-    line.setAttribute('stroke-width', traveled ? '2.5' : '1.5');
-    if (!traveled) line.setAttribute('stroke-dasharray', '4 6');
-    line.setAttribute('stroke-linecap', 'round');
-    svg.appendChild(line);
+
+    // Road shadow (depth)
+    var shadow = document.createElementNS('http://www.w3.org/2000/svg','path');
+    shadow.setAttribute('d', makePath(a,b));
+    shadow.setAttribute('stroke','rgba(0,0,0,0.5)');
+    shadow.setAttribute('stroke-width', traveled ? '5' : '3.5');
+    shadow.setAttribute('fill','none');
+    shadow.setAttribute('stroke-linecap','round');
+    svg.appendChild(shadow);
+
+    // Road body
+    var path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d', makePath(a,b));
+    if (traveled) {
+      path.setAttribute('stroke','rgba(196,162,74,0.7)');
+      path.setAttribute('stroke-width','2.5');
+    } else {
+      path.setAttribute('stroke','rgba(90,75,50,0.3)');
+      path.setAttribute('stroke-width','1.8');
+      path.setAttribute('stroke-dasharray','5 7');
+    }
+    path.setAttribute('fill','none');
+    path.setAttribute('stroke-linecap','round');
+    svg.appendChild(path);
   });
 
-  // Node DOM elements
+  // Vignette overlay
+  var vig = document.createElementNS('http://www.w3.org/2000/svg','rect');
+  vig.setAttribute('x','0'); vig.setAttribute('y','0');
+  vig.setAttribute('width',W+''); vig.setAttribute('height',H+'');
+  vig.setAttribute('fill','url(#vignette)');
+  vig.setAttribute('pointer-events','none');
+  svg.appendChild(vig);
+
+  // ── NODE DOM ELEMENTS ───────────────────────────────────────────────
   inner.innerHTML = '';
   inner.style.height = H + 'px';
 
@@ -2827,10 +3128,11 @@ function renderMap() {
     }
     if (!wpData) return;
 
-    var isBadge   = typeof layout.id === 'string';
-    var isEarned  = isBadge && (state.badges||[]).indexOf(wpData.badge) !== -1;
-    var isDone    = !isBadge && layout.id < pos;
-    var isCurrent = !isBadge && layout.id === pos;
+    // Skip badge nodes — they're celebrated via overlay, not shown on map
+    if (typeof layout.id === 'string') return;
+
+    var isDone    = layout.id < pos;
+    var isCurrent = layout.id === pos;
 
     var px = posMap[layout.id];
 
@@ -2840,21 +3142,15 @@ function renderMap() {
     wrap.style.top  = px.y + 'px';
 
     var circle = document.createElement('div');
-    var zoneClass = '';
-    if (!isBadge && typeof wpData.zone === 'number') {
-      zoneClass = ' zone' + wpData.zone;
-    }
+    var zoneClass = typeof wpData.zone === 'number' ? ' zone' + wpData.zone : '';
     var cc = 'map-node-circle' + zoneClass;
-    if (isBadge) cc += ' badge-node' + (isEarned ? ' earned' : ' ahead');
-    else cc += isDone ? ' done' : isCurrent ? ' current' : ' ahead';
+    cc += isDone ? ' done' : isCurrent ? ' current' : ' ahead';
     circle.className = cc;
     circle.textContent = wpData.icon;
 
     var label = document.createElement('div');
     label.className = 'map-node-label';
-    label.textContent = isBadge
-      ? (isEarned ? '★ Badge' : '?')
-      : wpData.name.replace('\n',' ');
+    label.textContent = wpData.name.replace('\n',' ');
 
     wrap.appendChild(circle);
     wrap.appendChild(label);
@@ -2866,6 +3162,21 @@ function renderMap() {
   for (var i = 1; i <= 3; i++) {
     var pip = document.getElementById('road-pip-' + i);
     if (pip) pip.className = 'road-pip' + (i <= bonuses ? ' earned' : '');
+  }
+  // Road bonus countdown label
+  var rbLabel = document.getElementById('road-bonus-label');
+  if (rbLabel) {
+    var daysLogged = (state.weekLogDays || []).length;
+    var daysNeeded = Math.max(0, 5 - daysLogged);
+    if (bonuses >= 3) {
+      rbLabel.textContent = '✦ All Road Bonuses earned this month';
+    } else if (daysNeeded === 0) {
+      rbLabel.textContent = '✦ Road Bonus earned — advancing the map!';
+    } else if (daysLogged === 0) {
+      rbLabel.textContent = 'Road Bonus — log 5 days this week to advance early';
+    } else {
+      rbLabel.textContent = daysNeeded + ' more day' + (daysNeeded === 1 ? '' : 's') + ' this week for a Road Bonus';
+    }
   }
 
   // Hearts
@@ -2926,6 +3237,10 @@ function checkMonthReset() {
     state.encounterLogCount        = 0;
     state.lastEncounterAtLog       = 0;
     state.hearts                   = 3;
+    state.woundedMode              = false;
+    state.cleanDayStreak           = 0;
+    state.lastCleanDay             = '';
+    state.woundedDayStartReserve   = null;
     // Vault carries over — it's the reward for discipline
     save();
     if (state.name) { showMonthReset(prevMonth, prevZoneReached, prevLog, prevBest, prevVault); }
@@ -3017,6 +3332,12 @@ function renderCoins() {
     statusEl.classList.add('warning');
     statusEl.textContent = 'Getting low';
     subEl.textContent    = '$' + spent.toFixed(0) + ' spent — ' + Math.round(remPct) + '% left';
+  } else if (remPct >= 70) {
+    remEl.textContent    = '$' + reserve.toFixed(0);
+    if (ofLabel) ofLabel.textContent = 'remaining of';
+    statusEl.classList.add('good');
+    statusEl.textContent = 'Treasury strong';
+    subEl.textContent    = '$' + spent.toFixed(0) + ' spent — well within your limits';
   } else {
     remEl.textContent    = '$' + reserve.toFixed(0);
     if (ofLabel) ofLabel.textContent = 'remaining of';
@@ -3091,7 +3412,7 @@ function render() {
 
   // XP bonus indicator
   var bonusMsg = document.getElementById('xp-bonus-msg');
-  if (bonusMsg) {
+  if (bonusMsg && !state.woundedMode) {
     var streakBonus = Math.min(5, Math.floor(streakCount / 5));
     if (streakBonus > 0 && loggedToday) {
       bonusMsg.textContent = '🔥 Streak bonus active — earning extra XP';
@@ -3106,6 +3427,57 @@ function render() {
   renderCoins();
   renderMap();
   checkZoneBadge();
+
+  // Wounded mode UI — recovery track inside XP block
+  var recoveryTrack = document.getElementById('recovery-track');
+  var charPanel     = document.getElementById('coin-reserve-section');
+  if (recoveryTrack) {
+    if (state.woundedMode) {
+      recoveryTrack.classList.remove('hidden');
+      var clean    = state.cleanDayStreak || 0;
+      var daysLeft = 3 - clean;
+      // Recovery label — compact, one line
+      var recovLabel = document.getElementById('recovery-label');
+      if (recovLabel) recovLabel.textContent = daysLeft === 1 ? 'One clean day to recover' : daysLeft + ' clean days to recover';
+      // Pips
+      for (var rp = 1; rp <= 3; rp++) {
+        var pip = document.getElementById('rpip-' + rp);
+        if (pip) pip.className = 'recovery-pip' + (rp <= clean ? ' earned' : '');
+      }
+      if (charPanel) charPanel.classList.add('wounded');
+    } else {
+      recoveryTrack.classList.add('hidden');
+      if (charPanel) charPanel.classList.remove('wounded');
+    }
+  }
+
+  // XP sub line — wounded takes priority over streak bonus message
+  var xpBonusEl = document.getElementById('xp-bonus-msg');
+  if (xpBonusEl) {
+    if (state.woundedMode) {
+      xpBonusEl.textContent = '🩸 60% XP — treasury wounded';
+      xpBonusEl.style.color = 'rgba(200,80,60,0.8)';
+    }
+    // (non-wounded case already handled above in streak section)
+  }
+
+  // Log button state
+  var logBtn = document.getElementById('log-btn');
+  if (logBtn) {
+    var today2 = new Date().toDateString();
+    var loggedToday2 = state.lastLogDate === today2;
+    var streakLive = (state.streak || 0) > 0;
+    logBtn.className = 'log-btn';
+    if (loggedToday2) {
+      logBtn.classList.add('logged-today');
+      logBtn.textContent = '✓ Logged Today';
+    } else if (streakLive) {
+      logBtn.classList.add('streak-danger');
+      logBtn.innerHTML = '⚔ Log It';
+    } else {
+      logBtn.innerHTML = '⚔ Log It';
+    }
+  }
   // Sync road strip
   var rsLoc  = document.getElementById('road-strip-loc');
   var rsZone = document.getElementById('road-strip-zone');
@@ -3129,7 +3501,7 @@ function render() {
   checkArrival();
 }
 
-var LOG_PAGE_SIZE = 5;
+var LOG_PAGE_SIZE = 3;
 var logVisibleCount = LOG_PAGE_SIZE;
 
 function renderLog() {
@@ -3140,6 +3512,14 @@ function renderLog() {
 function showMoreLog() {
   logVisibleCount += LOG_PAGE_SIZE;
   renderLogPage();
+}
+
+function collapseLog() {
+  logVisibleCount = LOG_PAGE_SIZE;
+  renderLogPage();
+  // Scroll chronicle heading into view smoothly
+  var wrap = document.querySelector('.log-list-wrap');
+  if (wrap) wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function renderLogPage() {
@@ -3187,7 +3567,13 @@ function renderLogPage() {
   pagEl.style.display = 'flex';
   countEl.textContent = showing + ' of ' + total + ' entries';
   moreBtn.disabled    = !hasMore;
-  moreBtn.textContent = hasMore ? 'Show more entries' : 'All entries shown';
+  moreBtn.textContent = hasMore ? 'Show more ▾' : 'All shown';
+
+  // Collapse button — visible whenever more than default is showing
+  var collapseBtn = document.getElementById('log-collapse-btn');
+  if (collapseBtn) {
+    collapseBtn.style.display = logVisibleCount > LOG_PAGE_SIZE ? 'block' : 'none';
+  }
 }
 
 function formatDate(ts) {
@@ -3278,6 +3664,9 @@ function beginJourney() {
   state.seenStoryEncounters      = [];
   state.seenArrivals             = [];
   state.lastEncounterLog         = '';
+  state.woundedMode              = false;
+  state.cleanDayStreak           = 0;
+  state.lastCleanDay             = '';
 
   save();
   document.getElementById('onboarding').style.display = 'none';
@@ -3309,6 +3698,14 @@ function logExpense() {
   var baseXp = currentLevel <= 3 ? 30 : 15;
   var xpGained = baseXp + streakBonus;
 
+  // Wounded mode: 60% XP — you're traveling damaged
+  if (state.woundedMode) {
+    xpGained = Math.max(1, Math.round(xpGained * 0.6));
+  }
+
+  // Reset the day baseline if first log today while wounded
+  resetWoundedDayBaseline();
+
   markLoggedToday();
   state.xp += xpGained;
 
@@ -3331,6 +3728,7 @@ function logExpense() {
     // First time going over budget this month — fire a hostile encounter
     if (prevReserve >= 0 && state.coinReserve < 0 && !state.firedOverBudgetEncounter) {
       state.firedOverBudgetEncounter = true;
+      enterWoundedMode(); // begin wounded state
       setTimeout(function() {
         queueOverlay(function() {
           showEncounter({
@@ -3350,6 +3748,8 @@ function logExpense() {
 
   checkWeekRoadBonus();
   checkEncounter(amount);
+  // Check clean day recovery while wounded
+  if (state.woundedMode) checkCleanDay();
   save();
   render();
 
