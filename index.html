@@ -4,7 +4,7 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Budget Quest</title>
+<title>Habit Quest</title>
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400;1,600&family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -121,8 +121,8 @@ body::after {
 /* ── Two-column layout ── */
 .layout {
   display: grid;
-  grid-template-columns: 380px 1fr;
-  gap: 22px;
+  grid-template-columns: 420px 1fr;
+  gap: 20px;
   align-items: start;
 }
 .col-left {
@@ -688,22 +688,31 @@ body::after {
 .name-btn:hover { background: var(--gold); color: var(--bg); }
 
 .avatar-grid {
-  display: flex; gap: 10px; justify-content: center;
-  margin-bottom: 24px; flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px; justify-content: center;
+  margin-bottom: 24px;
 }
 .avatar-opt {
-  width: 66px; height: 66px;
   border: 1px solid var(--border); border-radius: 3px;
   background: var(--surface2);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 30px; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 16px 8px 12px;
+  cursor: pointer;
   transition: all 0.2s; position: relative; user-select: none;
+  gap: 6px;
+}
 }
 .avatar-opt:hover { border-color: var(--border-gold); transform: translateY(-2px); }
 .avatar-opt.selected { border-color: var(--gold); box-shadow: 0 0 12px var(--gold-glow); }
 .avatar-opt.selected::after {
-  content: '✓'; position: absolute; bottom: 3px; right: 5px;
-  font-family: 'Cinzel', serif; font-size: 13px; color: var(--gold);
+  content: '✓'; position: absolute; top: 5px; right: 7px;
+  font-family: 'Cinzel', serif; font-size: 11px; color: var(--gold);
+}
+.avatar-opt-icon { font-size: 32px; line-height: 1; }
+.avatar-opt-label {
+  font-family: 'Cinzel', serif; font-size: 11px; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 0.1em;
 }
 
 .class-grid { display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px; }
@@ -886,6 +895,185 @@ body::after {
 .teaser-name   { font-family: 'Cinzel', serif; font-size: 13px; color: var(--text-mid); margin-bottom: 2px; }
 .teaser-hint   { font-size: 15px; color: var(--text-dim); font-style: italic; line-height: 1.4; }
 .teaser-unlock { font-family: 'Cinzel', serif; font-size: 13px; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+
+/* ══════════════════════════════════════════════
+   WEATHER STRIP (compact, inside char panel)
+══════════════════════════════════════════════ */
+.weather-card {
+  border-radius: 2px;
+  padding: 8px 11px;
+  position: relative; overflow: hidden;
+  transition: border-color 0.5s, background 0.5s;
+  border: 1px solid var(--border);
+  margin-top: 10px;
+}
+.weather-card.clear   { border-color: rgba(58,158,106,0.35); background: rgba(58,158,106,0.04); }
+.weather-card.partial { border-color: rgba(91,143,204,0.3); }
+.weather-card.stormy  { border-color: rgba(212,98,42,0.35); background: rgba(212,98,42,0.03); }
+.weather-card.fog     { border-color: rgba(184,60,46,0.4); background: rgba(184,60,46,0.04); }
+.weather-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  transition: background 0.5s;
+}
+.weather-card.clear::before   { background: linear-gradient(90deg, transparent, var(--green), transparent); }
+.weather-card.partial::before { background: linear-gradient(90deg, transparent, var(--xp), transparent); }
+.weather-card.stormy::before  { background: linear-gradient(90deg, transparent, var(--orange), transparent); }
+.weather-card.fog::before     { background: linear-gradient(90deg, transparent, var(--red), transparent); }
+
+.weather-inner { display: flex; align-items: center; gap: 8px; }
+.weather-icon  { font-size: 18px; line-height: 1; flex-shrink: 0; }
+.weather-body  { flex: 1; min-width: 0; }
+.weather-label {
+  font-family: 'Cinzel', serif;
+  font-size: 11px; color: var(--gold-dim);
+  text-transform: uppercase; letter-spacing: 0.12em;
+}
+.weather-desc  { font-size: 13px; color: var(--text-dim); font-style: italic; line-height: 1.3; }
+.weather-xp-badge {
+  font-family: 'Cinzel', serif;
+  font-size: 13px; color: var(--text-dark);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 2px; padding: 3px 8px;
+  white-space: nowrap; flex-shrink: 0;
+}
+.weather-card.clear   .weather-xp-badge { color: var(--green); border-color: rgba(58,158,106,0.3); background: rgba(58,158,106,0.08); }
+.weather-card.stormy  .weather-xp-badge { color: var(--orange); border-color: rgba(212,98,42,0.3); }
+.weather-card.fog     .weather-xp-badge { color: var(--red); border-color: rgba(184,60,46,0.3); }
+
+/* ══════════════════════════════════════════════
+   LEFT STATS ROW
+══════════════════════════════════════════════ */
+.left-stats-row {
+  display: flex; align-items: stretch;
+  margin-top: 12px; gap: 0;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 2px; overflow: hidden;
+}
+.left-stat-block {
+  flex: 1; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px;
+}
+.left-stat-divider { width: 1px; background: var(--border); flex-shrink: 0; }
+.left-stat-label {
+  font-family: 'Cinzel', serif; font-size: 11px; color: var(--text-dark);
+  text-transform: uppercase; letter-spacing: 0.14em;
+}
+.left-stat-value { font-size: 18px; }
+
+/* ══════════════════════════════════════════════
+   PARTY OVERVIEW PANEL (left col)
+══════════════════════════════════════════════ */
+.party-overview-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 3px; padding: 14px 16px;
+}
+.party-overview-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0; border-bottom: 1px solid var(--border);
+}
+.party-overview-row:last-child { border-bottom: none; }
+.pov-icon {
+  width: 32px; height: 32px; border-radius: 3px;
+  background: var(--surface2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; flex-shrink: 0;
+}
+.pov-icon.wounded { border-color: rgba(184,60,46,0.5); animation: woundedPulse 2s ease-in-out infinite; }
+.pov-icon.done    { border-color: rgba(58,158,106,0.4); }
+.pov-info { flex: 1; min-width: 0; }
+.pov-name { font-family: 'Cinzel', serif; font-size: 13px; color: var(--gold); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pov-habit { font-size: 13px; color: var(--text-dim); font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pov-hp-bar-track {
+  flex-shrink: 0; width: 60px; height: 5px;
+  background: var(--border); border-radius: 100px; overflow: hidden;
+}
+.pov-hp-bar-fill {
+  height: 100%; border-radius: 100px;
+  transition: width 0.5s, background 0.3s;
+}
+
+/* ══════════════════════════════════════════════
+   PARTY SIZE SELECTOR
+══════════════════════════════════════════════ */
+.party-size-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px; margin-bottom: 6px;
+}
+.party-size-opt {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 3px; padding: 14px 10px;
+  cursor: pointer; transition: all 0.2s;
+  text-align: center; user-select: none;
+}
+.party-size-opt:hover { border-color: var(--border-mid); background: var(--surface3); }
+.party-size-opt.selected { border-color: var(--gold); background: var(--surface3); border-left-width: 2px; }
+.party-size-num {
+  font-family: 'Cinzel', serif; font-size: 30px; color: var(--gold-light);
+  line-height: 1; margin-bottom: 4px;
+  text-shadow: 0 0 14px var(--gold-glow);
+}
+.party-size-opt:not(.selected) .party-size-num { color: var(--text-dim); text-shadow: none; }
+.party-size-label { font-family: 'Cinzel', serif; font-size: 13px; color: var(--gold); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.1em; }
+.party-size-opt:not(.selected) .party-size-label { color: var(--text-dark); }
+.party-size-desc { font-size: 14px; color: var(--text-dim); font-style: italic; line-height: 1.4; }
+
+/* Companion progress dots in habit setup step */
+.companion-progress {
+  display: flex; justify-content: center; gap: 6px; margin-bottom: 14px;
+}
+.companion-pip {
+  width: 28px; height: 4px; border-radius: 100px;
+  background: var(--border); transition: all 0.3s;
+}
+.companion-pip.done    { background: var(--gold-dim); }
+.companion-pip.current { background: var(--gold); width: 36px; }
+
+/* Begin party summary */
+.begin-party-summary {
+  display: flex; flex-direction: column; gap: 8px; margin-top: 14px;
+}
+.begin-party-row {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--surface2); border: 1px solid var(--border-gold);
+  border-radius: 3px; padding: 10px 14px;
+  border-left: 3px solid var(--gold-dim);
+}
+.begin-party-icon { font-size: 24px; flex-shrink: 0; }
+.begin-party-name { font-family: 'Cinzel', serif; font-size: 15px; color: var(--gold); margin-bottom: 2px; }
+.begin-party-habit { font-size: 15px; color: var(--text-dim); font-style: italic; }
+
+/* ══════════════════════════════════════════════
+   ROAD EVENT (post check-in story beat)
+══════════════════════════════════════════════ */
+.road-event-overlay {
+  position: fixed; inset: 0;
+  background: rgba(6,4,2,0.85);
+  backdrop-filter: blur(3px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9998; opacity: 0; pointer-events: none;
+  transition: opacity 0.28s;
+}
+.road-event-overlay.show { opacity: 1; pointer-events: all; }
+.road-event-box {
+  background: var(--surface);
+  border: 1px solid var(--border-gold);
+  border-radius: 3px; padding: 28px 32px;
+  max-width: 400px; width: 90%; text-align: center;
+  transform: scale(0.93) translateY(12px);
+  transition: transform 0.32s cubic-bezier(0.34,1.56,0.64,1);
+  position: relative; overflow: hidden;
+}
+.road-event-overlay.show .road-event-box { transform: scale(1) translateY(0); }
+.road-event-box::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--teal), transparent);
+}
+.road-event-zone { font-family: 'Cinzel', serif; font-size: 12px; color: var(--teal); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 10px; }
+.road-event-icon  { font-size: 36px; margin-bottom: 10px; }
+.road-event-title { font-family: 'Cinzel', serif; font-size: 19px; color: var(--gold); margin-bottom: 10px; }
+.road-event-desc  { font-size: 17px; color: var(--text-dim); font-style: italic; line-height: 1.7; margin-bottom: 18px; }
 
 /* ══════════════════════════════════════════════
    ANIMATIONS
@@ -1224,6 +1412,234 @@ body::after {
 }
 .streak-right-col { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
 .streak-best { font-size: 13px; color: var(--text-dark); font-style: italic; }
+
+/* ══════════════════════════════════════════════
+   ONBOARDING — habit input + cadence + class grid
+══════════════════════════════════════════════ */
+.habit-examples {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  justify-content: center; margin-bottom: 14px;
+}
+.habit-example-btn {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 100px; color: var(--text-dim);
+  font-family: 'Crimson Text', serif; font-size: 16px;
+  padding: 5px 14px; cursor: pointer; transition: all 0.2s;
+}
+.habit-example-btn:hover { border-color: var(--border-gold); color: var(--text-mid); }
+.habit-input-row { display: flex; max-width: 420px; margin: 0 auto; }
+.habit-input-row .hero-name-input { border-radius: 2px; text-align: center; }
+
+.suggested-class-card {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--surface2); border: 1px solid var(--border-gold);
+  border-radius: 3px; padding: 14px 16px; margin-bottom: 4px;
+  border-left: 3px solid var(--gold-dim);
+}
+.suggested-class-icon { font-size: 32px; flex-shrink: 0; }
+.suggested-class-name {
+  font-family: 'Cinzel', serif; font-size: 18px; color: var(--gold); margin-bottom: 3px;
+}
+.suggested-class-desc { font-size: 16px; color: var(--text-dim); font-style: italic; margin-bottom: 4px; }
+.suggested-class-trait {
+  font-size: 12px; color: var(--xp); text-transform: uppercase; letter-spacing: 0.1em;
+  background: rgba(91,143,204,0.1); border: 1px solid rgba(91,143,204,0.2);
+  padding: 2px 8px; border-radius: 2px; display: inline-block;
+}
+
+.cadence-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.cadence-opt {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 3px; padding: 14px; cursor: pointer; transition: all 0.2s;
+  text-align: center; user-select: none;
+}
+.cadence-opt:hover { border-color: var(--border-mid); }
+.cadence-opt.selected { border-color: var(--gold); background: var(--surface3); }
+.cadence-icon { font-size: 24px; margin-bottom: 6px; }
+.cadence-label { font-family: 'Cinzel', serif; font-size: 15px; color: var(--gold); margin-bottom: 4px; }
+.cadence-desc  { font-size: 15px; color: var(--text-dim); font-style: italic; line-height: 1.4; }
+
+.weekly-target-row {
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  padding: 10px; background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 3px; margin-bottom: 6px;
+}
+.weekly-target-row.hidden { display: none; }
+.weekly-target-label {
+  font-family: 'Cinzel', serif; font-size: 13px; color: var(--text-dark);
+  text-transform: uppercase; letter-spacing: 0.1em;
+}
+.weekly-target-btns { display: flex; gap: 6px; }
+.wt-btn {
+  background: var(--surface3); border: 1px solid var(--border-mid);
+  border-radius: 2px; color: var(--text-dim);
+  font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 0.08em;
+  padding: 6px 14px; cursor: pointer; transition: all 0.2s;
+}
+.wt-btn.selected { border-color: var(--gold); color: var(--gold); background: var(--surface3); }
+.wt-btn:hover { border-color: var(--border-gold); }
+
+.begin-summary {
+  background: var(--surface2); border: 1px solid var(--border-gold);
+  border-radius: 3px; padding: 14px 16px;
+  display: flex; align-items: center; gap: 14px;
+  border-left: 3px solid var(--gold-dim);
+  margin-top: 10px;
+}
+.begin-sum-icon { font-size: 32px; flex-shrink: 0; }
+.begin-sum-name { font-family: 'Cinzel', serif; font-size: 17px; color: var(--gold); margin-bottom: 3px; }
+.begin-sum-habit { font-size: 17px; color: var(--text-dim); font-style: italic; margin-bottom: 3px; }
+.begin-sum-cadence { font-size: 15px; color: var(--text-dark); }
+
+.char-card-cadence-tag {
+  font-family: 'Cinzel', serif; font-size: 11px; color: var(--text-dark);
+  text-transform: uppercase; letter-spacing: 0.1em; margin-top: 3px;
+}
+.char-card-weekly-progress {
+  display: flex; gap: 4px; margin-top: 5px; align-items: center;
+}
+.weekly-pip {
+  width: 14px; height: 4px; border-radius: 100px;
+  background: var(--border); transition: all 0.3s;
+}
+.weekly-pip.done { background: var(--teal); box-shadow: 0 0 4px var(--teal-glow); }
+.weekly-pip-label {
+  font-size: 13px; color: var(--text-dark); font-style: italic; margin-left: 4px;
+}
+
+/* ══════════════════════════════════════════════
+   PARTY PANEL + CHARACTER CARDS
+══════════════════════════════════════════════ */
+.party-panel {
+  background: var(--surface); border: 1px solid var(--border-gold);
+  border-radius: 3px; padding: 18px;
+  position: relative; overflow: hidden;
+}
+.party-panel::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+}
+.party-cards { display: flex; flex-direction: column; gap: 12px; }
+
+.char-card {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 3px; overflow: hidden;
+  transition: border-color 0.3s;
+}
+.char-card.checked-in { border-color: rgba(58,158,106,0.45); }
+.char-card.wounded    { border-color: rgba(184,60,46,0.4); }
+.char-card.collapsed  { border-color: rgba(184,60,46,0.6); box-shadow: 0 0 12px rgba(184,60,46,0.1); }
+
+/* Card header row: icon | class+habit | hp hearts */
+.char-card-top {
+  display: grid; grid-template-columns: 52px 1fr auto;
+  gap: 12px; align-items: center; padding: 14px 16px 10px;
+}
+.char-card-avatar {
+  width: 52px; height: 52px; border-radius: 3px;
+  background: var(--surface3); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px; flex-shrink: 0; position: relative;
+}
+.char-card-avatar.low-hp::after {
+  content: ''; position: absolute; inset: 0; border-radius: 3px;
+  border: 2px solid rgba(184,60,46,0.6);
+  animation: woundedPulse 2s ease-in-out infinite;
+}
+@keyframes woundedPulse { 0%,100%{opacity:0.5} 50%{opacity:1} }
+
+.char-card-info { min-width: 0; }
+.char-card-name {
+  font-family: 'Cinzel', serif; font-size: 16px; color: var(--gold);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px;
+}
+.char-card-habit {
+  font-size: 14px; color: var(--text-mid); font-style: italic; line-height: 1.35;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.char-card-streak { font-size: 13px; color: var(--text-dark); margin-top: 2px; }
+
+/* HP hearts — right side of header */
+.char-card-hp-hearts {
+  flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 3px;
+}
+.hp-hearts-row { display: flex; gap: 2px; }
+.hp-heart { font-size: 14px; line-height: 1; transition: all 0.3s; }
+.hp-heart.empty { opacity: 0.2; filter: grayscale(1); }
+.hp-hearts-label {
+  font-family: 'Cinzel', serif; font-size: 10px; color: var(--text-dark);
+  text-transform: uppercase; letter-spacing: 0.1em;
+}
+
+/* HP bar (below header, thinner) */
+.char-card-hp {
+  padding: 0 16px 10px;
+}
+.char-hp-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 4px;
+}
+.char-hp-label {
+  font-family: 'Cinzel', serif; font-size: 11px; color: var(--text-dark);
+  text-transform: uppercase; letter-spacing: 0.12em;
+}
+.char-hp-pips { display: flex; gap: 4px; }
+.char-hp-pip {
+  width: 20px; height: 6px; border-radius: 100px;
+  background: var(--border); transition: all 0.4s;
+}
+.char-hp-pip.full  { background: var(--green); box-shadow: 0 0 4px rgba(58,158,106,0.4); }
+.char-hp-pip.low   { background: var(--orange); }
+.char-hp-pip.crit  { background: var(--red); animation: critPip 1.5s ease-in-out infinite; }
+@keyframes critPip { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+/* Check-in button area */
+.char-card-action { padding: 0 16px 14px; }
+.checkin-btn {
+  width: 100%; padding: 10px 14px;
+  background: var(--gold-dim); border: 1px solid var(--gold-dim);
+  border-radius: 2px; color: var(--gold-light);
+  font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 0.1em;
+  cursor: pointer; transition: all 0.2s;
+}
+.checkin-btn:hover { background: var(--gold); border-color: var(--gold); color: var(--bg); }
+.checkin-btn.done {
+  background: rgba(58,158,106,0.08); border-color: rgba(58,158,106,0.45);
+  color: var(--green); cursor: default;
+}
+.checkin-btn.done:hover { background: rgba(58,158,106,0.08); border-color: rgba(58,158,106,0.45); color: var(--green); }
+
+/* Goblin special — amount input inside card */
+.goblin-checkin { display: flex; gap: 6px; }
+.goblin-limit-display {
+  font-size: 14px; color: var(--text-dark); font-style: italic; margin-bottom: 6px;
+}
+
+/* Collapsed state indicator */
+.char-card-collapsed-bar {
+  display: none; padding: 8px 16px;
+  background: rgba(184,60,46,0.06);
+  border-top: 1px solid rgba(184,60,46,0.2);
+}
+.char-card.collapsed .char-card-collapsed-bar { display: block; }
+.collapsed-msg { font-size: 15px; color: rgba(184,60,46,0.8); font-style: italic; }
+
+/* Add character button */
+.add-char-wrap { margin-top: 10px; }
+.add-char-wrap.hidden { display: none; }
+.add-char-btn {
+  width: 100%; padding: 10px; background: transparent;
+  border: 1px dashed var(--border-mid); border-radius: 3px;
+  color: var(--text-dark); font-family: 'Cinzel', serif;
+  font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.2s;
+}
+.add-char-btn:hover { border-color: var(--gold-dim); color: var(--text-mid); }
+
+/* Chronicle entry update — show character name not amount */
+.log-char-name {
+  font-size: 14px; color: var(--text-dark); font-style: italic; margin-top: 1px;
+}
 </style>
 </head>
 <body>
@@ -1234,8 +1650,8 @@ body::after {
     <div class="header-brand">
       <div class="header-sigil">⚔</div>
       <div>
-        <h1>Budget Quest</h1>
-        <div class="header-tagline">Your ledger is your legend.</div>
+        <h1>Habit Quest</h1>
+        <div class="header-tagline">Your habits are your legend.</div>
       </div>
     </div>
     <div id="header-auth" class="header-auth" style="display:none;">
@@ -1249,7 +1665,7 @@ body::after {
     <div class="login-hero">
       <div class="login-hero-icon">⚔</div>
       <div class="login-title">Welcome Back, Hero</div>
-      <div class="login-sub">Track your spending. Level up. Build your treasury.</div>
+      <div class="login-sub">Build your habits. Level up. Reach the Iron Keep.</div>
     </div>
     <div class="card" style="max-width:420px;margin:0 auto;">
       <div class="card-accent-top"></div>
@@ -1279,7 +1695,7 @@ body::after {
   <div id="onboarding" style="display: none;">
     <div class="ob-card">
 
-      <div class="steps-row">
+      <div class="steps-row" id="steps-row">
         <div class="step-dot active" id="dot-0"></div>
         <div class="step-line"></div>
         <div class="step-dot" id="dot-1"></div>
@@ -1291,147 +1707,207 @@ body::after {
         <div class="step-dot" id="dot-4"></div>
       </div>
 
-      <!-- Step 1: Name -->
+      <!-- Step 0: Party Leader Name -->
       <div class="ob-step active" id="step-0">
         <div class="ob-icon">⚔️</div>
-        <div class="ob-title">Name Your Hero</div>
-        <div class="ob-sub">Every great journey begins with a name. Yours will be written in the ledgers of the Iron Keep — logged, leveled, and remembered. What do they call you on the road?</div>
+        <div class="ob-title">Name Your Party Leader</div>
+        <div class="ob-sub">You lead this party. The champions fight for you. What do they call you on the road?</div>
         <div class="name-row">
-          <input class="hero-name-input" id="hero-name-input" type="text" placeholder="Your hero's name…" maxlength="24" autocomplete="off">
-          <button class="name-btn" onclick="goStep(1)">Onward →</button>
+          <input class="hero-name-input" id="hero-name-input" type="text" placeholder="Your name…" maxlength="24" autocomplete="off" oninput="onNameInput()">
+          <button class="name-btn" id="name-next-btn" onclick="goStep('1-race')" disabled>Onward →</button>
         </div>
       </div>
 
-      <!-- Step 2: Avatar -->
-      <div class="ob-step" id="step-1">
+      <!-- Step 1: Avatar / Race -->
+      <div class="ob-step" id="step-1-race">
         <div class="ob-icon">🪞</div>
         <div class="ob-title">Choose Your Form</div>
         <div class="ob-sub">The road ahead is long. Choose the face that will meet it.</div>
         <div class="avatar-grid" id="avatar-grid">
-          <div class="avatar-opt" data-avatar="🧙" onclick="selectAvatar(this)">🧙</div>
-          <div class="avatar-opt" data-avatar="🧝‍♀️" onclick="selectAvatar(this)">🧝‍♀️</div>
-          <div class="avatar-opt" data-avatar="🧔" onclick="selectAvatar(this)">🧔</div>
+          <div class="avatar-opt selected" data-avatar="🧔" onclick="selectAvatar(this)">
+            <div class="avatar-opt-icon">🧔</div>
+            <div class="avatar-opt-label">Human</div>
+          </div>
+          <div class="avatar-opt" data-avatar="🧝" onclick="selectAvatar(this)">
+            <div class="avatar-opt-icon">🧝</div>
+            <div class="avatar-opt-label">Elf</div>
+          </div>
+          <div class="avatar-opt" data-avatar="👺" onclick="selectAvatar(this)">
+            <div class="avatar-opt-icon">👺</div>
+            <div class="avatar-opt-label">Orc</div>
+          </div>
+          <div class="avatar-opt" data-avatar="🧙" onclick="selectAvatar(this)">
+            <div class="avatar-opt-icon">🧙</div>
+            <div class="avatar-opt-label">Wizard</div>
+          </div>
         </div>
         <div class="ob-nav">
           <button class="btn-secondary" onclick="goStep(0)">← Back</button>
-          <button class="btn-primary" style="width:auto;" onclick="goStep(2)">Choose Your Class →</button>
+          <button class="btn-primary" style="width:auto;" onclick="goStep(2)">Choose Your Champions →</button>
         </div>
       </div>
 
-      <!-- Step 3: Class -->
+      <!-- Step 2: Party Size -->
       <div class="ob-step" id="step-2">
-        <div class="ob-icon">🏰</div>
-        <div class="ob-title">Choose Your Class</div>
-        <div class="ob-sub">Your class shapes how you walk the road. Every path leads to the Iron Keep — the question is how you travel it.</div>
-        <div class="class-grid" id="class-grid">
-          <div class="class-opt" data-class="Mage" onclick="selectClass(this)">
-            <div class="class-emoji">🔮</div>
-            <div class="class-info">
-              <div class="class-name">Mage of the Archive</div>
-              <div class="class-desc">You see patterns others miss. No hidden fee, no forgotten charge escapes your watch. Knowledge is your sharpest blade.</div>
-            </div>
-            <div class="class-trait">Wisdom</div>
+        <div class="ob-icon">🗡️</div>
+        <div class="ob-title">How Many Champions?</div>
+        <div class="ob-sub">Each champion is a habit you want to build. They grow stronger when you show up for them every day.</div>
+        <div class="party-size-grid">
+          <div class="party-size-opt" data-size="1" onclick="selectPartySize(this, 1)">
+            <div class="party-size-num">1</div>
+            <div class="party-size-label">Solo</div>
+            <div class="party-size-desc">Start focused. One habit, all your attention.</div>
           </div>
-          <div class="class-opt" data-class="Ranger" onclick="selectClass(this)">
-            <div class="class-emoji">🏹</div>
-            <div class="class-info">
-              <div class="class-name">Ranger of the Road</div>
-              <div class="class-desc">Steady and relentless. You log daily, hold your streak, and know the road better than any map can show.</div>
-            </div>
-            <div class="class-trait">Discipline</div>
+          <div class="party-size-opt" data-size="2" onclick="selectPartySize(this, 2)">
+            <div class="party-size-num">2</div>
+            <div class="party-size-label">Pair</div>
+            <div class="party-size-desc">Two commitments. Double the stakes.</div>
           </div>
-          <div class="class-opt" data-class="Hunter" onclick="selectClass(this)">
-            <div class="class-emoji">🐺</div>
-            <div class="class-info">
-              <div class="class-name">Hunter of Surplus</div>
-              <div class="class-desc">Every budget conquered is a trophy on your wall. You track spending like prey — patient, precise, and always closing.</div>
-            </div>
-            <div class="class-trait">Willpower</div>
+          <div class="party-size-opt selected" data-size="3" onclick="selectPartySize(this, 3)">
+            <div class="party-size-num">3</div>
+            <div class="party-size-label">Party</div>
+            <div class="party-size-desc">The classic three. Most travelers carry this many.</div>
           </div>
-          <div class="class-opt" data-class="Knight" onclick="selectClass(this)">
-            <div class="class-emoji">🗡️</div>
-            <div class="class-info">
-              <div class="class-name">Knight of the Keep</div>
-              <div class="class-desc">Your treasury is your fortress. Overspending shall not pass. You hold the line so the rest of the journey can proceed.</div>
-            </div>
-            <div class="class-trait">Discipline</div>
+        </div>
+        <div class="ob-nav" style="margin-top:18px;">
+          <button class="btn-secondary" onclick="goStep('1-race')">← Back</button>
+          <button class="btn-primary" style="width:auto;" id="party-size-next-btn" onclick="startCompanionSetup()">Enlist My Champions →</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Companion habit setup (dynamic, repeats per companion) -->
+      <div class="ob-step" id="step-habit">
+        <div class="ob-icon" id="companion-setup-icon">🧭</div>
+        <div class="ob-title" id="companion-setup-title">First Champion's Quest</div>
+        <div class="ob-sub" id="companion-setup-sub">What habit will this champion embody? Name it plainly — when you show up for it, they grow stronger.</div>
+        <div class="companion-progress" id="companion-progress">
+          <!-- dots showing companion 1 of N -->
+        </div>
+        <div class="habit-examples" id="habit-examples-dynamic">
+          <button class="habit-example-btn" onclick="setHabitExample(this)">Drink more water</button>
+          <button class="habit-example-btn" onclick="setHabitExample(this)">Read every day</button>
+          <button class="habit-example-btn" onclick="setHabitExample(this)">Exercise regularly</button>
+          <button class="habit-example-btn" onclick="setHabitExample(this)">Journal daily</button>
+          <button class="habit-example-btn" onclick="setHabitExample(this)">Track spending under $50/day</button>
+          <button class="habit-example-btn" onclick="setHabitExample(this)">Meditate</button>
+        </div>
+        <div class="habit-input-row">
+          <input class="hero-name-input" id="habit-input" type="text" placeholder="e.g. Sleep 8 hours every night…" maxlength="60" autocomplete="off" oninput="onHabitInput()">
+        </div>
+        <div class="ob-nav" style="margin-top:18px;">
+          <button class="btn-secondary" id="habit-back-btn" onclick="habitBack()">← Back</button>
+          <button class="btn-primary" style="width:auto;" id="habit-next-btn" onclick="goToClassStep()" disabled>Assign Champion →</button>
+        </div>
+      </div>
+
+      <!-- Step 3b: Cadence -->
+      <div class="ob-step" id="step-cadence">
+        <div class="ob-icon" id="cadence-setup-icon">📅</div>
+        <div class="ob-title">How Often?</div>
+        <div class="ob-sub">Set the tempo for this champion. This determines when they lose health if you fall behind.</div>
+        <div class="cadence-grid">
+          <div class="cadence-opt selected" id="cad-daily" onclick="selectCadence('daily')">
+            <div class="cadence-icon">🔁</div>
+            <div class="cadence-label">Every Day</div>
+            <div class="cadence-desc">Miss a day → lose a heart. Best for habits you can do any day.</div>
           </div>
-          <div class="class-opt" data-class="Healer" onclick="selectClass(this)">
-            <div class="class-emoji">❤️‍🩹</div>
-            <div class="class-info">
-              <div class="class-name">Healer of Debts</div>
-              <div class="class-desc">Recovery is its own kind of power. You know that every setback on the road can be undone — one logged entry at a time.</div>
-            </div>
-            <div class="class-trait">Resilience</div>
+          <div class="cadence-opt" id="cad-weekly" onclick="selectCadence('weekly')">
+            <div class="cadence-icon">📆</div>
+            <div class="cadence-label">A Few Times a Week</div>
+            <div class="cadence-desc">No daily penalty. Miss your weekly target → lose a heart at week's end.</div>
+          </div>
+        </div>
+        <div class="weekly-target-row hidden" id="weekly-target-row">
+          <div class="weekly-target-label">Target days per week</div>
+          <div class="weekly-target-btns">
+            <button class="wt-btn" data-n="2" onclick="selectWeeklyTarget(this)">2×</button>
+            <button class="wt-btn selected" data-n="3" onclick="selectWeeklyTarget(this)">3×</button>
+            <button class="wt-btn" data-n="4" onclick="selectWeeklyTarget(this)">4×</button>
+            <button class="wt-btn" data-n="5" onclick="selectWeeklyTarget(this)">5×</button>
+          </div>
+        </div>
+        <div class="ob-nav" style="margin-top:18px;">
+          <button class="btn-secondary" onclick="goStep('habit')">← Back</button>
+          <button class="btn-primary" style="width:auto;" onclick="goStep('class')">Choose Their Class →</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Class suggestion -->
+      <div class="ob-step" id="step-class">
+        <div class="ob-icon" id="ob-suggest-icon">🏹</div>
+        <div class="ob-title">Choose Their Class</div>
+        <div class="ob-sub" id="ob-suggest-sub">Based on their quest, we suggest this class. Change it if you see it differently.</div>
+        <div class="suggested-class-card" id="suggested-class-card">
+          <div class="suggested-class-icon" id="sc-icon">🏹</div>
+          <div class="suggested-class-body">
+            <div class="suggested-class-name" id="sc-name">The Mage</div>
+            <div class="suggested-class-desc" id="sc-desc">Daily practice habits — reading, journaling, meditation.</div>
+            <div class="suggested-class-trait" id="sc-trait">Discipline & Practice</div>
           </div>
         </div>
         <div class="ob-nav">
-          <button class="btn-secondary" onclick="goStep(1)">← Back</button>
-          <button class="btn-primary" style="width:auto;" onclick="goStep(3)">The Laws of the Road →</button>
+          <button class="btn-secondary" onclick="goStep('cadence')">← Back</button>
+          <button class="btn-primary" style="width:auto;" id="confirm-class-btn" onclick="confirmCompanionClass()">This is my champion →</button>
         </div>
       </div>
 
-      <!-- Step 4: How it works -->
-      <div class="ob-step" id="step-3">
+      <!-- Step 5: Laws -->
+      <div class="ob-step" id="step-laws">
         <div class="ob-icon">📜</div>
         <div class="ob-title">The Laws of the Road</div>
-        <div class="ob-sub">Five rules that govern every traveler who walks toward the Iron Keep.</div>
+        <div class="ob-sub">Five rules that govern every traveler toward the Iron Keep.</div>
         <div class="laws-grid">
           <div class="law-card">
-            <div class="law-icon">⚔️</div>
+            <div class="law-icon">✦</div>
             <div class="law-body">
-              <div class="law-title">Record your spending → earn XP</div>
-              <div class="law-plain">Every expense you log earns experience. The amount doesn't matter — the act of logging does. Awareness is the first weapon.</div>
+              <div class="law-title">Check in → earn XP</div>
+              <div class="law-plain">Show up for a habit and your champion earns experience. Daily or weekly — the act of showing up is what counts.</div>
             </div>
           </div>
           <div class="law-card">
             <div class="law-icon">🔥</div>
             <div class="law-body">
-              <div class="law-title">Log daily → forge your streak</div>
-              <div class="law-plain">Record at least one expense each day and your streak grows. Streaks multiply XP. Miss a day and the count resets — but the road doesn't end.</div>
-            </div>
-          </div>
-          <div class="law-card">
-            <div class="law-icon">👝</div>
-            <div class="law-body">
-              <div class="law-title">Face encounters → fill the Road Gold</div>
-              <div class="law-plain">The road brings both threats and rewards. Gold earned goes into your Road Gold — spend it to survive hostile encounters, or save it for what lies ahead.</div>
-            </div>
-          </div>
-          <div class="law-card">
-            <div class="law-icon">🗺️</div>
-            <div class="law-body">
-              <div class="law-title">Level up → advance the map</div>
-              <div class="law-plain">Each level pushes you further down a 14-location road toward the Iron Keep. Log five days in a week and earn a Road Bonus — an early advance.</div>
+              <div class="law-title">Consistency forges your streak</div>
+              <div class="law-plain">Daily champions build day streaks. Weekly champions build week streaks. Both multiply your XP the longer you hold them.</div>
             </div>
           </div>
           <div class="law-card">
             <div class="law-icon">❤️</div>
             <div class="law-body">
-              <div class="law-title">Guard your lives</div>
-              <div class="law-plain">You carry three lives. Hostile encounters cost one — or spend Road Gold to hold them. Lose all three and you choose: spend gold to revive in full, or take the XP debt and carry on.</div>
+              <div class="law-title">Champions have 5 HP</div>
+              <div class="law-plain">Daily champions lose a heart for every missed day. Weekly champions lose a heart if they miss their weekly target. Recovery is earned back one check-in at a time.</div>
+            </div>
+          </div>
+          <div class="law-card">
+            <div class="law-icon">🌦️</div>
+            <div class="law-body">
+              <div class="law-title">The weather reflects your party</div>
+              <div class="law-plain">Check in all your champions and the road clears. Leave them waiting and the skies darken — a reminder, not a punishment.</div>
+            </div>
+          </div>
+          <div class="law-card">
+            <div class="law-icon">👝</div>
+            <div class="law-body">
+              <div class="law-title">Face encounters → spend Road Gold</div>
+              <div class="law-plain">Road Gold absorbs hostile encounters on the map. Earn it from friendly ones — and guard it well.</div>
             </div>
           </div>
         </div>
         <div class="ob-nav">
-          <button class="btn-secondary" onclick="goStep(2)">← Back</button>
-          <button class="btn-primary" style="width:auto;" onclick="goStep(4)">Set Your Treasury →</button>
+          <button class="btn-secondary" onclick="goStep('habit')">← Back</button>
+          <button class="btn-primary" style="width:auto;" onclick="goStep('begin')">Begin the Journey →</button>
         </div>
       </div>
 
-      <!-- Step 5: Monthly Budget -->
-      <div class="ob-step" id="step-4">
-        <div class="ob-icon">⚜️</div>
-        <div class="ob-title">Fill Your Treasury</div>
-        <div class="ob-sub">Every hero needs a war chest. Set your monthly spending limit — this is the gold you have to work with. The road ahead will test it.</div>
-        <div class="budget-row">
-          <span class="budget-prefix">$</span>
-          <input class="budget-input" id="budget-input" type="number" min="1" step="1" placeholder="e.g. 2000" autocomplete="off">
-          <button class="budget-btn" onclick="beginJourney()">Begin the Journey ⚔</button>
-        </div>
-        <div class="ob-budget-hint">You can adjust your treasury at any time from your character sheet.</div>
-        <div class="ob-nav" style="margin-top:16px;">
-          <button class="btn-secondary" onclick="goStep(3)">← Back</button>
+      <!-- Step 6: Begin -->
+      <div class="ob-step" id="step-begin">
+        <div class="ob-icon">🏰</div>
+        <div class="ob-title">The Road Awaits</div>
+        <div class="ob-sub">Your party is assembled. You set out from Hearthstone Village. The Iron Keep is far — but closer every day you show up.</div>
+        <div class="begin-party-summary" id="begin-party-summary"><!-- populated by JS --></div>
+        <button class="btn-primary" style="margin-top:20px;" onclick="beginJourney()">Enter the Road ⚔</button>
+        <div class="ob-nav" style="margin-top:10px;">
+          <button class="btn-secondary" onclick="goStep('laws')">← Back</button>
         </div>
       </div>
 
@@ -1442,15 +1918,13 @@ body::after {
   <div id="main" style="display: block;">
     <div class="layout">
 
-      <!-- LEFT COLUMN — character sheet -->
+      <!-- LEFT COLUMN — traveler panel (with weather strip) -->
       <div class="col-left">
-        <div class="char-panel" id="coin-reserve-section">
-
-          <!-- Identity row -->
+        <div class="char-panel" id="char-panel-main">
           <div class="char-identity">
             <div class="char-avatar" id="char-avatar">🧙</div>
             <div style="flex:1;min-width:0;">
-              <div class="char-name" id="char-name">Hero</div>
+              <div class="char-name" id="char-name">Traveler</div>
               <div class="char-class" id="char-class">Novice</div>
             </div>
             <div class="char-level-badge">
@@ -1459,36 +1933,6 @@ body::after {
             </div>
           </div>
 
-          <!-- Treasury — most motivating stat: how much budget remains -->
-          <div class="treasury-section">
-            <div class="treasury-head">
-              <span class="treasury-label">⚜ Monthly Treasury</span>
-              <span class="treasury-status" id="coin-status"></span>
-            </div>
-            <div class="treasury-numbers">
-              <span class="treasury-remaining" id="coin-current">$0</span>
-              <span class="treasury-of" id="treasury-of-label">remaining of</span>
-              <span class="treasury-budget">$<span id="coin-max">0</span></span>
-            </div>
-            <div class="treasury-bar-track">
-              <div class="treasury-bar-fill" id="coin-fill" style="width:100%"></div>
-            </div>
-            <div class="treasury-sub" id="treasury-sub-text"></div>
-
-            <!-- Road Gold — inline within treasury -->
-            <div class="vault-inline">
-              <div class="vault-inline-left">
-                <div class="vault-inline-icon">👝</div>
-                <div>
-                  <div class="vault-inline-name">Road Gold</div>
-                  <div class="vault-inline-hint">Your road insurance — spend on threats, save for rough stretches</div>
-                </div>
-              </div>
-              <div class="vault-amount" id="vault-amount">0 💰</div>
-            </div>
-          </div>
-
-          <!-- XP — progress engine -->
           <div class="xp-block">
             <div class="xp-label-row">
               <span class="xp-label">✦ Experience</span>
@@ -1498,81 +1942,73 @@ body::after {
               <div class="xp-bar-fill" id="xp-fill" style="width:0%"></div>
             </div>
             <div class="xp-sub">
-              <span id="xp-bonus-msg"></span>
+              <span id="xp-bonus-msg-hidden" style="display:none;"></span>
               <span id="xp-next-msg">80 XP to Level 2</span>
             </div>
-            <!-- Recovery track — only visible when wounded -->
-            <div class="recovery-track hidden" id="recovery-track">
-              <div class="recovery-label" id="recovery-label">Treasury wounded</div>
-              <div class="recovery-pips">
-                <div class="recovery-pip" id="rpip-1"></div>
-                <div class="recovery-pip" id="rpip-2"></div>
-                <div class="recovery-pip" id="rpip-3"></div>
+          </div>
+
+          <!-- Road Gold + Streak compact row -->
+          <div class="left-stats-row">
+            <div class="left-stat-block">
+              <div class="left-stat-label">Road Gold</div>
+              <div class="left-stat-value" id="vault-amount" style="color:var(--gold);font-family:Cinzel,serif;font-size:20px;">0 💰</div>
+            </div>
+            <div class="left-stat-divider"></div>
+            <div class="left-stat-block">
+              <div class="left-stat-label">Streak</div>
+              <div class="left-stat-value" style="display:flex;align-items:center;gap:5px;">
+                <span id="streak-banner-flame" style="font-size:18px;">🔥</span>
+                <span id="streak-count" style="font-family:Cinzel,serif;font-size:22px;color:var(--orange);">0</span>
               </div>
+              <div style="font-size:13px;color:var(--text-dark);font-style:italic;" id="streak-banner-right">Start today</div>
             </div>
           </div>
 
-          <!-- Streak — character stat -->
-          <div class="streak-panel" id="streak-banner">
-            <div class="streak-left">
-              <span class="streak-flame" id="streak-banner-flame">🔥</span>
-              <span class="streak-num" id="streak-count">0</span>
-              <span class="streak-tag" id="streak-label">day streak — begin yours</span>
-            </div>
-            <div class="streak-right-col">
-              <div class="streak-right" id="streak-banner-right">Start your streak today</div>
-              <div class="streak-best" id="streak-best"></div>
+          <!-- Weather strip — compact mood indicator -->
+          <div class="weather-card partial" id="weather-card">
+            <div class="weather-inner">
+              <div class="weather-icon" id="weather-icon">⛅</div>
+              <div class="weather-body">
+                <div class="weather-label" id="weather-label">The Road Awaits</div>
+                <div class="weather-desc" id="weather-desc">Check in to see what lies ahead.</div>
+              </div>
+              <div class="weather-xp-badge" id="weather-xp-badge" style="display:none;">—</div>
             </div>
           </div>
 
-          <!-- Dev tools — testing only -->
           <div class="dev-tools" id="dev-tools">
-            <span class="dev-tools-label">Dev Tools</span>
-            <button class="dev-btn" onclick="devWipeLog()">Wipe Log</button>
-            <button class="dev-btn" onclick="devWipeStreak()">Reset Streak</button>
-            <button class="dev-btn" onclick="devWipeLevel()">Reset Level</button>
-            <button class="dev-btn" onclick="devRestart()">Restart Onboarding</button>
+            <span class="dev-tools-label">Dev</span>
+            <button class="dev-btn" onclick="devWipeLog()">Wipe</button>
+            <button class="dev-btn" onclick="devWipeStreak()">Streak</button>
+            <button class="dev-btn" onclick="devWipeLevel()">Level</button>
+            <button class="dev-btn" onclick="devRestart()">Restart</button>
+            <button class="dev-btn" onclick="devSimMiss()">Miss</button>
           </div>
-
           <div class="gold-float" id="gold-float"></div>
+
+          <!-- hidden compat stubs -->
+          <span id="streak-label" style="display:none;"></span>
+          <span id="streak-best" style="display:none;"></span>
+          <span id="xp-bonus-msg" style="display:none;"></span>
         </div>
 
-
+        <!-- hidden compat stubs for party overview -->
+        <div id="party-overview-panel" style="display:none;">
+          <div id="party-overview-cards"></div>
+        </div>
 
       </div><!-- /col-left -->
 
-      <!-- RIGHT COLUMN -->
+      <!-- RIGHT COLUMN — check-in cards + map -->
       <div class="col-right">
 
-        <!-- Log form -->
-        <div class="log-panel">
-          <div class="panel-head">Record Your Spending</div>
-          <div class="log-form-grid">
-            <div class="form-group">
-              <label class="form-label">What did you spend on?</label>
-              <input class="form-input" id="desc-input" type="text" placeholder="e.g. Morning coffee" autocomplete="off">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Amount ($)</label>
-              <input class="form-input" id="amount-input" type="number" min="0.01" step="0.01" placeholder="0.00">
-            </div>
-            <div class="log-btn-wrap">
-              <label class="form-label" style="visibility:hidden">Log</label>
-              <button class="log-btn" id="log-btn" onclick="logExpense()">⚔ Log It</button>
-            </div>
+        <div class="party-panel">
+          <div class="panel-head">Today's Quests</div>
+          <div class="party-cards" id="party-cards"></div>
+          <div class="add-char-wrap hidden" id="add-char-wrap">
+            <button class="add-char-btn" onclick="showAddCharacter()">+ Recruit a new companion</button>
           </div>
         </div>
-
-        <!-- Expense Chronicle — paginated -->
-        <div class="log-list-wrap">
-          <div class="section-head chronicle-head">✦ Expense Chronicle</div>
-          <div class="log-list" id="log-list"></div>
-          <div class="log-pagination" id="log-pagination" style="display:none;">
-            <button class="log-more-btn" id="log-more-btn" onclick="showMoreLog()">Show more entries</button>
-            <span class="log-pagination-count" id="log-pagination-count"></span>
-          </div>
-        </div>
-
 
         <!-- Map panel -->
         <div class="map-panel" id="map-section">
@@ -1584,50 +2020,29 @@ body::after {
             </div>
             <div class="map-right-col">
               <div class="map-hearts-block">
-                <div class="map-hearts-label">Lives</div>
-                <div class="map-hearts">
-                  <span class="map-heart" id="heart-1">❤️</span>
-                  <span class="map-heart" id="heart-2">❤️</span>
-                  <span class="map-heart" id="heart-3">❤️</span>
-                </div>
+                <div class="map-hearts-label">Road Gold</div>
+                <div class="map-hearts" style="font-family:Cinzel,serif;font-size:15px;color:var(--gold);" id="map-gold-display">0 💰</div>
               </div>
-
             </div>
           </div>
-          <!-- Badge rail — connected to map milestones -->
           <div class="badge-rail">
-            <div class="badge-rail-item" id="badge-zone1">
-              <div class="badge-pip locked">🛡️</div>
-              <div class="badge-rail-label">Zone I</div>
-            </div>
+            <div class="badge-rail-item" id="badge-zone1"><div class="badge-pip locked">🛡️</div><div class="badge-rail-label">Zone I</div></div>
             <div class="badge-connector"></div>
-            <div class="badge-rail-item" id="badge-zone2">
-              <div class="badge-pip locked">🪙</div>
-              <div class="badge-rail-label">Zone II</div>
-            </div>
+            <div class="badge-rail-item" id="badge-zone2"><div class="badge-pip locked">🪙</div><div class="badge-rail-label">Zone II</div></div>
             <div class="badge-connector"></div>
-            <div class="badge-rail-item" id="badge-zone3">
-              <div class="badge-pip locked">🌿</div>
-              <div class="badge-rail-label">Zone III</div>
-            </div>
+            <div class="badge-rail-item" id="badge-zone3"><div class="badge-pip locked">🌿</div><div class="badge-rail-label">Zone III</div></div>
             <div class="badge-connector"></div>
-            <div class="badge-rail-item" id="badge-zone4">
-              <div class="badge-pip locked">🔒</div>
-              <div class="badge-rail-label">Iron Keep</div>
-            </div>
+            <div class="badge-rail-item" id="badge-zone4"><div class="badge-pip locked">🔒</div><div class="badge-rail-label">Iron Keep</div></div>
           </div>
-
           <div class="map-viewport" id="map-viewport">
             <div class="node-map" id="node-map">
               <svg id="map-svg" xmlns="http://www.w3.org/2000/svg"></svg>
               <div class="node-map-inner" id="node-map-inner"></div>
             </div>
-            <div class="map-more-arrow" id="map-more-arrow">
-              <span>more ahead</span><span>▼</span>
-            </div>
+            <div class="map-more-arrow hidden" id="map-more-arrow"><span>more ahead</span><span>▼</span></div>
           </div>
           <div class="road-bonus-track">
-            <span class="road-bonus-label" id="road-bonus-label">Road Bonus — log 5 days this week</span>
+            <span class="road-bonus-label" id="road-bonus-label">Road Bonus — check in 5 days this week</span>
             <div class="road-bonus-pips">
               <div class="road-pip" id="road-pip-1"></div>
               <div class="road-pip" id="road-pip-2"></div>
@@ -1637,6 +2052,15 @@ body::after {
         </div>
 
       </div><!-- /col-right -->
+
+      <!-- Hidden stubs for JS compat -->
+      <div id="log-list" style="display:none;"></div>
+      <div id="log-pagination" style="display:none;"></div>
+      <span id="log-pagination-count" style="display:none;"></span>
+      <button id="log-more-btn" style="display:none;"></button>
+      <button id="log-collapse-btn" style="display:none;"></button>
+      <span id="streak-banner" style="display:none;"></span>
+
     </div><!-- /layout -->
   </div><!-- /main -->
 </div><!-- /app -->
@@ -1647,25 +2071,13 @@ body::after {
 <!-- Coin Float -->
 <div class="coin-float" id="coin-float"></div>
 
-<!-- Month Reset Overlay -->
-<div class="overlay" id="reset-overlay">
-  <div class="overlay-box reset-overlay-box">
-    <div class="reset-icon">📅</div>
-    <div class="reset-label">The Road Resets</div>
-    <div class="reset-title" id="reset-title">Campaign Complete</div>
-    <div class="reset-breakdown" id="reset-breakdown"></div>
-    <div class="reset-msg" id="reset-msg"></div>
-    <button class="overlay-btn primary-choice" onclick="closeReset()" style="width:100%;text-align:center;">Begin the New Campaign ⚔</button>
-  </div>
-</div>
-
 
 <!-- Broken / 0-Hearts Overlay -->
 <div class="overlay" id="broken-overlay">
   <div class="overlay-box broken" style="max-width:380px;">
     <div class="broken-icon">💀</div>
     <div class="broken-title">Fallen</div>
-    <div class="broken-msg">You've taken too many hits on the road. Your last heart is gone. Spend Road Gold to get back on your feet — or face the XP penalty and carry on broke.</div>
+    <div class="broken-msg">Your champion has fallen — HP at zero. Each check-in restores 1 HP. Keep showing up and they recover, one day at a time.</div>
     <div class="broken-gold" id="broken-gold-display">0 🪙</div>
     <div class="broken-cost">Road Gold balance</div>
     <div id="broken-choices"></div>
@@ -1695,6 +2107,17 @@ body::after {
   </div>
 </div>
 
+<!-- Road Event Overlay (post check-in story beat) -->
+<div class="road-event-overlay" id="road-event-overlay">
+  <div class="road-event-box">
+    <div class="road-event-zone" id="re-zone">✦ The Road</div>
+    <div class="road-event-icon" id="re-icon">🌄</div>
+    <div class="road-event-title" id="re-title">The Road Speaks</div>
+    <div class="road-event-desc" id="re-desc">Something stirs on the path ahead.</div>
+    <button class="overlay-btn primary-choice" onclick="closeRoadEvent()" style="width:100%;text-align:center;">Keep Moving ⚔</button>
+  </div>
+</div>
+
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
@@ -1707,12 +2130,65 @@ var SAVE_KEY = 'bq_v2';
 // Cumulative XP to reach each level (index = level - 1)
 var LEVEL_XP = [0, 80, 200, 370, 600, 900, 1270, 1720, 2260, 3000, 4000];
 
+// ─────────────────────────
+//  CLASS DEFINITIONS
+// ─────────────────────────
+var CLASS_DEFS = {
+  Warrior: {
+    icon: '\u2694\uFE0F', name: 'The Warrior', trait: 'Strength & Movement',
+    desc: 'Physical output habits — exercise, workouts, steps, sport, movement.',
+    hpRule: 'standard',
+    habitExamples: 'Exercise 30 min / Walk 8,000 steps / Go to the gym / Train'
+  },
+  Cleric: {
+    icon: '\u2764\uFE0F\u200D\uD83E\uDE79', name: 'The Cleric', trait: 'Recovery & Body',
+    desc: 'Body and recovery habits — sleep, water, nutrition, health, self-care.',
+    hpRule: 'standard',
+    habitExamples: 'Sleep 8 hours / Drink water / Eat well / Take medication'
+  },
+  Mage: {
+    icon: '\uD83D\uDD2E', name: 'The Mage', trait: 'Knowledge & Craft',
+    desc: 'Learning and creative habits — reading, writing, studying, building, creating.',
+    hpRule: 'standard',
+    habitExamples: 'Read 20 pages / Study / Journal / Learn a language / Work on a project'
+  },
+  Rogue: {
+    icon: '\uD83D\uDDE1\uFE0F', name: 'The Rogue', trait: 'Discipline & Restraint',
+    desc: 'Restraint and mindfulness habits — limits, spending, screen time, things to stop or avoid.',
+    hpRule: 'ranger',
+    habitExamples: 'Stay under $50/day / No social media before 9am / Meditate / No alcohol'
+  }
+};
+
+// Keyword → suggested class for smart onboarding
+var CLASS_KEYWORDS = {
+  Warrior: ['exercise','workout','gym','run','running','walk','steps','lift','yoga','swim','bike','cycling','train','cardio','push','pull','squat','hike','sport','weights','jog','fitnes','movement','active'],
+  Cleric:  ['sleep','water','drink','hydrat','medication','medicine','vitamin','rest','recovery','health','eat','diet','nutrition','meal','calori','fast','stretch','posture','skin','nap','body'],
+  Mage:    ['read','book','study','learn','language','code','program','write','writing','journal','blog','course','skill','class','project','build','creat','draw','paint','music','instrument','guitar','piano','practice','lesson','research'],
+  Rogue:   ['spend','budget','money','dollar','buy','purchase','saving','finance','expense','track','under','cost','price','debt','frugal','allowance','no ','avoid','limit','stop','quit','cut','less','reduce','screen','social media','alcohol','sugar','caffeine','smoking','meditat','mindful','gratitude','focus','phone']
+};
+
+// Suggest a class from habit description text
+function suggestClass(text) {
+  var lower = text.toLowerCase();
+  var scores = { Warrior: 0, Cleric: 0, Mage: 0, Rogue: 0 };
+  Object.keys(CLASS_KEYWORDS).forEach(function(cls) {
+    CLASS_KEYWORDS[cls].forEach(function(kw) {
+      if (lower.indexOf(kw) !== -1) scores[cls]++;
+    });
+  });
+  var best = null, bestScore = 0;
+  Object.keys(scores).forEach(function(cls) {
+    if (scores[cls] > bestScore) { bestScore = scores[cls]; best = cls; }
+  });
+  return best || 'Mage';
+}
+
 var CLASS_TITLES = {
-  Mage:   ['Novice Archivist','Apprentice Mage','Scroll Keeper','Lore Binder','Elder Mage'],
-  Ranger: ['Novice Tracker','Trail Walker','Forest Keeper','Silent Warden','Ranger Lord'],
-  Hunter: ['Novice Hunter','Coin Stalker','Surplus Seeker','Thrift Predator','Master Hunter'],
-  Knight: ['Novice Guard','Shield Bearer','Budget Warden','Iron Keeper','Knight Commander'],
-  Healer: ['Novice Mender','Debt Healer','Wound Closer','Recovery Sage','Grand Healer'],
+  Warrior: ['Novice Fighter','Sworn Blade','Iron Will','Battle-Hardened','Warlord'],
+  Cleric:  ['Novice Mender','Wound Closer','Recovery Sage','Body Keeper','Grand Cleric'],
+  Mage:    ['Novice Archivist','Apprentice Mage','Scroll Keeper','Lore Binder','Elder Mage'],
+  Rogue:   ['Novice Shadow','Discipline Seeker','Edge Walker','Iron Mind','Master Rogue'],
 };
 
 var LEVEL_MSGS = [
@@ -1736,38 +2212,38 @@ var LOG_ICONS = ['💰','🛒','🍖','🧪','⚔️','📜','🐎','🏰','🔮
 var MAP_WAYPOINTS = [
   // Zone 1 — The Hearthstone Road (levels 1-3)
   { id: 0,  icon: '🏘️', name: 'Hearthstone\nVillage',  zone: 1, zoneName: 'The Hearthstone Road',
-    arrival: 'You\'ve arrived at Hearthstone Village. Your first stop on a long road. Log something, earn your first XP, and get moving — the Iron Keep isn\'t going to reach itself.' },
+    arrival: 'You\'ve arrived at Hearthstone Village. First stop on a long road. Show up for your habit today — that\'s the whole game, and it starts here.' },
   { id: 1,  icon: '🌾', name: 'Harvest\nCrossing',      zone: 1, zoneName: 'The Hearthstone Road',
-    arrival: 'You\'ve arrived at Harvest Crossing. Three guilds have been in a territorial dispute over one landmark oak tree for the better part of six years. You eat a meal, check your balance, and let it be their problem.' },
+    arrival: 'You\'ve reached Harvest Crossing. Three guilds are in a six-year dispute over a single oak tree. You check in with your habit and keep walking. Clarity is a competitive advantage.' },
   { id: 2,  icon: '🪨', name: 'Stonepath\nMill',        zone: 1, zoneName: 'The Hearthstone Road',
-    arrival: 'You\'ve arrived at Stonepath Mill. The miller here takes exact coin only — no tabs, no credit, no rounding. It\'s the tightest operation on the road. You respect it more than you expected to.' },
+    arrival: 'You\'ve arrived at Stonepath Mill. The miller here keeps the tightest operation on the road — no shortcuts, no exceptions. You recognize the discipline. It looks a lot like yours.' },
   { id: 'z1', icon: '🛡️', name: 'Zone Badge',          zone: 'badge1', badge: 'zone1', zoneName: 'The Hearthstone Road',
-    zoneComplete: 'Hearthstone Road: done. First zone cleared. That one was the test. You passed.' },
-  // Zone 2 — The Merchant's Pass (levels 4-6)
-  { id: 3,  icon: '🏪', name: "Merchant's\nGate",       zone: 2, zoneName: "The Merchant's Pass",
-    arrival: 'You\'ve arrived at Merchant\'s Gate. The market here never sleeps — stalls everywhere, deals flying, someone pitching you something every ten steps. Good place to practice saying no and meaning it.' },
-  { id: 4,  icon: '🌉', name: 'Copperbridge',           zone: 2, zoneName: "The Merchant's Pass",
-    arrival: 'You\'ve arrived at Copperbridge. The copper the bridge was named for was melted down years ago to cover a town debt. Someone still leaves coins on the old plaque anyway. Habits are stubborn things.' },
-  { id: 5,  icon: '⛺', name: "Trader's\nCamp",         zone: 2, zoneName: "The Merchant's Pass",
-    arrival: 'You\'ve arrived at Trader\'s Camp. Half the people here are heading into the Thornwood. The other half just came out — and they look quietly smug about it. The smug ones seem intact. That\'s encouraging.' },
-  { id: 'z2', icon: '🪙', name: 'Zone Badge',          zone: 'badge2', badge: 'zone2', zoneName: "The Merchant's Pass",
-    zoneComplete: "Merchant's Pass cleared. Deals, tolls, temptations — all navigated. Budget still breathing. Well played." },
+    zoneComplete: 'Hearthstone Road: done. First zone cleared. The habit held. You move on.' },
+  // Zone 2 — The Midlands (levels 4-6)
+  { id: 3,  icon: '🏪', name: "Merchant's\nGate",       zone: 2, zoneName: 'The Midlands',
+    arrival: 'You\'ve arrived at Merchant\'s Gate. Distractions in every direction. Your champion doesn\'t blink. The check-in is already done. On to the next.' },
+  { id: 4,  icon: '🌉', name: 'Copperbridge',           zone: 2, zoneName: 'The Midlands',
+    arrival: 'You\'ve arrived at Copperbridge. Travelers here always seem to be renegotiating something — plans, intentions, excuses. You\'ve already done yours for the day. That\'s what moves you forward.' },
+  { id: 5,  icon: '⛺', name: "Trader's\nCamp",         zone: 2, zoneName: 'The Midlands',
+    arrival: 'You\'ve arrived at Trader\'s Camp. Half the people here are heading into the Thornwood. Half just came out. The ones who made it through have a certain quiet look. You\'re starting to recognize it in yourself.' },
+  { id: 'z2', icon: '🪙', name: 'Zone Badge',          zone: 'badge2', badge: 'zone2', zoneName: 'The Midlands',
+    zoneComplete: 'Midlands cleared. Distraction, detour, temptation — all passed. The road narrows now. Good.' },
   // Zone 3 — The Thornwood (levels 7-9)
   { id: 6,  icon: '🌲', name: 'Thornwood\nEdge',        zone: 3, zoneName: 'The Thornwood',
-    arrival: 'You\'ve entered the Thornwood. Its reputation is ominous. The reality is just quiet — very, very quiet. You find yourself opening your ledger and getting everything straight without really deciding to. Funny how that works.' },
+    arrival: 'You\'ve entered the Thornwood. It\'s quiet here — the kind that asks something of you. You check in. That\'s the answer.' },
   { id: 7,  icon: '🌑', name: 'Darkhollow\nPath',       zone: 3, zoneName: 'The Thornwood',
-    arrival: 'You\'ve reached Darkhollow Path. The road narrows here, and your thinking narrows with it — in a good way. Strip out the noise and you get clear fast on what you actually need versus what you just sort of want.' },
+    arrival: 'You\'ve reached Darkhollow Path. The road narrows. So does the question: are you still showing up? You are. That\'s enough.' },
   { id: 8,  icon: '🌸', name: 'Wayward\nShrine',        zone: 3, zoneName: 'The Thornwood',
-    arrival: 'You\'ve found the Wayward Shrine. Travelers leave small things here as they pass — coins, tokens, notes. You leave a coin. The road genuinely feels lighter after. You can\'t explain it and you\'re not going to try.' },
+    arrival: 'You\'ve found the Wayward Shrine. Travelers leave things here — tokens, intentions, days they\'re proud of. You add yours. The road feels lighter.' },
   { id: 'z3', icon: '🌿', name: 'Zone Badge',          zone: 'badge3', badge: 'zone3', zoneName: 'The Thornwood',
-    zoneComplete: 'Thornwood cleared. Turns out it\'s just a forest if you keep logging. You come out the other side intact.' },
+    zoneComplete: 'Thornwood cleared. Turns out it\'s just a forest if you keep showing up. You come out the other side.' },
   // Zone 4 — The Iron Keep (levels 10+)
-  { id: 9,  icon: '🏰', name: 'Iron Keep\nGates',       zone: 4, zoneName: 'The Iron Keep',
-    arrival: 'You\'ve reached the Iron Keep Gates. The guards here have seen every kind of traveler. They clock a disciplined one fast. You\'re waved through without a second look. That\'s the highest compliment this gate gives.' },
-  { id: 10, icon: '⚔️', name: 'The Iron\nKeep',         zone: 4, zoneName: 'The Iron Keep',
-    arrival: 'You\'ve arrived at the Iron Keep. You made it this month — the full road, start to finish. The quartermaster stamps your log without a word. When the new moon comes, the road resets. Your Road Gold carries forward. Your legend does too.' },
-  { id: 'z4', icon: '🔒', name: 'Zone Badge',          zone: 'badge4', badge: 'zone4', zoneName: 'The Iron Keep',
-    zoneComplete: 'Iron Keep reached. Most people quit somewhere in the Merchant\'s Pass. Your log, your Road Gold, your streak. That\'s what got you here.' },
+  { id: 9,  icon: '🏰', name: 'Iron Keep\nGates',       zone: 4, zoneName: 'The Iron Keep Approach',
+    arrival: 'You\'ve reached the Iron Keep Gates. The gate captain has seen ten thousand travelers. She reads yours in three seconds. A disciplined one — habit clean, party intact. You\'re waved through without a word.' },
+  { id: 10, icon: '⚔️', name: 'The Iron\nKeep',         zone: 4, zoneName: 'The Iron Keep Approach',
+    arrival: 'You\'ve arrived at the Iron Keep. The full road walked. The quartermaster stamps your record without asking to see it twice. When the new moon comes, the road resets. Your Road Gold carries forward. Your legend does too.' },
+  { id: 'z4', icon: '🔒', name: 'Zone Badge',          zone: 'badge4', badge: 'zone4', zoneName: 'The Iron Keep Approach',
+    zoneComplete: 'Iron Keep reached. Most people fold somewhere in the Thornwood. Your habit, your streak, your party. That\'s what got you here.' },
 ];
 
 // ─────────────────────────
@@ -1779,50 +2255,50 @@ var HOSTILE_ENCOUNTERS = [
     icon: '🗡️',
     title: 'Road Toll. Unofficial.',
     zone: 'Ambush',
-    desc: 'Four people have stepped into the road ahead with the specific energy of someone who recently decided \'finders keepers\' is a legal framework. The road is technically free. They have a different interpretation.',
-    choiceA: { label: '🛡️ Stare them down', sub: 'Costs 1 Life — they fold' },
-    choiceB: { label: '💰 Pay the stupid toll', sub: 'Spend 20 🪙 — move on with your dignity' },
+    desc: 'Four figures step into the road with the practiced air of people who have redefined "asking" as a concept. They want something. They haven\'t said what. The road behind you is looking very appealing right now.',
+    choiceA: { label: '🛡️ Hold your ground', sub: 'Lose 1 HP — they back off' },
+    choiceB: { label: '💰 Pay them off', sub: 'Spend 20 Road Gold — move on intact' },
     goldCost: 20
   },
   {
-    id: 'tax',
-    icon: '📜',
-    title: 'Surprise Audit',
-    zone: 'Official Nonsense',
-    desc: 'A tax collector is waiting roadside with a brand-new ledger and a practiced look of innocence. \'Travel surcharge,\' he says. \'Completely standard.\' You have never heard of this surcharge. Neither has the road.',
-    choiceA: { label: '🛡️ Contest it loudly', sub: 'Costs 1 Life — he finds somewhere else to be' },
-    choiceB: { label: '💰 Just pay and go', sub: 'Spend 15 🪙 — not worth the argument' },
+    id: 'fog',
+    icon: '🌫️',
+    title: 'The Fog of Habit',
+    zone: 'Setback',
+    desc: 'A strange heaviness settles over the road — the kind that shows up three weeks in, when the initial momentum has worn off and the habit isn\'t yet automatic. You know this feeling. You\'ve beaten it before.',
+    choiceA: { label: '🛡️ Push through it', sub: 'Lose 1 HP — costs something, gains everything' },
+    choiceB: { label: '💰 Hire a guide', sub: 'Spend 15 Road Gold — they carry you through the fog' },
     goldCost: 15
-  },
-  {
-    id: 'merchant',
-    icon: '🛍️',
-    title: 'Flash Sale',
-    zone: 'Danger Zone',
-    desc: 'A merchant cart has appeared at exactly the wrong moment, positioned perfectly to catch foot traffic. Everything marked 40% off. The sign says \'Today Only.\' It always says that. Your budget is watching you very closely right now.',
-    choiceA: { label: '🛡️ Walk past without looking', sub: 'Costs 1 Life — willpower is exhausting' },
-    choiceB: { label: '💰 Buy one small thing', sub: 'Spend 10 🪙 — controlled damage' },
-    goldCost: 10
   },
   {
     id: 'storm',
     icon: '⛈️',
     title: 'Everything at Once',
     zone: 'Bad Day',
-    desc: 'Broken wheel. Wrong turn. Surprise rain. One meal that was a mistake in hindsight. Not every day cooperates. The road doesn\'t adjust its schedule for bad luck — it just keeps going, and so do you.',
-    choiceA: { label: '🛡️ Push through it', sub: 'Costs 1 Life — arrive tired but intact' },
-    choiceB: { label: '💰 Wait it out', sub: 'Spend 18 🪙 — a warm inn, no regrets' },
+    desc: 'Broken wheel. Wrong turn. Surprise rain. A genuinely difficult day with no clear cause or cure. The road doesn\'t adjust its schedule for hard days — it just keeps going. So do you.',
+    choiceA: { label: '🛡️ Push through', sub: 'Lose 1 HP — arrive tired but still moving' },
+    choiceB: { label: '💰 Rest and recover', sub: 'Spend 18 Road Gold — a warm inn, no regrets' },
     goldCost: 18
   },
   {
-    id: 'gambler',
+    id: 'temptation',
     icon: '🎲',
-    title: 'Roadside Gambler',
+    title: 'The Easy Way Out',
     zone: 'Temptation',
-    desc: 'A roadside gambler with a single table and a very confident smile. \'One game. Guaranteed win.\' He\'s said it to every traveler today. His cart is noticeably nicer than most of theirs. Draw your own conclusions.',
-    choiceA: { label: '🛡️ Keep walking', sub: 'Costs 1 Life — harder than it sounds' },
-    choiceB: { label: '💰 Decline with a coin', sub: 'Spend 12 🪙 — he respects it, oddly' },
+    desc: 'There is a shortcut. It looks fine. It\'s probably fine. The locals have a saying about this particular shortcut, but they say it quietly and won\'t quite meet your eyes. Your instincts are saying something. Listen to them.',
+    choiceA: { label: '🛡️ Take the long road', sub: 'Lose 1 HP — the right choice always costs something' },
+    choiceB: { label: '💰 Pay for a safe crossing', sub: 'Spend 12 Road Gold — not worth finding out' },
     goldCost: 12
+  },
+  {
+    id: 'snare',
+    icon: '🕸️',
+    title: 'The Interruption',
+    zone: 'Disruption',
+    desc: 'Something pulled you off track today — an obligation, an emergency, the inescapable demands of being a person who exists. The habit window is closing. There\'s still a chance to make it.',
+    choiceA: { label: '🛡️ Find a way', sub: 'Lose 1 HP — harder to check in, but you do it' },
+    choiceB: { label: '💰 Buy back your time', sub: 'Spend 16 Road Gold — clear the day, check in properly' },
+    goldCost: 16
   },
 ];
 
@@ -1835,16 +2311,16 @@ var FRIENDLY_ENCOUNTERS = [
     icon: '🌸',
     title: 'Roadside Shrine',
     zone: 'Lucky Find',
-    desc: 'There\'s a small shrine just off the path. You stop. Thirty seconds of quiet. Whatever was pressing on you before you sat down is somehow smaller when you stand back up. You\'re not going to question it.',
-    reward: { type: 'heart', amount: 1 },
-    rewardDesc: '❤️ Life restored'
+    desc: 'There\'s a small shrine just off the path. You stop. Thirty seconds of stillness. Whatever was pressing on you before you sat down is somehow smaller when you stand back up. One of your champions recovers a point of HP.',
+    reward: { type: 'hp', amount: 1 },
+    rewardDesc: '❤️ HP restored to your weakest champion'
   },
   {
     id: 'journal',
     icon: '📖',
-    title: 'Free Advice (Good Kind)',
+    title: 'A Veteran\'s Notes',
     zone: 'Lucky Find',
-    desc: 'There\'s a battered notebook wedged under a milestone. Route notes, money tips, hard-won lessons. No name, just: \'For whoever needs it.\' You pick it up. You needed it.',
+    desc: 'A battered notebook tucked under a milestone. Someone walked this road before you and wrote down what they learned. No name — just: \'Keep going. It compounds.\' You read the whole thing. Your party earns XP from someone else\'s persistence.',
     reward: { type: 'xp', amount: 55 },
     rewardDesc: '+55 bonus XP'
   },
@@ -1853,125 +2329,117 @@ var FRIENDLY_ENCOUNTERS = [
     icon: '🏕️',
     title: 'Abandoned Camp',
     zone: 'Lucky Find',
-    desc: 'An abandoned camp, left in perfect order -- fire still warm, everything stowed. Under a flat stone: a small coin pouch and a note. \'For the next one.\' You pocket it. You\'ll pay it forward eventually.',
+    desc: 'An abandoned camp, left in perfect order — fire still warm, everything stowed with care. Under a flat stone: a coin pouch and a note: \'For the next one.\' Your party is the next one.',
     reward: { type: 'gold', amount: 25 },
-    rewardDesc: '+25 💰 Road Gold'
+    rewardDesc: '+25 Road Gold'
   },
   {
     id: 'elder',
     icon: '🧙',
-    title: 'Road Veteran',
+    title: 'The Road Veteran',
     zone: 'Friendly Encounter',
-    desc: 'An older traveler is sitting on a stump watching people go by. Most get a glance. You get a slow nod -- the deliberate kind. They press a coin into your hand. \'Keep the log clean.\' That\'s all.',
+    desc: 'An older traveler watches the road from a stump. Most passers-by get a glance. You get a slow, deliberate nod — the kind that means something. They press a coin into your hand. \'Don\'t skip days.\' That\'s all. It\'s enough.',
     reward: { type: 'gold', amount: 15 },
-    rewardDesc: '+15 💰 Road Gold'
+    rewardDesc: '+15 Road Gold'
   },
   {
-    id: 'griffon',
+    id: 'clear_road',
     icon: '🦅',
     title: 'Clear Road Ahead',
     zone: 'Good News',
-    desc: 'Guild cloth tied to a branch ahead — someone came through here before you and left the all-clear marker. Fastest route confirmed, no known hazards. You make genuinely good time.',
+    desc: 'Guild cloth tied to a high branch — the all-clear marker. Someone came through before you and left it. Fastest route, no hazards, good conditions. Your party makes strong time. The XP reflects it.',
     reward: { type: 'xp', amount: 35 },
     rewardDesc: '+35 bonus XP'
   },
   {
-    id: 'merchant_deal',
+    id: 'windfall',
     icon: '🤝',
-    title: 'Honest Merchant',
+    title: 'Road Windfall',
     zone: 'Friendly Encounter',
-    desc: 'A travelling merchant flags you down and gives you an actually fair deal — no hidden terms, no pressure, just a clean trade at a reasonable price. You almost don\'t know what to do with that. You manage. A small pouch of road gold changes hands.',
+    desc: 'A traveling merchant — one of the honest ones — waves you down. She\'s ahead of schedule and has coin to spare. Says it\'s good luck to share it with disciplined travelers. Apparently you qualify.',
     reward: { type: 'gold', amount: 20 },
-    rewardDesc: '+20 💰 Road Gold'
+    rewardDesc: '+20 Road Gold'
   }
 ];
 
-// ── STORY ENCOUNTERS (NPC flavor — punchy, no continuity required) ──
+// ── STORY ENCOUNTERS (NPC flavor — no continuity required) ──
 var STORY_ENCOUNTERS = {
   z1: [
     {
-      id: 'veteran_tab',
+      id: 'veteran_habit',
       icon: '🍺',
-      title: 'The Innkeeper\'s Wall',
+      title: 'The Sellsword\'s Regret',
       zone: 'Hearthstone Village',
       minPos: 0,
-      desc: 'A veteran sellsword has been drinking on credit since the last harvest moon. The innkeeper\'s tally now spans three wall planks. The sellsword hasn\'t glanced at it once. You pay your tab in exact silver and sleep well.'
+      desc: 'A retired sellsword is sitting at the inn with the expression of someone cataloguing their own poor decisions. \'Thirty years of telling myself I\'d start tomorrow,\' he says. \'Tomorrow has a lot to answer for.\' You check in with your habit that night before you sleep.'
     },
     {
-      id: 'name_on_board',
+      id: 'posting_board',
       icon: '📜',
-      title: 'Bounty: The Vanished Merchant',
+      title: 'The Notice Board',
       zone: 'Hearthstone Village',
       minPos: 0,
-      desc: 'The guild notice board has a new posting: a traveling merchant vanished three nights past, owing the Coppersmith\'s Guild 80 gold in unpaid consignment fees. The guild wants him found. You make a note to always settle your accounts before nightfall.'
+      desc: 'The guild notice board is covered in intentions — habits people announced and vanished from. Witness to a thousand Day Ones. You walk past it. Yours isn\'t an announcement. It\'s a quiet, daily fact.'
     },
     {
       id: 'cartographer',
       icon: '🗺️',
-      title: 'The Cartographer\'s Wisdom',
+      title: 'The Cartographer\'s Map',
       zone: 'Harvest Crossing',
       minPos: 1,
-      desc: 'A gnome cartographer has set up her cart at the crossroads — the cart is visibly larger on the inside than the outside, which she declines to explain. She unfurls a map of three alternate routes, each annotated with toll costs, detour fees, and hidden levies. \'Every shortcut has a price. Mine just shows you what it is.\' You buy nothing. You leave better informed.'
+      desc: 'A gnome cartographer has set up her cart at the crossroads — the cart is visibly larger on the inside than the outside, which she declines to explain. She shows you the road ahead: long, consistent, no shortcuts worth taking. \'The ones who arrive,\' she says, \'are boring travelers. They just keep going.\''
     },
     {
-      id: 'griffon_rider',
-      icon: '🦅',
-      title: 'Grounded Rider',
-      zone: 'Harvest Crossing',
-      minPos: 1,
-      desc: 'A griffon rider sits under the crossroads oak, waiting on a healer for her mount\'s torn wing. Could be a week. \'Patience costs less than a second mistake on the road,\' she says to the griffon, who ignores her. Good advice either way.'
-    },
-    {
-      id: 'the_queue',
+      id: 'miller_lesson',
       icon: '⚖️',
-      title: 'The Toll Queue',
+      title: 'The Miller\'s Standard',
       zone: 'Stonepath Mill',
       minPos: 2,
-      desc: 'Six travelers in the toll queue. The fifth — a self-declared wizard in budget robes — is three coppers short and baffled by this. The tollmaster has the expression of someone who has seen this every single day for fifteen years. You have exact coin. You\'re through in seconds.'
+      desc: 'The miller at Stonepath runs the tightest operation on the road — no exceptions, no "close enough," no rounding. Six travelers ahead of you got turned back for incomplete work. You had done yours. You\'re through in seconds. Excellence is mostly just showing up correctly.'
     },
   ],
   z2: [
     {
-      id: 'the_exchange',
+      id: 'distraction',
       icon: '🏛️',
-      title: 'The Moneychanger\'s Guild',
-      zone: "Merchant's Gate",
+      title: 'The Guild of Excellent Intentions',
+      zone: "Merchant\'s Gate",
       minPos: 3,
-      desc: 'A side door opens briefly — inside, a full hall of guild scribes bent over ledgers, quills moving in eerie unison. One looks up, spots your expense log, and gives a single approving nod before the door swings shut. You\'ll take the endorsement.'
+      desc: 'A guild is recruiting travelers to join their cause — it sounds compelling, the pamphlet is very good, and the speaker is genuinely passionate. You have a habit to maintain. You wish them well and keep walking. Enthusiasm is not the same thing as doing.'
     },
     {
-      id: 'bridge_ghost',
+      id: 'bridge_story',
       icon: '👻',
-      title: 'The Copper Ghost',
+      title: 'The Tale of the Bridge',
       zone: 'Copperbridge',
       minPos: 4,
-      desc: 'Locals say a debtor\'s ghost haunts Copperbridge — doomed to count coins he no longer has. You cross at dusk. You don\'t see anything. But you do check your balance twice before you reach the other side.'
+      desc: 'Locals say the old bridge is haunted by a traveler who stopped halfway and never decided whether to go back or forward. You cross at a steady pace without slowing. Some decisions only become hard if you let them.'
     },
     {
-      id: 'campfire_rumour',
+      id: 'campfire',
       icon: '🔥',
       title: 'Around the Fire',
-      zone: "Trader's Camp",
+      zone: "Trader\'s Camp",
       minPos: 5,
-      desc: 'Traders swapping road tales by firelight. A dwarf swears he found a coin pouch on a milestone near the Thornwood — enchanted gold, no owner, no curse attached. Nobody believes him. \'Eyes open anyway,\' he says, and means it.'
+      desc: 'Traders swapping road stories by firelight. A dwarf claims he met someone who made it to the Iron Keep without missing a single day. Nobody believes him. \'Doesn\'t matter if you believe it,\' he says. \'The road is the same either way.\''
     },
   ],
   z3: [
     {
-      id: 'ranger_warning',
+      id: 'sentinel',
       icon: '🏹',
       title: 'The Sentinel\'s Word',
       zone: 'Thornwood Edge',
       minPos: 6,
-      desc: 'A Thornwood sentinel drops from a branch and lands in front of you without a sound. \'Keep moving. Don\'t bargain with anything that glows.\' She\'s back in the canopy before you can ask what she means. You keep moving.'
+      desc: 'A Thornwood sentinel drops from a branch and lands in front of you without a sound. \'Keep moving. The forest tests the ones who hesitate.\' She\'s back in the canopy before you can ask what that means. You keep moving. That seems like the answer.'
     },
     {
-      id: 'the_quiet',
+      id: 'silence',
       icon: '🌲',
-      title: 'The Silence Hex',
+      title: 'The Quiet Miles',
       zone: 'Darkhollow Path',
       minPos: 7,
-      desc: 'An old hex on Darkhollow Path muffles sound within a hundred paces — ancient druid work, they say, to encourage honest thinking. No merchants, no haggling, just the path and your own thoughts. Your accounts have never been clearer.'
+      desc: 'There\'s a stretch of Darkhollow Path where the sound drops away — old druid work, they say, to give travelers space to think straight. You walk it in silence. Your habit feels obvious here. Why it was ever hard to start is less clear.'
     },
     {
       id: 'shrine_offering',
@@ -1979,7 +2447,7 @@ var STORY_ENCOUNTERS = {
       title: 'The Road Offering',
       zone: 'Wayward Shrine',
       minPos: 8,
-      desc: 'The shrine to Avreth, patron of travelers and honest coin, holds a fresh silver piece left by someone just ahead of you. You add a copper of your own. The road feels less heavy. The priests say Avreth rewards those who track what they carry.'
+      desc: 'The Wayward Shrine is covered in tokens left by travelers: small objects, folded notes, marks scratched into stone. Someone left a check-in streak tracker beside the road marker. 847 days in, no misses. You add your own mark.'
     },
   ],
   z4: [
@@ -1989,7 +2457,7 @@ var STORY_ENCOUNTERS = {
       title: 'The Iron Gate',
       zone: 'Iron Keep Gates',
       minPos: 9,
-      desc: 'The Iron Keep gate captain has seen ten thousand travelers. She reads yours in three seconds flat — log in hand, budget intact, no debts trailing behind you. She stamps your writ without a word. Here, that\'s as warm as welcomes get.'
+      desc: 'The gate captain has seen ten thousand travelers. She reads yours in seconds — party intact, habit consistent, streak unbroken. She stamps your writ and steps aside without comment. Here, that\'s as warm as welcomes get.'
     },
     {
       id: 'the_keep',
@@ -1997,7 +2465,7 @@ var STORY_ENCOUNTERS = {
       title: 'The Keep Quartermaster',
       zone: 'The Iron Keep',
       minPos: 10,
-      desc: 'The Keep quartermaster is infamous for turning away merchants who can\'t produce clean books. He holds out his hand. You hand over your log without hesitation. He reads it, raises an eyebrow. \'First one today who didn\'t fumble.\' The gate opens.'
+      desc: 'The Iron Keep quartermaster is infamous for turning away travelers with broken records. He holds out his hand. You hand over your log without hesitation. He reads it, raises an eyebrow. \'First one today who didn\'t flinch.\' The gate opens.'
     },
   ]
 };
@@ -2005,18 +2473,10 @@ var STORY_ENCOUNTERS = {
 //  STATE
 // ─────────────────────────
 var state = {
+  // Traveler (the player's journey leader)
   name: '',
   avatar: '',
-  heroClass: '',
   xp: 0,
-  streak: 0,
-  lastLogDate: null,
-  log: [],
-  monthlyBudget: 0,
-  coinReserve: 0,
-  ironVault: 0,
-  currentMonth: '',
-  hearts: 3,
   mapPosition: 0,
   badges: [],
   weekLogDays: [],
@@ -2029,12 +2489,16 @@ var state = {
   seenArrivals: [],
   lastMapPosition: -1,
   encounterLogCount: 0,
-  lastEncounterAtLog: 0
+  lastEncounterAtLog: 0,
+  ironVault: 0,        // Road Gold
+  // Party — array of character objects
+  // Each: { id, name, class, habit, cadence, cadenceTarget, hp, streak,
+  //         lastCheckIn, checkInsThisWeek, weekStart, log, seenArrivals }
+  party: [],
+  // Onboarding tracks party slot being created
+  activeSlots: 0,
 };
 
-// Temp onboarding picks
-var obAvatar = '';
-var obClass  = '';
 
 // ─────────────────────────
 //  SUPABASE
@@ -2067,7 +2531,7 @@ function load() {
     var parsed = JSON.parse(raw);
     if (typeof parsed !== 'object' || !parsed) return;
     if (!Array.isArray(parsed.log)) parsed.log = [];
-    ['name','avatar','heroClass','xp','streak','lastLogDate','log','monthlyBudget','coinReserve','ironVault','currentMonth','hearts','mapPosition','badges','weekLogDays','weekStart','roadBonusesThisMonth','lastEncounterLog','pendingEncounter','seenStoryEncounters','seenArrivals','lastMapPosition','encounterLogCount','lastEncounterAtLog','firedOverBudgetEncounter','bestStreak','woundedMode','cleanDayStreak','lastCleanDay','woundedDayStartReserve'].forEach(function(k) {
+    ['name','avatar','xp','mapPosition','badges','weekLogDays','weekStart','roadBonusesThisMonth','lastEncounterLog','pendingEncounter','seenStoryEncounters','seenArrivals','lastMapPosition','encounterLogCount','lastEncounterAtLog','bestStreak','ironVault','party','activeSlots'].forEach(function(k) {
       if (parsed[k] !== undefined) state[k] = parsed[k];
     });
   } catch(e) { console.warn('Load failed:', e); }
@@ -2081,7 +2545,7 @@ async function loadFromSupabase() {
     var remote = res.data.save_data;
     if (typeof remote !== 'object') return;
     if (!Array.isArray(remote.log)) remote.log = [];
-    ['name','avatar','heroClass','xp','streak','lastLogDate','log','monthlyBudget','coinReserve','ironVault','currentMonth','hearts','mapPosition','badges','weekLogDays','weekStart','roadBonusesThisMonth','lastEncounterLog','pendingEncounter','seenStoryEncounters','seenArrivals','lastMapPosition','encounterLogCount','lastEncounterAtLog','firedOverBudgetEncounter','bestStreak','woundedMode','cleanDayStreak','lastCleanDay','woundedDayStartReserve'].forEach(function(k) {
+    ['name','avatar','xp','mapPosition','badges','weekLogDays','weekStart','roadBonusesThisMonth','lastEncounterLog','pendingEncounter','seenStoryEncounters','seenArrivals','lastMapPosition','encounterLogCount','lastEncounterAtLog','bestStreak','ironVault','party','activeSlots'].forEach(function(k) {
       if (remote[k] !== undefined) state[k] = remote[k];
     });
     localStorage.setItem(SAVE_KEY, JSON.stringify(state));
@@ -2131,18 +2595,19 @@ function showLoginError(msg) {
 
 async function signOut() {
   isSigningOut = true;
+  _appInitDone = false; // allow re-init after next login
   try { await sb.auth.signOut(); } catch(e) { console.warn('Sign out error:', e); }
   currentUserId = null;
   localStorage.removeItem(SAVE_KEY);
-  Object.assign(state, {
-    name:'',avatar:'',heroClass:'',xp:0,streak:0,lastLogDate:null,log:[],
-    monthlyBudget:0,coinReserve:0,ironVault:0,currentMonth:'',hearts:3,
-    mapPosition:0,badges:[],weekLogDays:[],weekStart:'',roadBonusesThisMonth:0,
-    lastEncounterLog:'',pendingEncounter:null,seenStoryEncounters:[],
-    seenArrivals:[],lastMapPosition:-1,
-    encounterLogCount:0,lastEncounterAtLog:0,firedOverBudgetEncounter:false,
-  woundedMode:false,cleanDayStreak:0,lastCleanDay:'',woundedDayStartReserve:null
-  });
+  // Reset state
+  state.name = ''; state.avatar = ''; state.xp = 0;
+  state.mapPosition = 0; state.badges = []; state.weekLogDays = [];
+  state.weekStart = ''; state.roadBonusesThisMonth = 0;
+  state.lastEncounterLog = ''; state.pendingEncounter = null;
+  state.seenStoryEncounters = []; state.seenArrivals = []; state.lastMapPosition = -1;
+  state.encounterLogCount = 0; state.lastEncounterAtLog = 0;
+  state.bestStreak = 0; state.ironVault = 0; state.party = []; state.activeSlots = 0;
+  // Show login
   document.getElementById('header-auth').style.display = 'none';
   document.getElementById('main').style.display = 'none';
   document.getElementById('onboarding').style.display = 'none';
@@ -2177,7 +2642,6 @@ async function initApp() {
       await loadFromSupabase();
 
       // Defensive defaults for any missing fields
-      if (state.hearts === undefined)              state.hearts = 3;
       if (!state.badges)                           state.badges = [];
       if (!state.weekLogDays)                      state.weekLogDays = [];
       if (state.roadBonusesThisMonth === undefined) state.roadBonusesThisMonth = 0;
@@ -2186,17 +2650,16 @@ async function initApp() {
       if (!state.seenArrivals)                     state.seenArrivals = [];
       if (state.lastMapPosition === undefined)     state.lastMapPosition = -1;
       if (state.bestStreak === undefined)          state.bestStreak = 0;
-      if (state.woundedMode === undefined)           state.woundedMode = false;
-      if (state.cleanDayStreak === undefined)        state.cleanDayStreak = 0;
-      if (!state.lastCleanDay)                       state.lastCleanDay = '';
-      if (state.woundedDayStartReserve === undefined) state.woundedDayStartReserve = null;
-      // NOTE: do NOT unconditionally reset firedOverBudgetEncounter here —
-      // that caused over-budget encounters to re-fire on every refresh
+      if (state.ironVault === undefined)           state.ironVault = 0;
+      if (!state.party)                            state.party = [];
+      if (state.activeSlots === undefined)         state.activeSlots = 0;
+      // Check for missed check-ins on open (HP decay)
+      checkMissedCheckIns();
+      // NOTE: defensive — ensure each party member has required fields
 
       checkStreak();
-      checkMonthReset();
 
-      if (state.name) {
+      if (state.avatar && state.name && state.party && state.party.length > 0) {
         document.getElementById('onboarding').style.display = 'none';
         document.getElementById('main').style.display = 'block';
         render();
@@ -2224,100 +2687,933 @@ function getYesterday() {
   var d = new Date(); d.setDate(d.getDate() - 1); return d.toDateString();
 }
 
-function checkStreak() {
-  var today = getToday();
-  var yesterday = getYesterday();
-  var last = state.lastLogDate;
-  if (!last) return;
-  if (last === today) return; // fine
-  if (last === yesterday) return; // fine — streak intact until end of today
-  // More than 1 day gap — streak broken
-  if (last !== yesterday && last !== today) {
-    state.streak = 0;
-    save();
-  }
-}
 
-function markLoggedToday() {
-  var today = getToday();
-  if (state.lastLogDate === today) return; // already logged today
-  var yesterday = getYesterday();
-  if (state.lastLogDate === yesterday || state.streak === 0) {
-    state.streak = (state.streak || 0) + 1;
-  } else if (!state.lastLogDate) {
-    state.streak = 1;
-  }
-  state.lastLogDate = today;
-  // Track personal best
-  if (state.streak > (state.bestStreak || 0)) {
-    state.bestStreak = state.streak;
-  }
-}
+
 
 // ─────────────────────────
 //  WOUNDED MODE
 // ─────────────────────────
-function enterWoundedMode() {
-  if (state.woundedMode) return; // already wounded
-  state.woundedMode    = true;
-  state.cleanDayStreak = 0;
-  state.lastCleanDay   = '';
+
+
+
+
+
+// ─────────────────────────
+//  ONBOARDING STATE
+// ─────────────────────────
+var obAvatar     = '🧔';  // Human pre-selected
+var obPartySize  = 3;          // how many companions they're setting up
+var obCompanionIdx = 0;        // which companion we're currently setting up (0-based)
+var obCompanions = [];         // array of {habit, class, cadence, weekTarget}
+var obCurrentHabit   = '';
+var obCurrentClass   = '';
+var obCurrentCadence = 'daily';
+var obCurrentWeekTarget = 3;
+var obSuggest    = '';
+
+// goStep now accepts string IDs for named steps
+function goStep(n) {
+  document.querySelectorAll('.ob-step').forEach(function(el) { el.classList.remove('active'); });
+  var stepId;
+  if (typeof n === 'string') {
+    // named steps: '1-race', 'habit', 'cadence', 'class', 'laws', 'begin'
+    stepId = 'step-' + n;
+  } else {
+    stepId = 'step-' + n;
+  }
+  var target = document.getElementById(stepId);
+  if (target) target.classList.add('active');
+
+  // Update progress dots — map all steps to 0-4
+  var dotMap = { '0': 0, '1-race': 1, '2': 2, 'habit': 3, 'cadence': 3, 'class': 3, 'laws': 4, 'begin': 4 };
+  var dotKey = typeof n === 'number' ? String(n) : n;
+  var dotN = dotMap[dotKey] !== undefined ? dotMap[dotKey] : -1;
+  for (var i = 0; i <= 4; i++) {
+    var dot = document.getElementById('dot-' + i);
+    if (!dot) continue;
+    dot.className = 'step-dot';
+    if (dotN >= 0) {
+      if (i < dotN) dot.classList.add('done');
+      else if (i === dotN) dot.classList.add('active');
+    }
+  }
+
+  // Step-specific setup
+  if (stepId === 'step-habit') updateCompanionHabitStep();
+  if (stepId === 'step-class') setupSuggestedClass();
+  if (stepId === 'step-begin') buildBeginPartySummary();
+}
+
+function onNameInput() {
+  var val = document.getElementById('hero-name-input').value.trim();
+  var btn = document.getElementById('name-next-btn');
+  if (btn) btn.disabled = val.length < 1;
+}
+
+function selectAvatar(el) {
+  document.querySelectorAll('.avatar-opt').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+  obAvatar = el.dataset.avatar;
+}
+
+function selectPartySize(el, size) {
+  document.querySelectorAll('.party-size-opt').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+  obPartySize = size;
+}
+
+function startCompanionSetup() {
+  obCompanions = [];
+  obCompanionIdx = 0;
+  obCurrentHabit = '';
+  obCurrentClass = '';
+  obCurrentCadence = 'daily';
+  obCurrentWeekTarget = 3;
+  var inp = document.getElementById('habit-input');
+  if (inp) inp.value = '';
+  var btn = document.getElementById('habit-next-btn');
+  if (btn) btn.disabled = true;
+  goStep('habit');
+}
+
+function updateCompanionHabitStep() {
+  var idx = obCompanionIdx;
+  var ordinals = ['First','Second','Third'];
+  var ord = ordinals[idx] || ('Champion ' + (idx+1));
+  document.getElementById('companion-setup-title').textContent = ord + ' Champion\'s Quest';
+  var icons = ['⚔️','🔮','🗡️'];
+  document.getElementById('companion-setup-icon').textContent = icons[idx] || '⚔️';
+
+  // Progress pips
+  var prog = document.getElementById('companion-progress');
+  prog.innerHTML = '';
+  for (var i = 0; i < obPartySize; i++) {
+    var pip = document.createElement('div');
+    pip.className = 'companion-pip' + (i < idx ? ' done' : i === idx ? ' current' : '');
+    prog.appendChild(pip);
+  }
+
+  // Restore habit if already set for this companion
+  var inp = document.getElementById('habit-input');
+  if (inp) {
+    var existing = obCompanions[idx] ? obCompanions[idx].habit : '';
+    inp.value = existing || '';
+    obCurrentHabit = existing || '';
+    var btn = document.getElementById('habit-next-btn');
+    if (btn) btn.disabled = !obCurrentHabit || obCurrentHabit.length < 3;
+  }
+}
+
+function habitBack() {
+  if (obCompanionIdx === 0) {
+    goStep(2); // back to party size
+  } else {
+    obCompanionIdx--;
+    goStep('habit');
+  }
+}
+
+function onHabitInput() {
+  var val = document.getElementById('habit-input').value.trim();
+  obCurrentHabit = val;
+  var btn = document.getElementById('habit-next-btn');
+  if (btn) btn.disabled = val.length < 3;
+}
+
+function setHabitExample(el) {
+  var inp = document.getElementById('habit-input');
+  if (inp) { inp.value = el.textContent; obCurrentHabit = el.textContent; }
+  var btn = document.getElementById('habit-next-btn');
+  if (btn) btn.disabled = false;
+}
+
+function goToClassStep() {
+  // Reset cadence UI to reflect current state before showing the step
+  var dailyEl  = document.getElementById('cad-daily');
+  var weeklyEl = document.getElementById('cad-weekly');
+  var wr       = document.getElementById('weekly-target-row');
+  if (dailyEl)  dailyEl.classList.toggle('selected',  obCurrentCadence === 'daily');
+  if (weeklyEl) weeklyEl.classList.toggle('selected', obCurrentCadence === 'weekly');
+  if (wr)       wr.classList.toggle('hidden', obCurrentCadence !== 'weekly');
+  goStep('cadence');
+}
+
+function setupSuggestedClass() {
+  obSuggest = suggestClass(obCurrentHabit);
+  obCurrentClass = obSuggest;
+  var def = CLASS_DEFS[obSuggest];
+  if (!def) return;
+  document.getElementById('ob-suggest-icon').textContent = def.icon;
+  document.getElementById('sc-icon').textContent    = def.icon;
+  document.getElementById('sc-name').textContent    = def.name;
+  document.getElementById('sc-desc').textContent    = def.desc;
+  document.getElementById('sc-trait').textContent   = def.trait;
+}
+
+function confirmCompanionClass() {
+  if (!obCurrentClass) obCurrentClass = obSuggest || 'Mage';
+  // Save this companion
+  obCompanions[obCompanionIdx] = {
+    habit: obCurrentHabit,
+    class: obCurrentClass,
+    cadence: obCurrentCadence,
+    weekTarget: obCurrentWeekTarget
+  };
+  obCompanionIdx++;
+  if (obCompanionIdx < obPartySize) {
+    // More companions to set up — reset all fields
+    obCurrentHabit   = '';
+    obCurrentClass   = '';
+    obCurrentCadence = 'daily';
+    obCurrentWeekTarget = 3;
+    var inp = document.getElementById('habit-input');
+    if (inp) inp.value = '';
+    goStep('habit');
+  } else {
+    // All done — go to laws
+    goStep('laws');
+  }
+}
+
+// Legacy confirmClass alias
+function confirmClass() { confirmCompanionClass(); }
+
+function selectCadence(type) {
+  obCurrentCadence = type;
+  document.getElementById('cad-daily') && document.getElementById('cad-daily').classList.toggle('selected', type === 'daily');
+  document.getElementById('cad-weekly') && document.getElementById('cad-weekly').classList.toggle('selected', type === 'weekly');
+  var wr = document.getElementById('weekly-target-row');
+  if (wr) wr.classList.toggle('hidden', type !== 'weekly');
+}
+
+function selectWeeklyTarget(btn) {
+  document.querySelectorAll('.wt-btn').forEach(function(b) { b.classList.remove('selected'); });
+  btn.classList.add('selected');
+  obCurrentWeekTarget = parseInt(btn.dataset.n, 10);
+}
+
+function buildBeginPartySummary() {
+  var wrap = document.getElementById('begin-party-summary');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  obCompanions.forEach(function(c) {
+    var def = CLASS_DEFS[c.class] || CLASS_DEFS['Mage'];
+    var cadenceStr = c.cadence === 'weekly'
+      ? (c.weekTarget || 3) + '\u00D7 per week'
+      : 'Daily';
+    var row = document.createElement('div');
+    row.className = 'begin-party-row';
+    row.innerHTML =
+      '<div class="begin-party-icon">' + def.icon + '</div>' +
+      '<div style="flex:1;min-width:0;">' +
+        '<div class="begin-party-name">' + def.name + '</div>' +
+        '<div class="begin-party-habit">' + esc(c.habit) + '</div>' +
+        '<div style="font-size:13px;color:var(--text-dark);margin-top:3px;font-family:Cinzel,serif;text-transform:uppercase;letter-spacing:0.08em;">' + cadenceStr + '</div>' +
+      '</div>';
+    wrap.appendChild(row);
+  });
+}
+
+function beginJourney() {
+  var nameEl = document.getElementById('hero-name-input');
+  var name   = nameEl ? nameEl.value.trim() : '';
+  if (!name) { goStep(0); return; }
+  if (!obCompanions.length) { goStep('habit'); return; }
+  if (!obAvatar) obAvatar = '🧔';
+
+  state.name   = name;
+  state.avatar = obAvatar;
+  state.xp     = 0;
+  state.mapPosition  = 0;
+  state.lastMapPosition = -1;
+  state.badges = [];
+  state.weekLogDays  = [];
+  state.weekStart    = '';
+  state.roadBonusesThisMonth = 0;
+  state.lastEncounterLog = '';
+  state.seenStoryEncounters = [];
+  state.seenArrivals = [];
+  state.encounterLogCount = 0;
+  state.lastEncounterAtLog = 0;
+  state.ironVault = 0;
+  state.bestStreak = 0;
+  state.party = [];
+  state.activeSlots = 0;
+
+  obCompanions.forEach(function(c) {
+    var char = createCharacter(c.habit, c.class, c.cadence, c.weekTarget);
+    state.party.push(char);
+  });
+  state.activeSlots = state.party.length;
+
+  save();
+  document.getElementById('onboarding').style.display = 'none';
+  document.getElementById('main').style.display = 'block';
+  render();
+  showToast('The road awaits, ' + state.name + '. Your party is assembled.');
+}
+
+// ─────────────────────────
+//  PARTY MANAGEMENT
+// ─────────────────────────
+function createCharacter(habit, cls, cadence, weekTarget) {
+  return {
+    id:          Date.now() + Math.floor(Math.random() * 10000),
+    habit:       habit,
+    class:       cls,
+    cadence:     cadence || 'daily',      // 'daily' | 'weekly'
+    weekTarget:  weekTarget || 3,
+    hp:          5,
+    streak:      0,
+    bestStreak:  0,
+    lastCheckIn: null,
+    checkInsThisWeek: 0,
+    weekStart:   '',
+    log:         [],
+    collapsed:   false   // HP = 0
+  };
+}
+
+// ─────────────────────────
+//  HP RULES
+// ─────────────────────────
+function getHpRule(cls) {
+  return (CLASS_DEFS[cls] || {}).hpRule || 'standard';
+}
+
+function applyMiss(char) {
+  // Called when a character misses a day (or, for weekly, misses the weekly target)
+  var rule = getHpRule(char.class);
+  // Streak break
+  var hadStreak = char.streak > 0;
+  if (char.cadence === 'daily') char.streak = 0;
+  // HP loss
+  var hpLoss = 1;
+  if (rule === 'ranger' && hadStreak) hpLoss = 2; // Rangers feel streak breaks harder
+  char.hp = Math.max(0, (char.hp || 0) - hpLoss);
+  char.collapsed = (char.hp <= 0);
+}
+
+function applyCheckIn(char) {
+  char.hp = Math.min(5, (char.hp || 0) + 1);
+  char.collapsed = false;
+  // Streak
+  var today     = new Date().toDateString();
+  var yesterday = (function() { var d = new Date(); d.setDate(d.getDate()-1); return d.toDateString(); })();
+  if (char.cadence === 'daily') {
+    if (char.lastCheckIn === yesterday || char.lastCheckIn === null && char.streak === 0) {
+      char.streak = (char.streak || 0) + 1;
+    } else if (char.lastCheckIn !== today) {
+      char.streak = 1; // restart
+    }
+  } else {
+    // Weekly: increment streak only when weekly target is hit
+    var ws = getWeekStart();
+    if (char.weekStart !== ws) {
+      char.weekStart = ws; char.checkInsThisWeek = 0;
+    }
+    char.checkInsThisWeek = (char.checkInsThisWeek || 0) + 1;
+    if (char.checkInsThisWeek >= char.weekTarget) char.streak = (char.streak || 0) + 1;
+  }
+  if (char.streak > (char.bestStreak || 0)) char.bestStreak = char.streak;
+  char.lastCheckIn = today;
+}
+
+// Called on app open — check each character for missed days and apply HP decay
+function checkMissedCheckIns() {
+  if (!state.party || !state.party.length) return;
+  var today     = new Date().toDateString();
+  var yesterday = (function() { var d = new Date(); d.setDate(d.getDate()-1); return d.toDateString(); })();
+  state.party.forEach(function(char) {
+    if (!char.lastCheckIn) return; // never checked in — no penalty yet
+    if (char.lastCheckIn === today) return; // already checked in today
+    if (char.cadence === 'daily') {
+      // Missed yesterday and potentially more — apply one miss per missed day
+      // Simple: if last check-in was not yesterday, they missed at least one day
+      if (char.lastCheckIn !== yesterday) {
+        applyMiss(char);
+      }
+    } else {
+      // Weekly cadence: check at week boundary
+      var ws = getWeekStart();
+      if (char.weekStart && char.weekStart !== ws) {
+        // New week — did they hit target last week?
+        if ((char.checkInsThisWeek || 0) < char.weekTarget) {
+          applyMiss(char);
+        }
+        char.weekStart = ws;
+        char.checkInsThisWeek = 0;
+      }
+    }
+  });
   save();
 }
 
-function checkCleanDay() {
-  // Called after each log. A "clean day" = today's logs don't push reserve
-  // further negative than it was at start of day, OR reserve is already >= 0.
-  // Simpler definition: reserve didn't get MORE negative today.
-  // Track by comparing start-of-log-day reserve against current.
-  // We use: if reserve is still negative but we logged today without
-  // making it worse — that counts. We track via lastCleanDay date.
-  if (!state.woundedMode) return;
-
+// ─────────────────────────
+//  CHECK-IN ACTION
+// ─────────────────────────
+function checkIn(charId) {
+  var char = state.party.filter(function(c) { return c.id === charId; })[0];
+  if (!char) return;
   var today = new Date().toDateString();
+  if (char.lastCheckIn === today) return; // already done
 
-  // Check if today is already counted
-  if (state.lastCleanDay === today) return;
+  var prevLevel = getLevelData(state.xp).level;
 
-  // Today qualifies as clean if coinReserve didn't drop further than yesterday's close.
-  // We approximate: if the player logged at least once today and reserve >= what it was
-  // at the start of the session, we credit a clean day.
-  // Simplest rule: if they didn't push reserve MORE negative today vs when they started logging.
-  // We track via state.woundedDayStartReserve set at first log each day.
-  if (state.woundedDayStartReserve === undefined || state.woundedDayStartReserve === null) {
-    state.woundedDayStartReserve = state.coinReserve;
-    return; // first log today — set baseline, don't credit yet
+  // Weather XP multiplier (BEFORE this check-in changes the weather)
+  // weather is atmospheric only — no XP modifier
+
+  // Base XP + streak bonus
+  var streakBonus = Math.min(30, (char.streak || 0) * 5);
+  var baseXp = getLevelData(state.xp).level <= 3 ? 20 : 15;
+  var xpRaw = baseXp + streakBonus;
+
+  // Party bonus: all characters will be checked in after this one
+  var allDone = state.party.every(function(c) {
+    return c.lastCheckIn === today || c.id === charId;
+  });
+  if (state.party.length > 1 && allDone) xpRaw += 15;
+
+  // Apply weather multiplier
+  var xpGained = Math.max(1, Math.round(xpRaw));
+
+  applyCheckIn(char);
+
+  // Party HP loss: any OTHER companions not checked in today lose 1 HP (they feel neglected)
+  // Only applies if at least one person was already checked in (not first of the day)
+  // Actually: we apply miss-due-to-party only at midnight check via checkMissedCheckIns.
+  // For real-time: after ALL check-ins done, no action. The pressure is that missing = HP decay tomorrow.
+
+  // Add to log
+  var def = CLASS_DEFS[char.class] || {};
+  char.log = char.log || [];
+  char.log.push({
+    id:       String(Date.now()),
+    charId:   char.id,
+    charClass: char.class,
+    charIcon:  def.icon || '✦',
+    habit:    char.habit,
+    xpGained: xpGained,
+    ts:       new Date().toISOString()
+  });
+
+  state.xp += xpGained;
+
+  // Update best streak
+  var primary = state.party[0];
+  if (primary && primary.streak > (state.bestStreak || 0)) {
+    state.bestStreak = primary.streak;
   }
 
-  // Credit clean day if reserve didn't worsen today
-  if (state.coinReserve >= state.woundedDayStartReserve) {
-    state.lastCleanDay   = today;
-    state.cleanDayStreak = (state.cleanDayStreak || 0) + 1;
-    if (state.cleanDayStreak >= 3) {
-      // Recovery!
-      state.woundedMode            = false;
-      state.cleanDayStreak         = 0;
-      state.lastCleanDay           = '';
-      state.woundedDayStartReserve = null;
-      save();
-      setTimeout(function() {
-        showToast('Treasury recovering. The road opens back up. ✦');
-        render();
-      }, 400);
-      return;
+  checkWeekRoadBonus();
+  save();
+  render();
+
+  fireXpFloat('+' + xpGained + ' XP');
+  var fill = document.getElementById('xp-fill');
+  if (fill) {
+    fill.classList.remove('pulse');
+    void fill.offsetWidth;
+    fill.classList.add('pulse');
+    setTimeout(function() { fill.classList.remove('pulse'); }, 800);
+  }
+
+  var newLevel = getLevelData(state.xp).level;
+  if (newLevel > prevLevel) {
+    showLevelUp(newLevel);
+  } else {
+    // Fire road event or encounter after check-in
+    checkEncounter(0);
+  }
+}
+
+// ─────────────────────────
+//  STREAK HELPERS (global — uses primary party member)
+// ─────────────────────────
+function getGlobalStreak() {
+  if (!state.party || !state.party.length) return 0;
+  // Use the primary (first) character's streak as the global streak
+  return state.party[0].streak || 0;
+}
+
+function hasLoggedToday() {
+  if (!state.party || !state.party.length) return false;
+  var today = new Date().toDateString();
+  // Logged today if ANY party member checked in
+  return state.party.some(function(c) { return c.lastCheckIn === today; });
+}
+
+function checkStreak() {
+  // Streak is now per-character — this is a no-op kept for compatibility
+}
+
+function markLoggedToday() {
+  // No-op — handled by checkIn
+}
+
+// ─────────────────────────
+//  RENDER PARTY CARDS
+// ─────────────────────────
+function renderParty() {
+  var container = document.getElementById('party-cards');
+  if (!container) return;
+  container.innerHTML = '';
+  var today = new Date().toDateString();
+
+  (state.party || []).forEach(function(char) {
+    var def         = CLASS_DEFS[char.class] || CLASS_DEFS['Mage'];
+    var checkedIn   = char.lastCheckIn === today;
+    var hp          = char.hp || 0;
+    var isCollapsed = char.collapsed || hp <= 0;
+    var isWounded   = !isCollapsed && hp <= 2;
+    var streak      = char.streak || 0;
+
+    var card = document.createElement('div');
+    card.className = 'char-card' +
+      (checkedIn   ? ' checked-in' : '') +
+      (isWounded   ? ' wounded'    : '') +
+      (isCollapsed ? ' collapsed'  : '');
+
+    // ── Top row: class icon | class name + habit | HP hearts
+    var topRow = document.createElement('div');
+    topRow.className = 'char-card-top';
+
+    var avatarDiv = document.createElement('div');
+    avatarDiv.className = 'char-card-avatar' + (hp <= 2 ? ' low-hp' : '');
+    avatarDiv.textContent = def.icon;
+
+    var infoDiv = document.createElement('div');
+    infoDiv.className = 'char-card-info';
+
+    var cadenceTag = '';
+    if (char.cadence === 'weekly') {
+      var doneThisWeek = char.checkInsThisWeek || 0;
+      var target = char.weekTarget || 3;
+      cadenceTag = '<div class="char-card-weekly-progress">';
+      for (var p = 0; p < target; p++) {
+        cadenceTag += '<div class="weekly-pip' + (p < doneThisWeek ? ' done' : '') + '"></div>';
+      }
+      cadenceTag += '<span class="weekly-pip-label">' + doneThisWeek + '/' + target + ' this week</span></div>';
+      if (streak > 0) {
+        cadenceTag += '<div class="char-card-streak">🔥 ' + streak + ' week streak</div>';
+      }
+    } else {
+      cadenceTag = streak > 0
+        ? '<div class="char-card-streak">🔥 ' + streak + ' day streak</div>'
+        : '';
     }
-    save();
+
+    infoDiv.innerHTML =
+      '<div class="char-card-name">' + def.name + '</div>' +
+      '<div class="char-card-habit">' + esc(char.habit || '') + '</div>' +
+      cadenceTag;
+
+    // HP hearts — 5 hearts, filled based on hp
+    var heartsDiv = document.createElement('div');
+    heartsDiv.className = 'char-card-hp-hearts';
+    var heartsRow = document.createElement('div');
+    heartsRow.className = 'hp-hearts-row';
+    for (var h = 1; h <= 5; h++) {
+      var heart = document.createElement('span');
+      heart.className = 'hp-heart' + (h > hp ? ' empty' : '');
+      heart.textContent = '❤️';
+      heartsRow.appendChild(heart);
+    }
+    var heartsLabel = document.createElement('div');
+    heartsLabel.className = 'hp-hearts-label';
+    heartsLabel.textContent = hp + '/5 HP';
+    heartsDiv.appendChild(heartsRow);
+    heartsDiv.appendChild(heartsLabel);
+
+    topRow.appendChild(avatarDiv);
+    topRow.appendChild(infoDiv);
+    topRow.appendChild(heartsDiv);
+    card.appendChild(topRow);
+
+    // ── Collapsed banner
+    if (isCollapsed) {
+      var collapsedBar = document.createElement('div');
+      collapsedBar.className = 'char-card-collapsed-bar';
+      collapsedBar.innerHTML = '<div class="collapsed-msg">💀 ' + def.name + ' has fallen. Check in to begin recovery.</div>';
+      card.appendChild(collapsedBar);
+    }
+
+    // ── Action area
+    var actionDiv = document.createElement('div');
+    actionDiv.className = 'char-card-action';
+
+    if (checkedIn) {
+      var doneBtn = document.createElement('button');
+      doneBtn.className = 'checkin-btn done';
+      if (char.cadence === 'weekly') {
+        var doneW2 = char.checkInsThisWeek || 0;
+        var targW2 = char.weekTarget || 3;
+        doneBtn.textContent = doneW2 >= targW2
+          ? '✓ Weekly target hit!'
+          : '✓ Logged today (' + doneW2 + '/' + targW2 + ' this week)';
+      } else {
+        doneBtn.textContent = '✓ Done for today';
+      }
+      actionDiv.appendChild(doneBtn);
+    } else {
+      var btn = document.createElement('button');
+      btn.className = 'checkin-btn';
+      if (isCollapsed) {
+        btn.style.borderColor = 'rgba(184,60,46,0.5)';
+        btn.textContent = '🩸 Check in to recover — ' + esc(char.habit);
+      } else if (char.cadence === 'weekly') {
+        var doneW = char.checkInsThisWeek || 0;
+        var targW = char.weekTarget || 3;
+        btn.textContent = '⚔ Check In (' + doneW + '/' + targW + ' this week)';
+      } else {
+        btn.textContent = '⚔ Check In — ' + esc(char.habit);
+      }
+      btn.onclick = (function(cid) { return function() { checkIn(cid); }; })(char.id);
+      actionDiv.appendChild(btn);
+    }
+
+    card.appendChild(actionDiv);
+    container.appendChild(card);
+  });
+}
+
+// ─────────────────────────
+//  RENDER LOG (chronicle of check-ins)
+// ─────────────────────────
+var LOG_PAGE_SIZE = 3;
+var logVisibleCount = LOG_PAGE_SIZE;
+
+function renderLog() {
+  logVisibleCount = LOG_PAGE_SIZE;
+  renderLogPage();
+}
+
+function showMoreLog() {
+  logVisibleCount += LOG_PAGE_SIZE;
+  renderLogPage();
+}
+
+function collapseLog() {
+  logVisibleCount = LOG_PAGE_SIZE;
+  renderLogPage();
+  var wrap = document.querySelector('.log-list-wrap');
+  if (wrap) wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function renderLogPage() {
+  var list = document.getElementById('log-list');
+  if (!list) return;
+  list.innerHTML = '';
+
+  // Flatten all party logs into one sorted list
+  var allItems = [];
+  (state.party || []).forEach(function(char) {
+    (char.log || []).forEach(function(entry) {
+      allItems.push(entry);
+    });
+  });
+  allItems.sort(function(a, b) {
+    return new Date(b.ts) - new Date(a.ts);
+  });
+
+  if (!allItems.length) {
+    var empty = document.createElement('div');
+    empty.className = 'log-empty';
+    empty.textContent = 'No check-ins yet. Complete your first habit above to earn XP!';
+    list.appendChild(empty);
+    document.getElementById('log-pagination').style.display = 'none';
+    return;
+  }
+
+  var visible = allItems.slice(0, logVisibleCount);
+  var total   = allItems.length;
+  var showing = Math.min(logVisibleCount, total);
+
+  visible.forEach(function(entry) {
+    var el = document.createElement('div');
+    el.className = 'log-item';
+    var meta = entry.ts ? formatDate(entry.ts) : '';
+    el.innerHTML =
+      '<div class="log-icon">' + (entry.charIcon || '✦') + '</div>' +
+      '<div>' +
+        '<div class="log-desc">' + esc(entry.habit || 'Check-in') + '</div>' +
+        (meta ? '<div class="log-meta">' + meta + '</div>' : '') +
+      '</div>' +
+      '<div class="log-right">' +
+        '<div class="log-xp" style="font-size:16px;">+' + entry.xpGained + ' XP</div>' +
+      '</div>';
+    list.appendChild(el);
+  });
+
+  var pagEl     = document.getElementById('log-pagination');
+  var moreBtn   = document.getElementById('log-more-btn');
+  var countEl   = document.getElementById('log-pagination-count');
+  var colBtn    = document.getElementById('log-collapse-btn');
+  var hasMore   = showing < total;
+
+  pagEl.style.display = 'flex';
+  countEl.textContent = showing + ' of ' + total + ' entries';
+  moreBtn.disabled    = !hasMore;
+  moreBtn.textContent = hasMore ? 'Show more ▾' : 'All shown';
+  if (colBtn) colBtn.style.display = logVisibleCount > LOG_PAGE_SIZE ? 'block' : 'none';
+}
+
+// ─────────────────────────
+//  DEV TOOLS (updated)
+// ─────────────────────────
+function devWipeLog() {
+  state.party.forEach(function(c) { c.log = []; c.lastCheckIn = null; });
+  save(); render();
+  showToast('Check-ins wiped.');
+}
+
+function devWipeStreak() {
+  state.party.forEach(function(c) { c.streak = 0; });
+  save(); render();
+  showToast('Streaks reset.');
+}
+
+function devWipeLevel() {
+  state.xp = 0;
+  save(); render();
+  showToast('Level reset to 1.');
+}
+
+function devRestart() {
+  state.name = ''; state.avatar = ''; state.party = [];
+  state.xp = 0; state.mapPosition = 0; state.ironVault = 0;
+  state.badges = []; state.bestStreak = 0;
+  localStorage.removeItem(SAVE_KEY);
+  document.getElementById('main').style.display = 'none';
+  document.getElementById('onboarding').style.display = 'block';
+  obCompanions = []; obCompanionIdx = 0; obPartySize = 3;
+  goStep(0);
+  save();
+}
+
+function devSimMiss() {
+  // Simulate a missed day on first character
+  if (state.party && state.party.length > 0) {
+    var char = state.party[0];
+    char.lastCheckIn = null; // clear so miss applies
+    applyMiss(char);
+    save(); render();
+    showToast('Miss simulated: ' + char.class + ' lost HP.');
   }
 }
 
-function resetWoundedDayBaseline() {
-  // Called at start of each new logging day while wounded
-  var today = new Date().toDateString();
-  if (state.woundedMode && state.lastCleanDay !== today) {
-    // New day — reset the day baseline to current reserve
-    state.woundedDayStartReserve = state.coinReserve;
-  }
+// ─────────────────────────
+//  ADD CHARACTER (party slot unlock)
+// ─────────────────────────
+// Max slots by level
+function getMaxSlots() {
+  var level = getLevelData(state.xp).level;
+  if (level >= 10) return 5;
+  if (level >= 7)  return 4;
+  if (level >= 4)  return 3; // zone II completion also triggers but use level for now
+  if (level >= 2)  return 2;
+  return 1;
 }
+
+function showAddCharacter() {
+  // For now: prompt via a simple two-step overlay
+  // We'll reuse the onboarding fields in a modal - TODO: full modal
+  showToast('Add character coming soon — unlock by leveling up!');
+}
+
+// ─────────────────────────
+//  WEATHER SYSTEM
+// ─────────────────────────
+var WEATHER_STATES = {
+  clear:   { icon: '☀️',  label: 'Clear Skies',       desc: 'Your whole party is moving. The road opens ahead.',      cls: 'clear'   },
+  partial: { icon: '⛅',  label: 'Partly Cloudy',      desc: 'Some of your champions are still waiting on you.',       cls: 'partial' },
+  stormy:  { icon: '🌩️', label: 'Gathering Storms',   desc: 'Most of your party hasn\'t moved. The road grows dark.',  cls: 'stormy'  },
+  fog:     { icon: '🌫️', label: 'Fog of Doubt',       desc: 'No one has checked in. The path ahead is invisible.',    cls: 'fog'     },
+  dawn:    { icon: '🌄',  label: 'The Road Awaits',    desc: 'A new day. Check in to see what lies ahead.',            cls: 'partial' }
+};
+
+function getWeatherState() {
+  if (!state.party || !state.party.length) return WEATHER_STATES.dawn;
+  var today = new Date().toDateString();
+  var total = state.party.length;
+  var checkedIn = state.party.filter(function(c) { return c.lastCheckIn === today; }).length;
+  if (total === 0) return WEATHER_STATES.dawn;
+  if (checkedIn === 0) return WEATHER_STATES.fog;
+  if (checkedIn === total) return WEATHER_STATES.clear;
+  if (checkedIn >= total - 1) return WEATHER_STATES.partial;
+  return WEATHER_STATES.stormy;
+}
+
+function renderWeather() {
+  var card = document.getElementById('weather-card');
+  if (!card) return;
+  var w = getWeatherState();
+  card.className = 'weather-card ' + w.cls;
+  var iconEl  = document.getElementById('weather-icon');
+  var labelEl = document.getElementById('weather-label');
+  var descEl  = document.getElementById('weather-desc');
+  if (iconEl)  iconEl.textContent  = w.icon;
+  if (labelEl) labelEl.textContent = w.label;
+  if (descEl)  descEl.textContent  = w.desc;
+}
+
+// ─────────────────────────
+//  PARTY OVERVIEW
+// ─────────────────────────
+function renderPartyOverview() {
+  var container = document.getElementById('party-overview-cards');
+  if (!container) return;
+  container.innerHTML = '';
+  var today = new Date().toDateString();
+  (state.party || []).forEach(function(char) {
+    var def = CLASS_DEFS[char.class] || CLASS_DEFS['Mage'];
+    var checkedIn = char.lastCheckIn === today;
+    var hp = char.hp || 0;
+    var isWounded = hp <= 2 && hp > 0;
+    var isCollapsed = hp <= 0;
+    var hpPct = (hp / 5) * 100;
+    var hpColor = hp >= 4 ? 'var(--green)' : hp >= 3 ? 'var(--teal)' : hp >= 2 ? 'var(--orange)' : 'var(--red)';
+
+    var row = document.createElement('div');
+    row.className = 'party-overview-row';
+
+    var iconDiv = document.createElement('div');
+    iconDiv.className = 'pov-icon' + (isWounded || isCollapsed ? ' wounded' : checkedIn ? ' done' : '');
+    iconDiv.textContent = def.icon;
+
+    var infoDiv = document.createElement('div');
+    infoDiv.className = 'pov-info';
+    infoDiv.innerHTML =
+      '<div class="pov-name">' + def.name + '</div>' +
+      '<div class="pov-habit">' + esc(char.habit || '') + '</div>';
+
+    var hpBar = document.createElement('div');
+    hpBar.className = 'pov-hp-bar-track';
+    hpBar.innerHTML = '<div class="pov-hp-bar-fill" style="width:' + hpPct + '%;background:' + hpColor + ';"></div>';
+
+    row.appendChild(iconDiv);
+    row.appendChild(infoDiv);
+    row.appendChild(hpBar);
+    container.appendChild(row);
+  });
+}
+
+// ─────────────────────────
+//  RENDER (main render)
+// ─────────────────────────
+function render() {
+  var ld = getLevelData(state.xp);
+
+  var avatarRaceMap = {'🧔':'Human','🧝':'Elf','👺':'Orc','🧙':'Wizard'};
+  document.getElementById('char-avatar').textContent = state.avatar || '🧔';
+  document.getElementById('char-name').textContent   = state.name   || 'Traveler';
+
+  var primaryChar = (state.party && state.party[0]) || null;
+  var heroClass   = primaryChar ? primaryChar.class : 'Mage';
+  var raceLabel = (avatarRaceMap[state.avatar] || 'Traveler') + ' · ' + getTitle(heroClass, ld.level);
+  document.getElementById('char-class').textContent  = raceLabel;
+  document.getElementById('level-num').textContent   = ld.level;
+
+  document.getElementById('xp-current').textContent  = state.xp;
+  document.getElementById('xp-next-val').textContent = ld.xpAtEnd;
+  document.getElementById('xp-fill').style.width     = ld.pct + '%';
+  document.getElementById('xp-next-msg').textContent =
+    ld.level < LEVEL_XP.length
+      ? ld.toNext + ' XP to Level ' + (ld.level + 1)
+      : 'Maximum rank achieved!';
+
+  // Road Gold
+  var vaultEl = document.getElementById('vault-amount');
+  if (vaultEl) {
+    var g = state.ironVault || 0;
+    vaultEl.textContent = g + ' 💰';
+  }
+  var mapGold = document.getElementById('map-gold-display');
+  if (mapGold) mapGold.textContent = (state.ironVault || 0) + ' 💰';
+
+  // Streak (primary character)
+  var streakCount = getGlobalStreak();
+  var loggedToday = hasLoggedToday();
+  var today = new Date().toDateString();
+
+  var flameEl = document.getElementById('streak-banner-flame');
+  var countEl = document.getElementById('streak-count');
+  var rightEl = document.getElementById('streak-banner-right');
+
+  if (flameEl) flameEl.style.filter = streakCount > 0 ? '' : 'grayscale(0.9)';
+  if (countEl) {
+    countEl.textContent = streakCount;
+    countEl.style.color = streakCount > 0 ? 'var(--orange)' : 'var(--text-dark)';
+  }
+  if (rightEl) {
+    if (loggedToday) {
+      rightEl.textContent = streakCount + ' day' + (streakCount !== 1 ? 's' : '') + ' 🔥';
+      rightEl.style.color = 'var(--green)';
+    } else if (streakCount > 0) {
+      rightEl.textContent = '⚠ At risk';
+      rightEl.style.color = 'var(--orange)';
+    } else {
+      rightEl.textContent = 'Start today';
+      rightEl.style.color = '';
+    }
+  }
+
+  // XP bonus msg (hidden element for compat)
+  var bonusMsg = document.getElementById('xp-bonus-msg');
+  if (bonusMsg) {
+    var streakBonus = Math.min(30, streakCount * 5);
+    bonusMsg.textContent = streakBonus > 0 && loggedToday
+      ? '🔥 Streak bonus active'
+      : 'Check in to earn XP';
+  }
+
+  renderWeather();
+  renderPartyOverview();
+  renderParty();
+  renderLog();
+  renderMap();
+  checkZoneBadge();
+
+  // Add character slot
+  var addWrap = document.getElementById('add-char-wrap');
+  if (addWrap) {
+    var maxSlots = getMaxSlots();
+    var hasSlot  = maxSlots > (state.party || []).length;
+    addWrap.classList.toggle('hidden', !hasSlot || (state.party || []).length === 0);
+  }
+
+  // Badge slots
+  ['zone1','zone2','zone3','zone4'].forEach(function(bid) {
+    var el = document.getElementById('badge-' + bid);
+    if (!el) return;
+    var pip = el.querySelector('.badge-pip');
+    if (pip) pip.className = (state.badges||[]).indexOf(bid) !== -1 ? 'badge-pip earned' : 'badge-pip locked';
+  });
+
+  // Road bonus pips
+  var daysLogged = (state.weekLogDays || []).length;
+  var bonuses    = Math.min(3, state.roadBonusesThisMonth || 0);
+  for (var i = 1; i <= 3; i++) {
+    var pip2 = document.getElementById('road-pip-' + i);
+    if (pip2) pip2.className = 'road-pip' + (i <= bonuses ? ' earned' : '');
+  }
+  var rbLabel = document.getElementById('road-bonus-label');
+  if (rbLabel) {
+    var daysNeeded = Math.max(0, 5 - daysLogged);
+    if (bonuses >= 3) {
+      rbLabel.textContent = '✦ All Road Bonuses earned this month';
+    } else if (daysNeeded === 0) {
+      rbLabel.textContent = '✦ Road Bonus earned — advancing the map!';
+    } else if (daysLogged === 0) {
+      rbLabel.textContent = 'Road Bonus — check in 5 days this week to advance early';
+    } else {
+      rbLabel.textContent = daysNeeded + ' more day' + (daysNeeded===1?'':'s') + ' this week for a Road Bonus';
+    }
+  }
+
+  checkArrival();
+}
+
 
 // ─────────────────────────
 //  XP / LEVEL HELPERS
@@ -2338,7 +3634,7 @@ function getLevelData(xp) {
 }
 
 function getTitle(heroClass, level) {
-  var titles = CLASS_TITLES[heroClass] || CLASS_TITLES['Knight'];
+  var titles = CLASS_TITLES[heroClass] || CLASS_TITLES['Mage'];
   var idx = Math.min(Math.floor((level - 1) / 2), titles.length - 1);
   return titles[idx];
 }
@@ -2372,6 +3668,17 @@ function advanceMap() {
 // ─────────────────────────
 //  WEEK ROAD BONUS
 // ─────────────────────────
+function checkMonthReset() {
+  // Monthly reset: just track month, no budget reset needed
+  // Map position and XP carry forward
+  // Party check-in logs can optionally be trimmed
+}
+
+function getCurrentMonth() {
+  var d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+}
+
 function getWeekStart() {
   var d = new Date();
   var day = d.getDay(); // 0=Sun
@@ -2554,15 +3861,21 @@ function overlayDismissed() {
 // ─────────────────────────
 //  RANDOM ENCOUNTERS
 // ─────────────────────────
-function checkEncounter(amount) {
+function checkEncounter(amount) { amount = amount || 0;
   // Cooldown: skip if last encounter was within the last 2 logs
   if (!state.encounterLogCount) state.encounterLogCount = 0;
   state.encounterLogCount++;
   var lastAt = state.lastEncounterAtLog || 0;
-  if (state.encounterLogCount - lastAt < 1) return; // minimum 1 log between encounters
+  if (state.encounterLogCount - lastAt < 1) {
+    maybeShowRoadEvent();
+    return;
+  }
 
-  // 45% chance per eligible expense
-  if (Math.random() > 0.55) return; // 55% chance per eligible log
+  // 45% chance per eligible log for a combat/friendly encounter
+  if (Math.random() > 0.55) {
+    maybeShowRoadEvent();
+    return;
+  }
 
   // Mark that an encounter fired at this log count
   state.lastEncounterAtLog = state.encounterLogCount;
@@ -2576,8 +3889,7 @@ function checkEncounter(amount) {
     return e.minPos <= pos && (state.seenStoryEncounters || []).indexOf(e.id) === -1;
   });
 
-  // 60% chance to show a story encounter if one is available
-  if (available.length > 0 && Math.random() < 0.75) { // 75% to show story if available
+  if (available.length > 0 && Math.random() < 0.75) {
     var enc = available[Math.floor(Math.random() * available.length)];
     if (!state.seenStoryEncounters) state.seenStoryEncounters = [];
     state.seenStoryEncounters.push(enc.id);
@@ -3179,15 +4491,9 @@ function renderMap() {
     }
   }
 
-  // Hearts
-  for (var h = 1; h <= 3; h++) {
-    var heart = document.getElementById('heart-' + h);
-    if (heart) {
-      var filled = h <= (state.hearts !== undefined ? state.hearts : 3);
-      heart.className = 'map-heart' + (filled ? '' : ' empty');
-      heart.textContent = filled ? '❤️' : '🖤';
-    }
-  }
+  // Road Gold in map header
+  var mapGoldEl = document.getElementById('map-gold-display');
+  if (mapGoldEl) mapGoldEl.textContent = (state.ironVault || 0) + ' 💰';
 
   // Badge slots
   ['zone1','zone2','zone3','zone4'].forEach(function(bid) {
@@ -3206,375 +4512,13 @@ function getCurrentMonth() {
   return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
 }
 
-function checkMonthReset() {
-  var thisMonth = getCurrentMonth();
-  if (!state.currentMonth) {
-    state.currentMonth = thisMonth;
-    if (state.monthlyBudget > 0 && state.coinReserve === 0) {
-      state.coinReserve = state.monthlyBudget;
-    }
-    save();
-    return;
-  }
-  if (state.currentMonth !== thisMonth) {
-    var prevMonth        = state.currentMonth;
-    var prevZoneReached  = getMapPosition();
-    var prevLog          = (state.log || []).length;
-    var prevBest         = state.bestStreak || 0;
-    var prevVault        = state.ironVault || 0;
 
-    // Reset monthly state — map + treasury + encounters
-    state.coinReserve              = state.monthlyBudget;
-    state.currentMonth             = thisMonth;
-    state.roadBonusesThisMonth     = 0;
-    state.firedOverBudgetEncounter = false;
-    state.mapPosition              = 0;
-    state.lastMapPosition          = -1;
-    state.badges                   = [];
-    state.log                      = [];
-    state.seenArrivals             = [];
-    state.seenStoryEncounters      = [];
-    state.encounterLogCount        = 0;
-    state.lastEncounterAtLog       = 0;
-    state.hearts                   = 3;
-    state.woundedMode              = false;
-    state.cleanDayStreak           = 0;
-    state.lastCleanDay             = '';
-    state.woundedDayStartReserve   = null;
-    // Vault carries over — it's the reward for discipline
-    save();
-    if (state.name) { showMonthReset(prevMonth, prevZoneReached, prevLog, prevBest, prevVault); }
-  }
-}
 
-function showMonthReset(prevMonth, prevPos, prevLogCount, prevBest, prevVault) {
-  var parts = prevMonth.split('-');
-  var monthName = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, 1)
-    .toLocaleString('default', { month: 'long', year: 'numeric' });
 
-  var ZONE_NAMES = ['Hearthstone Road','Hearthstone Road','Hearthstone Road',
-    "Merchant's Pass","Merchant's Pass","Merchant's Pass",
-    'The Thornwood','The Thornwood','The Thornwood',
-    'The Iron Keep','The Iron Keep'];
-  var zoneReached = ZONE_NAMES[Math.min(prevPos, ZONE_NAMES.length-1)] || 'Hearthstone Road';
 
-  var reachedIronKeep = prevPos >= 10;
-  var flavor = reachedIronKeep
-    ? 'You reached the Iron Keep. The gates remember the traveler who kept their books clean. A new road opens — same hero, fresh treasury.'
-    : 'The road resets with the moon. Your Road Gold carries over — everything you earned on the road is yours to keep. Begin again.';
 
-  var bd = document.getElementById('reset-breakdown');
-  bd.innerHTML =
-    '<div class="reset-row"><span>Campaign</span><span>' + monthName + '</span></div>' +
-    '<div class="reset-row"><span>Furthest zone</span><span>' + zoneReached + '</span></div>' +
-    '<div class="reset-row"><span>Expenses logged</span><span>' + (prevLogCount||0) + '</span></div>' +
-    '<div class="reset-row"><span>Best streak</span><span>' + (prevBest||0) + ' days</span></div>' +
-    '<div class="reset-row highlight"><span>New treasury</span><span>$' + state.monthlyBudget + '</span></div>' +
-    '<div class="reset-row"><span>Road Gold carried over</span><span>' + prevVault + ' 💰</span></div>';
 
-  document.getElementById('reset-msg').textContent = flavor;
-  document.getElementById('reset-overlay').classList.add('show');
-}
 
-function closeReset() {
-  document.getElementById('reset-overlay').classList.remove('show');
-  overlayDismissed();
-}
-
-function renderCoins() {
-  if (!state.monthlyBudget) {
-    document.getElementById('coin-reserve-section').style.display = 'none';
-    return;
-  }
-  document.getElementById('coin-reserve-section').style.display = 'block';
-
-  var budget  = state.monthlyBudget;
-  var reserve = state.coinReserve || 0; // can be negative
-  var spent   = budget - reserve;
-  var isOver  = reserve < 0;
-  var overBy  = isOver ? Math.abs(reserve) : 0;
-  var remPct  = isOver ? 0 : Math.min(100, Math.max(0, (reserve / budget) * 100));
-
-  var remEl    = document.getElementById('coin-current');
-  var ofLabel  = document.getElementById('treasury-of-label');
-  var fillEl   = document.getElementById('coin-fill');
-  var statusEl = document.getElementById('coin-status');
-  var subEl    = document.getElementById('treasury-sub-text');
-
-  document.getElementById('coin-max').textContent = budget.toFixed(0);
-
-  fillEl.style.width = remPct + '%';
-  fillEl.className   = 'treasury-bar-fill';
-  remEl.className    = 'treasury-remaining';
-  statusEl.className = 'treasury-status';
-
-  if (isOver) {
-    remEl.textContent    = '-$' + overBy.toFixed(0);
-    if (ofLabel) ofLabel.textContent = 'over budget of';
-    fillEl.classList.add('danger');
-    remEl.classList.add('danger');
-    statusEl.classList.add('danger');
-    statusEl.textContent = '⚠ Over budget';
-    subEl.textContent    = '$' + spent.toFixed(0) + ' spent — $' + overBy.toFixed(0) + ' over limit';
-  } else if (remPct <= 10) {
-    remEl.textContent    = '$' + reserve.toFixed(0);
-    if (ofLabel) ofLabel.textContent = 'remaining of';
-    fillEl.classList.add('danger');
-    remEl.classList.add('danger');
-    statusEl.classList.add('danger');
-    statusEl.textContent = 'Running on fumes';
-    subEl.textContent    = '$' + spent.toFixed(0) + ' spent — ' + Math.round(remPct) + '% left';
-  } else if (remPct <= 30) {
-    remEl.textContent    = '$' + reserve.toFixed(0);
-    if (ofLabel) ofLabel.textContent = 'remaining of';
-    fillEl.classList.add('warning');
-    remEl.classList.add('warning');
-    statusEl.classList.add('warning');
-    statusEl.textContent = 'Getting low';
-    subEl.textContent    = '$' + spent.toFixed(0) + ' spent — ' + Math.round(remPct) + '% left';
-  } else if (remPct >= 70) {
-    remEl.textContent    = '$' + reserve.toFixed(0);
-    if (ofLabel) ofLabel.textContent = 'remaining of';
-    statusEl.classList.add('good');
-    statusEl.textContent = 'Treasury strong';
-    subEl.textContent    = '$' + spent.toFixed(0) + ' spent — well within your limits';
-  } else {
-    remEl.textContent    = '$' + reserve.toFixed(0);
-    if (ofLabel) ofLabel.textContent = 'remaining of';
-    statusEl.classList.add('good');
-    statusEl.textContent = 'On track';
-    subEl.textContent    = '$' + spent.toFixed(0) + ' spent this month';
-  }
-
-  var vaultEl   = document.getElementById('vault-amount');
-  var vaultGold = state.ironVault || 0;
-  vaultEl.textContent = vaultGold + ' 💰';
-  vaultEl.className   = vaultGold > 0 ? 'vault-amount' : 'vault-amount empty';
-}
-
-function render() {
-  var ld = getLevelData(state.xp);
-
-  document.getElementById('char-avatar').textContent = state.avatar || '🛡️';
-  document.getElementById('char-name').textContent   = state.name   || '—';
-  document.getElementById('char-class').textContent  = getTitle(state.heroClass, ld.level);
-  document.getElementById('level-num').textContent   = ld.level;
-
-  document.getElementById('xp-current').textContent  = state.xp;
-  document.getElementById('xp-next-val').textContent = ld.xpAtEnd;
-  document.getElementById('xp-fill').style.width     = ld.pct + '%';
-
-  document.getElementById('xp-next-msg').textContent =
-    ld.level < LEVEL_XP.length
-      ? ld.toNext + ' XP to Level ' + (ld.level + 1)
-      : 'Maximum rank achieved!';
-
-  var today      = new Date().toDateString();
-  var loggedToday = state.lastLogDate === today;
-  var streakCount = state.streak || 0;
-
-  document.getElementById('streak-count').textContent = streakCount;
-
-  var banner  = document.getElementById('streak-banner');
-  var flameEl = document.getElementById('streak-banner-flame');
-  var countEl = document.getElementById('streak-count');
-  var rightEl = document.getElementById('streak-banner-right');
-
-  banner.className = 'streak-panel';
-  flameEl.className = 'streak-flame';
-  countEl.className = 'streak-num';
-  rightEl.className = 'streak-right';
-
-  if (loggedToday) {
-    banner.classList.add('alive');
-    rightEl.classList.add('logged');
-    rightEl.textContent = '✓ Logged today';
-    document.getElementById('streak-label').textContent =
-      streakCount > 1 ? 'day streak — keep it going!' : 'day streak — great start!';
-  } else if (streakCount > 0) {
-    banner.classList.add('danger');
-    rightEl.classList.add('urgent');
-    rightEl.textContent = '⚠ Log today or lose it';
-    document.getElementById('streak-label').textContent = 'day streak — at risk';
-  } else {
-    flameEl.classList.add('cold');
-    countEl.classList.add('cold');
-    rightEl.textContent = 'Start your streak today';
-    document.getElementById('streak-label').textContent = 'day streak — log to begin';
-  }
-
-  // Best streak
-  var bestEl = document.getElementById('streak-best');
-  if (bestEl) {
-    var best = state.bestStreak || 0;
-    bestEl.textContent = best > 0 ? 'Best: ' + best + ' days' : '';
-  }
-
-  // XP bonus indicator
-  var bonusMsg = document.getElementById('xp-bonus-msg');
-  if (bonusMsg && !state.woundedMode) {
-    var streakBonus = Math.min(5, Math.floor(streakCount / 5));
-    if (streakBonus > 0 && loggedToday) {
-      bonusMsg.textContent = '🔥 Streak bonus active — earning extra XP';
-      bonusMsg.style.color = 'var(--xp)';
-    } else {
-      bonusMsg.textContent = 'Log expenses to earn XP';
-      bonusMsg.style.color = '';
-    }
-  }
-
-  renderLog();
-  renderCoins();
-  renderMap();
-  checkZoneBadge();
-
-  // Wounded mode UI — recovery track inside XP block
-  var recoveryTrack = document.getElementById('recovery-track');
-  var charPanel     = document.getElementById('coin-reserve-section');
-  if (recoveryTrack) {
-    if (state.woundedMode) {
-      recoveryTrack.classList.remove('hidden');
-      var clean    = state.cleanDayStreak || 0;
-      var daysLeft = 3 - clean;
-      // Recovery label — compact, one line
-      var recovLabel = document.getElementById('recovery-label');
-      if (recovLabel) recovLabel.textContent = daysLeft === 1 ? 'One clean day to recover' : daysLeft + ' clean days to recover';
-      // Pips
-      for (var rp = 1; rp <= 3; rp++) {
-        var pip = document.getElementById('rpip-' + rp);
-        if (pip) pip.className = 'recovery-pip' + (rp <= clean ? ' earned' : '');
-      }
-      if (charPanel) charPanel.classList.add('wounded');
-    } else {
-      recoveryTrack.classList.add('hidden');
-      if (charPanel) charPanel.classList.remove('wounded');
-    }
-  }
-
-  // XP sub line — wounded takes priority over streak bonus message
-  var xpBonusEl = document.getElementById('xp-bonus-msg');
-  if (xpBonusEl) {
-    if (state.woundedMode) {
-      xpBonusEl.textContent = '🩸 60% XP — treasury wounded';
-      xpBonusEl.style.color = 'rgba(200,80,60,0.8)';
-    }
-    // (non-wounded case already handled above in streak section)
-  }
-
-  // Log button state
-  var logBtn = document.getElementById('log-btn');
-  if (logBtn) {
-    var today2 = new Date().toDateString();
-    var loggedToday2 = state.lastLogDate === today2;
-    var streakLive = (state.streak || 0) > 0;
-    logBtn.className = 'log-btn';
-    if (loggedToday2) {
-      logBtn.classList.add('logged-today');
-      logBtn.textContent = '✓ Logged Today';
-    } else if (streakLive) {
-      logBtn.classList.add('streak-danger');
-      logBtn.innerHTML = '⚔ Log It';
-    } else {
-      logBtn.innerHTML = '⚔ Log It';
-    }
-  }
-  // Sync road strip
-  var rsLoc  = document.getElementById('road-strip-loc');
-  var rsZone = document.getElementById('road-strip-zone');
-  if (rsLoc && rsZone) {
-    var pos = state.mapPosition || 0;
-    var wp  = MAP_WAYPOINTS[pos] || MAP_WAYPOINTS[0];
-    rsLoc.textContent  = (wp.name || '').replace('\n', ' ');
-    rsZone.textContent = 'Zone ' + (wp.zone || 'I');
-  }
-  // Sync road-strip hearts
-  ['road-heart-1','road-heart-2','road-heart-3'].forEach(function(id, i) {
-    var el = document.getElementById(id);
-    if (el) el.className = 'map-heart' + (i < (state.hearts || 3) ? '' : ' empty');
-  });
-  // Sync road-strip road pips
-  var roadDays = state.roadBonusDays || 0;
-  ['road-strip-pip-1','road-strip-pip-2','road-strip-pip-3'].forEach(function(id, i) {
-    var el = document.getElementById(id);
-    if (el) el.className = 'road-pip' + (i < roadDays ? ' earned' : '');
-  });
-  checkArrival();
-}
-
-var LOG_PAGE_SIZE = 3;
-var logVisibleCount = LOG_PAGE_SIZE;
-
-function renderLog() {
-  logVisibleCount = LOG_PAGE_SIZE; // reset on fresh render
-  renderLogPage();
-}
-
-function showMoreLog() {
-  logVisibleCount += LOG_PAGE_SIZE;
-  renderLogPage();
-}
-
-function collapseLog() {
-  logVisibleCount = LOG_PAGE_SIZE;
-  renderLogPage();
-  // Scroll chronicle heading into view smoothly
-  var wrap = document.querySelector('.log-list-wrap');
-  if (wrap) wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
-
-function renderLogPage() {
-  var list = document.getElementById('log-list');
-  list.innerHTML = '';
-
-  if (!state.log || state.log.length === 0) {
-    var empty = document.createElement('div');
-    empty.className = 'log-empty';
-    empty.textContent = 'No entries yet. Log your first expense above to earn XP!';
-    list.appendChild(empty);
-    document.getElementById('log-pagination').style.display = 'none';
-    return;
-  }
-
-  var allItems = state.log.slice().reverse();
-  var visible  = allItems.slice(0, logVisibleCount);
-  var total    = allItems.length;
-  var showing  = Math.min(logVisibleCount, total);
-
-  visible.forEach(function(entry) {
-    var el = document.createElement('div');
-    el.className = 'log-item';
-    var amt  = parseFloat(entry.amount).toFixed(2);
-    var icon = entry.icon || '💰';
-    var meta = entry.ts ? formatDate(entry.ts) : '';
-    el.innerHTML =
-      '<div class="log-icon">' + icon + '</div>' +
-      '<div>' +
-        '<div class="log-desc">' + esc(entry.desc) + '</div>' +
-        (meta ? '<div class="log-meta">' + meta + '</div>' : '') +
-      '</div>' +
-      '<div class="log-right">' +
-        '<div class="log-amount">$' + amt + '</div>' +
-        '<div class="log-xp">+' + entry.xpGained + ' XP</div>' +
-      '</div>';
-    list.appendChild(el);
-  });
-
-  var pagEl   = document.getElementById('log-pagination');
-  var moreBtn = document.getElementById('log-more-btn');
-  var countEl = document.getElementById('log-pagination-count');
-  var hasMore = showing < total;
-
-  pagEl.style.display = 'flex';
-  countEl.textContent = showing + ' of ' + total + ' entries';
-  moreBtn.disabled    = !hasMore;
-  moreBtn.textContent = hasMore ? 'Show more ▾' : 'All shown';
-
-  // Collapse button — visible whenever more than default is showing
-  var collapseBtn = document.getElementById('log-collapse-btn');
-  if (collapseBtn) {
-    collapseBtn.style.display = logVisibleCount > LOG_PAGE_SIZE ? 'block' : 'none';
-  }
-}
 
 function formatDate(ts) {
   if (!ts) return '';
@@ -3591,192 +4535,14 @@ function esc(str) {
 // ─────────────────────────
 var currentStep = 0;
 
-function goStep(n) {
-  if (n > currentStep) {
-    if (currentStep === 0) {
-      var name = document.getElementById('hero-name-input').value.trim();
-      if (!name) { showToast('Name your hero first.'); return; }
-    }
-    if (currentStep === 1) {
-      if (!obAvatar) { showToast('Choose your avatar first.'); return; }
-    }
-    if (currentStep === 2) {
-      if (!obClass) { showToast('Choose your class first.'); return; }
-    }
-  }
 
-  document.getElementById('step-' + currentStep).classList.remove('active');
-  currentStep = n;
-  document.getElementById('step-' + currentStep).classList.add('active');
 
-  for (var i = 0; i <= 4; i++) {
-    var dot = document.getElementById('dot-' + i);
-    if (!dot) continue;
-    dot.className = 'step-dot';
-    if (i < currentStep)        dot.classList.add('done');
-    else if (i === currentStep) dot.classList.add('active');
-  }
 
-  document.getElementById('onboarding').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
 
-function selectAvatar(el) {
-  document.querySelectorAll('.avatar-opt').forEach(function(a) { a.classList.remove('selected'); });
-  el.classList.add('selected');
-  obAvatar = el.getAttribute('data-avatar');
-}
-
-function selectClass(el) {
-  document.querySelectorAll('.class-opt').forEach(function(c) { c.classList.remove('selected'); });
-  el.classList.add('selected');
-  obClass = el.getAttribute('data-class');
-}
-
-function beginJourney() {
-  var budget = parseFloat(document.getElementById('budget-input').value);
-  if (!budget || budget <= 0) { showToast('Set your monthly treasury first.'); return; }
-  if (!obClass)                { showToast('Choose your class first.'); return; }
-  var heroName = document.getElementById('hero-name-input').value.trim();
-  if (!heroName)               { showToast('Name your hero first.'); return; }
-
-  // Full clean slate — new character, new journey
-  state.name          = heroName;
-  state.avatar        = obAvatar || '🛡️';
-  state.heroClass     = obClass;
-  state.xp            = 0;
-  state.streak        = 0;
-  state.lastLogDate   = null;
-  state.log           = [];
-  state.monthlyBudget = Math.round(budget);
-  state.coinReserve   = Math.round(budget);
-  state.ironVault     = 0;
-  state.currentMonth  = getCurrentMonth();
-  state.hearts        = 3;
-  state.mapPosition   = 0;
-  state.lastMapPosition = -1;
-  state.badges        = [];
-  state.weekLogDays   = [];
-  state.weekStart     = '';
-  state.roadBonusesThisMonth     = 0;
-  state.firedOverBudgetEncounter = false;
-  state.encounterLogCount        = 0;
-  state.lastEncounterAtLog       = 0;
-  state.seenStoryEncounters      = [];
-  state.seenArrivals             = [];
-  state.lastEncounterLog         = '';
-  state.woundedMode              = false;
-  state.cleanDayStreak           = 0;
-  state.lastCleanDay             = '';
-
-  save();
-  document.getElementById('onboarding').style.display = 'none';
-  document.getElementById('main').style.display = 'block';
-  render();
-  showToast('Welcome to the road, ' + state.name + '. The Iron Keep awaits.');
-}
-
-document.getElementById('hero-name-input').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') goStep(1);
-});
 
 // ─────────────────────────
 //  LOG EXPENSE
 // ─────────────────────────
-function logExpense() {
-  var descEl   = document.getElementById('desc-input');
-  var amountEl = document.getElementById('amount-input');
-  var desc     = descEl.value.trim();
-  var amount   = parseFloat(amountEl.value);
-
-  if (!desc)                { showToast('Describe your expense.'); return; }
-  if (!amount || amount <= 0) { showToast('Enter a valid amount.'); return; }
-
-  var prevLevel = getLevelData(state.xp).level;
-
-  var streakBonus = Math.min(5, Math.floor((state.streak || 0) / 5));
-  var currentLevel = getLevelData(state.xp).level;
-  var baseXp = currentLevel <= 3 ? 30 : 15;
-  var xpGained = baseXp + streakBonus;
-
-  // Wounded mode: 60% XP — you're traveling damaged
-  if (state.woundedMode) {
-    xpGained = Math.max(1, Math.round(xpGained * 0.6));
-  }
-
-  // Reset the day baseline if first log today while wounded
-  resetWoundedDayBaseline();
-
-  markLoggedToday();
-  state.xp += xpGained;
-
-  var entry = {
-    id:       String(Date.now()) + String(Math.floor(Math.random() * 10000)),
-    desc:     desc,
-    amount:   amount,
-    xpGained: xpGained,
-    icon:     LOG_ICONS[Math.floor(Math.random() * LOG_ICONS.length)],
-    ts:       new Date().toISOString()
-  };
-
-  if (!Array.isArray(state.log)) state.log = [];
-  state.log.push(entry);
-
-  if (state.monthlyBudget > 0) {
-    var prevReserve = state.coinReserve || 0;
-    state.coinReserve = prevReserve - amount;
-    fireCoinFloat('-$' + amount.toFixed(0));
-    // First time going over budget this month — fire a hostile encounter
-    if (prevReserve >= 0 && state.coinReserve < 0 && !state.firedOverBudgetEncounter) {
-      state.firedOverBudgetEncounter = true;
-      enterWoundedMode(); // begin wounded state
-      setTimeout(function() {
-        queueOverlay(function() {
-          showEncounter({
-            id: 'over_budget',
-            icon: '💸',
-            title: 'Budget Broken',
-            zone: 'Treasury Alert',
-            desc: 'You\'ve spent past your monthly limit. The road ahead costs more than your treasury can cover. Time to decide: dig in and recover, or spend your way through.',
-            choiceA: { label: '🛡️ Accept the hit', sub: 'Costs 1 Life — you acknowledge the overspend' },
-            choiceB: { label: '💰 Cover with Road Gold', sub: 'Spend 25 🪙 — absorb the damage' },
-            goldCost: 25
-          }, true);
-        });
-      }, 800);
-    }
-  }
-
-  checkWeekRoadBonus();
-  checkEncounter(amount);
-  // Check clean day recovery while wounded
-  if (state.woundedMode) checkCleanDay();
-  save();
-  render();
-
-  descEl.value   = '';
-  amountEl.value = '';
-  descEl.focus();
-
-  fireXpFloat('+' + xpGained + ' XP');
-
-  var fill = document.getElementById('xp-fill');
-  fill.classList.remove('pulse');
-  void fill.offsetWidth;
-  fill.classList.add('pulse');
-  setTimeout(function() { fill.classList.remove('pulse'); }, 800);
-
-  var newLevel = getLevelData(state.xp).level;
-  if (newLevel > prevLevel) {
-    // Level-up advances map: level 2 -> pos 1, level 3 -> pos 2, etc.
-    var targetPos = newLevel - 1;
-    if (targetPos > getMapPosition() && targetPos <= 10) {
-      state.mapPosition = targetPos;
-      state.lastMapPosition = targetPos - 1;
-      save();
-    }
-    queueOverlay(function() { showLevelUp(newLevel); });
-  }
-}
 
 function fireGoldFloat(text) {
   var floatEl = document.getElementById('gold-float');
@@ -3824,20 +4590,82 @@ function fireCoinFloat(text) {
 // ─────────────────────────
 //  LEVEL UP
 // ─────────────────────────
+// ─────────────────────────
+//  ROAD EVENTS (post check-in story beats)
+// ─────────────────────────
+var ROAD_EVENTS = [
+  { zone: '✦ The Road', icon: '🌅', title: 'Morning Light', desc: 'The road is quiet this early. Just you and the habit. You check in, and the day opens up a little.' },
+  { zone: '✦ The Road', icon: '🐦', title: 'A Familiar Sound', desc: 'A bird calls from somewhere in the trees. You note it and keep moving. Small things become landmarks when you walk the same road long enough.' },
+  { zone: '✦ Fellow Travelers', icon: '🧭', title: 'Passing Company', desc: 'A traveler nods at you from across the road. They don\'t stop. Neither do you. There\'s a kind of solidarity in that.' },
+  { zone: '✦ The Road', icon: '🌿', title: 'The Habit Holds', desc: 'Day after day, the same motion. It starts to feel different from the inside — less like effort, more like nature.' },
+  { zone: '✦ Rest Stop', icon: '🪨', title: 'A Moment on the Stone', desc: 'You pause at a roadside marker. Behind you, a chain of days you actually kept. That\'s not nothing.' },
+  { zone: '✦ The Road', icon: '🌙', title: 'End of the Day', desc: 'You checked in. The day closes with that small act in it. It always matters more than it feels like it does.' },
+  { zone: '✦ Roadside Inn', icon: '🏠', title: 'Word of You', desc: 'An innkeeper says she\'s heard a traveler has been consistent on this stretch of road for a while. You realize she means you.' },
+  { zone: '✦ The Road', icon: '⚔️', title: 'The Streak Holds', desc: 'You showed up again. Another day where it was easier not to, and you did anyway. The road remembers.' },
+  { zone: '✦ The Road', icon: '🌦️', title: 'Weather Changes', desc: 'The sky shifted. You barely noticed — you were already moving. Habits have a way of making uncertainty smaller.' },
+  { zone: '✦ Crossroads', icon: '🗺️', title: 'You Could Turn Back', desc: 'Every day there\'s a version of you that doesn\'t check in. Today you weren\'t that version.' },
+  { zone: '✦ The Road', icon: '🔥', title: 'The Streak Grows', desc: 'Momentum is a strange thing. You barely notice it building. Then one day you realize you\'d be surprised if you stopped.' },
+  { zone: '✦ Thornwood Edge', icon: '🌲', title: 'Into the Dark', desc: 'The trees close in a little here. But you know the way. You\'ve been walking it long enough.' },
+];
+
+var _lastRoadEventIdx = -1;
+
+function getNextRoadEvent() {
+  var idx;
+  var maxTries = 5;
+  do {
+    idx = Math.floor(Math.random() * ROAD_EVENTS.length);
+    maxTries--;
+  } while (idx === _lastRoadEventIdx && maxTries > 0);
+  _lastRoadEventIdx = idx;
+  return ROAD_EVENTS[idx];
+}
+
+function showRoadEvent(evt) {
+  var overlay = document.getElementById('road-event-overlay');
+  if (!overlay) return;
+  document.getElementById('re-zone').textContent  = evt.zone;
+  document.getElementById('re-icon').textContent  = evt.icon;
+  document.getElementById('re-title').textContent = evt.title;
+  document.getElementById('re-desc').textContent  = evt.desc;
+  overlay.classList.add('show');
+}
+
+function closeRoadEvent() {
+  var overlay = document.getElementById('road-event-overlay');
+  if (overlay) overlay.classList.remove('show');
+  overlayDismissed();
+}
+
+function maybeShowRoadEvent() {
+  // 60% chance to show a road event after check-in (if no encounter is queued)
+  if (Math.random() < 0.60) {
+    var evt = getNextRoadEvent();
+    queueOverlay(function() { showRoadEvent(evt); });
+  }
+}
+
 function showLevelUp(level) {
   save();
+  var heroClass = (state.party && state.party[0]) ? state.party[0].class : 'Mage';
   document.getElementById('lu-level').textContent = level;
-  document.getElementById('lu-rank').textContent  = getTitle(state.heroClass, level);
+  document.getElementById('lu-rank').textContent  = getTitle(heroClass, level);
   document.getElementById('lu-msg').textContent   = LEVEL_MSGS[Math.min(level - 2, LEVEL_MSGS.length - 1)];
   document.getElementById('levelup-overlay').classList.add('show');
-  renderCoins();
 }
 
 function closeLevelUp() {
   document.getElementById('levelup-overlay').classList.remove('show');
-  render();
-  checkZoneBadge();
-  setTimeout(function() { checkArrival(); }, 400);
+  // Level-up advances the map — progress is earned
+  if (advanceMap()) {
+    render();
+    checkZoneBadge();
+    setTimeout(function() { checkArrival(); }, 400);
+  } else {
+    render();
+    checkZoneBadge();
+    setTimeout(function() { checkArrival(); }, 400);
+  }
   overlayDismissed();
 }
 
@@ -3859,92 +4687,16 @@ function showToast(msg) {
 document.addEventListener('keydown', function(e) {
   if (e.key !== 'Enter') return;
   var a = document.activeElement;
-  if (a && (a.id === 'desc-input' || a.id === 'amount-input')) {
-    logExpense();
+  if (a && a.id === 'hero-name-input') {
+    var btn = document.getElementById('name-next-btn');
+    if (btn && !btn.disabled) goStep('1-race');
+  } else if (a && a.id === 'habit-input') {
+    var btn2 = document.getElementById('habit-next-btn');
+    if (btn2 && !btn2.disabled) goToClassStep();
   }
 });
 
-// DEV TOOLS
-function devWipeLog() {
-  if (!confirm('Wipe all log entries and reset treasury to full budget?\n(XP, level, and map position kept)')) return;
-  state.log             = [];
-  state.coinReserve     = state.monthlyBudget || 0;
-  // Reset encounter + arrival tracking so no stale popups fire
-  state.encounterLogCount        = 0;
-  state.lastEncounterAtLog       = 0;
-  state.seenStoryEncounters      = [];
-  state.seenArrivals             = [];
-  state.firedOverBudgetEncounter = false;
-  // Sync lastMapPosition to current so checkArrival sees no change
-  state.lastMapPosition = state.mapPosition;
-  // Drain any queued overlays
-  _overlayQueue   = [];
-  _overlayActive  = false;
-  save(); render();
-  showToast('Log wiped. Treasury reset to full.');
-}
-function devWipeStreak() {
-  if (!confirm('Reset current streak to 0?\n(Best streak record kept)')) return;
-  state.streak      = 0;
-  state.lastLogDate = null;
-  save(); render();
-  showToast('Streak reset to zero.');
-}
-
-function devWipeLevel() {
-  if (!confirm('Reset XP and level back to zero?\n(Map position and log kept)')) return;
-  state.xp = 0;
-  save(); render();
-  showToast('XP reset. Back to Level 1.');
-}
-
-function devRestart() {
-  if (!confirm('Restart onboarding?\nAll progress will be cleared — name, class, budget, log, map.')) return;
-  // Clear localStorage
-  localStorage.removeItem(SAVE_KEY);
-  // Reset state to blank
-  state.name = ''; state.avatar = ''; state.heroClass = '';
-  state.xp = 0; state.streak = 0; state.lastLogDate = null;
-  state.log = []; state.monthlyBudget = 0; state.coinReserve = 0;
-  state.ironVault = 0; state.currentMonth = ''; state.hearts = 3;
-  state.mapPosition = 0; state.badges = []; state.weekLogDays = [];
-  state.weekStart = ''; state.roadBonusesThisMonth = 0;
-  state.lastEncounterLog = ''; state.pendingEncounter = null;
-  state.seenStoryEncounters = []; state.seenArrivals = [];
-  state.lastMapPosition = -1; state.encounterLogCount = 0;
-  state.lastEncounterAtLog = 0; state.firedOverBudgetEncounter = false;
-  // Also wipe from Supabase if logged in
-  if (currentUserId) {
-    sb.from('profiles').delete().eq('user_id', currentUserId).then(function(){});
-  }
-  // Reset onboarding pick state
-  obAvatar = ''; obClass = '';
-  document.querySelectorAll('.avatar-opt, .class-opt').forEach(function(el) {
-    el.classList.remove('selected');
-  });
-  var nameInput = document.getElementById('hero-name-input');
-  if (nameInput) nameInput.value = '';
-  var budgetInput = document.getElementById('budget-input');
-  if (budgetInput) budgetInput.value = '';
-
-  // Reset onboarding step counter to 0
-  currentStep = 0;
-  document.querySelectorAll('.ob-step').forEach(function(s){ s.classList.remove('active'); });
-  var s0 = document.getElementById('step-0');
-  if (s0) s0.classList.add('active');
-  // Reset step dots
-  for (var i = 0; i <= 4; i++) {
-    var dot = document.getElementById('dot-' + i);
-    if (!dot) continue;
-    dot.className = 'step-dot';
-    if (i === 0) dot.classList.add('active');
-  }
-  // Show onboarding, hide main
-  document.getElementById('main').style.display = 'none';
-  document.getElementById('onboarding').style.display = 'block';
-  document.getElementById('onboarding').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  showToast('A new hero rises. Begin your journey.');
-}
+// (old dev tools body removed)
 </script>
 
 </body>
