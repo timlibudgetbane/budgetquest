@@ -4,7 +4,7 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Habit Quest</title>
+<title>Habit Forge</title>
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400;1,600&family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -227,7 +227,15 @@ body::after {
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .char-class { font-size: 16px; color: var(--text-dim); font-style: italic; margin-top: 1px; }
-.char-level-badge { margin-left: auto; flex-shrink: 0; text-align: right; }
+.char-level-badge { margin-left: auto; flex-shrink: 0; text-align: right; cursor: pointer; user-select: none; position: relative; }
+.dev-trigger {
+  position: absolute; top: -6px; right: -6px;
+  font-size: 10px; opacity: 0; cursor: pointer;
+  transition: opacity 0.2s;
+  line-height: 1;
+}
+.char-level-badge:hover .dev-trigger { opacity: 0.5; }
+.dev-trigger:hover { opacity: 1 !important; }
 .level-num {
   font-family: 'Cinzel', serif;
   font-size: 30px; color: var(--gold-light); line-height: 1;
@@ -865,10 +873,12 @@ body::after {
   position: fixed; bottom: 24px; left: 50%;
   transform: translateX(-50%) translateY(14px);
   background: var(--surface2); border: 1px solid var(--border-gold);
-  color: var(--text-mid); font-family: 'Crimson Text', serif; font-size: 18px;
-  padding: 9px 20px; border-radius: 2px;
+  color: var(--text-mid); font-family: 'Crimson Text', serif; font-size: 17px;
+  font-style: italic;
+  padding: 10px 22px; border-radius: 2px;
   opacity: 0; pointer-events: none; z-index: 8000;
-  transition: all 0.26s; white-space: nowrap;
+  transition: all 0.26s; white-space: normal;
+  max-width: min(460px, 90vw); text-align: center; line-height: 1.45;
   box-shadow: 0 4px 20px rgba(0,0,0,0.5);
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -895,6 +905,86 @@ body::after {
 .teaser-name   { font-family: 'Cinzel', serif; font-size: 13px; color: var(--text-mid); margin-bottom: 2px; }
 .teaser-hint   { font-size: 15px; color: var(--text-dim); font-style: italic; line-height: 1.4; }
 .teaser-unlock { font-family: 'Cinzel', serif; font-size: 13px; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+
+/* ── Miss Overlay ── */
+#miss-overlay {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 99999;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+#miss-overlay.show {
+  opacity: 1;
+  pointer-events: all;
+}
+.miss-box {
+  position: relative;
+  background: var(--surface);
+  border: 2px solid rgba(184,60,46,0.6);
+  border-radius: 12px;
+  padding: 32px 40px;
+  text-align: center;
+  max-width: 320px; width: 90%;
+  box-shadow: 0 0 60px rgba(184,60,46,0.2), 0 0 120px rgba(184,60,46,0.05);
+  transform: scale(0.7);
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  z-index: 1;
+}
+.miss-box::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--red), transparent);
+  border-radius: 12px 12px 0 0;
+}
+#miss-overlay.show .miss-box {
+  transform: scale(1);
+}
+#miss-icon {
+  font-size: 48px;
+  display: block;
+  margin-bottom: 8px;
+  animation: missShake 0.5s ease 0.1s both;
+}
+@keyframes missShake {
+  0%   { transform: scale(0.6) rotate(-8deg); opacity: 0.4; }
+  40%  { transform: scale(1.05) rotate(4deg); opacity: 1; }
+  65%  { transform: scale(0.97) rotate(-2deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+#miss-name {
+  font-family: 'Cinzel', serif;
+  font-size: 12px; color: var(--text-dark);
+  text-transform: uppercase; letter-spacing: 0.18em;
+  margin-bottom: 8px;
+}
+#miss-hp {
+  font-family: 'Cinzel', serif;
+  font-size: 34px; color: var(--red);
+  text-shadow: 0 0 20px rgba(184,60,46,0.5);
+  line-height: 1;
+  margin-bottom: 10px;
+  animation: cc-xp-pop 0.35s cubic-bezier(0.34,1.56,0.64,1) 0.18s both;
+}
+#miss-msg {
+  font-size: 16px; color: var(--text-dim); font-style: italic;
+  line-height: 1.5; margin-bottom: 12px;
+}
+#miss-hearts {
+  display: flex; justify-content: center; gap: 4px;
+  font-size: 18px; min-height: 22px;
+}
+
+/* Actions row containing both circles */
+.char-card-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  margin-left: 4px;
+}
 
 /* ══════════════════════════════════════════════
    WEATHER STRIP (compact, inside char panel)
@@ -1075,9 +1165,132 @@ body::after {
 .road-event-title { font-family: 'Cinzel', serif; font-size: 19px; color: var(--gold); margin-bottom: 10px; }
 .road-event-desc  { font-size: 17px; color: var(--text-dim); font-style: italic; line-height: 1.7; margin-bottom: 18px; }
 
+
 /* ══════════════════════════════════════════════
-   ANIMATIONS
+   EPIC CHECK-IN CELEBRATION OVERLAY
 ══════════════════════════════════════════════ */
+#checkin-celebration {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 99999;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+#checkin-celebration.show {
+  opacity: 1;
+  pointer-events: all;
+}
+.cc-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(6,4,2,0.7);
+  backdrop-filter: blur(4px);
+}
+.cc-box {
+  position: relative;
+  background: var(--surface);
+  border: 2px solid var(--gold);
+  border-radius: 12px;
+  padding: 32px 40px;
+  text-align: center;
+  max-width: 340px; width: 90%;
+  box-shadow: 0 0 60px var(--gold-glow), 0 0 120px rgba(196,162,74,0.1);
+  transform: scale(0.7);
+  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  z-index: 1;
+}
+#checkin-celebration.show .cc-box {
+  transform: scale(1);
+}
+.cc-box::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  border-radius: 12px 12px 0 0;
+}
+#cc-icon {
+  font-size: 56px;
+  display: block;
+  margin-bottom: 8px;
+  animation: cc-bounce 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.1s both;
+}
+@keyframes cc-bounce {
+  from { transform: scale(0) rotate(-15deg); }
+  to   { transform: scale(1) rotate(0deg); }
+}
+#cc-name {
+  font-family: 'Cinzel', serif;
+  font-size: 13px; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 0.18em;
+  margin-bottom: 10px;
+}
+#cc-xp {
+  font-family: 'Cinzel', serif;
+  font-size: 36px; color: var(--xp);
+  text-shadow: 0 0 20px rgba(91,143,204,0.6);
+  line-height: 1;
+  margin-bottom: 10px;
+  animation: cc-xp-pop 0.4s cubic-bezier(0.34,1.56,0.64,1) 0.2s both;
+}
+@keyframes cc-xp-pop {
+  from { transform: scale(0.5); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+#cc-msg {
+  font-size: 16px; color: var(--text-mid); font-style: italic;
+  line-height: 1.5; margin-bottom: 10px;
+}
+#cc-streak {
+  font-family: 'Cinzel', serif;
+  font-size: 14px; color: var(--orange);
+  background: rgba(212,98,42,0.1);
+  border: 1px solid rgba(212,98,42,0.3);
+  border-radius: 20px; padding: 4px 14px;
+  display: inline-block;
+  animation: cc-streak-pop 0.4s ease 0.35s both;
+}
+@keyframes cc-streak-pop {
+  from { transform: scale(0.8); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+#cc-confetti {
+  position: absolute; top: 50%; left: 50%;
+  width: 0; height: 0;
+  pointer-events: none;
+}
+.cc-particle {
+  position: absolute;
+  font-size: 20px;
+  transform: translate(-50%,-50%);
+  animation: cc-burst var(--d, 0.8s) ease-out var(--delay, 0s) both;
+}
+@keyframes cc-burst {
+  0%   { transform: translate(-50%,-50%) rotate(0deg) scale(1); opacity: 1; }
+  80%  { opacity: 1; }
+  100% {
+    transform: translate(
+      calc(-50% + cos(var(--angle)) * var(--dist)),
+      calc(-50% + sin(var(--angle)) * var(--dist))
+    ) rotate(360deg) scale(0.3);
+    opacity: 0;
+  }
+}
+/* Progress bar in onboarding */
+.ob-progress-bar {
+  width: 100%; height: 4px;
+  background: var(--border);
+  border-radius: 100px;
+  margin-bottom: 28px;
+  overflow: hidden;
+}
+.ob-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+  border-radius: 100px;
+  transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+
+
 @keyframes fadeUp {
   from { opacity:0; transform:translateY(8px); }
   to   { opacity:1; transform:translateY(0); }
@@ -1157,8 +1370,24 @@ body::after {
   font-size: 15px; color: var(--text-dark); font-style: italic;
 }
 
-/* Char panel rule (between vault and XP) */
-.char-rule { height: 1px; background: var(--border); margin: 12px 0; }
+
+/* Weather icon animation */
+.weather-icon {
+  font-size: 28px;
+  line-height: 1;
+  animation: weatherFloat 3s ease-in-out infinite;
+}
+@keyframes weatherFloat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-3px) scale(1.05); }
+}
+.weather-card.fog .weather-icon { animation: weatherSway 4s ease-in-out infinite; }
+@keyframes weatherSway {
+  0%, 100% { transform: translateX(0) scale(1); opacity: 0.7; }
+  50% { transform: translateX(4px) scale(1.02); opacity: 1; }
+}
+
+
 
 /* Remove old rule/rule-label if present */
 .rule       { height: 1px; background: var(--border); margin: 14px 0 10px; }
@@ -1292,23 +1521,35 @@ body::after {
 
 
 /* ══════════════════════════════════════════════
-   BADGE RAIL (char panel)
+   BADGE RAIL (left column journey progress)
 ══════════════════════════════════════════════ */
+.badge-rail-section {
+  margin: 12px -18px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+  padding: 10px 18px 10px;
+}
+.badge-rail-heading {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  color: var(--text-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin-bottom: 10px;
+}
 .badge-rail {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 14px;
-  background: var(--surface2);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
 }
 .badge-rail-item {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  flex: 0 0 auto;
+  flex: 1;
+  min-width: 0;
 }
 .badge-connector {
   flex: 1;
@@ -1347,11 +1588,14 @@ body::after {
 }
 .badge-rail-label {
   font-family: 'Cinzel', serif;
-  font-size: 11px;
+  font-size: 9px;
   color: var(--text-dark);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  white-space: nowrap;
+  letter-spacing: 0.08em;
+  white-space: normal;
+  text-align: center;
+  max-width: 52px;
+  line-height: 1.3;
 }
 
 /* ══════════════════════════════════════════════
@@ -1420,6 +1664,27 @@ body::after {
   display: flex; flex-wrap: wrap; gap: 6px;
   justify-content: center; margin-bottom: 14px;
 }
+/* Inline habit examples — prose style */
+.habit-examples-text {
+  font-family: 'Crimson Text', serif;
+  font-size: 16px; color: var(--text-dim); font-style: italic;
+  line-height: 1.8; text-align: center;
+  margin: 4px 0 14px; padding: 0 12px;
+}
+.habit-ex-label {
+  color: var(--text-dark); font-style: normal;
+  font-family: 'Cinzel', serif; font-size: 12px;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin-right: 4px;
+}
+.habit-ex-sep { color: var(--text-dark); margin: 0 1px; }
+.habit-ex-item {
+  color: var(--text-mid); cursor: pointer;
+  border-bottom: 1px dotted var(--border-mid);
+  transition: color 0.15s, border-color 0.15s;
+  padding-bottom: 1px;
+}
+.habit-ex-item:hover { color: var(--gold-light); border-color: var(--gold-dim); }
 .habit-example-btn {
   background: var(--surface2); border: 1px solid var(--border);
   border-radius: 100px; color: var(--text-dim);
@@ -1427,24 +1692,231 @@ body::after {
   padding: 5px 14px; cursor: pointer; transition: all 0.2s;
 }
 .habit-example-btn:hover { border-color: var(--border-gold); color: var(--text-mid); }
+.habit-example-btn.selected { border-color: var(--gold); color: var(--gold-light); background: var(--gold-glow); }
 .habit-input-row { display: flex; max-width: 420px; margin: 0 auto; }
 .habit-input-row .hero-name-input { border-radius: 2px; text-align: center; }
 
+/* Two-touch clarify box — kept for compat but hidden */
+.habit-clarify-box { display: none; }
+
+/* ── Sentence Expander ── */
+.habit-expander {
+  margin: 6px 0 8px;
+  animation: expanderIn 0.22s cubic-bezier(0.4,0,0.2,1);
+}
+@keyframes expanderIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.habit-expander-back {
+  background: none; border: none;
+  color: var(--text-dark); font-size: 13px; font-style: italic;
+  cursor: pointer; padding: 0 0 10px; letter-spacing: 0.02em;
+  transition: color 0.15s;
+}
+.habit-expander-back:hover { color: var(--text-mid); }
+
+/* Class conflict notice */
+.class-conflict-notice {
+  background: rgba(196,162,74,0.07);
+  border: 1px solid rgba(196,162,74,0.2);
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: var(--text-dim);
+  font-style: italic;
+  line-height: 1.5;
+}
+/* Class swap row — pick any available champion */
+.class-swap-row {
+  display: flex; flex-wrap: wrap; gap: 7px;
+  margin: 10px 0 4px; justify-content: center;
+}
+.class-swap-btn {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 3px; padding: 6px 8px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 4px; cursor: pointer; transition: all 0.15s;
+  min-width: 52px; opacity: 0.55;
+}
+.class-swap-btn:hover  { border-color: var(--gold-dim); opacity: 1; }
+.class-swap-btn.selected { border-color: var(--gold); background: rgba(196,162,74,0.08); opacity: 1; }
+.class-swap-btn.taken  { opacity: 0.18; cursor: not-allowed; pointer-events: none; }
+.class-swap-icon  { font-size: 18px; line-height: 1; }
+.class-swap-label {
+  font-family: 'Cinzel', serif; font-size: 9px;
+  color: var(--text-dark); text-transform: uppercase;
+  letter-spacing: 0.06em; text-align: center; line-height: 1.2;
+}
+
+/* The sentence with inline blank */
+.habit-sentence {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
+  font-family: 'Crimson Text', serif;
+  font-size: 22px; color: var(--text);
+  font-style: italic; line-height: 1.5;
+  padding: 10px 0 6px;
+}
+.hs-before, .hs-after { color: var(--text-mid); }
+.hs-blank-wrap {
+  display: inline-flex; align-items: center;
+  border-bottom: 2px solid var(--gold);
+  padding-bottom: 2px; min-width: 80px;
+}
+.hs-input {
+  background: transparent; border: none; outline: none;
+  color: var(--gold-light);
+  font-family: 'Crimson Text', serif;
+  font-size: 22px; font-style: italic; font-weight: 600;
+  width: 100%; min-width: 60px; max-width: 180px;
+  text-align: center; padding: 0 4px;
+  caret-color: var(--gold);
+}
+.hs-input::placeholder { color: var(--gold-dim); opacity: 0.6; }
+
+/* Quick-pick chips */
+.hs-chips {
+  display: flex; flex-wrap: wrap; gap: 7px;
+  margin: 8px 0 4px;
+}
+.hs-chip {
+  background: var(--surface3);
+  border: 1px solid var(--border-mid);
+  border-radius: 100px;
+  color: var(--text-mid);
+  font-family: 'Crimson Text', serif;
+  font-size: 15px; padding: 4px 14px;
+  cursor: pointer; transition: all 0.15s;
+  user-select: none;
+}
+.hs-chip:hover  { border-color: var(--gold); color: var(--gold-light); }
+.hs-chip.active { border-color: var(--gold); background: var(--gold-glow); color: var(--gold-light); }
+.hs-or {
+  font-size: 13px; color: var(--text-dark); font-style: italic;
+  margin-top: 4px;
+}
+
+/* ── Inline Cadence Chooser ── */
+.habit-cadence-inline {
+  margin-top: 18px; padding-top: 16px;
+  border-top: 1px solid var(--border);
+  animation: expanderIn 0.2s ease;
+}
+.hci-label {
+  font-family: 'Cinzel', serif;
+  font-size: 11px; color: var(--text-dark);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin-bottom: 10px;
+}
+.hci-opts {
+  display: flex; gap: 8px; margin-bottom: 10px;
+}
+.hci-opt {
+  flex: 1; display: flex; align-items: center; gap: 8px;
+  padding: 10px 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer; transition: all 0.15s;
+  user-select: none;
+}
+.hci-opt:hover { border-color: var(--border-mid); }
+.hci-opt.selected {
+  border-color: var(--gold);
+  background: var(--surface3);
+}
+.hci-icon { font-size: 18px; flex-shrink: 0; }
+.hci-name {
+  font-family: 'Crimson Text', serif;
+  font-size: 16px; color: var(--text-mid);
+  line-height: 1.2;
+}
+.hci-opt.selected .hci-name { color: var(--gold-light); }
+.hci-weekly-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 6px 0;
+}
+.hci-weekly-row.hidden { display: none; }
+.hci-weekly-label {
+  font-family: 'Cinzel', serif; font-size: 11px;
+  color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.08em;
+  flex-shrink: 0;
+}
+.hci-weekly-btns { display: flex; gap: 6px; }
+
 .suggested-class-card {
-  display: flex; align-items: center; gap: 14px;
+  display: flex; align-items: flex-start; gap: 14px;
   background: var(--surface2); border: 1px solid var(--border-gold);
   border-radius: 3px; padding: 14px 16px; margin-bottom: 4px;
   border-left: 3px solid var(--gold-dim);
 }
-.suggested-class-icon { font-size: 32px; flex-shrink: 0; }
+.suggested-class-icon { font-size: 32px; flex-shrink: 0; margin-top: 2px; }
 .suggested-class-name {
-  font-family: 'Cinzel', serif; font-size: 18px; color: var(--gold); margin-bottom: 3px;
+  font-family: 'Cinzel', serif; font-size: 18px; color: var(--gold); margin-bottom: 1px;
 }
-.suggested-class-desc { font-size: 16px; color: var(--text-dim); font-style: italic; margin-bottom: 4px; }
+.sc-persona-name {
+  font-family: 'Cinzel', serif; font-size: 20px; color: var(--gold);
+  letter-spacing: 0.03em; margin-bottom: 2px;
+}
+.suggested-class-name {
+  font-size: 13px; color: var(--text-dark); text-transform: uppercase;
+  letter-spacing: 0.12em; font-family: 'Cinzel', serif; margin-bottom: 6px;
+}
+.suggested-class-desc { font-size: 14px; color: var(--text-dim); font-style: italic; margin-bottom: 4px; }
 .suggested-class-trait {
   font-size: 12px; color: var(--xp); text-transform: uppercase; letter-spacing: 0.1em;
   background: rgba(91,143,204,0.1); border: 1px solid rgba(91,143,204,0.2);
-  padding: 2px 8px; border-radius: 2px; display: inline-block;
+  padding: 2px 8px; border-radius: 2px; display: inline-block; margin-bottom: 8px;
+}
+.sc-lore {
+  font-size: 13px; color: var(--text-mid); font-style: italic; line-height: 1.55;
+  border-top: 1px solid var(--border); padding-top: 8px; margin-top: 4px;
+}
+
+/* Champion card persona name */
+.char-card-persona {
+  font-family: 'Cinzel', serif; font-size: 14px; color: var(--gold);
+  letter-spacing: 0.02em; margin-bottom: 1px;
+}
+/* Persona as primary title — larger and bold */
+.char-card-persona-main {
+  font-family: 'Cinzel', serif; font-size: 15px; color: var(--gold-light);
+  letter-spacing: 0.04em; margin-bottom: 2px; line-height: 1.2;
+}
+.char-card-class-tag {
+  font-size: 11px; color: var(--text-dark); text-transform: uppercase;
+  letter-spacing: 0.08em; font-family: 'Cinzel', serif;
+  margin-bottom: 3px; line-height: 1.2;
+}
+/* Lore tooltip */
+.char-card-lore-btn {
+  font-size: 11px; color: var(--text-dark); cursor: pointer;
+  background: none; border: none; padding: 0; font-style: italic;
+  text-decoration: underline dotted; margin-top: 3px; display: inline-block;
+}
+.char-card-lore-panel {
+  display: none; font-size: 12px; color: var(--text-mid); font-style: italic;
+  line-height: 1.5; padding: 8px 16px 2px; border-top: 1px solid var(--border);
+  animation: fadeIn 0.2s ease;
+}
+.char-card-lore-panel.open { display: block; }
+
+/* Flavor text on done button */
+.checkin-flavor {
+  display: block; font-size: 12px; color: var(--text-dark);
+  font-style: italic; margin-top: 3px; font-family: serif;
+  line-height: 1.4; letter-spacing: 0;
+}
+
+/* Check-in particle burst */
+@keyframes particlePop {
+  0%   { transform: translate(var(--px), var(--py)) scale(1); opacity: 1; }
+  100% { transform: translate(calc(var(--px) * 3), calc(var(--py) * 3)) scale(0); opacity: 0; }
+}
+.checkin-particle {
+  position: fixed; pointer-events: none; z-index: 9999;
+  font-size: 14px; animation: particlePop 0.7s ease-out forwards;
 }
 
 .cadence-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
@@ -1499,16 +1971,16 @@ body::after {
   display: flex; gap: 4px; margin-top: 5px; align-items: center;
 }
 .weekly-pip {
-  width: 14px; height: 4px; border-radius: 100px;
+  width: 18px; height: 6px; border-radius: 100px;
   background: var(--border); transition: all 0.3s;
 }
-.weekly-pip.done { background: var(--teal); box-shadow: 0 0 4px var(--teal-glow); }
+.weekly-pip.done { background: var(--teal); box-shadow: 0 0 5px var(--teal-glow); }
 .weekly-pip-label {
   font-size: 13px; color: var(--text-dark); font-style: italic; margin-left: 4px;
 }
 
 /* ══════════════════════════════════════════════
-   PARTY PANEL + CHARACTER CARDS
+   PARTY PANEL + CHARACTER CARDS — REDESIGNED
 ══════════════════════════════════════════════ */
 .party-panel {
   background: var(--surface); border: 1px solid var(--border-gold);
@@ -1519,112 +1991,283 @@ body::after {
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
   background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
 }
-.party-cards { display: flex; flex-direction: column; gap: 12px; }
+.party-cards { display: flex; flex-direction: column; gap: 10px; }
 
 .char-card {
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 3px; overflow: hidden;
-  transition: border-color 0.3s;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  display: flex; align-items: stretch;
+  overflow: hidden;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
-.char-card.checked-in { border-color: rgba(58,158,106,0.45); }
-.char-card.wounded    { border-color: rgba(184,60,46,0.4); }
-.char-card.collapsed  { border-color: rgba(184,60,46,0.6); box-shadow: 0 0 12px rgba(184,60,46,0.1); }
+.char-card:not(.checked-in):not(.collapsed):not(.wounded) { cursor: pointer; }
+.char-card:not(.checked-in):not(.collapsed):not(.wounded):hover {
+  border-color: var(--border-gold);
+  box-shadow: 0 2px 10px rgba(196,162,74,0.07);
+}
+.char-card.checked-in { border-color: rgba(58,158,106,0.35); background: rgba(58,158,106,0.02); }
+.char-card.wounded    { border-color: rgba(184,60,46,0.35); }
+.char-card.collapsed  { border-color: rgba(184,60,46,0.5); box-shadow: 0 0 10px rgba(184,60,46,0.08); cursor: pointer; flex-wrap: wrap; }
+.char-card-collapsed-bar {
+  flex-basis: 100%; /* force to its own row */
+  padding: 5px 14px 8px 20px;
+  background: rgba(184,60,46,0.05);
+  border-top: 1px solid rgba(184,60,46,0.15);
+}
+/* Left accent bar */
+.char-card-accent {
+  width: 4px; flex-shrink: 0;
+  background: var(--gold-dim);
+  transition: background 0.3s;
+}
+.char-card.checked-in .char-card-accent { background: var(--green); }
+.char-card.wounded    .char-card-accent { background: var(--orange); }
+.char-card.collapsed  .char-card-accent { background: var(--red); }
 
-/* Card header row: icon | class+habit | hp hearts */
-.char-card-top {
-  display: grid; grid-template-columns: 52px 1fr auto;
-  gap: 12px; align-items: center; padding: 14px 16px 10px;
+/* Card body */
+.char-card-body {
+  flex: 1; display: flex; align-items: center;
+  gap: 12px; padding: 13px 14px 11px;
+  min-width: 0;
 }
+
+/* Class icon */
 .char-card-avatar {
-  width: 52px; height: 52px; border-radius: 3px;
-  background: var(--surface3); border: 1px solid var(--border);
+  width: 40px; height: 40px; flex-shrink: 0;
+  border-radius: 8px;
+  background: var(--surface3);
+  border: 1px solid var(--border);
   display: flex; align-items: center; justify-content: center;
-  font-size: 26px; flex-shrink: 0; position: relative;
+  font-size: 20px;
+  transition: all 0.3s;
 }
-.char-card-avatar.low-hp::after {
-  content: ''; position: absolute; inset: 0; border-radius: 3px;
-  border: 2px solid rgba(184,60,46,0.6);
-  animation: woundedPulse 2s ease-in-out infinite;
-}
-@keyframes woundedPulse { 0%,100%{opacity:0.5} 50%{opacity:1} }
+.char-card-avatar.low-hp { border-color: rgba(184,60,46,0.5); }
+.char-card.checked-in .char-card-avatar { border-color: rgba(58,158,106,0.4); }
 
-.char-card-info { min-width: 0; }
-.char-card-name {
-  font-family: 'Cinzel', serif; font-size: 16px; color: var(--gold);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px;
-}
-.char-card-habit {
-  font-size: 14px; color: var(--text-mid); font-style: italic; line-height: 1.35;
+/* Info block */
+.char-card-info { flex: 1; min-width: 0; }
+
+.char-card-persona-main {
+  font-family: 'Cinzel', serif;
+  font-size: 12px; color: var(--gold);
+  letter-spacing: 0.04em; line-height: 1.2;
+  margin-bottom: 1px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.char-card-streak { font-size: 13px; color: var(--text-dark); margin-top: 2px; }
+.char-card.checked-in .char-card-persona-main { color: var(--green); opacity: 0.8; }
 
-/* HP hearts — right side of header */
-.char-card-hp-hearts {
-  flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 3px;
+.char-card-habit {
+  font-size: 17px; color: var(--text);
+  font-style: italic; line-height: 1.25;
+  margin-bottom: 6px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
+.char-card.checked-in .char-card-habit {
+  color: var(--text-dim);
+  opacity: 0.7;
+}
+
+/* Streak dots row */
+.char-card-dots {
+  display: flex; align-items: center; gap: 4px;
+}
+.streak-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--border);
+  transition: all 0.3s;
+}
+.streak-dot.filled { background: var(--orange); }
+.streak-dot.today  { background: var(--green); box-shadow: 0 0 4px rgba(58,158,106,0.5); }
+.streak-label-mini {
+  font-size: 11px; color: var(--text-dark); font-style: italic;
+  margin-left: 2px;
+}
+
+/* Weekly pips */
+.char-card-weekly-progress {
+  display: flex; gap: 4px; align-items: center;
+}
+.weekly-pip {
+  width: 16px; height: 4px; border-radius: 100px;
+  background: var(--border); transition: all 0.3s;
+}
+.weekly-pip.done { background: var(--teal); box-shadow: 0 0 5px var(--teal-glow); }
+.weekly-pip-label {
+  font-size: 11px; color: var(--text-dark); font-style: italic; margin-left: 4px;
+}
+/* Weekly urgency states */
+.weekly-urgency-label {
+  font-size: 11px; font-style: italic; margin-left: 2px;
+  font-family: 'Crimson Text', serif;
+}
+.weekly-urgency-label.urgent {
+  color: var(--red);
+}
+.weekly-urgency-label.at-risk {
+  color: var(--orange);
+}
+.weekly-urgency-label.done {
+  color: var(--teal);
+}
+.char-card-weekly-progress.weekly-urgency-impossible .weekly-pip:not(.done) {
+  background: rgba(184,60,46,0.3);
+}
+.char-card-weekly-progress.weekly-urgency-at_risk .weekly-pip:not(.done) {
+  background: rgba(200,130,50,0.4);
+  animation: pipPulse 1.8s ease-in-out infinite;
+}
+@keyframes pipPulse {
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 1; }
+}
+.char-card-streak { font-size: 12px; color: var(--orange); }
+
+/* Miss today button */
+.char-miss-btn {
+  display: inline-block; margin-top: 5px;
+  background: none; border: none; padding: 0;
+  font-size: 12px; color: var(--text-dark);
+  font-style: italic; cursor: pointer;
+  opacity: 0.6; transition: opacity 0.15s, color 0.15s;
+  font-family: 'Crimson Text', serif;
+  text-decoration: underline dotted;
+}
+.char-miss-btn:hover { opacity: 1; color: var(--red); }
+.char-missed-label {
+  display: inline-block; margin-top: 5px;
+  font-size: 12px; color: var(--red);
+  font-style: italic; opacity: 0.7;
+  font-family: 'Crimson Text', serif;
+}
+
+/* HP hearts */
+.char-card-hp-hearts { flex-shrink: 0; }
 .hp-hearts-row { display: flex; gap: 2px; }
-.hp-heart { font-size: 14px; line-height: 1; transition: all 0.3s; }
-.hp-heart.empty { opacity: 0.2; filter: grayscale(1); }
-.hp-hearts-label {
-  font-family: 'Cinzel', serif; font-size: 10px; color: var(--text-dark);
-  text-transform: uppercase; letter-spacing: 0.1em;
+.hp-heart { font-size: 13px; transition: all 0.3s; line-height: 1; }
+.hp-heart.empty { opacity: 0.15; filter: grayscale(1); }
+
+/* Check circle — always shows ✓ dimly; fills on hover; green when done */
+.char-card-check {
+  flex-shrink: 0;
+  width: 42px; height: 42px; border-radius: 50%;
+  border: 2px solid var(--border-mid);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  color: rgba(196,162,74,0.22);
+  transition: all 0.2s;
+  cursor: default;
+  background: transparent;
+  user-select: none;
+}
+/* Hover only when genuinely actionable */
+.char-card:not(.checked-in):not(.collapsed):not(.missed-today) .char-card-check:not(.locked-out):hover {
+  border-color: var(--gold);
+  background: rgba(196,162,74,0.08);
+  color: var(--gold-dim);
+  cursor: pointer;
+}
+/* Done — green, inert */
+.char-card.checked-in .char-card-check {
+  border-color: var(--green);
+  background: rgba(58,158,106,0.12);
+  color: var(--green);
+  cursor: default;
+}
+/* Collapsed — red ↺ */
+.char-card.collapsed .char-card-check {
+  border-color: rgba(184,60,46,0.5);
+  color: var(--red);
+  cursor: pointer;
+}
+/* Locked out after miss — faded, no pointer, no hover */
+.char-card.missed-today .char-card-check,
+.char-card-check.locked-out {
+  border-color: var(--border);
+  color: rgba(196,162,74,0.07);
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
-/* HP bar (below header, thinner) */
-.char-card-hp {
-  padding: 0 16px 10px;
+/* Miss circle */
+.char-miss-circle {
+  width: 42px; height: 42px; border-radius: 50%;
+  border: 2px solid rgba(184,60,46,0.25);
+  background: none;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  color: rgba(184,60,46,0.3);
+  transition: all 0.2s;
+  cursor: pointer;
+  flex-shrink: 0;
+  user-select: none;
 }
-.char-hp-row {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 4px;
+.char-miss-circle:hover {
+  border-color: var(--red);
+  color: var(--red);
+  background: rgba(184,60,46,0.07);
 }
-.char-hp-label {
-  font-family: 'Cinzel', serif; font-size: 11px; color: var(--text-dark);
-  text-transform: uppercase; letter-spacing: 0.12em;
-}
-.char-hp-pips { display: flex; gap: 4px; }
-.char-hp-pip {
-  width: 20px; height: 6px; border-radius: 100px;
-  background: var(--border); transition: all 0.4s;
-}
-.char-hp-pip.full  { background: var(--green); box-shadow: 0 0 4px rgba(58,158,106,0.4); }
-.char-hp-pip.low   { background: var(--orange); }
-.char-hp-pip.crit  { background: var(--red); animation: critPip 1.5s ease-in-out infinite; }
-@keyframes critPip { 0%,100%{opacity:1} 50%{opacity:0.4} }
-
-/* Check-in button area */
-.char-card-action { padding: 0 16px 14px; }
-.checkin-btn {
-  width: 100%; padding: 10px 14px;
-  background: var(--gold-dim); border: 1px solid var(--gold-dim);
-  border-radius: 2px; color: var(--gold-light);
-  font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 0.1em;
-  cursor: pointer; transition: all 0.2s;
-}
-.checkin-btn:hover { background: var(--gold); border-color: var(--gold); color: var(--bg); }
-.checkin-btn.done {
-  background: rgba(58,158,106,0.08); border-color: rgba(58,158,106,0.45);
-  color: var(--green); cursor: default;
-}
-.checkin-btn.done:hover { background: rgba(58,158,106,0.08); border-color: rgba(58,158,106,0.45); color: var(--green); }
-
-/* Goblin special — amount input inside card */
-.goblin-checkin { display: flex; gap: 6px; }
-.goblin-limit-display {
-  font-size: 14px; color: var(--text-dark); font-style: italic; margin-bottom: 6px;
-}
-
-/* Collapsed state indicator */
-.char-card-collapsed-bar {
-  display: none; padding: 8px 16px;
+/* Missed — locked red, no hover */
+.char-miss-circle.missed,
+.char-miss-circle:disabled {
+  border-color: rgba(184,60,46,0.5);
+  color: var(--red);
   background: rgba(184,60,46,0.06);
-  border-top: 1px solid rgba(184,60,46,0.2);
+  opacity: 0.65;
+  cursor: default;
+  pointer-events: none;
 }
-.char-card.collapsed .char-card-collapsed-bar { display: block; }
-.collapsed-msg { font-size: 15px; color: rgba(184,60,46,0.8); font-style: italic; }
+/* Checked-in — fade the miss circle out completely */
+.char-card.checked-in .char-miss-circle {
+  opacity: 0.12;
+  pointer-events: none;
+  border-color: var(--border);
+  color: var(--border-mid);
+}
+@keyframes checkBounce {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(1.28); }
+  65%  { transform: scale(0.88); }
+  100% { transform: scale(1); }
+}
+.char-card-check.just-checked { animation: checkBounce 0.38s ease; }
 
-/* Add character button */
+@keyframes cardCheckin {
+  0%   { box-shadow: 0 0 0 0 rgba(58,158,106,0); }
+  35%  { box-shadow: 0 0 0 5px rgba(58,158,106,0.18); }
+  100% { box-shadow: none; }
+}
+.char-card.checkin-flash { animation: cardCheckin 0.5s ease-out forwards; }
+
+/* Collapsed bar */
+.collapsed-msg {
+  font-size: 13px; color: rgba(184,60,46,0.8); font-style: italic;
+}
+.recovery-indicator {
+  display: inline-block; font-size: 11px; color: var(--orange);
+  font-style: italic; margin-top: 3px; opacity: 0.85;
+}
+
+/* Flavor text — inline below habit on done */
+.checkin-flavor {
+  display: block; font-size: 12px; color: var(--text-dark);
+  font-style: italic; margin-top: 2px; font-family: serif;
+  line-height: 1.4;
+}
+
+.map-player-marker {
+  position: absolute; top: -22px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 18px; line-height: 1;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+  animation: playerBob 2s ease-in-out infinite;
+  z-index: 10;
+}
+@keyframes playerBob {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(-3px); }
+}
 .add-char-wrap { margin-top: 10px; }
 .add-char-wrap.hidden { display: none; }
 .add-char-btn {
@@ -1640,6 +2283,15 @@ body::after {
 .log-char-name {
   font-size: 14px; color: var(--text-dark); font-style: italic; margin-top: 1px;
 }
+
+/* Check-in done flavor text */
+.checkin-flavor {
+  display: block;
+  font-size: 12px; color: var(--green); font-style: italic;
+  margin-top: 4px; opacity: 0.8; letter-spacing: 0;
+  font-family: 'Crimson Text', serif; white-space: normal;
+  overflow: hidden; text-overflow: ellipsis;
+}
 </style>
 </head>
 <body>
@@ -1650,8 +2302,8 @@ body::after {
     <div class="header-brand">
       <div class="header-sigil">⚔</div>
       <div>
-        <h1>Habit Quest</h1>
-        <div class="header-tagline">Your habits are your legend.</div>
+        <h1>Habit Forge</h1>
+        <div class="header-tagline">Forge the habit. Become the legend.</div>
       </div>
     </div>
     <div id="header-auth" class="header-auth" style="display:none;">
@@ -1665,7 +2317,7 @@ body::after {
     <div class="login-hero">
       <div class="login-hero-icon">⚔</div>
       <div class="login-title">Welcome Back, Hero</div>
-      <div class="login-sub">Build your habits. Level up. Reach the Iron Keep.</div>
+      <div class="login-sub">Your champions are waiting.</div>
     </div>
     <div class="card" style="max-width:420px;margin:0 auto;">
       <div class="card-accent-top"></div>
@@ -1695,34 +2347,21 @@ body::after {
   <div id="onboarding" style="display: none;">
     <div class="ob-card">
 
-      <div class="steps-row" id="steps-row">
-        <div class="step-dot active" id="dot-0"></div>
-        <div class="step-line"></div>
-        <div class="step-dot" id="dot-1"></div>
-        <div class="step-line"></div>
-        <div class="step-dot" id="dot-2"></div>
-        <div class="step-line"></div>
-        <div class="step-dot" id="dot-3"></div>
-        <div class="step-line"></div>
-        <div class="step-dot" id="dot-4"></div>
+      <!-- Progress bar (replaces step dots) -->
+      <div class="ob-progress-bar">
+        <div class="ob-progress-fill" id="ob-progress-fill" style="width:0%"></div>
       </div>
 
-      <!-- Step 0: Party Leader Name -->
+      <!-- Step 0: Name + Avatar (merged) -->
       <div class="ob-step active" id="step-0">
         <div class="ob-icon">⚔️</div>
-        <div class="ob-title">Name Your Party Leader</div>
-        <div class="ob-sub">You lead this party. The champions fight for you. What do they call you on the road?</div>
-        <div class="name-row">
+        <div class="ob-title">Begin Your Forge</div>
+        <div class="ob-sub">Who sets out on this road?</div>
+        <div class="name-row" style="margin-bottom:18px;">
           <input class="hero-name-input" id="hero-name-input" type="text" placeholder="Your name…" maxlength="24" autocomplete="off" oninput="onNameInput()">
-          <button class="name-btn" id="name-next-btn" onclick="goStep('1-race')" disabled>Onward →</button>
+          <button class="name-btn" id="name-next-btn" onclick="goStep('2')" disabled>Onward →</button>
         </div>
-      </div>
-
-      <!-- Step 1: Avatar / Race -->
-      <div class="ob-step" id="step-1-race">
-        <div class="ob-icon">🪞</div>
-        <div class="ob-title">Choose Your Form</div>
-        <div class="ob-sub">The road ahead is long. Choose the face that will meet it.</div>
+        <div style="font-family:'Cinzel',serif;font-size:12px;color:var(--text-dark);text-transform:uppercase;letter-spacing:0.16em;margin-bottom:10px;">Choose Your Form</div>
         <div class="avatar-grid" id="avatar-grid">
           <div class="avatar-opt selected" data-avatar="🧔" onclick="selectAvatar(this)">
             <div class="avatar-opt-icon">🧔</div>
@@ -1741,36 +2380,35 @@ body::after {
             <div class="avatar-opt-label">Wizard</div>
           </div>
         </div>
-        <div class="ob-nav">
-          <button class="btn-secondary" onclick="goStep(0)">← Back</button>
-          <button class="btn-primary" style="width:auto;" onclick="goStep(2)">Choose Your Champions →</button>
-        </div>
       </div>
+
+      <!-- Step 1-race: REMOVED (merged into step 0) — kept as hidden stub for JS compat -->
+      <div class="ob-step" id="step-1-race" style="display:none;"></div>
 
       <!-- Step 2: Party Size -->
       <div class="ob-step" id="step-2">
         <div class="ob-icon">🗡️</div>
-        <div class="ob-title">How Many Champions?</div>
-        <div class="ob-sub">Each champion is a habit you want to build. They grow stronger when you show up for them every day.</div>
+        <div class="ob-title">Assemble Your Party</div>
+        <div class="ob-sub">Each champion holds one habit. How many will you commit to?</div>
         <div class="party-size-grid">
           <div class="party-size-opt" data-size="1" onclick="selectPartySize(this, 1)">
             <div class="party-size-num">1</div>
             <div class="party-size-label">Solo</div>
-            <div class="party-size-desc">Start focused. One habit, all your attention.</div>
+            <div class="party-size-desc">One habit, all your focus.</div>
           </div>
           <div class="party-size-opt" data-size="2" onclick="selectPartySize(this, 2)">
             <div class="party-size-num">2</div>
             <div class="party-size-label">Pair</div>
-            <div class="party-size-desc">Two commitments. Double the stakes.</div>
+            <div class="party-size-desc">Two habits. Double the stakes.</div>
           </div>
-          <div class="party-size-opt selected" data-size="3" onclick="selectPartySize(this, 3)">
+          <div class="party-size-opt" data-size="3" onclick="selectPartySize(this, 3)">
             <div class="party-size-num">3</div>
             <div class="party-size-label">Party</div>
-            <div class="party-size-desc">The classic three. Most travelers carry this many.</div>
+            <div class="party-size-desc">Three commitments. Full party.</div>
           </div>
         </div>
         <div class="ob-nav" style="margin-top:18px;">
-          <button class="btn-secondary" onclick="goStep('1-race')">← Back</button>
+          <button class="btn-secondary" onclick="goStep(0)">← Back</button>
           <button class="btn-primary" style="width:auto;" id="party-size-next-btn" onclick="startCompanionSetup()">Enlist My Champions →</button>
         </div>
       </div>
@@ -1778,138 +2416,129 @@ body::after {
       <!-- Step 3: Companion habit setup (dynamic, repeats per companion) -->
       <div class="ob-step" id="step-habit">
         <div class="ob-icon" id="companion-setup-icon">🧭</div>
-        <div class="ob-title" id="companion-setup-title">First Champion's Quest</div>
-        <div class="ob-sub" id="companion-setup-sub">What habit will this champion embody? Name it plainly — when you show up for it, they grow stronger.</div>
-        <div class="companion-progress" id="companion-progress">
-          <!-- dots showing companion 1 of N -->
+        <div class="ob-title" id="companion-setup-title">First Champion's Forge</div>
+        <div class="ob-sub" id="companion-setup-sub">What will this champion hold you to?</div>
+        <div class="companion-progress" id="companion-progress"></div>
+
+        <!-- Phase 1: suggestion prose + free input -->
+        <div id="habit-phase-1">
+          <div class="habit-examples-text" id="habit-examples-dynamic">
+            <span class="habit-ex-label">e.g.</span>
+            <span class="habit-ex-item" onclick="selectHabitSuggestion('sleep')">More sleep</span><span class="habit-ex-sep">,</span>
+            <span class="habit-ex-item" onclick="selectHabitSuggestion('eat')">Eat healthier</span><span class="habit-ex-sep">,</span>
+            <span class="habit-ex-item" onclick="selectHabitSuggestion('workout')">Work out more</span><span class="habit-ex-sep">,</span>
+            <span class="habit-ex-item" onclick="selectHabitSuggestion('read')">Read daily</span><span class="habit-ex-sep">,</span>
+            <span class="habit-ex-item" onclick="selectHabitSuggestion('water')">Drink more water</span><span class="habit-ex-sep">,</span>
+            <span class="habit-ex-item" onclick="selectHabitSuggestion('meditate')">Meditate</span><span class="habit-ex-sep">,</span>
+            <span class="habit-ex-item" onclick="selectHabitSuggestion('journal')">Journal</span><span class="habit-ex-sep">,</span>
+            <span class="habit-ex-item" onclick="selectHabitSuggestion('sugar')">Cut sugar</span><span class="habit-ex-sep">,</span>
+            <span class="habit-ex-item" onclick="selectHabitSuggestion('walk')">Walk more</span><span class="habit-ex-sep">,</span>
+            <span class="habit-ex-item" onclick="selectHabitSuggestion('spend')">Spend less</span>…
+          </div>
+          <div class="habit-input-row" id="habit-input-row">
+            <input class="hero-name-input" id="habit-input" type="text"
+              placeholder="Or describe your own habit…" maxlength="60"
+              autocomplete="off" oninput="onHabitInput()">
+          </div>
         </div>
-        <div class="habit-examples" id="habit-examples-dynamic">
-          <button class="habit-example-btn" onclick="setHabitExample(this)">Drink more water</button>
-          <button class="habit-example-btn" onclick="setHabitExample(this)">Read every day</button>
-          <button class="habit-example-btn" onclick="setHabitExample(this)">Exercise regularly</button>
-          <button class="habit-example-btn" onclick="setHabitExample(this)">Journal daily</button>
-          <button class="habit-example-btn" onclick="setHabitExample(this)">Track spending under $50/day</button>
-          <button class="habit-example-btn" onclick="setHabitExample(this)">Meditate</button>
+
+        <!-- Phase 2: inline sentence expander (hidden until suggestion tapped) -->
+        <div id="habit-phase-2" class="habit-expander" style="display:none;">
+          <button class="habit-expander-back" onclick="backToHabitPhase1()">← change habit</button>
+          <div class="habit-sentence">
+            <span class="hs-before" id="hs-before">I want to sleep</span>
+            <span class="hs-blank-wrap">
+              <input class="hs-input" id="hs-input" type="text" maxlength="30"
+                autocomplete="off" oninput="onSentenceInput()" />
+            </span>
+            <span class="hs-after" id="hs-after">hours per night</span>
+          </div>
+          <div class="hs-chips" id="hs-chips">
+            <!-- populated by JS -->
+          </div>
+          <div class="hs-or" id="hs-or-label">or type your own amount above</div>
         </div>
-        <div class="habit-input-row">
-          <input class="hero-name-input" id="habit-input" type="text" placeholder="e.g. Sleep 8 hours every night…" maxlength="60" autocomplete="off" oninput="onHabitInput()">
+
+        <!-- Inline cadence — shown once habit has a value -->
+        <div class="habit-cadence-inline" id="habit-cadence-inline" style="display:none;">
+          <div class="hci-label">How often?</div>
+          <div class="hci-opts">
+            <div class="hci-opt selected" id="hci-daily" onclick="selectCadenceInline('daily')">
+              <span class="hci-icon">🔁</span>
+              <span class="hci-name">Every day</span>
+            </div>
+            <div class="hci-opt" id="hci-weekly" onclick="selectCadenceInline('weekly')">
+              <span class="hci-icon">📆</span>
+              <span class="hci-name">A few times a week</span>
+            </div>
+          </div>
+          <div class="hci-weekly-row hidden" id="hci-weekly-row">
+            <span class="hci-weekly-label">Target:</span>
+            <div class="hci-weekly-btns">
+              <button class="wt-btn" data-n="2" onclick="selectWeeklyTargetInline(this)">2×</button>
+              <button class="wt-btn selected" data-n="3" onclick="selectWeeklyTargetInline(this)">3×</button>
+              <button class="wt-btn" data-n="4" onclick="selectWeeklyTargetInline(this)">4×</button>
+              <button class="wt-btn" data-n="5" onclick="selectWeeklyTargetInline(this)">5×</button>
+            </div>
+          </div>
         </div>
+
         <div class="ob-nav" style="margin-top:18px;">
           <button class="btn-secondary" id="habit-back-btn" onclick="habitBack()">← Back</button>
           <button class="btn-primary" style="width:auto;" id="habit-next-btn" onclick="goToClassStep()" disabled>Assign Champion →</button>
         </div>
       </div>
 
-      <!-- Step 3b: Cadence -->
-      <div class="ob-step" id="step-cadence">
-        <div class="ob-icon" id="cadence-setup-icon">📅</div>
-        <div class="ob-title">How Often?</div>
-        <div class="ob-sub">Set the tempo for this champion. This determines when they lose health if you fall behind.</div>
-        <div class="cadence-grid">
-          <div class="cadence-opt selected" id="cad-daily" onclick="selectCadence('daily')">
-            <div class="cadence-icon">🔁</div>
-            <div class="cadence-label">Every Day</div>
-            <div class="cadence-desc">Miss a day → lose a heart. Best for habits you can do any day.</div>
-          </div>
-          <div class="cadence-opt" id="cad-weekly" onclick="selectCadence('weekly')">
-            <div class="cadence-icon">📆</div>
-            <div class="cadence-label">A Few Times a Week</div>
-            <div class="cadence-desc">No daily penalty. Miss your weekly target → lose a heart at week's end.</div>
-          </div>
-        </div>
-        <div class="weekly-target-row hidden" id="weekly-target-row">
-          <div class="weekly-target-label">Target days per week</div>
-          <div class="weekly-target-btns">
-            <button class="wt-btn" data-n="2" onclick="selectWeeklyTarget(this)">2×</button>
-            <button class="wt-btn selected" data-n="3" onclick="selectWeeklyTarget(this)">3×</button>
-            <button class="wt-btn" data-n="4" onclick="selectWeeklyTarget(this)">4×</button>
-            <button class="wt-btn" data-n="5" onclick="selectWeeklyTarget(this)">5×</button>
-          </div>
-        </div>
-        <div class="ob-nav" style="margin-top:18px;">
-          <button class="btn-secondary" onclick="goStep('habit')">← Back</button>
-          <button class="btn-primary" style="width:auto;" onclick="goStep('class')">Choose Their Class →</button>
-        </div>
-      </div>
-
       <!-- Step 4: Class suggestion -->
       <div class="ob-step" id="step-class">
         <div class="ob-icon" id="ob-suggest-icon">🏹</div>
-        <div class="ob-title">Choose Their Class</div>
-        <div class="ob-sub" id="ob-suggest-sub">Based on their quest, we suggest this class. Change it if you see it differently.</div>
+        <div class="ob-title">Your Champion Answers</div>
+        <div class="ob-sub" id="ob-suggest-sub">Based on your habit, here's who joins your party.</div>
+        <!-- Conflict notice — shown when best class is already taken -->
+        <div class="class-conflict-notice" id="class-conflict-notice" style="display:none;">
+          <span id="class-conflict-msg"></span>
+        </div>
         <div class="suggested-class-card" id="suggested-class-card">
           <div class="suggested-class-icon" id="sc-icon">🏹</div>
           <div class="suggested-class-body">
+            <div class="sc-persona-name" id="sc-persona-name">Corvin the Lorebound</div>
             <div class="suggested-class-name" id="sc-name">The Mage</div>
-            <div class="suggested-class-desc" id="sc-desc">Daily practice habits — reading, journaling, meditation.</div>
-            <div class="suggested-class-trait" id="sc-trait">Discipline & Practice</div>
+            <div class="suggested-class-trait" id="sc-trait">Knowledge & Craft</div>
+            <div class="sc-lore" id="sc-lore"></div>
+            <div class="suggested-class-desc" id="sc-desc" style="margin-top:8px;"></div>
           </div>
         </div>
+        <!-- Class swap row — always shown, lets user pick any available class -->
+        <div class="class-swap-row" id="class-swap-row"></div>
         <div class="ob-nav">
-          <button class="btn-secondary" onclick="goStep('cadence')">← Back</button>
+          <button class="btn-secondary" onclick="goStep('habit')">← Back</button>
           <button class="btn-primary" style="width:auto;" id="confirm-class-btn" onclick="confirmCompanionClass()">This is my champion →</button>
         </div>
       </div>
 
-      <!-- Step 5: Laws -->
-      <div class="ob-step" id="step-laws">
-        <div class="ob-icon">📜</div>
-        <div class="ob-title">The Laws of the Road</div>
-        <div class="ob-sub">Five rules that govern every traveler toward the Iron Keep.</div>
-        <div class="laws-grid">
-          <div class="law-card">
-            <div class="law-icon">✦</div>
-            <div class="law-body">
-              <div class="law-title">Check in → earn XP</div>
-              <div class="law-plain">Show up for a habit and your champion earns experience. Daily or weekly — the act of showing up is what counts.</div>
-            </div>
-          </div>
-          <div class="law-card">
-            <div class="law-icon">🔥</div>
-            <div class="law-body">
-              <div class="law-title">Consistency forges your streak</div>
-              <div class="law-plain">Daily champions build day streaks. Weekly champions build week streaks. Both multiply your XP the longer you hold them.</div>
-            </div>
-          </div>
-          <div class="law-card">
-            <div class="law-icon">❤️</div>
-            <div class="law-body">
-              <div class="law-title">Champions have 5 HP</div>
-              <div class="law-plain">Daily champions lose a heart for every missed day. Weekly champions lose a heart if they miss their weekly target. Recovery is earned back one check-in at a time.</div>
-            </div>
-          </div>
-          <div class="law-card">
-            <div class="law-icon">🌦️</div>
-            <div class="law-body">
-              <div class="law-title">The weather reflects your party</div>
-              <div class="law-plain">Check in all your champions and the road clears. Leave them waiting and the skies darken — a reminder, not a punishment.</div>
-            </div>
-          </div>
-          <div class="law-card">
-            <div class="law-icon">👝</div>
-            <div class="law-body">
-              <div class="law-title">Face encounters → spend Road Gold</div>
-              <div class="law-plain">Road Gold absorbs hostile encounters on the map. Earn it from friendly ones — and guard it well.</div>
-            </div>
-          </div>
-        </div>
-        <div class="ob-nav">
-          <button class="btn-secondary" onclick="goStep('habit')">← Back</button>
-          <button class="btn-primary" style="width:auto;" onclick="goStep('begin')">Begin the Journey →</button>
-        </div>
-      </div>
+      <!-- Step 5: Laws REMOVED — replaced by Begin with inline rules summary -->
 
-      <!-- Step 6: Begin -->
+      <!-- Step begin: Begin -->
       <div class="ob-step" id="step-begin">
         <div class="ob-icon">🏰</div>
         <div class="ob-title">The Road Awaits</div>
-        <div class="ob-sub">Your party is assembled. You set out from Hearthstone Village. The Iron Keep is far — but closer every day you show up.</div>
+        <div class="ob-sub">Your party is assembled. Set out from Hearthstone Village toward the Iron Keep.</div>
         <div class="begin-party-summary" id="begin-party-summary"><!-- populated by JS --></div>
+        <div style="margin-top:16px;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:3px;font-size:14px;color:var(--text-dim);line-height:1.7;">
+          <span style="font-family:'Cinzel',serif;font-size:12px;color:var(--text-dark);text-transform:uppercase;letter-spacing:0.14em;">How it works</span><br>
+          ✦ Check in daily → earn XP &amp; build your streak 🔥<br>
+          ❤️ Champions have 5 HP — miss days and they weaken<br>
+          💰 Earn Road Gold from encounters — spend it to survive hostile ones<br>
+          🗺️ Level up → advance the map toward the Iron Keep
+        </div>
         <button class="btn-primary" style="margin-top:20px;" onclick="beginJourney()">Enter the Road ⚔</button>
         <div class="ob-nav" style="margin-top:10px;">
-          <button class="btn-secondary" onclick="goStep('laws')">← Back</button>
+          <button class="btn-secondary" onclick="goStep('class')">← Back</button>
         </div>
       </div>
+
+      <!-- Hidden compat stub for Laws step -->
+      <div class="ob-step" id="step-laws" style="display:none;"></div>
 
     </div>
   </div><!-- /onboarding -->
@@ -1927,9 +2556,10 @@ body::after {
               <div class="char-name" id="char-name">Traveler</div>
               <div class="char-class" id="char-class">Novice</div>
             </div>
-            <div class="char-level-badge">
+            <div class="char-level-badge" id="level-badge">
               <div class="level-num" id="level-num">1</div>
               <div class="level-label">Level</div>
+              <div class="dev-trigger" onclick="var dt=document.getElementById('dev-tools');dt.style.display=dt.style.display==='none'?'flex':'none';" title="Dev tools">🔧</div>
             </div>
           </div>
 
@@ -1950,8 +2580,9 @@ body::after {
           <!-- Road Gold + Streak compact row -->
           <div class="left-stats-row">
             <div class="left-stat-block">
-              <div class="left-stat-label">Road Gold</div>
+              <div class="left-stat-label">Road Gold <span onclick="showToast('Road Gold absorbs hostile encounters on the road. Earn it from friendly ones, and spend it wisely — it\'s your shield against bad days.')" style="cursor:pointer;opacity:0.5;font-size:11px;">(?)</span></div>
               <div class="left-stat-value" id="vault-amount" style="color:var(--gold);font-family:Cinzel,serif;font-size:20px;">0 💰</div>
+              <div style="font-size:11px;color:var(--text-dark);font-style:italic;margin-top:2px;">Spent on hostile encounters</div>
             </div>
             <div class="left-stat-divider"></div>
             <div class="left-stat-block">
@@ -1976,13 +2607,30 @@ body::after {
             </div>
           </div>
 
-          <div class="dev-tools" id="dev-tools">
-            <span class="dev-tools-label">Dev</span>
+          <!-- Journey progress — zone badges -->
+          <div class="badge-rail-section">
+            <div class="badge-rail-heading">✦ Places Discovered</div>
+            <div class="badge-rail">
+              <div class="badge-rail-item" id="badge-zone1"><div class="badge-pip locked">🛡️</div><div class="badge-rail-label">Hearthstone</div></div>
+              <div class="badge-connector"></div>
+              <div class="badge-rail-item" id="badge-zone2"><div class="badge-pip locked">🪙</div><div class="badge-rail-label">Merchant's Pass</div></div>
+              <div class="badge-connector"></div>
+              <div class="badge-rail-item" id="badge-zone3"><div class="badge-pip locked">🌿</div><div class="badge-rail-label">Thornwood</div></div>
+              <div class="badge-connector"></div>
+              <div class="badge-rail-item" id="badge-zone4"><div class="badge-pip locked">🔒</div><div class="badge-rail-label">Iron Keep</div></div>
+            </div>
+          </div>
+
+          <div class="dev-tools" id="dev-tools" style="display:none;">
+            <span class="dev-tools-label" onclick="document.getElementById('dev-tools').style.display='none'" style="cursor:pointer;" title="Close">Dev ✕</span>
             <button class="dev-btn" onclick="devWipeLog()">Wipe</button>
             <button class="dev-btn" onclick="devWipeStreak()">Streak</button>
             <button class="dev-btn" onclick="devWipeLevel()">Level</button>
             <button class="dev-btn" onclick="devRestart()">Restart</button>
             <button class="dev-btn" onclick="devSimMiss()">Miss</button>
+            <button class="dev-btn" onclick="devOrcPatrol()">Orc</button>
+            <button class="dev-btn" onclick="devGrimjaw()">Grimjaw</button>
+            <button class="dev-btn" onclick="devHostile()">Hostile</button>
           </div>
           <div class="gold-float" id="gold-float"></div>
 
@@ -2003,7 +2651,7 @@ body::after {
       <div class="col-right">
 
         <div class="party-panel">
-          <div class="panel-head">Today's Quests</div>
+          <div class="panel-head">Your Companions</div>
           <div class="party-cards" id="party-cards"></div>
           <div class="add-char-wrap hidden" id="add-char-wrap">
             <button class="add-char-btn" onclick="showAddCharacter()">+ Recruit a new companion</button>
@@ -2016,31 +2664,10 @@ body::after {
             <div class="map-loc-block">
               <span class="map-section-label">⚔ The Journey</span>
               <span class="map-current-loc" id="map-location-name">Hearthstone Village</span>
-              <span class="map-zone-tag" id="map-zone-tag">Zone I — The Hearthstone Road</span>
-            </div>
-            <div class="map-right-col">
-              <div class="map-hearts-block">
-                <div class="map-hearts-label">Road Gold</div>
-                <div class="map-hearts" style="font-family:Cinzel,serif;font-size:15px;color:var(--gold);" id="map-gold-display">0 💰</div>
-              </div>
+              <span class="map-zone-tag" id="map-zone-tag">Hearthstone Road</span>
             </div>
           </div>
-          <div class="badge-rail">
-            <div class="badge-rail-item" id="badge-zone1"><div class="badge-pip locked">🛡️</div><div class="badge-rail-label">Zone I</div></div>
-            <div class="badge-connector"></div>
-            <div class="badge-rail-item" id="badge-zone2"><div class="badge-pip locked">🪙</div><div class="badge-rail-label">Zone II</div></div>
-            <div class="badge-connector"></div>
-            <div class="badge-rail-item" id="badge-zone3"><div class="badge-pip locked">🌿</div><div class="badge-rail-label">Zone III</div></div>
-            <div class="badge-connector"></div>
-            <div class="badge-rail-item" id="badge-zone4"><div class="badge-pip locked">🔒</div><div class="badge-rail-label">Iron Keep</div></div>
-          </div>
-          <div class="map-viewport" id="map-viewport">
-            <div class="node-map" id="node-map">
-              <svg id="map-svg" xmlns="http://www.w3.org/2000/svg"></svg>
-              <div class="node-map-inner" id="node-map-inner"></div>
-            </div>
-            <div class="map-more-arrow hidden" id="map-more-arrow"><span>more ahead</span><span>▼</span></div>
-          </div>
+          <span id="map-gold-display" style="display:none;"></span>
           <div class="road-bonus-track">
             <span class="road-bonus-label" id="road-bonus-label">Road Bonus — check in 5 days this week</span>
             <div class="road-bonus-pips">
@@ -2048,6 +2675,13 @@ body::after {
               <div class="road-pip" id="road-pip-2"></div>
               <div class="road-pip" id="road-pip-3"></div>
             </div>
+          </div>
+          <div class="map-viewport" id="map-viewport">
+            <div class="node-map" id="node-map">
+              <svg id="map-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+              <div class="node-map-inner" id="node-map-inner"></div>
+            </div>
+            <div class="map-more-arrow hidden" id="map-more-arrow"><span>more ahead</span><span>▼</span></div>
           </div>
         </div>
 
@@ -2107,6 +2741,31 @@ body::after {
   </div>
 </div>
 
+<!-- Epic Check-in Celebration Overlay -->
+<div id="checkin-celebration" onclick="closeCheckinCelebration()">
+  <div class="cc-backdrop"></div>
+  <div class="cc-box">
+    <div id="cc-confetti"></div>
+    <span id="cc-icon">⚔️</span>
+    <div id="cc-name">Champion</div>
+    <div id="cc-xp">+20 XP</div>
+    <div id="cc-msg">Quest complete!</div>
+    <div id="cc-streak" style="display:none;">🔥 1 day streak!</div>
+  </div>
+</div>
+
+<!-- Miss overlay — somber counterpart to celebration -->
+<div id="miss-overlay" onclick="closeMissOverlay()">
+  <div class="cc-backdrop"></div>
+  <div class="miss-box">
+    <span id="miss-icon">⚔️</span>
+    <div id="miss-name">Champion</div>
+    <div id="miss-hp">−1 HP</div>
+    <div id="miss-msg">They'll carry it tomorrow.</div>
+    <div id="miss-hearts"></div>
+  </div>
+</div>
+
 <!-- Road Event Overlay (post check-in story beat) -->
 <div class="road-event-overlay" id="road-event-overlay">
   <div class="road-event-box">
@@ -2135,60 +2794,333 @@ var LEVEL_XP = [0, 80, 200, 370, 600, 900, 1270, 1720, 2260, 3000, 4000];
 // ─────────────────────────
 var CLASS_DEFS = {
   Warrior: {
-    icon: '\u2694\uFE0F', name: 'The Warrior', trait: 'Strength & Movement',
+    icon: '⚔️', name: 'The Warrior', trait: 'Strength & Movement',
+    gender: 'male',
     desc: 'Physical output habits — exercise, workouts, steps, sport, movement.',
     hpRule: 'standard',
-    habitExamples: 'Exercise 30 min / Walk 8,000 steps / Go to the gym / Train'
+    habitExamples: 'Exercise 30 min / Walk 8,000 steps / Go to the gym / Train',
+    personaName: 'Aldric the Unyielding',
+    portrait: '🗡️',
+    lore: 'Aldric hasn\'t missed a training session in nine years. He doesn\'t track it. There\'s no streak counter in his world — just the fact of showing up, repeated until it\'s the only way he knows to begin a day.',
+    checkInFlavor: [
+      'Aldric was here. That\'s the whole story.',
+      'The Unyielding earns the name again today.',
+      'Another session. Aldric doesn\'t count victories — only the work itself.',
+      'Movement logged. The road recognizes consistent travelers.',
+      'Aldric drives forward. The body remembers what the mind forgets.'
+    ],
+    altPersona: {
+      personaName: 'Vael Brokenchain',
+      gender: 'female',
+      lore: 'Vael trained her way out of a body that once held her back. She doesn\'t talk about it much — the work speaks louder. She shows up because she knows exactly what not showing up costs. She priced it once, years ago. She hasn\'t forgotten the number.',
+      checkInFlavor: [
+        'Vael moved today. That\'s not nothing — that\'s everything.',
+        'The chain doesn\'t hold her. It never did, once she decided.',
+        'Another session in the books. Vael built this one rep at a time.',
+        'Brokenchain earns the name again. Forward.',
+        'Vael was here. The body got what it needed.'
+      ]
+    }
   },
   Cleric: {
-    icon: '\u2764\uFE0F\u200D\uD83E\uDE79', name: 'The Cleric', trait: 'Recovery & Body',
-    desc: 'Body and recovery habits — sleep, water, nutrition, health, self-care.',
+    icon: '❤️‍🩹', name: 'The Cleric', trait: 'Recovery & Body Care',
+    gender: 'female',
+    desc: 'Body and recovery habits — sleep, water, nutrition, hydration, self-care.',
     hpRule: 'standard',
-    habitExamples: 'Sleep 8 hours / Drink water / Eat well / Take medication'
+    habitExamples: 'Drink water / Sleep 8 hours / Eat well / Take medication / Skincare',
+    personaName: 'Casciel the Wellkeeper',
+    portrait: '🌿',
+    lore: 'Casciel tends to what others ignore — the body\'s quiet requests. Sleep. Water. Rest. She says the well only runs dry when no one tends it. She has never let hers run dry.',
+    checkInFlavor: [
+      'Casciel tends the well. The body is thanking you right now.',
+      'Recovery logged. Casciel keeps the foundation solid.',
+      'The Wellkeeper marks another day of care.',
+      'Small habits, deep roots. Casciel understands this.',
+      'Your body got what it needed today. Casciel approves.'
+    ],
+    altPersona: {
+      personaName: 'Oswin the Steadfast',
+      gender: 'male',
+      lore: 'Oswin treats the body like infrastructure — something that fails quietly, over time, without any single dramatic moment of neglect. He does maintenance the way a careful engineer does: not because anything is wrong, but because things stay working when you don\'t wait for them to break.',
+      checkInFlavor: [
+        'Oswin maintains the foundation. Nothing dramatic — just solid.',
+        'The Steadfast logs another day of care. Infrastructure holds.',
+        'Recovery marked. Oswin knows it\'s the invisible work that matters most.',
+        'The body was tended. Oswin checks it off without ceremony.',
+        'Steadfast by name, steadfast by habit. Another day kept.'
+      ]
+    }
   },
   Mage: {
-    icon: '\uD83D\uDD2E', name: 'The Mage', trait: 'Knowledge & Craft',
-    desc: 'Learning and creative habits — reading, writing, studying, building, creating.',
+    icon: '🔮', name: 'The Mage', trait: 'Knowledge & Learning',
+    gender: 'male',
+    desc: 'Learning and reading habits — books, study, courses, research.',
     hpRule: 'standard',
-    habitExamples: 'Read 20 pages / Study / Journal / Learn a language / Work on a project'
+    habitExamples: 'Read 20 pages / Study / Take a course / Research / Learn a language',
+    personaName: 'Corvin the Lorebound',
+    portrait: '📖',
+    lore: 'Corvin has read every book in the Hearthstone archive — twice. He doesn\'t read to finish. He reads because the mind, untended, goes quiet in all the wrong ways. He keeps his loud.',
+    checkInFlavor: [
+      'Corvin opens the tome. Another page turned on the long road to mastery.',
+      'The Lorebound adds to his archive. Every session compounds.',
+      'Knowledge logged. Corvin reminds you: this is how it\'s built.',
+      'One more session. Corvin has been counting since the beginning.',
+      'The mind was fed today. Corvin marks it in the ledger.'
+    ],
+    altPersona: {
+      personaName: 'Lirien of the Long Study',
+      gender: 'female',
+      lore: 'Lirien doesn\'t read widely — she reads deeply. One subject at a time, until she knows it from the inside. She says breadth is a map and depth is the territory. She prefers the territory. Her current study has been running for two years. She\'s not close to done. She\'s not in a hurry.',
+      checkInFlavor: [
+        'Lirien goes deeper. One more layer understood.',
+        'The Long Study continues. Lirien marks the session without fanfare.',
+        'Another hour in the territory. Lirien knows the map isn\'t the thing.',
+        'Knowledge logged. Lirien has been building this for a long time.',
+        'Depth over speed. Lirien holds the line on that, every day.'
+      ]
+    }
   },
   Rogue: {
-    icon: '\uD83D\uDDE1\uFE0F', name: 'The Rogue', trait: 'Discipline & Restraint',
-    desc: 'Restraint and mindfulness habits — limits, spending, screen time, things to stop or avoid.',
+    icon: '🗡️', name: 'The Rogue', trait: 'Discipline & Restraint',
+    gender: 'female',
+    desc: 'Restraint and limits — spending, screen time, alcohol, things to reduce or stop.',
     hpRule: 'ranger',
-    habitExamples: 'Stay under $50/day / No social media before 9am / Meditate / No alcohol'
+    habitExamples: 'Track spending / No social media before 9am / No alcohol / Cut sugar',
+    personaName: 'Thessaly Ironledger',
+    portrait: '⚖️',
+    lore: 'Thessaly tracks everything. Every coin, every impulse, every moment of friction between want and wisdom. She doesn\'t deprive herself — she decides deliberately. There\'s a difference, and she lives it.',
+    checkInFlavor: [
+      'Thessaly holds the line. Discipline is just a decision made early.',
+      'The Ironledger records another clean day. The numbers don\'t lie.',
+      'Restraint logged. Thessaly knows what you gave up today.',
+      'Another day, another choice made well. Thessaly nods.',
+      'The edge held. Thessaly has seen what happens when it doesn\'t.'
+    ],
+    altPersona: {
+      personaName: 'Cade Halfmeasure',
+      gender: 'male',
+      lore: 'The name was a joke, once — given by people who watched him commit to things halfway. He kept the name after he stopped being that person. Wears it like a warning to himself. Cade knows exactly what half-measures cost; he paid the price for years and has the receipts. He doesn\'t do them anymore.',
+      checkInFlavor: [
+        'Cade held. No half-measures — not anymore.',
+        'The line was there. Cade didn\'t cross it. That\'s the whole win.',
+        'Restraint logged. Cade knows what the alternative looks like.',
+        'Another clean day. Cade marks it and moves on.',
+        'Full measure, every time. Cade earned the right to say that.'
+      ]
+    }
+  },
+  Scribe: {
+    icon: '✍️', name: 'The Scribe', trait: 'Writing & Creative Work',
+    gender: 'male',
+    desc: 'Creative and writing habits — journaling, writing, drawing, music, building.',
+    hpRule: 'standard',
+    habitExamples: 'Journal daily / Write 500 words / Draw / Practice music / Work on a project',
+    personaName: 'Morwen of the Open Tome',
+    portrait: '📜',
+    lore: 'Morwen writes everything down. Not because memory fades — it does — but because the act of writing is itself the thinking. He has filled sixty-three journals and started sixty-four. The blank page is not a threat. It\'s an invitation.',
+    checkInFlavor: [
+      'Morwen puts pen to page. The work accumulates.',
+      'Another entry. Morwen knows every finished thing begins this way.',
+      'The Scribe marks another session. Small outputs build large archives.',
+      'Written. Morwen nods. That\'s how it\'s done.',
+      'Creative work logged. The page was blank. Now it isn\'t.'
+    ],
+    altPersona: {
+      personaName: 'Wren Inkhollow',
+      gender: 'female',
+      lore: 'Wren writes less than most scribes — and means more. She keeps one journal at a time, fills it slowly, chooses every word. She says output without attention is just noise. What she puts down is quiet and precise and has a way of lasting. She hasn\'t deleted a sentence in three years. She hasn\'t needed to.',
+      checkInFlavor: [
+        'Wren chose her words today. Every one of them counted.',
+        'Inkhollow marks another session. Spare and deliberate.',
+        'The work was done. Wren closed the page.',
+        'Creative output logged. Wren makes sure it earns its space.',
+        'Another entry from Wren. Less than most — means more than most.'
+      ]
+    }
+  },
+  Ranger: {
+    icon: '🏹', name: 'The Ranger', trait: 'Outdoor & Active Life',
+    gender: 'male',
+    desc: 'Outdoor and active habits — hiking, cycling, swimming, sports, steps outside.',
+    hpRule: 'standard',
+    habitExamples: 'Hike / Cycle / Swim / Walk outdoors / Play a sport',
+    personaName: 'Soren of the Still Hours',
+    portrait: '🌿',
+    lore: 'Soren has walked every trail within a day\'s ride of Hearthstone Village — some of them in the dark. He doesn\'t log for the distance. He logs because the day that starts outside is a different day. He has tested this theory for years.',
+    checkInFlavor: [
+      'Soren moves through the world. Another day of being in it.',
+      'Outside and logged. Soren knows the best miles aren\'t planned.',
+      'The trail was there. Soren showed up. That\'s the whole equation.',
+      'Another session in the open air. Soren marks it without fanfare.',
+      'Out and back. Soren notes it and looks for tomorrow\'s route.'
+    ],
+    altPersona: {
+      personaName: 'Mira of the Long Threshold',
+      gender: 'female',
+      lore: 'Mira steps outside every day the way some people drink water — because without it, something essential goes wrong and she can feel exactly where. She discovered this the hard way during a long winter indoors. The threshold is what she crosses. Everything after it is better. She has not stopped testing this.',
+      checkInFlavor: [
+        'Mira crossed the threshold. Everything after it was better.',
+        'Outside logged. Mira knows what skipping this costs.',
+        'The Long Threshold, crossed again. Mira marks it.',
+        'Out and moving. Mira has no other way to start a day right.',
+        'Another session in the open. Mira needed this. Now she has it.'
+      ]
+    }
+  },
+  Monk: {
+    icon: '🧘', name: 'The Monk', trait: 'Mindfulness & Mental Health',
+    gender: 'male',
+    desc: 'Mindfulness and mental habits — meditation, gratitude, therapy, breathing, focus.',
+    hpRule: 'standard',
+    habitExamples: 'Meditate / Practice gratitude / Therapy session / Breathwork / Digital detox',
+    personaName: 'Auryn of the Breathless Peak',
+    portrait: '☁️',
+    lore: 'Auryn walked to the Breathless Peak once, at twenty-two, looking for an answer. He found silence instead. Turned out that was the answer. He has been practicing quiet ever since — not emptiness, but a particular kind of attentive stillness that most people mistake for calm.',
+    checkInFlavor: [
+      'Auryn sat still. That took more than it sounds.',
+      'The mind was tended. Auryn logs it without ceremony.',
+      'Presence logged. Auryn knows the practice is in showing up, not arriving.',
+      'Another session. Auryn has stopped counting the benefits — they are simply there.',
+      'Mindfulness marked. The road is quieter for it.'
+    ],
+    altPersona: {
+      personaName: 'Sera of the Quiet Ledge',
+      gender: 'female',
+      lore: 'Sera found her ledge — a particular rocky outcrop, ten minutes from where she lives — and made a decision to return to it. Not for enlightenment. For maintenance. The world is loud; the ledge is not. She goes because the person who skips it is visibly worse. She has the data. She keeps the practice.',
+      checkInFlavor: [
+        'Sera found her quiet. Another day it was there when she went looking.',
+        'The Quiet Ledge, visited again. Sera marks it.',
+        'Mindfulness logged. Sera goes because skipping has a cost she can feel.',
+        'Present and marked. Sera takes the stillness and uses it.',
+        'Another session. Sera knows the math on this. It always adds up.'
+      ]
+    }
+  },
+  Alchemist: {
+    icon: '🧪', name: 'The Alchemist', trait: 'Nutrition & Transformation',
+    gender: 'male',
+    desc: 'Nutrition habits — what you put in, treated as inputs to a formula. Eating clean, meal prep, cutting processed food, fasting, supplements.',
+    hpRule: 'standard',
+    habitExamples: 'Eat clean / Meal prep / Cut processed food / Fast / Take supplements',
+    personaName: 'Draven Saltwick',
+    portrait: '🧪',
+    lore: "Draven doesn't think of food as comfort or pleasure — he thinks of it as inputs. Every ingredient is a variable. Every meal is an experiment. He has been running the same experiment for years with the same hypothesis: that what you put in determines what comes out. The results keep confirming it.",
+    checkInFlavor: [
+      'Draven logged the inputs. The formula holds.',
+      'Another day of controlled variables. Draven marks it.',
+      'What goes in matters. Saltwick has tested this extensively.',
+      'The Alchemist tends the formula. No shortcuts, no substitutions.',
+      "Inputs logged. Draven doesn't celebrate — he just checks the outcome."
+    ],
+    altPersona: {
+      personaName: 'Nessa the Formwright',
+      gender: 'female',
+      lore: "Nessa approaches nutrition the way a craftsperson approaches a material — with patience, specificity, and deep respect for what happens when you get it right. She doesn't follow formulas; she builds them. Every adjustment she's ever made has been deliberate. Her body is a long-running project. She has no plans to stop refining it.",
+      checkInFlavor: [
+        'Nessa tended the formula. Another deliberate day.',
+        'The Formwright refines. Nothing accidental in her kitchen.',
+        'Inputs logged with intention. Nessa marks the craft.',
+        'Another session of building something better. Nessa approves.',
+        'Transformation is a long project. Nessa is not in a hurry.'
+      ]
+    }
   }
 };
 
-// Keyword → suggested class for smart onboarding
+// Resolve the effective persona for a character (primary or alt)
+function getPersona(char) {
+  var def = CLASS_DEFS[char.class];
+  if (!def) return {};
+  if (char.useAlt && def.altPersona) {
+    return Object.assign({}, def, def.altPersona);
+  }
+  return def;
+}
 var CLASS_KEYWORDS = {
-  Warrior: ['exercise','workout','gym','run','running','walk','steps','lift','yoga','swim','bike','cycling','train','cardio','push','pull','squat','hike','sport','weights','jog','fitnes','movement','active'],
-  Cleric:  ['sleep','water','drink','hydrat','medication','medicine','vitamin','rest','recovery','health','eat','diet','nutrition','meal','calori','fast','stretch','posture','skin','nap','body'],
-  Mage:    ['read','book','study','learn','language','code','program','write','writing','journal','blog','course','skill','class','project','build','creat','draw','paint','music','instrument','guitar','piano','practice','lesson','research'],
-  Rogue:   ['spend','budget','money','dollar','buy','purchase','saving','finance','expense','track','under','cost','price','debt','frugal','allowance','no ','avoid','limit','stop','quit','cut','less','reduce','screen','social media','alcohol','sugar','caffeine','smoking','meditat','mindful','gratitude','focus','phone']
+  Warrior:   ['exercise','workout','work out','gym','run','running','steps','lift','lifting','yoga','swim','train','training','cardio','push','pull','squat','sport','weights','jog','fitnes','movement','active','strength','conditioning','crossfit','hiit','pilates','cycling class','spin','rowing','bootcamp'],
+  Cleric:    ['sleep','water','drink','hydrat','medication','medicine','rest','recovery','skincare','nap','body','posture','stretch','self-care','skin routine','bedtime','wind down','morning routine'],
+  Mage:      ['read','book','study','learn','language','course','skill','lesson','research','science','history','khan','duolingo','knowledge','chapter','library','educate','podcast','audiobook'],
+  Rogue:     ['spend','budget','money','dollar','buy','purchase','saving','finance','expense','track spending','under $','cost','price','debt','frugal','allowance','avoid','limit','stop','quit','cut back','less','reduce','screen','social media','alcohol','sugar','caffeine','smoking','phone','no '],
+  Scribe:    ['write','writing','journal','blog','project','build','creat','draw','paint','music','instrument','guitar','piano','practice','compose','sketch','poem','fiction','craft','code','program'],
+  Ranger:    ['hike','bike','cycling','cycle','walk','outdoor','nature','trail','kayak','climb','paddle','row','trek','wander','outside','fresh air','steps outside'],
+  Monk:      ['meditat','mindful','gratitude','focus','breathe','breathing','breathwork','therapy','calm','anxiet','stress','intention','awareness','reflect','digital detox','phone detox','presence','journaling','mental'],
+  Alchemist: ['eat','meal','prep','cook','cooking','recipe','food','nutrition','macro','calori','fast','fasting','supplement','vitamin','probiotic','diet','vegan','protein','clean eating','grocery','intermittent','whole food','plant','nutrient']
 };
 
 // Suggest a class from habit description text
+// Priority order matters when scores tie — listed first wins ties
+var CLASS_PRIORITY = ['Warrior','Alchemist','Monk','Rogue','Mage','Scribe','Ranger','Cleric'];
+
+// Direct key → class override for sentence expander habits
+// Bypasses keyword scan so composed sentences can't mismatch
+var HABIT_KEY_CLASS = {
+  sleep:    'Cleric',
+  eat:      'Alchemist',
+  workout:  'Warrior',
+  read:     'Mage',
+  water:    'Cleric',
+  meditate: 'Monk',
+  journal:  'Scribe',
+  sugar:    'Rogue',
+  walk:     'Ranger',
+  spend:    'Rogue'
+};
+
 function suggestClass(text) {
   var lower = text.toLowerCase();
-  var scores = { Warrior: 0, Cleric: 0, Mage: 0, Rogue: 0 };
+  var scores = {};
+  Object.keys(CLASS_KEYWORDS).forEach(function(cls) { scores[cls] = 0; });
   Object.keys(CLASS_KEYWORDS).forEach(function(cls) {
     CLASS_KEYWORDS[cls].forEach(function(kw) {
       if (lower.indexOf(kw) !== -1) scores[cls]++;
     });
   });
   var best = null, bestScore = 0;
-  Object.keys(scores).forEach(function(cls) {
+  CLASS_PRIORITY.forEach(function(cls) {
     if (scores[cls] > bestScore) { bestScore = scores[cls]; best = cls; }
   });
   return best || 'Mage';
 }
 
+// Player rank titles — based on level, independent of any champion class
+// Arc: solo wanderer → earns companions → leads → commands → becomes legend
+var PLAYER_TITLES = [
+  'Wanderer',         // 1
+  'Traveler',         // 2
+  'Traveler',         // 3
+  'Pathfinder',       // 4
+  'Pathfinder',       // 5
+  'Road Veteran',     // 6
+  'Road Veteran',     // 7
+  'Party Leader',     // 8
+  'Party Leader',     // 9
+  'Commander',        // 10
+  'Commander',        // 11
+  'Warden',           // 12
+  'Warden',           // 13
+  'Lord of the Road', // 14
+  'Lord of the Road', // 15
+  'High Keeper',      // 16
+  'High Keeper',      // 17
+  'Archlord',         // 18
+  'Archlord',         // 19
+  'Legend of the Road' // 20
+];
+
+function getPlayerTitle(level) {
+  var idx = Math.max(0, Math.min(level - 1, PLAYER_TITLES.length - 1));
+  return PLAYER_TITLES[idx];
+}
+
 var CLASS_TITLES = {
-  Warrior: ['Novice Fighter','Sworn Blade','Iron Will','Battle-Hardened','Warlord'],
-  Cleric:  ['Novice Mender','Wound Closer','Recovery Sage','Body Keeper','Grand Cleric'],
-  Mage:    ['Novice Archivist','Apprentice Mage','Scroll Keeper','Lore Binder','Elder Mage'],
-  Rogue:   ['Novice Shadow','Discipline Seeker','Edge Walker','Iron Mind','Master Rogue'],
+  Warrior:   ['Novice Fighter','Sworn Blade','Iron Will','Battle-Hardened','Warlord'],
+  Cleric:    ['Novice Mender','Wound Closer','Recovery Sage','Body Keeper','Grand Cleric'],
+  Mage:      ['Novice Archivist','Apprentice Mage','Scroll Keeper','Lore Binder','Elder Mage'],
+  Rogue:     ['Novice Shadow','Discipline Seeker','Edge Walker','Iron Mind','Master Rogue'],
+  Scribe:    ['Novice Quill','Apprentice Scribe','Story Keeper','Ink Binder','Lore Master'],
+  Ranger:    ['Trail Novice','Path Walker','Wilderness Scout','Road Veteran','Trailbreaker'],
+  Monk:      ['Still Novice','Quiet Seeker','Breath Walker','Inner Sage','Tranquil Master'],
+  Alchemist: ['Kitchen Novice','Prep Scholar','Formula Keeper','Nourish Sage','Grand Alchemist'],
 };
 
 var LEVEL_MSGS = [
@@ -2220,14 +3152,14 @@ var MAP_WAYPOINTS = [
   { id: 'z1', icon: '🛡️', name: 'Zone Badge',          zone: 'badge1', badge: 'zone1', zoneName: 'The Hearthstone Road',
     zoneComplete: 'Hearthstone Road: done. First zone cleared. The habit held. You move on.' },
   // Zone 2 — The Midlands (levels 4-6)
-  { id: 3,  icon: '🏪', name: "Merchant's\nGate",       zone: 2, zoneName: 'The Midlands',
+  { id: 3,  icon: '🏪', name: "Merchant's\nGate",       zone: 2, zoneName: "Merchant's Pass",
     arrival: 'You\'ve arrived at Merchant\'s Gate. Distractions in every direction. Your champion doesn\'t blink. The check-in is already done. On to the next.' },
-  { id: 4,  icon: '🌉', name: 'Copperbridge',           zone: 2, zoneName: 'The Midlands',
+  { id: 4,  icon: '🌉', name: 'Copperbridge',           zone: 2, zoneName: "Merchant's Pass",
     arrival: 'You\'ve arrived at Copperbridge. Travelers here always seem to be renegotiating something — plans, intentions, excuses. You\'ve already done yours for the day. That\'s what moves you forward.' },
-  { id: 5,  icon: '⛺', name: "Trader's\nCamp",         zone: 2, zoneName: 'The Midlands',
+  { id: 5,  icon: '⛺', name: "Trader's\nCamp",         zone: 2, zoneName: "Merchant's Pass",
     arrival: 'You\'ve arrived at Trader\'s Camp. Half the people here are heading into the Thornwood. Half just came out. The ones who made it through have a certain quiet look. You\'re starting to recognize it in yourself.' },
-  { id: 'z2', icon: '🪙', name: 'Zone Badge',          zone: 'badge2', badge: 'zone2', zoneName: 'The Midlands',
-    zoneComplete: 'Midlands cleared. Distraction, detour, temptation — all passed. The road narrows now. Good.' },
+  { id: 'z2', icon: '🪙', name: 'Zone Badge',          zone: 'badge2', badge: 'zone2', zoneName: "Merchant's Pass",
+    zoneComplete: "Merchant's Pass cleared. Distraction, detour, temptation — all passed. The road narrows now. Good." },
   // Zone 3 — The Thornwood (levels 7-9)
   { id: 6,  icon: '🌲', name: 'Thornwood\nEdge',        zone: 3, zoneName: 'The Thornwood',
     arrival: 'You\'ve entered the Thornwood. It\'s quiet here — the kind that asks something of you. You check in. That\'s the answer.' },
@@ -2252,53 +3184,63 @@ var MAP_WAYPOINTS = [
 var HOSTILE_ENCOUNTERS = [
   {
     id: 'bandits',
-    icon: '🗡️',
-    title: 'Road Toll. Unofficial.',
+    icon: '🗡️', title: 'Road Toll. Unofficial.',
     zone: 'Ambush',
-    desc: 'Four figures step into the road with the practiced air of people who have redefined "asking" as a concept. They want something. They haven\'t said what. The road behind you is looking very appealing right now.',
-    choiceA: { label: '🛡️ Hold your ground', sub: 'Lose 1 HP — they back off' },
+    desc: 'Four figures step into the road with the practiced air of people who have redefined "asking" as a concept. They want something. The road behind you is looking very appealing right now.',
+    choiceA: { label: '🛡️ Hold your ground', sub: 'Lose 1 HP — they back off, but it costs' },
     choiceB: { label: '💰 Pay them off', sub: 'Spend 20 Road Gold — move on intact' },
+    choiceC: { label: '🔥 Your streak speaks for you', sub: 'Requires 7-day streak — they know a disciplined party when they see one', minStreak: 7 },
     goldCost: 20
   },
   {
     id: 'fog',
-    icon: '🌫️',
-    title: 'The Fog of Habit',
+    icon: '☁️', title: 'The Fog of Habit',
     zone: 'Setback',
     desc: 'A strange heaviness settles over the road — the kind that shows up three weeks in, when the initial momentum has worn off and the habit isn\'t yet automatic. You know this feeling. You\'ve beaten it before.',
     choiceA: { label: '🛡️ Push through it', sub: 'Lose 1 HP — costs something, gains everything' },
     choiceB: { label: '💰 Hire a guide', sub: 'Spend 15 Road Gold — they carry you through the fog' },
+    choiceC: { label: '🔥 You\'ve been here before', sub: 'Requires 14-day streak — muscle memory takes over', minStreak: 14 },
     goldCost: 15
   },
   {
     id: 'storm',
-    icon: '⛈️',
-    title: 'Everything at Once',
+    icon: '⛈️', title: 'Everything at Once',
     zone: 'Bad Day',
-    desc: 'Broken wheel. Wrong turn. Surprise rain. A genuinely difficult day with no clear cause or cure. The road doesn\'t adjust its schedule for hard days — it just keeps going. So do you.',
+    desc: 'Broken wheel. Wrong turn. Surprise rain. A genuinely difficult day with no clear cause or cure. The road doesn\'t adjust its schedule for hard days — it just keeps going.',
     choiceA: { label: '🛡️ Push through', sub: 'Lose 1 HP — arrive tired but still moving' },
     choiceB: { label: '💰 Rest and recover', sub: 'Spend 18 Road Gold — a warm inn, no regrets' },
+    choiceC: { label: '🔥 Hard days don\'t move you', sub: 'Requires 21-day streak — the party has seen worse', minStreak: 21 },
     goldCost: 18
   },
   {
     id: 'temptation',
-    icon: '🎲',
-    title: 'The Easy Way Out',
+    icon: '🎲', title: 'The Easy Way Out',
     zone: 'Temptation',
-    desc: 'There is a shortcut. It looks fine. It\'s probably fine. The locals have a saying about this particular shortcut, but they say it quietly and won\'t quite meet your eyes. Your instincts are saying something. Listen to them.',
+    desc: 'There is a shortcut. It looks fine. It\'s probably fine. The locals have a saying about this particular shortcut, but they say it quietly and won\'t quite meet your eyes.',
     choiceA: { label: '🛡️ Take the long road', sub: 'Lose 1 HP — the right choice always costs something' },
-    choiceB: { label: '💰 Pay for a safe crossing', sub: 'Spend 12 Road Gold — not worth finding out' },
+    choiceB: { label: '💰 Pay for safe passage', sub: 'Spend 12 Road Gold — not worth finding out' },
+    choiceC: { label: '🔥 You don\'t take shortcuts', sub: 'Requires 5-day streak — the habit proves it', minStreak: 5 },
     goldCost: 12
   },
   {
     id: 'snare',
-    icon: '🕸️',
-    title: 'The Interruption',
+    icon: '🕸️', title: 'The Interruption',
     zone: 'Disruption',
     desc: 'Something pulled you off track today — an obligation, an emergency, the inescapable demands of being a person who exists. The habit window is closing. There\'s still a chance to make it.',
     choiceA: { label: '🛡️ Find a way', sub: 'Lose 1 HP — harder to check in, but you do it' },
     choiceB: { label: '💰 Buy back your time', sub: 'Spend 16 Road Gold — clear the day, check in properly' },
+    choiceC: { label: '🔥 The habit is non-negotiable', sub: 'Requires 10-day streak — the party reroutes without losing a step', minStreak: 10 },
     goldCost: 16
+  },
+  {
+    id: 'the_doubter',
+    icon: '🗣️', title: 'The Voice of Reason',
+    zone: 'Doubt',
+    desc: 'A well-meaning traveler pulls you aside. "Is this really worth it?" she asks. "Every day? You\'re allowed to take a break." She means well. The road does not care what she means.',
+    choiceA: { label: '🛡️ Explain it to her', sub: 'Lose 1 HP — takes more out of you than it should' },
+    choiceB: { label: '💰 Buy her a drink and leave', sub: 'Spend 10 Road Gold — polite, efficient, done' },
+    choiceC: { label: '🔥 Show her the log', sub: 'Requires 7-day streak — the record answers better than words', minStreak: 7 },
+    goldCost: 10
   },
 ];
 
@@ -2367,105 +3309,153 @@ var STORY_ENCOUNTERS = {
   z1: [
     {
       id: 'veteran_habit',
-      icon: '🍺',
-      title: 'The Sellsword\'s Regret',
-      zone: 'Hearthstone Village',
-      minPos: 0,
-      desc: 'A retired sellsword is sitting at the inn with the expression of someone cataloguing their own poor decisions. \'Thirty years of telling myself I\'d start tomorrow,\' he says. \'Tomorrow has a lot to answer for.\' You check in with your habit that night before you sleep.'
+      icon: '🍺', title: 'The Sellsword\'s Regret',
+      zone: 'Hearthstone Village', minPos: 0,
+      desc: 'A retired sellsword is sitting at the inn with the expression of someone cataloguing their own poor decisions. "Thirty years of telling myself I\'d start tomorrow," he says. "Tomorrow has a lot to answer for." You check in with your habit that night before you sleep.'
     },
     {
       id: 'posting_board',
-      icon: '📜',
-      title: 'The Notice Board',
-      zone: 'Hearthstone Village',
-      minPos: 0,
-      desc: 'The guild notice board is covered in intentions — habits people announced and vanished from. Witness to a thousand Day Ones. You walk past it. Yours isn\'t an announcement. It\'s a quiet, daily fact.'
+      icon: '📜', title: 'The Notice Board',
+      zone: 'Hearthstone Village', minPos: 0,
+      desc: 'The guild notice board is covered in intentions — habits people announced and then vanished from. Witness to a thousand Day Ones. You walk past it. Yours isn\'t an announcement. It\'s a quiet, daily fact.'
+    },
+    {
+      id: 'the_early_riser',
+      icon: '🌄', title: 'The Baker\'s Hours',
+      zone: 'Hearthstone Village', minPos: 0,
+      desc: 'The baker at the end of the lane has been up since before dawn every day for thirty-one years. You ask her how. "I stopped deciding," she says. "It\'s just what happens next." That\'s what you\'re building.'
     },
     {
       id: 'cartographer',
-      icon: '🗺️',
-      title: 'The Cartographer\'s Map',
-      zone: 'Harvest Crossing',
-      minPos: 1,
-      desc: 'A gnome cartographer has set up her cart at the crossroads — the cart is visibly larger on the inside than the outside, which she declines to explain. She shows you the road ahead: long, consistent, no shortcuts worth taking. \'The ones who arrive,\' she says, \'are boring travelers. They just keep going.\''
+      icon: '🗺️', title: 'The Cartographer\'s Map',
+      zone: 'Harvest Crossing', minPos: 1,
+      desc: 'A gnome cartographer has set up her cart at the crossroads. She shows you the road ahead: long, consistent, no shortcuts worth taking. "The ones who arrive," she says, "are boring travelers. They just keep going." She stamps your map.'
     },
     {
       id: 'miller_lesson',
-      icon: '⚖️',
-      title: 'The Miller\'s Standard',
-      zone: 'Stonepath Mill',
-      minPos: 2,
-      desc: 'The miller at Stonepath runs the tightest operation on the road — no exceptions, no "close enough," no rounding. Six travelers ahead of you got turned back for incomplete work. You had done yours. You\'re through in seconds. Excellence is mostly just showing up correctly.'
+      icon: '⚖️', title: 'The Miller\'s Standard',
+      zone: 'Stonepath Mill', minPos: 2,
+      desc: 'The miller at Stonepath runs the tightest operation on the road — no exceptions, no close enough. Six travelers ahead of you got turned back for incomplete work. You had done yours. You\'re through in seconds. Excellence is mostly just showing up correctly.'
+    },
+    {
+      id: 'the_dropout',
+      icon: '🚶', title: 'Heading Back',
+      zone: 'Harvest Crossing', minPos: 1,
+      desc: 'A traveler passes you going the other direction. Gear still clean, boots barely worn. "Decided it\'s not for me," he says, unprompted, the way people do when they need the excuse to land somewhere. You nod and keep going. The road only moves one direction.'
     },
   ],
   z2: [
     {
       id: 'distraction',
-      icon: '🏛️',
-      title: 'The Guild of Excellent Intentions',
-      zone: "Merchant\'s Gate",
-      minPos: 3,
-      desc: 'A guild is recruiting travelers to join their cause — it sounds compelling, the pamphlet is very good, and the speaker is genuinely passionate. You have a habit to maintain. You wish them well and keep walking. Enthusiasm is not the same thing as doing.'
+      icon: '🏛️', title: 'The Guild of Excellent Intentions',
+      zone: "Merchant's Gate", minPos: 3,
+      desc: 'A guild is recruiting travelers to join their cause — the pamphlet is very good and the speaker is genuinely passionate. You have a habit to maintain. You wish them well and keep walking. Enthusiasm is not the same thing as doing.'
     },
     {
       id: 'bridge_story',
-      icon: '👻',
-      title: 'The Tale of the Bridge',
-      zone: 'Copperbridge',
-      minPos: 4,
+      icon: '👻', title: 'The Tale of the Bridge',
+      zone: 'Copperbridge', minPos: 4,
       desc: 'Locals say the old bridge is haunted by a traveler who stopped halfway and never decided whether to go back or forward. You cross at a steady pace without slowing. Some decisions only become hard if you let them.'
     },
     {
       id: 'campfire',
-      icon: '🔥',
-      title: 'Around the Fire',
-      zone: "Trader\'s Camp",
-      minPos: 5,
-      desc: 'Traders swapping road stories by firelight. A dwarf claims he met someone who made it to the Iron Keep without missing a single day. Nobody believes him. \'Doesn\'t matter if you believe it,\' he says. \'The road is the same either way.\''
+      icon: '🔥', title: 'Around the Fire',
+      zone: "Trader's Camp", minPos: 5,
+      desc: 'Traders swapping road stories by firelight. A dwarf claims he met someone who made it to the Iron Keep without missing a single day. Nobody believes him. "Doesn\'t matter if you believe it," he says. "The road is the same either way."'
+    },
+    {
+      id: 'the_merchant_math',
+      icon: '🪙', title: 'The Merchant\'s Ledger',
+      zone: "Merchant's Gate", minPos: 3,
+      desc: 'A merchant shows you her ledger unprompted — forty years of small daily actions, compounded. "People see the outcome and think it\'s talent," she says. "It\'s arithmetic." She closes the book and goes back to work.'
+    },
+    {
+      id: 'abandoned_camp',
+      icon: '⛺', title: 'Cleared Out',
+      zone: "Trader's Camp", minPos: 5,
+      desc: 'An empty camp just off the road — gear gone, fire cold, the organized kind of abandoned. Someone started this journey and chose not to finish it. No judgment. It just makes you more certain about your own direction.'
+    },
+    {
+      id: 'the_rival',
+      icon: '🏃', title: 'Someone Running',
+      zone: 'Copperbridge', minPos: 4,
+      desc: 'A traveler overtakes you at a run, clearly trying to make up lost ground in a hurry. You\'ve seen this pattern. Three days of intensity after a week of nothing. They\'ll be resting again by sundown. Slow is fast on a long road.'
     },
   ],
   z3: [
     {
       id: 'sentinel',
-      icon: '🏹',
-      title: 'The Sentinel\'s Word',
-      zone: 'Thornwood Edge',
-      minPos: 6,
-      desc: 'A Thornwood sentinel drops from a branch and lands in front of you without a sound. \'Keep moving. The forest tests the ones who hesitate.\' She\'s back in the canopy before you can ask what that means. You keep moving. That seems like the answer.'
+      icon: '🏹', title: 'The Sentinel\'s Word',
+      zone: 'Thornwood Edge', minPos: 6,
+      desc: 'A Thornwood sentinel drops from a branch and lands without a sound. "Keep moving. The forest tests the ones who hesitate." She\'s back in the canopy before you can ask what that means. You keep moving. That seems like the answer.'
     },
     {
       id: 'silence',
-      icon: '🌲',
-      title: 'The Quiet Miles',
-      zone: 'Darkhollow Path',
-      minPos: 7,
+      icon: '🌲', title: 'The Quiet Miles',
+      zone: 'Darkhollow Path', minPos: 7,
       desc: 'There\'s a stretch of Darkhollow Path where the sound drops away — old druid work, they say, to give travelers space to think straight. You walk it in silence. Your habit feels obvious here. Why it was ever hard to start is less clear.'
     },
     {
       id: 'shrine_offering',
-      icon: '🌸',
-      title: 'The Road Offering',
-      zone: 'Wayward Shrine',
-      minPos: 8,
-      desc: 'The Wayward Shrine is covered in tokens left by travelers: small objects, folded notes, marks scratched into stone. Someone left a check-in streak tracker beside the road marker. 847 days in, no misses. You add your own mark.'
+      icon: '🌸', title: 'The Road Offering',
+      zone: 'Wayward Shrine', minPos: 8,
+      desc: 'The Wayward Shrine is covered in tokens left by travelers: small objects, folded notes, marks scratched into stone. Someone left a check-in log beside the road marker. 847 days, no gaps. You add your own mark.'
+    },
+    {
+      id: 'thornwood_elder',
+      icon: '🧝', title: 'The Thornwood Elder',
+      zone: 'Thornwood Edge', minPos: 6,
+      desc: 'An elven elder is sitting in the roots of a very large tree doing nothing visibly useful. "The ones who rush through here regret it," she says. "The ones who check in every day don\'t." She closes her eyes again. You take the advice at face value.'
+    },
+    {
+      id: 'the_long_dark',
+      icon: '🌑', title: 'The Hard Week',
+      zone: 'Darkhollow Path', minPos: 7,
+      desc: 'Someone has carved a single word into a Darkhollow milestone: ANYWAY. No signature, no explanation. You know exactly what it means. You\'ve had those days. You came through them. You\'re still on the road.'
+    },
+    {
+      id: 'trail_marker',
+      icon: '🪶', title: 'The Ranger\'s Message',
+      zone: 'Wayward Shrine', minPos: 8,
+      desc: 'A ranger\'s trail marker: three notches, worn smooth. Means the path has been walked this way for a very long time. Some travelers made it. Some didn\'t. The marker doesn\'t specify which ones. Neither does the road. Only you get to decide.'
     },
   ],
   z4: [
     {
       id: 'gate_check',
-      icon: '🛡️',
-      title: 'The Iron Gate',
-      zone: 'Iron Keep Gates',
-      minPos: 9,
+      icon: '🛡️', title: 'The Iron Gate',
+      zone: 'Iron Keep Gates', minPos: 9,
       desc: 'The gate captain has seen ten thousand travelers. She reads yours in seconds — party intact, habit consistent, streak unbroken. She stamps your writ and steps aside without comment. Here, that\'s as warm as welcomes get.'
     },
     {
       id: 'the_keep',
-      icon: '⚔️',
-      title: 'The Keep Quartermaster',
-      zone: 'The Iron Keep',
-      minPos: 10,
-      desc: 'The Iron Keep quartermaster is infamous for turning away travelers with broken records. He holds out his hand. You hand over your log without hesitation. He reads it, raises an eyebrow. \'First one today who didn\'t flinch.\' The gate opens.'
+      icon: '⚔️', title: 'The Keep Quartermaster',
+      zone: 'The Iron Keep', minPos: 10,
+      desc: 'The Iron Keep quartermaster is infamous for turning away travelers with broken records. He holds out his hand. You hand over your log without hesitation. He reads it, raises an eyebrow. "First one today who didn\'t flinch." The gate opens.'
+    },
+    {
+      id: 'keep_archive',
+      icon: '📚', title: 'The Record Room',
+      zone: 'The Iron Keep', minPos: 10,
+      desc: 'The Keep\'s record room holds the logs of every traveler who\'s made it here. Thousands of them. All different habits, different party sizes, different roads taken. One thing in common: they showed up. Every day. Until they were here.'
+    },
+    {
+      id: 'keep_wall',
+      icon: '🏰', title: 'View from the Wall',
+      zone: 'Iron Keep Gates', minPos: 9,
+      desc: 'From the Keep\'s outer wall you can see the full road back — Thornwood, Merchant\'s Pass, Hearthstone Road. All of it. You walked that. Every step, every check-in, every day you didn\'t feel like it. It looks different from up here.'
+    },
+    {
+      id: 'the_resident',
+      icon: '🧔', title: 'The Long Resident',
+      zone: 'The Iron Keep', minPos: 10,
+      desc: 'A traveler who arrived years ago and never left. "Why go back?" he says. "The road is the road. The habit is the habit. The Keep is just what happens when you don\'t stop." He offers you a seat. You take it. You\'ve earned it.'
+    },
+    {
+      id: 'next_road',
+      icon: '🌅', title: 'The Road Continues',
+      zone: 'Iron Keep Gates', minPos: 9,
+      desc: 'There\'s a gate on the far side of the Keep facing a road you haven\'t seen yet. The map just calls it "beyond." The gate captain sees you looking. "Most people who get here ask about that road," she says. "None of them are surprised to find it." Neither are you.'
     },
   ]
 };
@@ -2491,6 +3481,7 @@ var state = {
   encounterLogCount: 0,
   lastEncounterAtLog: 0,
   ironVault: 0,        // Road Gold
+  firstRun: false,     // welcome encounter flag
   // Party — array of character objects
   // Each: { id, name, class, habit, cadence, cadenceTarget, hp, streak,
   //         lastCheckIn, checkInsThisWeek, weekStart, log, seenArrivals }
@@ -2531,7 +3522,7 @@ function load() {
     var parsed = JSON.parse(raw);
     if (typeof parsed !== 'object' || !parsed) return;
     if (!Array.isArray(parsed.log)) parsed.log = [];
-    ['name','avatar','xp','mapPosition','badges','weekLogDays','weekStart','roadBonusesThisMonth','lastEncounterLog','pendingEncounter','seenStoryEncounters','seenArrivals','lastMapPosition','encounterLogCount','lastEncounterAtLog','bestStreak','ironVault','party','activeSlots'].forEach(function(k) {
+    ['name','avatar','xp','mapPosition','badges','weekLogDays','weekStart','roadBonusesThisMonth','lastEncounterLog','pendingEncounter','seenStoryEncounters','seenArrivals','lastMapPosition','encounterLogCount','lastEncounterAtLog','bestStreak','ironVault','firstRun','party','activeSlots'].forEach(function(k) {
       if (parsed[k] !== undefined) state[k] = parsed[k];
     });
   } catch(e) { console.warn('Load failed:', e); }
@@ -2545,7 +3536,7 @@ async function loadFromSupabase() {
     var remote = res.data.save_data;
     if (typeof remote !== 'object') return;
     if (!Array.isArray(remote.log)) remote.log = [];
-    ['name','avatar','xp','mapPosition','badges','weekLogDays','weekStart','roadBonusesThisMonth','lastEncounterLog','pendingEncounter','seenStoryEncounters','seenArrivals','lastMapPosition','encounterLogCount','lastEncounterAtLog','bestStreak','ironVault','party','activeSlots'].forEach(function(k) {
+    ['name','avatar','xp','mapPosition','badges','weekLogDays','weekStart','roadBonusesThisMonth','lastEncounterLog','pendingEncounter','seenStoryEncounters','seenArrivals','lastMapPosition','encounterLogCount','lastEncounterAtLog','bestStreak','ironVault','firstRun','party','activeSlots'].forEach(function(k) {
       if (remote[k] !== undefined) state[k] = remote[k];
     });
     localStorage.setItem(SAVE_KEY, JSON.stringify(state));
@@ -2703,42 +3694,51 @@ function getYesterday() {
 // ─────────────────────────
 var obAvatar     = '🧔';  // Human pre-selected
 var obPartySize  = 3;          // how many companions they're setting up
+
+// Sync party size visual on load
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.party-size-opt').forEach(function(o) {
+    o.classList.toggle('selected', parseInt(o.dataset.size) === obPartySize);
+  });
+});
 var obCompanionIdx = 0;        // which companion we're currently setting up (0-based)
 var obCompanions = [];         // array of {habit, class, cadence, weekTarget}
 var obCurrentHabit   = '';
 var obCurrentClass   = '';
+var obCurrentUseAlt  = false;
 var obCurrentCadence = 'daily';
 var obCurrentWeekTarget = 3;
 var obSuggest    = '';
 
 // goStep now accepts string IDs for named steps
 function goStep(n) {
-  document.querySelectorAll('.ob-step').forEach(function(el) { el.classList.remove('active'); });
+  document.querySelectorAll('.ob-step').forEach(function(el) {
+    if (el.style.display !== 'none') el.classList.remove('active');
+  });
   var stepId;
   if (typeof n === 'string') {
-    // named steps: '1-race', 'habit', 'cadence', 'class', 'laws', 'begin'
     stepId = 'step-' + n;
   } else {
     stepId = 'step-' + n;
   }
   var target = document.getElementById(stepId);
-  if (target) target.classList.add('active');
+  if (target) { target.style.display = ''; target.classList.add('active'); }
 
-  // Update progress dots — map all steps to 0-4
-  var dotMap = { '0': 0, '1-race': 1, '2': 2, 'habit': 3, 'cadence': 3, 'class': 3, 'laws': 4, 'begin': 4 };
+  // Progress bar — 4 meaningful stages: identity (0→20%), party (→40%), habits (→75%), begin (→100%)
+  var pctMap = { '0': 5, '2': 30, 'habit': 55, 'cadence': 62, 'class': 70, 'laws': 85, 'begin': 95 };
+  // '1-race' is now hidden/merged — map it to 0 for compat
   var dotKey = typeof n === 'number' ? String(n) : n;
-  var dotN = dotMap[dotKey] !== undefined ? dotMap[dotKey] : -1;
-  for (var i = 0; i <= 4; i++) {
-    var dot = document.getElementById('dot-' + i);
-    if (!dot) continue;
-    dot.className = 'step-dot';
-    if (dotN >= 0) {
-      if (i < dotN) dot.classList.add('done');
-      else if (i === dotN) dot.classList.add('active');
-    }
-  }
+  if (dotKey === '1-race') dotKey = '0';
+  var pct = pctMap[dotKey] !== undefined ? pctMap[dotKey] : 50;
+  var fill = document.getElementById('ob-progress-fill');
+  if (fill) fill.style.width = pct + '%';
 
   // Step-specific setup
+  if (stepId === 'step-2') {
+    document.querySelectorAll('.party-size-opt').forEach(function(o) {
+      o.classList.toggle('selected', parseInt(o.dataset.size) === obPartySize);
+    });
+  }
   if (stepId === 'step-habit') updateCompanionHabitStep();
   if (stepId === 'step-class') setupSuggestedClass();
   if (stepId === 'step-begin') buildBeginPartySummary();
@@ -2767,10 +3767,15 @@ function startCompanionSetup() {
   obCompanionIdx = 0;
   obCurrentHabit = '';
   obCurrentClass = '';
-  obCurrentCadence = 'daily';
+  obCurrentUseAlt = false;
   obCurrentWeekTarget = 3;
+  _currentSuggestionKey = '';
   var inp = document.getElementById('habit-input');
   if (inp) inp.value = '';
+  var p1 = document.getElementById('habit-phase-1');
+  var p2 = document.getElementById('habit-phase-2');
+  if (p1) p1.style.display = 'block';
+  if (p2) p2.style.display = 'none';
   var btn = document.getElementById('habit-next-btn');
   if (btn) btn.disabled = true;
   goStep('habit');
@@ -2802,6 +3807,18 @@ function updateCompanionHabitStep() {
     var btn = document.getElementById('habit-next-btn');
     if (btn) btn.disabled = !obCurrentHabit || obCurrentHabit.length < 3;
   }
+
+  // Always start in phase 1 (suggestion list + free input)
+  var p1 = document.getElementById('habit-phase-1');
+  var p2 = document.getElementById('habit-phase-2');
+  if (p1) p1.style.display = 'block';
+  if (p2) p2.style.display = 'none';
+  _currentSuggestionKey = '';
+
+  // Reset cadence inline
+  var cad = document.getElementById('habit-cadence-inline');
+  if (cad) cad.style.display = obCurrentHabit && obCurrentHabit.length >= 3 ? 'block' : 'none';
+  selectCadenceInline(obCurrentCadence || 'daily');
 }
 
 function habitBack() {
@@ -2818,6 +3835,136 @@ function onHabitInput() {
   obCurrentHabit = val;
   var btn = document.getElementById('habit-next-btn');
   if (btn) btn.disabled = val.length < 3;
+  if (val.length >= 3) showHabitCadenceInline();
+}
+
+// ─────────────────────────
+//  HABIT SENTENCE EXPANDER
+// ─────────────────────────
+// Tailored templates per suggestion key
+var HABIT_TEMPLATES = {
+  sleep:   { before: 'I want to sleep',        blank: '8',    after: 'hours per night',          chips: ['6','7','8','9'],                                           orLabel: 'or type your own duration above' },
+  eat:     { before: 'I want to eat',          blank: '',     after: 'every day',                 chips: ['clean','no junk food','home-cooked meals','mostly plants'], orLabel: 'or pick your own item above' },
+  workout: { before: 'I want to work out for', blank: '30',   after: 'minutes per session',       chips: ['20','30','45','60'],                                       orLabel: 'or type your own duration above' },
+  read:    { before: 'I want to read',         blank: '20',   after: 'pages per day',             chips: ['10','20','30 min','1 chapter'],                            orLabel: 'or type your own amount above' },
+  water:   { before: 'I want to drink',        blank: '64',   after: 'oz of water per day',       chips: ['48','64','80','100'],                                      orLabel: 'or type your own amount above' },
+  meditate:{ before: 'I want to meditate for', blank: '10',   after: 'minutes each day',          chips: ['5','10','15','20'],                                        orLabel: 'or type your own duration above' },
+  journal: { before: 'I want to journal for',  blank: '10',   after: 'minutes every day',         chips: ['5','10','1 page','open-ended'],                            orLabel: 'or type your own duration above' },
+  sugar:   { before: 'I want to cut',          blank: '',     after: 'from my diet',              chips: ['added sugar','desserts','soda','processed food'],          orLabel: 'or pick your own item above' },
+  walk:    { before: 'I want to walk',         blank: '8,000', after: 'steps per day',            chips: ['5,000','8,000','10,000','30 min outside'],                 orLabel: 'or type your own amount above' },
+  spend:   { before: 'I want to spend under',  blank: '$50',  after: 'per day',                   chips: ['$20','$30','$50','$100'],                                  orLabel: 'or type your own amount above' },
+  _generic:{ before: 'I want to commit to',    blank: '',     after: 'consistently',              chips: [],                                                         orLabel: 'or describe your own goal above' }
+};
+
+var _currentSuggestionKey = '';
+
+function selectHabitSuggestion(key) {
+  var tpl = HABIT_TEMPLATES[key] || HABIT_TEMPLATES['_generic'];
+  _currentSuggestionKey = key;
+
+  // Populate sentence parts
+  document.getElementById('hs-before').textContent = tpl.before;
+  document.getElementById('hs-after').textContent  = tpl.after;
+  var hsInput = document.getElementById('hs-input');
+  hsInput.value       = '';
+  hsInput.placeholder = tpl.blank;
+
+  // Build chips
+  var chipsEl = document.getElementById('hs-chips');
+  chipsEl.innerHTML = '';
+  tpl.chips.forEach(function(chip) {
+    var btn = document.createElement('button');
+    btn.className = 'hs-chip';
+    btn.textContent = chip;
+    btn.type = 'button';
+    btn.onclick = function() {
+      // Deactivate others, activate this
+      chipsEl.querySelectorAll('.hs-chip').forEach(function(c) { c.classList.remove('active'); });
+      btn.classList.add('active');
+      hsInput.value = chip;
+      _buildFinalHabit();
+    };
+    chipsEl.appendChild(btn);
+  });
+
+  // Set the "or …" label
+  var orEl = document.getElementById('hs-or-label');
+  if (orEl) orEl.textContent = tpl.orLabel || 'or type your own above';
+  document.getElementById('habit-phase-1').style.display = 'none';
+  var p2 = document.getElementById('habit-phase-2');
+  p2.style.display = 'block';
+
+  // Pre-select first chip if it exists
+  if (tpl.chips.length) {
+    var firstChip = chipsEl.querySelector('.hs-chip');
+    firstChip.classList.add('active');
+    hsInput.value = tpl.chips[0];
+    _buildFinalHabit();
+  }
+
+  setTimeout(function() { hsInput.focus(); }, 50);
+}
+
+function onSentenceInput() {
+  // Deactivate chips if user typed manually
+  var chipsEl = document.getElementById('hs-chips');
+  chipsEl.querySelectorAll('.hs-chip').forEach(function(c) { c.classList.remove('active'); });
+  _buildFinalHabit();
+}
+
+function _buildFinalHabit() {
+  var tpl    = HABIT_TEMPLATES[_currentSuggestionKey] || HABIT_TEMPLATES['_generic'];
+  var detail = (document.getElementById('hs-input').value || '').trim();
+  var combined;
+  if (detail) {
+    combined = tpl.before + ' ' + detail + ' ' + tpl.after;
+    // Clean up double spaces
+    combined = combined.replace(/\s+/g,' ').trim();
+  } else {
+    // Use just the base phrase if no detail yet
+    combined = (tpl.before + ' ' + tpl.after).replace(/\s+/g,' ').trim();
+  }
+  // Mirror into the hidden habit-input so existing logic works
+  var hiddenInp = document.getElementById('habit-input');
+  if (hiddenInp) hiddenInp.value = combined;
+  obCurrentHabit = combined;
+  var nxt = document.getElementById('habit-next-btn');
+  if (nxt) nxt.disabled = combined.length < 5;
+  if (combined.length >= 5) showHabitCadenceInline();
+}
+
+function backToHabitPhase1() {
+  document.getElementById('habit-phase-2').style.display = 'none';
+  document.getElementById('habit-phase-1').style.display = 'block';
+  _currentSuggestionKey = '';
+  var hiddenInp = document.getElementById('habit-input');
+  if (hiddenInp) hiddenInp.value = '';
+  obCurrentHabit = '';
+  obCurrentCadence = 'daily';
+  obCurrentWeekTarget = 3;
+  // Hide cadence and reset it to daily
+  var cad = document.getElementById('habit-cadence-inline');
+  if (cad) cad.style.display = 'none';
+  selectCadenceInline('daily');
+  var nxt = document.getElementById('habit-next-btn');
+  if (nxt) nxt.disabled = true;
+}
+
+// These are kept for compatibility but do nothing new
+function triggerHabitClarify() {}
+function confirmHabitClarify() {}
+function dismissHabitClarify() {}
+
+function fillHabitFromExample(el) {
+  var inp = document.getElementById('habit-input');
+  if (inp) {
+    inp.value = el.textContent;
+    obCurrentHabit = el.textContent;
+    inp.focus();
+    inp.setSelectionRange(inp.value.length, inp.value.length);
+  }
+  var btn = document.getElementById('habit-next-btn');
+  if (btn) btn.disabled = false;
 }
 
 function setHabitExample(el) {
@@ -2828,26 +3975,126 @@ function setHabitExample(el) {
 }
 
 function goToClassStep() {
-  // Reset cadence UI to reflect current state before showing the step
-  var dailyEl  = document.getElementById('cad-daily');
-  var weeklyEl = document.getElementById('cad-weekly');
-  var wr       = document.getElementById('weekly-target-row');
-  if (dailyEl)  dailyEl.classList.toggle('selected',  obCurrentCadence === 'daily');
-  if (weeklyEl) weeklyEl.classList.toggle('selected', obCurrentCadence === 'weekly');
-  if (wr)       wr.classList.toggle('hidden', obCurrentCadence !== 'weekly');
-  goStep('cadence');
+  goStep('class');
+}
+
+function selectCadenceInline(type) {
+  obCurrentCadence = type;
+  var daily  = document.getElementById('hci-daily');
+  var weekly = document.getElementById('hci-weekly');
+  var wr     = document.getElementById('hci-weekly-row');
+  if (daily)  daily.classList.toggle('selected',  type === 'daily');
+  if (weekly) weekly.classList.toggle('selected', type === 'weekly');
+  if (wr)     wr.classList.toggle('hidden', type !== 'weekly');
+  // Keep old selectors in sync for compat
+  var cadDaily  = document.getElementById('cad-daily');
+  var cadWeekly = document.getElementById('cad-weekly');
+  if (cadDaily)  cadDaily.classList.toggle('selected',  type === 'daily');
+  if (cadWeekly) cadWeekly.classList.toggle('selected', type === 'weekly');
+}
+
+function selectWeeklyTargetInline(btn) {
+  // Target all wt-btn inside the inline row only
+  var row = document.getElementById('hci-weekly-row');
+  if (row) row.querySelectorAll('.wt-btn').forEach(function(b) { b.classList.remove('selected'); });
+  btn.classList.add('selected');
+  obCurrentWeekTarget = parseInt(btn.dataset.n, 10);
+}
+
+function showHabitCadenceInline() {
+  var el = document.getElementById('habit-cadence-inline');
+  if (el && el.style.display === 'none') {
+    el.style.display = 'block';
+    el.style.animation = 'expanderIn 0.2s ease';
+  }
 }
 
 function setupSuggestedClass() {
-  obSuggest = suggestClass(obCurrentHabit);
-  obCurrentClass = obSuggest;
-  var def = CLASS_DEFS[obSuggest];
+  // Best match from habit text / key map
+  var directClass = _currentSuggestionKey ? HABIT_KEY_CLASS[_currentSuggestionKey] : null;
+  var chosenClass = directClass || suggestClass(obCurrentHabit);
+
+  // Check if primary persona of this class is already taken
+  var takenPersonas = obCompanions.slice(0, obCompanionIdx).map(function(c) {
+    return c.class + (c.useAlt ? ':alt' : ':primary');
+  });
+  var primaryKey = chosenClass + ':primary';
+  var useAlt = takenPersonas.indexOf(primaryKey) !== -1;
+
+  obSuggest      = chosenClass;
+  obCurrentClass = chosenClass;
+  obCurrentUseAlt = useAlt;
+
+  // Get effective persona
+  var def = CLASS_DEFS[chosenClass];
   if (!def) return;
+  var persona = (useAlt && def.altPersona) ? def.altPersona : def;
+  var personaName = persona.personaName || def.personaName;
+  var lore = persona.lore || def.lore;
+  var subText = useAlt
+    ? def.personaName + ' already walks with you. A second ' + def.name + ' answers the call.'
+    : 'Based on your habit, here\'s who joins your party.';
+
+  document.getElementById('ob-suggest-icon').textContent    = def.icon;
+  document.getElementById('sc-icon').textContent            = def.icon;
+  document.getElementById('sc-name').textContent            = def.name;
+  document.getElementById('sc-persona-name').textContent    = personaName;
+  document.getElementById('sc-desc').textContent            = def.desc;
+  document.getElementById('sc-trait').textContent           = def.trait;
+  document.getElementById('sc-lore').textContent            = lore || '';
+
+  var subEl = document.getElementById('ob-suggest-sub');
+  if (subEl) subEl.textContent = subText;
+
+  // Hide leftover conflict UI
+  var noticeEl = document.getElementById('class-conflict-notice');
+  if (noticeEl) noticeEl.style.display = 'none';
+  var swapRow = document.getElementById('class-swap-row');
+  if (swapRow) swapRow.innerHTML = '';
+}
+
+function buildClassSwapRow(takenClasses, selectedClass) {
+  var row = document.getElementById('class-swap-row');
+  if (!row) return;
+  row.innerHTML = '';
+
+  CLASS_PRIORITY.forEach(function(cls) {
+    var def = CLASS_DEFS[cls];
+    if (!def) return;
+    var btn = document.createElement('button');
+    var isTaken    = takenClasses.indexOf(cls) !== -1;
+    var isSelected = cls === selectedClass;
+    btn.className  = 'class-swap-btn' + (isSelected ? ' selected' : '') + (isTaken ? ' taken' : '');
+    btn.title      = isTaken ? (def.personaName || def.name) + ' is already in your party' : 'Choose ' + (def.personaName || def.name);
+    btn.innerHTML  = '<span class="class-swap-icon">' + def.icon + '</span>' +
+                     '<span class="class-swap-label">' + (def.personaName ? def.personaName.split(' ')[0] : cls) + '</span>';
+    if (!isTaken) {
+      btn.onclick = (function(c) { return function() { swapClass(c); }; })(cls);
+    }
+    row.appendChild(btn);
+  });
+}
+
+function swapClass(cls) {
+  obCurrentClass = cls;
+  var def = CLASS_DEFS[cls];
+  if (!def) return;
+  // Update card
   document.getElementById('ob-suggest-icon').textContent = def.icon;
-  document.getElementById('sc-icon').textContent    = def.icon;
-  document.getElementById('sc-name').textContent    = def.name;
-  document.getElementById('sc-desc').textContent    = def.desc;
-  document.getElementById('sc-trait').textContent   = def.trait;
+  document.getElementById('sc-icon').textContent         = def.icon;
+  document.getElementById('sc-name').textContent         = def.name;
+  document.getElementById('sc-persona-name').textContent = def.personaName || '';
+  document.getElementById('sc-desc').textContent         = def.desc;
+  document.getElementById('sc-trait').textContent        = def.trait;
+  document.getElementById('sc-lore').textContent         = def.lore || '';
+  // Update swap row selection
+  document.querySelectorAll('.class-swap-btn').forEach(function(btn) {
+    btn.classList.toggle('selected', btn.title.indexOf(def.personaName || def.name) !== -1 || btn.querySelector('.class-swap-icon').textContent === def.icon);
+  });
+  // Recheck conflict notice
+  var takenClasses = obCompanions.slice(0, obCompanionIdx).map(function(c) { return c.class; });
+  var noticeEl = document.getElementById('class-conflict-notice');
+  if (noticeEl) noticeEl.style.display = 'none';
 }
 
 function confirmCompanionClass() {
@@ -2856,6 +4103,7 @@ function confirmCompanionClass() {
   obCompanions[obCompanionIdx] = {
     habit: obCurrentHabit,
     class: obCurrentClass,
+    useAlt: obCurrentUseAlt,
     cadence: obCurrentCadence,
     weekTarget: obCurrentWeekTarget
   };
@@ -2864,14 +4112,15 @@ function confirmCompanionClass() {
     // More companions to set up — reset all fields
     obCurrentHabit   = '';
     obCurrentClass   = '';
+    obCurrentUseAlt  = false;
     obCurrentCadence = 'daily';
     obCurrentWeekTarget = 3;
     var inp = document.getElementById('habit-input');
     if (inp) inp.value = '';
     goStep('habit');
   } else {
-    // All done — go to laws
-    goStep('laws');
+    // All done — skip laws, go straight to begin
+    goStep('begin');
   }
 }
 
@@ -2897,16 +4146,18 @@ function buildBeginPartySummary() {
   if (!wrap) return;
   wrap.innerHTML = '';
   obCompanions.forEach(function(c) {
-    var def = CLASS_DEFS[c.class] || CLASS_DEFS['Mage'];
+    var baseDef = CLASS_DEFS[c.class] || CLASS_DEFS['Mage'];
+    var persona = (c.useAlt && baseDef.altPersona) ? Object.assign({}, baseDef, baseDef.altPersona) : baseDef;
     var cadenceStr = c.cadence === 'weekly'
       ? (c.weekTarget || 3) + '\u00D7 per week'
       : 'Daily';
     var row = document.createElement('div');
     row.className = 'begin-party-row';
     row.innerHTML =
-      '<div class="begin-party-icon">' + def.icon + '</div>' +
+      '<div class="begin-party-icon">' + baseDef.icon + '</div>' +
       '<div style="flex:1;min-width:0;">' +
-        '<div class="begin-party-name">' + def.name + '</div>' +
+        '<div class="begin-party-name">' + esc(persona.personaName || baseDef.name) + '</div>' +
+        '<div style="font-size:12px;color:var(--text-dark);font-family:Cinzel,serif;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:2px;">' + baseDef.name + '</div>' +
         '<div class="begin-party-habit">' + esc(c.habit) + '</div>' +
         '<div style="font-size:13px;color:var(--text-dark);margin-top:3px;font-family:Cinzel,serif;text-transform:uppercase;letter-spacing:0.08em;">' + cadenceStr + '</div>' +
       '</div>';
@@ -2941,7 +4192,7 @@ function beginJourney() {
   state.activeSlots = 0;
 
   obCompanions.forEach(function(c) {
-    var char = createCharacter(c.habit, c.class, c.cadence, c.weekTarget);
+    var char = createCharacter(c.habit, c.class, c.cadence, c.weekTarget, c.useAlt);
     state.party.push(char);
   });
   state.activeSlots = state.party.length;
@@ -2949,6 +4200,8 @@ function beginJourney() {
   save();
   document.getElementById('onboarding').style.display = 'none';
   document.getElementById('main').style.display = 'block';
+  state.firstRun = true;
+  save();
   render();
   showToast('The road awaits, ' + state.name + '. Your party is assembled.');
 }
@@ -2956,21 +4209,23 @@ function beginJourney() {
 // ─────────────────────────
 //  PARTY MANAGEMENT
 // ─────────────────────────
-function createCharacter(habit, cls, cadence, weekTarget) {
+function createCharacter(habit, cls, cadence, weekTarget, useAlt) {
   return {
     id:          Date.now() + Math.floor(Math.random() * 10000),
     habit:       habit,
     class:       cls,
-    cadence:     cadence || 'daily',      // 'daily' | 'weekly'
+    useAlt:      !!useAlt,
+    cadence:     cadence || 'daily',
     weekTarget:  weekTarget || 3,
     hp:          5,
     streak:      0,
     bestStreak:  0,
     lastCheckIn: null,
+    missedToday: null,
     checkInsThisWeek: 0,
     weekStart:   '',
     log:         [],
-    collapsed:   false   // HP = 0
+    collapsed:   false
   };
 }
 
@@ -3024,6 +4279,7 @@ function checkMissedCheckIns() {
   if (!state.party || !state.party.length) return;
   var today     = new Date().toDateString();
   var yesterday = (function() { var d = new Date(); d.setDate(d.getDate()-1); return d.toDateString(); })();
+  var orcTriggered = false;
   state.party.forEach(function(char) {
     if (!char.lastCheckIn) return; // never checked in — no penalty yet
     if (char.lastCheckIn === today) return; // already checked in today
@@ -3032,6 +4288,11 @@ function checkMissedCheckIns() {
       // Simple: if last check-in was not yesterday, they missed at least one day
       if (char.lastCheckIn !== yesterday) {
         applyMiss(char);
+        // Orc trigger — fire once per session at most
+        if (!orcTriggered && !state.orcTriggeredToday) {
+          orcTriggered = true;
+          checkOrcTrigger(char);
+        }
       }
     } else {
       // Weekly cadence: check at week boundary
@@ -3046,6 +4307,12 @@ function checkMissedCheckIns() {
       }
     }
   });
+  // Reset daily orc trigger flag
+  if (state.orcTriggeredDate !== today) {
+    state.orcTriggeredToday = false;
+    state.orcTriggeredDate = today;
+  }
+  if (orcTriggered) { state.orcTriggeredToday = true; }
   save();
 }
 
@@ -3056,12 +4323,14 @@ function checkIn(charId) {
   var char = state.party.filter(function(c) { return c.id === charId; })[0];
   if (!char) return;
   var today = new Date().toDateString();
-  if (char.lastCheckIn === today) return; // already done
+  if (char.lastCheckIn === today) return; // already checked in
+
+  // Collapsed chars CAN check in for recovery — bypass the missedToday guard
+  // Non-collapsed chars cannot check in if already marked missed
+  var isCollapsed = char.collapsed || (char.hp || 0) <= 0;
+  if (!isCollapsed && char.missedToday === today) return;
 
   var prevLevel = getLevelData(state.xp).level;
-
-  // Weather XP multiplier (BEFORE this check-in changes the weather)
-  // weather is atmospheric only — no XP modifier
 
   // Base XP + streak bonus
   var streakBonus = Math.min(30, (char.streak || 0) * 5);
@@ -3074,27 +4343,34 @@ function checkIn(charId) {
   });
   if (state.party.length > 1 && allDone) xpRaw += 15;
 
-  // Apply weather multiplier
+  // Recovery penalty: collapsed chars earn 50% XP for next 3 check-ins
+  var recoveryPenalty = false;
+  if (isCollapsed) {
+    char.recoveryDaysLeft = 3; // start/reset recovery window
+    recoveryPenalty = true;
+  } else if ((char.recoveryDaysLeft || 0) > 0) {
+    recoveryPenalty = true;
+    char.recoveryDaysLeft = char.recoveryDaysLeft - 1;
+  }
+  if (recoveryPenalty) xpRaw = Math.max(5, Math.floor(xpRaw * 0.5));
+
   var xpGained = Math.max(1, Math.round(xpRaw));
+
+  var def = getPersona(char);
 
   applyCheckIn(char);
 
-  // Party HP loss: any OTHER companions not checked in today lose 1 HP (they feel neglected)
-  // Only applies if at least one person was already checked in (not first of the day)
-  // Actually: we apply miss-due-to-party only at midnight check via checkMissedCheckIns.
-  // For real-time: after ALL check-ins done, no action. The pressure is that missing = HP decay tomorrow.
-
   // Add to log
-  var def = CLASS_DEFS[char.class] || {};
   char.log = char.log || [];
   char.log.push({
-    id:       String(Date.now()),
-    charId:   char.id,
+    id:        String(Date.now()),
+    charId:    char.id,
     charClass: char.class,
     charIcon:  def.icon || '✦',
-    habit:    char.habit,
-    xpGained: xpGained,
-    ts:       new Date().toISOString()
+    habit:     char.habit,
+    xpGained:  xpGained,
+    recovery:  recoveryPenalty,
+    ts:        new Date().toISOString()
   });
 
   state.xp += xpGained;
@@ -3106,10 +4382,381 @@ function checkIn(charId) {
   }
 
   checkWeekRoadBonus();
+  
+  // ── QUEST MILESTONE CHECK ──
+  checkQuestMilestone(char, def);
+  
   save();
   render();
 
-  fireXpFloat('+' + xpGained + ' XP');
+  // ── EPIC CELEBRATION ──
+  showCheckinCelebration(char, def, xpGained, recoveryPenalty);
+
+  // Queue follow-on events AFTER celebration ends
+  var newLevel = getLevelData(state.xp).level;
+  if (newLevel > prevLevel) {
+    _afterCelebrationFn = function() { queueOverlay(function() { showLevelUp(newLevel); }); };
+  } else if (state.firstRun) {
+    state.firstRun = false;
+    save();
+    _afterCelebrationFn = function() { showWelcomeEncounter(); };
+  } else {
+    _afterCelebrationFn = function() { checkEncounter(0); };
+  }
+}
+
+var MISS_FLAVOR = {
+  Warrior:   ["The body didn't move today. Aldric knows the cost.", "Missed. The weights stayed cold. Tomorrow they won't.", "A day without the work. Aldric feels it already."],
+  Cleric:    ["The body needed rest, but not this kind.", "Casciel faltered. The well needs tending again tomorrow.", "Missed. The rhythm breaks quietly before it breaks loudly."],
+  Mage:      ["The pages stayed closed. Corvin marks the gap.", "No study today. The knowledge waits — it's patient, but so is regret.", "Skipped. The lore doesn't chase you."],
+  Rogue:     ["The discipline slipped. Thessaly notes it without excuses.", "Missed. The old habits are still there, watching.", "One day off the edge. Thessaly has been here before."],
+  Scribe:    ["The pen didn't move. The blank page wins today.", "No words. The Scribe marks the silence.", "Skipped. The work doesn't write itself."],
+  Ranger:    ["The trail went unworn today.", "Missed. The road was there. You weren't.", "Off the path. One day. Reorient tomorrow."],
+  Monk:      ["The stillness wasn't chosen today — it was defaulted into.", "No practice. The noise won today.", "Missed. The mind goes where it's pointed."],
+  Alchemist: ["The formula broke. One unchecked variable.", "Inputs skipped. Draven doesn't pretend otherwise.", "Missed. The experiment notes it."]
+};
+
+function markMiss(charId) {
+  var char = state.party.filter(function(c) { return c.id === charId; })[0];
+  if (!char) return;
+  var today = new Date().toDateString();
+  if (char.lastCheckIn === today) return;
+  if (char.missedToday === today) return; // already marked
+
+  char.missedToday = today;
+
+  // Break streak on daily habits
+  if (char.cadence === 'daily') char.streak = 0;
+
+  // HP loss
+  var prevHp = char.hp || 0;
+  char.hp = Math.max(0, prevHp - 1);
+  char.collapsed = (char.hp <= 0);
+
+  save();
+
+  // Show the somber overlay
+  showMissOverlay(char);
+}
+function showMissOverlay(char) {
+  var def = getPersona(char);
+  var overlay = document.getElementById('miss-overlay');
+  if (!overlay) { render(); renderParty(); return; }
+
+  // Set content
+  document.getElementById('miss-icon').textContent = def.icon || '💀';
+  document.getElementById('miss-name').textContent = (def.personaName || def.name || 'Champion').toUpperCase();
+
+  var hpLeft = char.hp || 0;
+  var hpText = char.collapsed ? 'Fallen' : '−1 HP';
+  document.getElementById('miss-hp').textContent = hpText;
+  document.getElementById('miss-hp').style.color = char.collapsed ? 'var(--red)' : 'var(--red)';
+
+  // Flavor line — class-specific
+  var flavors = MISS_FLAVOR[char.class] || ["Missed. Mark it and come back."];
+  document.getElementById('miss-msg').textContent = flavors[Math.floor(Math.random() * flavors.length)];
+
+  // Hearts row — show remaining HP
+  var heartsEl = document.getElementById('miss-hearts');
+  heartsEl.innerHTML = '';
+  for (var i = 1; i <= 5; i++) {
+    var h = document.createElement('span');
+    h.textContent = i <= hpLeft ? '❤️' : '🖤';
+    // Animate the heart that just broke
+    if (i === hpLeft + 1) h.style.animation = 'missShake 0.4s ease 0.3s both';
+    heartsEl.appendChild(h);
+  }
+
+  overlay.classList.add('show');
+
+  clearTimeout(window._missTimer);
+  window._missTimer = setTimeout(function() {
+    closeMissOverlay();
+  }, 3000);
+}
+
+function closeMissOverlay() {
+  var overlay = document.getElementById('miss-overlay');
+  if (overlay) overlay.classList.remove('show');
+  render();
+  renderParty();
+  // If collapsed, queue the fallen overlay
+  (state.party || []).forEach(function(c) {
+    if (c.collapsed && c.missedToday === new Date().toDateString()) {
+      queueOverlay(function() { showBroken(); });
+    }
+  });
+}
+var QUEST_MILESTONES = [5, 10, 21, 30, 50, 100];
+
+function checkQuestMilestone(char, def) {
+  var streak = char.streak || 0;
+  if (QUEST_MILESTONES.indexOf(streak) === -1) return;
+
+  var rewards = {
+    5:   { xp: 50,  gold: 0,  msg: '5-day streak!',   flavor: '5 days in a row. The habit is becoming automatic.' },
+    10:  { xp: 75,  gold: 15, msg: '10-day streak!',   flavor: '10 consecutive days. That\'s a real pattern now.' },
+    21:  { xp: 100, gold: 25, msg: '21-day milestone!', flavor: '21 days. The science says habits form here. You already knew.' },
+    30:  { xp: 150, gold: 35, msg: '30-day milestone!', flavor: 'One full month. No excuses, no gaps, no shortcuts.' },
+    50:  { xp: 200, gold: 50, msg: '50-day streak!',    flavor: '50 days. You\'re in the top 1% of starters now.' },
+    100: { xp: 300, gold: 75, msg: '100 DAYS!',         flavor: '100 consecutive days. Legendary. The road will remember this.' },
+  };
+
+  var r = rewards[streak];
+  if (!r) return;
+
+  // Apply bonus
+  state.xp = (state.xp || 0) + r.xp;
+  if (r.gold > 0) state.ironVault = (state.ironVault || 0) + r.gold;
+
+  // Mark so we don't repeat
+  if (!state.questMilestonesShown) state.questMilestonesShown = [];
+  var key = char.id + '_' + streak;
+  if (state.questMilestonesShown.indexOf(key) !== -1) return;
+  state.questMilestonesShown.push(key);
+
+  // Show quest complete overlay
+  queueOverlay(function() { showQuestComplete(char, def, streak, r); });
+}
+
+function showQuestComplete(char, def, streak, r) {
+  var box = document.getElementById('encounter-box');
+  box.className = 'overlay-box friendly';
+  document.getElementById('encounter-zone').textContent  = '⚔ Quest Complete';
+  document.getElementById('encounter-icon').textContent  = def.icon || '✨';
+  document.getElementById('encounter-title').textContent = (def.personaName || def.name) + ' — ' + r.msg;
+  document.getElementById('encounter-desc').textContent  = r.flavor + (r.gold > 0 ? ' +' + r.gold + ' Road Gold earned.' : '');
+  var choices = document.getElementById('encounter-choices');
+  choices.innerHTML = '';
+  var btn = document.createElement('button');
+  btn.className = 'overlay-btn primary-choice';
+  btn.style.textAlign = 'center';
+  btn.innerHTML = '✦ Claim Reward <span class="overlay-btn-cost">+' + r.xp + ' bonus XP' + (r.gold > 0 ? ' · +' + r.gold + ' 💰' : '') + '</span>';
+  btn.onclick = function() {
+    document.getElementById('encounter-overlay').classList.remove('show');
+    overlayDismissed();
+    fireGoldFloat('+' + r.xp + ' XP ✨');
+    render();
+  };
+  choices.appendChild(btn);
+  document.getElementById('encounter-overlay').classList.add('show');
+}
+
+// ─────────────────────────
+//  ORC ENCOUNTER SYSTEM
+// ─────────────────────────
+// Orc triggers fire when a champion misses days — worse with longer absence
+var ORC_ENCOUNTERS = [
+  {
+    id: 'orc_patrol',
+    icon: '👹', title: 'The Orc Patrol',
+    zone: 'Threat', minMissedDays: 1,
+    desc: 'An orc patrol spotted your party camped without progress. They\'ve been watching for travelers who\'ve lost their rhythm — you fit the description. The sergeant looks at your log with contempt. "Skipped days," he says. "I can smell it."',
+    choiceA: { label: '⚔️ Stand and fight', sub: 'Lose 1 HP — they back off, but it costs' },
+    choiceB: { label: '💰 Bribe your way through', sub: 'Spend 20 Road Gold — they move on' },
+    choiceC: { label: '🔥 Show your streak', sub: 'Requires 5-day streak — they respect what they see', minStreak: 5 },
+    goldCost: 20
+  },
+  {
+    id: 'orc_warchief',
+    icon: '💀', title: 'Grimjaw the Warchief',
+    zone: 'Danger', minMissedDays: 2,
+    desc: 'Word travels fast. Grimjaw has heard your party skipped days — in his world, that\'s weakness. He\'s arrived personally. His reputation is not good. He looks at each of your champions slowly. "Soft," he concludes.',
+    choiceA: { label: '🛡️ Rally your champions', sub: 'Lose 2 HP total — Grimjaw respects the resistance' },
+    choiceB: { label: '💰 Pay Grimjaw\'s toll', sub: 'Spend 30 Road Gold — he takes it and leaves' },
+    choiceC: { label: '🔥 Your record is your shield', sub: 'Requires 10-day streak — Grimjaw pauses, then steps aside', minStreak: 10 },
+    goldCost: 30
+  },
+  {
+    id: 'orc_ambush',
+    icon: '🪓', title: 'The Road Ambush',
+    zone: 'Ambush', minMissedDays: 1,
+    desc: 'Three orcs, two torches, one very clear intention. They target inconsistent travelers — apparently the road keeps a list. Your party was on it. The largest one cracks his knuckles. He has done this before.',
+    choiceA: { label: '⚔️ Fight through it', sub: 'Lose 1 HP — they\'re driven off' },
+    choiceB: { label: '💰 Negotiate passage', sub: 'Spend 18 Road Gold — they let you pass' },
+    choiceC: { label: '🔥 Regained ground', sub: 'Requires 3-day streak — you\'re back on track and they know it', minStreak: 3 },
+    goldCost: 18
+  },
+];
+
+function checkOrcTrigger(char) {
+  // Only trigger if char missed at least 1 day and has a streak history (not brand new)
+  if (!char.lastCheckIn) return;
+  if (!char.bestStreak || char.bestStreak < 2) return;
+
+  var today     = new Date().toDateString();
+  var yesterday = (function() { var d = new Date(); d.setDate(d.getDate()-1); return d.toDateString(); })();
+
+  if (char.lastCheckIn === today || char.lastCheckIn === yesterday) return; // not missed
+
+  // Calculate days missed
+  var lastDate = new Date(char.lastCheckIn);
+  var todayDate = new Date(today);
+  var daysMissed = Math.round((todayDate - lastDate) / (1000 * 60 * 60 * 24));
+  if (daysMissed < 1) return;
+
+  // 60% chance per missed character to trigger orc
+  if (Math.random() > 0.6) return;
+
+  var eligible = ORC_ENCOUNTERS.filter(function(o) { return o.minMissedDays <= daysMissed; });
+  if (!eligible.length) return;
+
+  var orc = eligible[Math.floor(Math.random() * eligible.length)];
+  queueOverlay(function() { showOrcEncounter(orc, char, daysMissed); });
+}
+
+function showOrcEncounter(enc, char, daysMissed) {
+  var def = CLASS_DEFS[char.class] || {};
+  var box = document.getElementById('encounter-box');
+  box.className = 'overlay-box hostile';
+
+  var missMsg = daysMissed === 1 ? '1 day missed' : daysMissed + ' days missed';
+  document.getElementById('encounter-zone').textContent  = '💢 ' + (def.personaName || def.name) + ' — ' + missMsg;
+  document.getElementById('encounter-icon').textContent  = enc.icon;
+  document.getElementById('encounter-title').textContent = enc.title;
+  document.getElementById('encounter-desc').textContent  = enc.desc;
+
+  var choices = document.getElementById('encounter-choices');
+  choices.innerHTML = '';
+
+  var btnA = document.createElement('button');
+  btnA.className = 'overlay-btn hostile-choice';
+  btnA.innerHTML = enc.choiceA.label + '<span class="overlay-btn-cost">' + enc.choiceA.sub + '</span>';
+  btnA.onclick = function() {
+    document.getElementById('encounter-overlay').classList.remove('show');
+    overlayDismissed();
+    // Apply HP loss to the missed character
+    var hpLoss = enc.id === 'orc_warchief' ? 2 : 1;
+    char.hp = Math.max(0, (char.hp || 0) - hpLoss);
+    char.collapsed = (char.hp <= 0);
+    save(); render();
+    showToast('⚔️ Fought them off — ' + hpLoss + ' HP lost.');
+  };
+
+  var gold = state.ironVault || 0;
+  var btnB = document.createElement('button');
+  btnB.className = 'overlay-btn';
+  if (gold >= enc.goldCost) {
+    btnB.innerHTML = enc.choiceB.label + '<span class="overlay-btn-cost">' + enc.choiceB.sub + '</span>';
+    btnB.onclick = function() {
+      document.getElementById('encounter-overlay').classList.remove('show');
+      overlayDismissed();
+      state.ironVault = Math.max(0, (state.ironVault || 0) - enc.goldCost);
+      fireGoldFloat('-' + enc.goldCost + ' 💰');
+      save(); render();
+      showToast('💰 Paid ' + enc.goldCost + ' Road Gold. They moved on.');
+    };
+  } else {
+    btnB.innerHTML = '💰 Can\'t afford to bribe them<span class="overlay-btn-cost">Not enough Road Gold — fight it out</span>';
+    btnB.disabled = true;
+    btnB.style.opacity = '0.4';
+  }
+
+  choices.appendChild(btnA);
+  choices.appendChild(btnB);
+
+  // choiceC — streak-based free escape
+  if (enc.choiceC) {
+    var bestStreak = Math.max.apply(null, (state.party || []).map(function(c) { return c.streak || 0; }));
+    var minStreak = enc.choiceC.minStreak || 0;
+    var hasStreak = bestStreak >= minStreak;
+    var btnC = document.createElement('button');
+    if (hasStreak) {
+      btnC.className = 'overlay-btn primary-choice';
+      btnC.innerHTML = enc.choiceC.label + '<span class="overlay-btn-cost">' + enc.choiceC.sub + ' (' + bestStreak + '-day streak)</span>';
+      btnC.onclick = function() {
+        document.getElementById('encounter-overlay').classList.remove('show');
+        overlayDismissed();
+        showToast('🔥 Your streak speaks for itself — they step aside.');
+        save(); render();
+      };
+    } else {
+      btnC.className = 'overlay-btn overlay-btn-disabled';
+      btnC.innerHTML = enc.choiceC.label + '<span class="overlay-btn-cost">Needs ' + minStreak + '-day streak — you have ' + bestStreak + '</span>';
+      btnC.disabled = true;
+    }
+    choices.appendChild(btnC);
+  }
+
+  document.getElementById('encounter-overlay').classList.add('show');
+}
+function showCheckinCelebration(char, def, xpGained, recoveryPenalty) {
+  var overlay = document.getElementById('checkin-celebration');
+  if (!overlay) return;
+
+  // Bounce the check circle
+  var checkEl = document.getElementById('check-' + char.id);
+  if (checkEl) {
+    checkEl.classList.add('just-checked');
+    setTimeout(function() { checkEl.classList.remove('just-checked'); }, 500);
+  }
+
+  var streak = char.streak || 0;
+  var particles = { Warrior: ['⚔️','🔥','💥','🛡️'], Cleric: ['💚','✨','🌿','💧'], Mage: ['✨','🔮','💫','📖'], Rogue: ['🗡️','💰','⚡','🎯'], Scribe: ['✍️','📜','✨','💫'], Ranger: ['🏹','🌲','🦅','🌿'], Monk: ['🧘','☁️','✨','🌸'], Alchemist: ['🧪','✨','💎','🌿'] };
+  var emojis = particles[char.class] || ['✨','⭐','💫'];
+
+  // Set content
+  document.getElementById('cc-icon').textContent = def.icon || '⚔️';
+  document.getElementById('cc-name').textContent = def.personaName || def.name || 'Champion';
+
+  var xpEl = document.getElementById('cc-xp');
+  if (recoveryPenalty) {
+    xpEl.textContent = '+' + xpGained + ' XP';
+    xpEl.style.color = 'var(--orange)';
+    xpEl.title = 'Reduced XP — recovering from collapse';
+  } else {
+    xpEl.textContent = '+' + xpGained + ' XP';
+    xpEl.style.color = '';
+  }
+  
+  var msgEl = document.getElementById('cc-msg');
+  if (recoveryPenalty) {
+    var recoveryLeft = char.recoveryDaysLeft || 0;
+    msgEl.textContent = recoveryLeft > 0
+      ? (def.personaName || def.name) + ' is back on their feet. Recovery: ' + recoveryLeft + ' day' + (recoveryLeft === 1 ? '' : 's') + ' at half XP.'
+      : (def.personaName || def.name) + ' has recovered. Full XP resumes.';
+  } else {
+    var flavors = def.checkInFlavor || [];
+    msgEl.textContent = flavors.length ? flavors[Math.floor(Math.random() * flavors.length)] : 'Quest complete!';
+  }
+
+  var streakEl = document.getElementById('cc-streak');
+  if (streak > 0 && !recoveryPenalty) {
+    streakEl.textContent = '🔥 ' + streak + ' day streak!';
+    streakEl.style.display = 'block';
+  } else if (recoveryPenalty) {
+    streakEl.textContent = '↺ Rising';
+    streakEl.style.display = 'block';
+    streakEl.style.color = 'var(--orange)';
+  } else {
+    streakEl.style.display = 'none';
+  }
+
+  var confettiContainer = document.getElementById('cc-confetti');
+  confettiContainer.innerHTML = '';
+  for (var i = 0; i < 24; i++) {
+    var p = document.createElement('div');
+    p.className = 'cc-particle';
+    var angle = (i / 24) * Math.PI * 2;
+    var dist = 80 + Math.random() * 120;
+    var tx = Math.cos(angle) * dist;
+    var ty = Math.sin(angle) * dist;
+    var emoji = emojis[i % emojis.length];
+    p.textContent = emoji;
+    var delay = Math.random() * 0.15;
+    var duration = 0.6 + Math.random() * 0.4;
+    p.style.cssText = 'animation: cc-burst-' + i + ' ' + duration + 's ease-out ' + delay + 's both;';
+    // inject keyframe dynamically
+    var style = document.createElement('style');
+    style.textContent = '@keyframes cc-burst-' + i + ' { 0%{transform:translate(-50%,-50%) scale(1);opacity:1} 100%{transform:translate(calc(-50% + ' + tx + 'px),calc(-50% + ' + ty + 'px)) scale(0.2);opacity:0} }';
+    document.head.appendChild(style);
+    confettiContainer.appendChild(p);
+  }
+
+  // Show
+  overlay.classList.add('show');
+  
+  // Flash the XP bar
   var fill = document.getElementById('xp-fill');
   if (fill) {
     fill.classList.remove('pulse');
@@ -3118,21 +4765,41 @@ function checkIn(charId) {
     setTimeout(function() { fill.classList.remove('pulse'); }, 800);
   }
 
-  var newLevel = getLevelData(state.xp).level;
-  if (newLevel > prevLevel) {
-    showLevelUp(newLevel);
-  } else {
-    // Fire road event or encounter after check-in
-    checkEncounter(0);
+  // Auto-dismiss after 1.8s, then queue follow-on events
+  clearTimeout(window._ccTimer);
+  window._ccTimer = setTimeout(function() {
+    closeCheckinCelebration();
+    // NOW it's safe to queue the next thing
+    _afterCelebration();
+  }, 3000);
+}
+
+var _afterCelebrationFn = null;
+
+function _afterCelebration() {
+  if (_afterCelebrationFn) {
+    var fn = _afterCelebrationFn;
+    _afterCelebrationFn = null;
+    // Small gap so celebration fade-out completes before next thing appears
+    setTimeout(fn, 200);
   }
 }
 
-// ─────────────────────────
-//  STREAK HELPERS (global — uses primary party member)
-// ─────────────────────────
+function closeCheckinCelebration() {
+  var overlay = document.getElementById('checkin-celebration');
+  if (overlay) overlay.classList.remove('show');
+}
+
+
 function getGlobalStreak() {
   if (!state.party || !state.party.length) return 0;
-  // Use the primary (first) character's streak as the global streak
+  var today = new Date().toDateString();
+  // Use the highest streak among characters who have checked in today,
+  // or the primary character's streak if none have checked in yet
+  var checkedInToday = state.party.filter(function(c) { return c.lastCheckIn === today; });
+  if (checkedInToday.length) {
+    return Math.max.apply(null, checkedInToday.map(function(c) { return c.streak || 0; }));
+  }
   return state.party[0].streak || 0;
 }
 
@@ -3161,54 +4828,124 @@ function renderParty() {
   var today = new Date().toDateString();
 
   (state.party || []).forEach(function(char) {
-    var def         = CLASS_DEFS[char.class] || CLASS_DEFS['Mage'];
+    var def         = getPersona(char);
     var checkedIn   = char.lastCheckIn === today;
     var hp          = char.hp || 0;
     var isCollapsed = char.collapsed || hp <= 0;
     var isWounded   = !isCollapsed && hp <= 2;
     var streak      = char.streak || 0;
+    var alreadyMissed = char.missedToday === today;
 
     var card = document.createElement('div');
     card.className = 'char-card' +
-      (checkedIn   ? ' checked-in' : '') +
-      (isWounded   ? ' wounded'    : '') +
-      (isCollapsed ? ' collapsed'  : '');
+      (checkedIn    ? ' checked-in' : '') +
+      (isWounded    ? ' wounded'    : '') +
+      (isCollapsed  ? ' collapsed'  : '') +
+      (alreadyMissed && !checkedIn ? ' missed-today' : '');
 
-    // ── Top row: class icon | class name + habit | HP hearts
-    var topRow = document.createElement('div');
-    topRow.className = 'char-card-top';
+    // No card-level click — only the circles are interactive
 
+    // Left accent bar
+    var accent = document.createElement('div');
+    accent.className = 'char-card-accent';
+    card.appendChild(accent);
+
+    // Body
+    var body = document.createElement('div');
+    body.className = 'char-card-body';
+
+    // Avatar
     var avatarDiv = document.createElement('div');
-    avatarDiv.className = 'char-card-avatar' + (hp <= 2 ? ' low-hp' : '');
+    avatarDiv.className = 'char-card-avatar' + (isWounded ? ' low-hp' : '');
     avatarDiv.textContent = def.icon;
+    body.appendChild(avatarDiv);
 
+    // Info block
     var infoDiv = document.createElement('div');
     infoDiv.className = 'char-card-info';
 
-    var cadenceTag = '';
+    // Build dots row — show last 7 streak days as dots
+    var dotsHtml = '<div class="char-card-dots">';
+    var dotCount = 7;
+    for (var d = 0; d < dotCount; d++) {
+      var isFilled = d < streak && !checkedIn;
+      var isToday  = checkedIn && d < streak;
+      var cls = 'streak-dot';
+      if (isToday && d === streak - 1) cls += ' today';
+      else if (d < streak) cls += ' filled';
+      dotsHtml += '<span class="' + cls + '"></span>';
+    }
+    if (streak > 0) {
+      dotsHtml += '<span class="streak-label-mini">🔥 ' + streak + (char.cadence === 'weekly' ? ' wk' : ' day') + '</span>';
+    }
+    dotsHtml += '</div>';
+
+    // Weekly progress pips
+    var weeklyHtml = '';
     if (char.cadence === 'weekly') {
       var doneThisWeek = char.checkInsThisWeek || 0;
       var target = char.weekTarget || 3;
-      cadenceTag = '<div class="char-card-weekly-progress">';
+      var remaining = target - doneThisWeek;
+
+      // Days available this week INCLUDING today (Sun=0, Sat=6, week ends Sat)
+      var todayDow = new Date().getDay();
+      var daysAvailable = 7 - todayDow; // today + remaining days of week
+
+      // Urgency states:
+      // done      — already hit target
+      // at_risk   — remaining === daysAvailable (must check in every single remaining day incl. today)
+      // impossible — remaining > daysAvailable (mathematically can't hit target this week)
+      // normal    — fine, still have slack
+      var urgency = 'normal';
+      if (doneThisWeek >= target) {
+        urgency = 'done';
+      } else if (remaining > daysAvailable) {
+        urgency = 'impossible';
+      } else if (remaining === daysAvailable) {
+        urgency = 'at_risk';
+      }
+
+      weeklyHtml = '<div class="char-card-weekly-progress weekly-urgency-' + urgency + '">';
       for (var p = 0; p < target; p++) {
-        cadenceTag += '<div class="weekly-pip' + (p < doneThisWeek ? ' done' : '') + '"></div>';
+        weeklyHtml += '<div class="weekly-pip' + (p < doneThisWeek ? ' done' : '') + '"></div>';
       }
-      cadenceTag += '<span class="weekly-pip-label">' + doneThisWeek + '/' + target + ' this week</span></div>';
-      if (streak > 0) {
-        cadenceTag += '<div class="char-card-streak">🔥 ' + streak + ' week streak</div>';
+
+      var urgencyLabel = '';
+      if (urgency === 'impossible') {
+        urgencyLabel = ' <span class="weekly-urgency-label urgent">✗ Week lost</span>';
+      } else if (urgency === 'at_risk') {
+        var dayWord = remaining === 1 ? 'day' : 'days';
+        urgencyLabel = ' <span class="weekly-urgency-label at-risk">⚠ Need ' + remaining + ' more ' + dayWord + '</span>';
+      } else if (urgency === 'done') {
+        urgencyLabel = ' <span class="weekly-urgency-label done">✓ Week complete</span>';
       }
-    } else {
-      cadenceTag = streak > 0
-        ? '<div class="char-card-streak">🔥 ' + streak + ' day streak</div>'
-        : '';
+      weeklyHtml += '<span class="weekly-pip-label">' + doneThisWeek + '/' + target + ' this week</span>' + urgencyLabel + '</div>';
+      dotsHtml = weeklyHtml;
+    }
+
+    // Flavor text when done
+    var flavorHtml = '';
+    if (checkedIn) {
+      var flavors = def.checkInFlavor || [];
+      var flavor = flavors.length ? flavors[Math.floor(Math.random() * flavors.length)] : '';
+      if (flavor) flavorHtml = '<span class="checkin-flavor">' + esc(flavor) + '</span>';
+    }
+
+    // Recovery indicator — shown when char is back up but still in penalty window
+    var recoveryHtml = '';
+    if (!isCollapsed && (char.recoveryDaysLeft || 0) > 0) {
+      recoveryHtml = '<span class="recovery-indicator">↺ Recovering — half XP for ' + char.recoveryDaysLeft + ' more day' + (char.recoveryDaysLeft === 1 ? '' : 's') + '</span>';
     }
 
     infoDiv.innerHTML =
-      '<div class="char-card-name">' + def.name + '</div>' +
+      '<div class="char-card-persona-main">' + esc(def.personaName || def.name) + '</div>' +
+      '<div class="char-card-class-tag">' + esc(def.name) + '</div>' +
       '<div class="char-card-habit">' + esc(char.habit || '') + '</div>' +
-      cadenceTag;
+      (checkedIn ? flavorHtml : (recoveryHtml || dotsHtml));
 
-    // HP hearts — 5 hearts, filled based on hp
+    body.appendChild(infoDiv);
+
+    // HP hearts — compact, top-right of body
     var heartsDiv = document.createElement('div');
     heartsDiv.className = 'char-card-hp-hearts';
     var heartsRow = document.createElement('div');
@@ -3219,63 +4956,62 @@ function renderParty() {
       heart.textContent = '❤️';
       heartsRow.appendChild(heart);
     }
-    var heartsLabel = document.createElement('div');
-    heartsLabel.className = 'hp-hearts-label';
-    heartsLabel.textContent = hp + '/5 HP';
     heartsDiv.appendChild(heartsRow);
-    heartsDiv.appendChild(heartsLabel);
+    body.appendChild(heartsDiv);
 
-    topRow.appendChild(avatarDiv);
-    topRow.appendChild(infoDiv);
-    topRow.appendChild(heartsDiv);
-    card.appendChild(topRow);
+    // Actions: ✓ circle + ✗ circle side by side
+    var actionsDiv = document.createElement('div');
+    actionsDiv.className = 'char-card-actions';
 
-    // ── Collapsed banner
+    // ✓ Check circle
+    var checkDiv = document.createElement('div');
+    checkDiv.className = 'char-card-check';
+    checkDiv.id = 'check-' + char.id;
+    checkDiv.textContent = checkedIn ? '✓' : (isCollapsed ? '↺' : '✓');
+
+    if (checkedIn) {
+      // Already done — inert, styled green by CSS
+    } else if (isCollapsed) {
+      checkDiv.onclick = (function(cid) { return function(e) { e.stopPropagation(); checkIn(cid); }; })(char.id);
+    } else if (!alreadyMissed) {
+      // Active — clicking fires checkIn
+      checkDiv.onclick = (function(cid) { return function(e) { e.stopPropagation(); checkIn(cid); }; })(char.id);
+    } else {
+      // Already missed — lock the check circle out entirely
+      checkDiv.classList.add('locked-out');
+    }
+    actionsDiv.appendChild(checkDiv);
+
+    // ✗ Miss circle — shown on unchecked, non-collapsed cards
+    if (!checkedIn && !isCollapsed) {
+      var missBtn = document.createElement('button');
+      if (alreadyMissed) {
+        // Already missed — inert, styled by CSS
+        missBtn.className = 'char-miss-circle missed';
+        missBtn.disabled = true;
+      } else {
+        missBtn.className = 'char-miss-circle';
+        missBtn.onclick = (function(cid) { return function(e) { e.stopPropagation(); markMiss(cid); }; })(char.id);
+      }
+      missBtn.textContent = '✗';
+      actionsDiv.appendChild(missBtn);
+    }
+
+    body.appendChild(actionsDiv);
+    card.appendChild(body);
+
+    // Collapsed banner
     if (isCollapsed) {
       var collapsedBar = document.createElement('div');
       collapsedBar.className = 'char-card-collapsed-bar';
-      collapsedBar.innerHTML = '<div class="collapsed-msg">💀 ' + def.name + ' has fallen. Check in to begin recovery.</div>';
+      collapsedBar.innerHTML = '<div class="collapsed-msg">💀 ' + esc(def.personaName || def.name) + ' has fallen. Tap ↺ to begin recovery — XP reduced for 3 days.</div>';
       card.appendChild(collapsedBar);
     }
 
-    // ── Action area
-    var actionDiv = document.createElement('div');
-    actionDiv.className = 'char-card-action';
-
-    if (checkedIn) {
-      var doneBtn = document.createElement('button');
-      doneBtn.className = 'checkin-btn done';
-      if (char.cadence === 'weekly') {
-        var doneW2 = char.checkInsThisWeek || 0;
-        var targW2 = char.weekTarget || 3;
-        doneBtn.textContent = doneW2 >= targW2
-          ? '✓ Weekly target hit!'
-          : '✓ Logged today (' + doneW2 + '/' + targW2 + ' this week)';
-      } else {
-        doneBtn.textContent = '✓ Done for today';
-      }
-      actionDiv.appendChild(doneBtn);
-    } else {
-      var btn = document.createElement('button');
-      btn.className = 'checkin-btn';
-      if (isCollapsed) {
-        btn.style.borderColor = 'rgba(184,60,46,0.5)';
-        btn.textContent = '🩸 Check in to recover — ' + esc(char.habit);
-      } else if (char.cadence === 'weekly') {
-        var doneW = char.checkInsThisWeek || 0;
-        var targW = char.weekTarget || 3;
-        btn.textContent = '⚔ Check In (' + doneW + '/' + targW + ' this week)';
-      } else {
-        btn.textContent = '⚔ Check In — ' + esc(char.habit);
-      }
-      btn.onclick = (function(cid) { return function() { checkIn(cid); }; })(char.id);
-      actionDiv.appendChild(btn);
-    }
-
-    card.appendChild(actionDiv);
     container.appendChild(card);
   });
 }
+
 
 // ─────────────────────────
 //  RENDER LOG (chronicle of check-ins)
@@ -3380,14 +5116,69 @@ function devWipeLevel() {
 }
 
 function devRestart() {
+  // Wipe persisted state
+  localStorage.removeItem(SAVE_KEY);
+
+  // Reset JS state
   state.name = ''; state.avatar = ''; state.party = [];
   state.xp = 0; state.mapPosition = 0; state.ironVault = 0;
   state.badges = []; state.bestStreak = 0;
-  localStorage.removeItem(SAVE_KEY);
+  state.seenStoryEncounters = []; state.seenArrivals = [];
+  state.firstRun = false;
+
+  // Reset all onboarding vars
+  obCompanions = []; obCompanionIdx = 0; obPartySize = 3;
+  obAvatar = '🧔';
+  obCurrentHabit = ''; obCurrentClass = ''; obCurrentUseAlt = false;
+  obCurrentCadence = 'daily'; obCurrentWeekTarget = 3;
+  obSuggest = '';
+  _currentSuggestionKey = '';
+
+  // Clear all input fields
+  var nameInp = document.getElementById('hero-name-input');
+  if (nameInp) nameInp.value = '';
+  var habitInp = document.getElementById('habit-input');
+  if (habitInp) habitInp.value = '';
+
+  // Reset avatar selection to default
+  document.querySelectorAll('.avatar-opt').forEach(function(o) {
+    o.classList.toggle('selected', o.dataset.avatar === '🧔');
+  });
+
+  // Reset party size selection to 3
+  document.querySelectorAll('.party-size-opt').forEach(function(o) {
+    o.classList.toggle('selected', parseInt(o.dataset.size) === 3);
+  });
+
+  // Reset name next button
+  var nameBtn = document.getElementById('name-next-btn');
+  if (nameBtn) nameBtn.disabled = true;
+
+  // Reset habit cadence inline
+  selectCadenceInline('daily');
+
+  // Hide all overlays
+  ['encounter-overlay','miss-overlay','road-event-overlay','checkin-celebration'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.remove('show');
+  });
+
+  // Switch to onboarding
   document.getElementById('main').style.display = 'none';
   document.getElementById('onboarding').style.display = 'block';
-  obCompanions = []; obCompanionIdx = 0; obPartySize = 3;
-  goStep(0);
+
+  // All ob-steps hidden, step-0 active
+  document.querySelectorAll('.ob-step').forEach(function(el) {
+    el.style.display = '';
+    el.classList.remove('active');
+  });
+  var s0 = document.getElementById('step-0');
+  if (s0) { s0.style.display = ''; s0.classList.add('active'); }
+
+  // Reset progress bar
+  var fill = document.getElementById('ob-progress-fill');
+  if (fill) fill.style.width = '5%';
+
   save();
 }
 
@@ -3400,6 +5191,28 @@ function devSimMiss() {
     save(); render();
     showToast('Miss simulated: ' + char.class + ' lost HP.');
   }
+}
+
+function devOrcPatrol() {
+  var char = (state.party || [])[0];
+  if (!char) { showToast('No party.'); return; }
+  var orc = ORC_ENCOUNTERS.find(function(o) { return o.id === 'orc_patrol'; }) || ORC_ENCOUNTERS[0];
+  queueOverlay(function() { showOrcEncounter(orc, char, 1); });
+  showToast('Orc Patrol triggered.');
+}
+
+function devGrimjaw() {
+  var char = (state.party || [])[0];
+  if (!char) { showToast('No party.'); return; }
+  var orc = ORC_ENCOUNTERS.find(function(o) { return o.id === 'orc_warchief'; }) || ORC_ENCOUNTERS[1];
+  queueOverlay(function() { showOrcEncounter(orc, char, 3); });
+  showToast('Grimjaw triggered.');
+}
+
+function devHostile() {
+  var enc = HOSTILE_ENCOUNTERS[Math.floor(Math.random() * HOSTILE_ENCOUNTERS.length)];
+  queueOverlay(function() { showEncounter(enc, true); });
+  showToast('Hostile encounter: ' + enc.title);
 }
 
 // ─────────────────────────
@@ -3425,11 +5238,12 @@ function showAddCharacter() {
 //  WEATHER SYSTEM
 // ─────────────────────────
 var WEATHER_STATES = {
-  clear:   { icon: '☀️',  label: 'Clear Skies',       desc: 'Your whole party is moving. The road opens ahead.',      cls: 'clear'   },
-  partial: { icon: '⛅',  label: 'Partly Cloudy',      desc: 'Some of your champions are still waiting on you.',       cls: 'partial' },
-  stormy:  { icon: '🌩️', label: 'Gathering Storms',   desc: 'Most of your party hasn\'t moved. The road grows dark.',  cls: 'stormy'  },
-  fog:     { icon: '🌫️', label: 'Fog of Doubt',       desc: 'No one has checked in. The path ahead is invisible.',    cls: 'fog'     },
-  dawn:    { icon: '🌄',  label: 'The Road Awaits',    desc: 'A new day. Check in to see what lies ahead.',            cls: 'partial' }
+  clear:   { icon: '☀️',  label: 'Clear Skies',        desc: 'Your whole party is moving. The road opens ahead.',                        cls: 'clear'   },
+  partial: { icon: '⛅',  label: 'Partly Cloudy',       desc: 'Some of your champions are still waiting on you.',                         cls: 'partial' },
+  stormy:  { icon: '🌩️', label: 'Gathering Storms',    desc: 'Most of your party hasn\'t moved. The road grows dark.',                   cls: 'stormy'  },
+  fog:     { icon: '☁️', label: 'Fog of Doubt',        desc: 'No one has checked in. The path ahead is invisible.',                      cls: 'fog'     },
+  dark:    { icon: '🌑', label: 'A Dark Night',         desc: 'The whole party faltered today. A bad day on the road. Tomorrow they walk again.', cls: 'fog' },
+  dawn:    { icon: '🌄',  label: 'The Road Awaits',     desc: 'A new day. Check in to see what lies ahead.',                              cls: 'partial' }
 };
 
 function getWeatherState() {
@@ -3437,7 +5251,11 @@ function getWeatherState() {
   var today = new Date().toDateString();
   var total = state.party.length;
   var checkedIn = state.party.filter(function(c) { return c.lastCheckIn === today; }).length;
+  var missedToday = state.party.filter(function(c) { return c.missedToday === today; }).length;
+
   if (total === 0) return WEATHER_STATES.dawn;
+  // All explicitly missed — dark night state
+  if (missedToday === total && checkedIn === 0) return WEATHER_STATES.dark;
   if (checkedIn === 0) return WEATHER_STATES.fog;
   if (checkedIn === total) return WEATHER_STATES.clear;
   if (checkedIn >= total - 1) return WEATHER_STATES.partial;
@@ -3466,7 +5284,7 @@ function renderPartyOverview() {
   container.innerHTML = '';
   var today = new Date().toDateString();
   (state.party || []).forEach(function(char) {
-    var def = CLASS_DEFS[char.class] || CLASS_DEFS['Mage'];
+    var def = getPersona(char);
     var checkedIn = char.lastCheckIn === today;
     var hp = char.hp || 0;
     var isWounded = hp <= 2 && hp > 0;
@@ -3510,7 +5328,7 @@ function render() {
 
   var primaryChar = (state.party && state.party[0]) || null;
   var heroClass   = primaryChar ? primaryChar.class : 'Mage';
-  var raceLabel = (avatarRaceMap[state.avatar] || 'Traveler') + ' · ' + getTitle(heroClass, ld.level);
+  var raceLabel = (avatarRaceMap[state.avatar] || 'Traveler') + ' · ' + getPlayerTitle(ld.level);
   document.getElementById('char-class').textContent  = raceLabel;
   document.getElementById('level-num').textContent   = ld.level;
 
@@ -3547,14 +5365,14 @@ function render() {
   }
   if (rightEl) {
     if (loggedToday) {
-      rightEl.textContent = streakCount + ' day' + (streakCount !== 1 ? 's' : '') + ' 🔥';
+      rightEl.textContent = 'Active';
       rightEl.style.color = 'var(--green)';
-    } else if (streakCount > 0) {
+    } else if (streakCount >= 2) {
       rightEl.textContent = '⚠ At risk';
       rightEl.style.color = 'var(--orange)';
     } else {
-      rightEl.textContent = 'Start today';
-      rightEl.style.color = '';
+      rightEl.textContent = streakCount === 1 ? 'Keep it going' : 'Start today';
+      rightEl.style.color = streakCount === 1 ? 'var(--teal)' : '';
     }
   }
 
@@ -3702,8 +5520,12 @@ function checkWeekRoadBonus() {
     state.weekLogDays = []; // reset so they can earn next week
     showToast('🗺️ Road Bonus earned! Advancing the map...');
     setTimeout(function() {
-      if (advanceMap()) { render(); checkZoneBadge(); checkArrival(); }
-    }, 1400);
+      if (advanceMap()) {
+        render();
+        checkZoneBadge();
+        setTimeout(function() { checkArrival(); }, 350);
+      }
+    }, 1200);
   }
 }
 
@@ -3939,10 +5761,21 @@ function showEncounter(enc, isHostile) {
   choices.innerHTML = '';
 
   if (isHostile) {
+    var today = new Date().toDateString();
+    var allCheckedIn = state.party && state.party.length > 0 &&
+      state.party.every(function(c) { return c.lastCheckIn === today; });
+
     var btnA = document.createElement('button');
     btnA.className = 'overlay-btn hostile-choice';
-    btnA.innerHTML = enc.choiceA.label + '<span class="overlay-btn-cost">' + enc.choiceA.sub + '</span>';
-    btnA.onclick = function() { resolveHostile('heart', enc); };
+
+    if (allCheckedIn) {
+      btnA.className = 'overlay-btn primary-choice';
+      btnA.innerHTML = '🛡️ Your discipline holds<span class="overlay-btn-cost">All champions checked in — you pass through unscathed</span>';
+      btnA.onclick = function() { resolveHostile('shield', enc); };
+    } else {
+      btnA.innerHTML = enc.choiceA.label + '<span class="overlay-btn-cost">' + enc.choiceA.sub + '</span>';
+      btnA.onclick = function() { resolveHostile('heart', enc); };
+    }
 
     var btnB = document.createElement('button');
     var goldCost = enc.goldCost || 0;
@@ -3959,6 +5792,24 @@ function showEncounter(enc, isHostile) {
 
     choices.appendChild(btnA);
     choices.appendChild(btnB);
+
+    // choiceC — streak-based free escape
+    if (enc.choiceC) {
+      var btnC = document.createElement('button');
+      var bestStreak = Math.max.apply(null, (state.party || []).map(function(c) { return c.streak || 0; }));
+      var minStreak = enc.choiceC.minStreak || 0;
+      var hasStreak = bestStreak >= minStreak;
+      if (hasStreak) {
+        btnC.className = 'overlay-btn primary-choice';
+        btnC.innerHTML = enc.choiceC.label + '<span class="overlay-btn-cost">' + enc.choiceC.sub + ' (' + bestStreak + '-day streak)</span>';
+        btnC.onclick = function() { resolveHostile('streak', enc); };
+      } else {
+        btnC.className = 'overlay-btn overlay-btn-disabled';
+        btnC.innerHTML = enc.choiceC.label + '<span class="overlay-btn-cost">Needs ' + minStreak + '-day streak — you have ' + bestStreak + '</span>';
+        btnC.disabled = true;
+      }
+      choices.appendChild(btnC);
+    }
   } else {
     var btn = document.createElement('button');
     btn.className = 'overlay-btn friendly-choice';
@@ -3976,15 +5827,49 @@ function resolveHostile(choice, enc) {
   if (choice === 'heart') {
     state.hearts = Math.max(0, (state.hearts || 3) - 1);
     showToast('❤️ Heart spent — the threat is driven back.');
+  } else if (choice === 'shield') {
+    showToast('🛡️ Discipline holds — you pass through unscathed.');
   } else if (choice === 'gold') {
     var cost = enc.goldCost || 0;
     state.ironVault = Math.max(0, (state.ironVault || 0) - cost);
     showToast('💰 ' + cost + ' gold spent — problem solved.');
     fireGoldFloat('-' + cost + ' 💰');
+  } else if (choice === 'streak') {
+    showToast('🔥 Your streak speaks for itself — they step aside.');
   }
   save();
   render();
   checkBroken();
+}
+
+function showWelcomeEncounter() {
+  var box = document.getElementById('encounter-box');
+  box.className = 'overlay-box friendly';
+  document.getElementById('encounter-zone').textContent  = '✦ Day One';
+  document.getElementById('encounter-icon').textContent  = '🏕️';
+  document.getElementById('encounter-title').textContent = 'The Road Begins';
+  document.getElementById('encounter-desc').textContent  =
+    'A weathered traveler at the first milestone sees your party and nods. ' +
+    '"First check-in," she says. "Most people don\'t make it past the intention." ' +
+    'She presses a coin into your hand. "For the road. It gets harder. Keep showing up."';
+  var choices = document.getElementById('encounter-choices');
+  choices.innerHTML = '';
+  var btn = document.createElement('button');
+  btn.className = 'overlay-btn friendly-choice';
+  btn.innerHTML = 'Accept and march on <span class="overlay-btn-cost">+20 Road Gold — first day gift</span>';
+  btn.onclick = function() {
+    document.getElementById('encounter-overlay').classList.remove('show');
+    overlayDismissed();
+    state.ironVault = (state.ironVault || 0) + 20;
+    save(); render();
+    setTimeout(function() {
+      fireGoldFloat('+20 💰');
+      showToast('💰 +20 Road Gold — welcome to the road.');
+      askNotificationPermission();
+    }, 300);
+  };
+  choices.appendChild(btn);
+  document.getElementById('encounter-overlay').classList.add('show');
 }
 
 function resolveFriendly(enc) {
@@ -3994,8 +5879,19 @@ function resolveFriendly(enc) {
     state.xp += enc.reward.amount;
     showToast('✨ +' + enc.reward.amount + ' bonus XP!');
   } else if (enc.reward.type === 'heart') {
-    state.hearts = Math.min(3, (state.hearts || 0) + 1);
-    showToast('❤️ Heart restored!');
+    // Find the weakest champion who isn't at full HP
+    var wounded = (state.party || []).filter(function(c) { return (c.hp || 0) < 5; });
+    wounded.sort(function(a, b) { return (a.hp || 0) - (b.hp || 0); });
+    if (wounded.length > 0) {
+      wounded[0].hp = Math.min(5, (wounded[0].hp || 0) + 1);
+      var def = CLASS_DEFS[wounded[0].class] || {};
+      showToast('❤️ ' + (def.personaName || def.name || 'Your champion') + ' recovered 1 HP!');
+    } else {
+      // All champions at full HP — convert to Road Gold instead
+      state.ironVault = (state.ironVault || 0) + 15;
+      showToast('💰 All champions healthy! Shrine blessing converts to +15 Road Gold.');
+      fireGoldFloat('+15 💰');
+    }
   } else if (enc.reward.type === 'gold') {
     state.ironVault = (state.ironVault || 0) + enc.reward.amount;
     showToast('💰 +' + enc.reward.amount + ' Road Gold earned!');
@@ -4064,10 +5960,7 @@ function renderMap() {
 
   if (wp) {
     document.getElementById('map-location-name').textContent = wp.name.replace('\n',' ');
-    var zoneNums = ['I','II','III','IV'];
-    var zoneIdx  = typeof wp.zone === 'number' ? wp.zone - 1 : 0;
-    document.getElementById('map-zone-tag').textContent =
-      'Zone ' + (zoneNums[zoneIdx] || 'I') + ' — ' + (wp.zoneName || '');
+    document.getElementById('map-zone-tag').textContent = wp.zoneName || '';
   }
 
   // ── MAP DIMENSIONS — full height, no scroll ─────────────────────────
@@ -4223,12 +6116,13 @@ function renderMap() {
     var t = document.createElementNS('http://www.w3.org/2000/svg','text');
     t.setAttribute('x', zl.x+'');
     t.setAttribute('y', Math.round(H * zl.pct/100) + 14 + '');
-    t.setAttribute('fill','rgba(196,162,74,0.55)');
+    t.setAttribute('fill','rgba(196,162,74,0.85)');
     t.setAttribute('font-size','11');
     t.setAttribute('font-family',"'Cinzel', serif");
     t.setAttribute('font-weight','700');
     t.setAttribute('letter-spacing','2.5');
     t.setAttribute('text-anchor', zl.anchor);
+    t.setAttribute('filter','drop-shadow(0 1px 3px rgba(0,0,0,0.9))');
     t.textContent = zl.text.toUpperCase();
     svg.appendChild(t);
   });
@@ -4465,6 +6359,14 @@ function renderMap() {
     label.textContent = wpData.name.replace('\n',' ');
 
     wrap.appendChild(circle);
+
+    if (isCurrent) {
+      var marker = document.createElement('div');
+      marker.className = 'map-player-marker';
+      marker.textContent = state.avatar || '🧔';
+      wrap.appendChild(marker);
+    }
+
     wrap.appendChild(label);
     inner.appendChild(wrap);
   });
@@ -4594,18 +6496,61 @@ function fireCoinFloat(text) {
 //  ROAD EVENTS (post check-in story beats)
 // ─────────────────────────
 var ROAD_EVENTS = [
-  { zone: '✦ The Road', icon: '🌅', title: 'Morning Light', desc: 'The road is quiet this early. Just you and the habit. You check in, and the day opens up a little.' },
-  { zone: '✦ The Road', icon: '🐦', title: 'A Familiar Sound', desc: 'A bird calls from somewhere in the trees. You note it and keep moving. Small things become landmarks when you walk the same road long enough.' },
-  { zone: '✦ Fellow Travelers', icon: '🧭', title: 'Passing Company', desc: 'A traveler nods at you from across the road. They don\'t stop. Neither do you. There\'s a kind of solidarity in that.' },
-  { zone: '✦ The Road', icon: '🌿', title: 'The Habit Holds', desc: 'Day after day, the same motion. It starts to feel different from the inside — less like effort, more like nature.' },
-  { zone: '✦ Rest Stop', icon: '🪨', title: 'A Moment on the Stone', desc: 'You pause at a roadside marker. Behind you, a chain of days you actually kept. That\'s not nothing.' },
-  { zone: '✦ The Road', icon: '🌙', title: 'End of the Day', desc: 'You checked in. The day closes with that small act in it. It always matters more than it feels like it does.' },
-  { zone: '✦ Roadside Inn', icon: '🏠', title: 'Word of You', desc: 'An innkeeper says she\'s heard a traveler has been consistent on this stretch of road for a while. You realize she means you.' },
-  { zone: '✦ The Road', icon: '⚔️', title: 'The Streak Holds', desc: 'You showed up again. Another day where it was easier not to, and you did anyway. The road remembers.' },
-  { zone: '✦ The Road', icon: '🌦️', title: 'Weather Changes', desc: 'The sky shifted. You barely noticed — you were already moving. Habits have a way of making uncertainty smaller.' },
-  { zone: '✦ Crossroads', icon: '🗺️', title: 'You Could Turn Back', desc: 'Every day there\'s a version of you that doesn\'t check in. Today you weren\'t that version.' },
-  { zone: '✦ The Road', icon: '🔥', title: 'The Streak Grows', desc: 'Momentum is a strange thing. You barely notice it building. Then one day you realize you\'d be surprised if you stopped.' },
-  { zone: '✦ Thornwood Edge', icon: '🌲', title: 'Into the Dark', desc: 'The trees close in a little here. But you know the way. You\'ve been walking it long enough.' },
+  // Mood / atmosphere
+  { zone: '✦ The Road', icon: '🌅', title: 'Morning Light',
+    desc: 'The road is quiet this early. Just you and the habit. You check in, and the day opens up a little.' },
+  { zone: '✦ The Road', icon: '🌙', title: 'End of the Day',
+    desc: 'You checked in. The day closes with that small act in it. It always matters more than it feels like it does.' },
+  { zone: '✦ The Road', icon: '🌦️', title: 'Rain on the Road',
+    desc: 'Cold, wet, the kind of day that hands you a reason not to bother. You bothered anyway. That\'s actually the whole skill.' },
+  { zone: '✦ The Road', icon: '❄️', title: 'First Cold',
+    desc: 'The road is harder in this weather. Everything is. You went anyway. The party doesn\'t get that credit often enough.' },
+  { zone: '✦ Thornwood Edge', icon: '🌲', title: 'Into the Dark',
+    desc: 'The trees close in a little here. But you know the way. You\'ve been walking it long enough.' },
+  { zone: '✦ The Road', icon: '🌫️', title: 'Low Visibility',
+    desc: 'You can\'t see far ahead today. That\'s fine. You don\'t need to see the whole road — just the next step. You took it.' },
+
+  // World / other travelers
+  { zone: '✦ Fellow Travelers', icon: '🧭', title: 'Passing Company',
+    desc: 'A traveler nods at you from across the road. They don\'t stop. Neither do you. There\'s a kind of solidarity in that.' },
+  { zone: '✦ Roadside Inn', icon: '🏠', title: 'Word of You',
+    desc: 'An innkeeper mentions she\'s heard a traveler has been consistent on this stretch of road. You realize she means you.' },
+  { zone: '✦ The Road', icon: '👥', title: 'The Ones Who Stopped',
+    desc: 'Two travelers are camped at a milestone, debating whether to go on. You pass them without slowing. You made that decision weeks ago.' },
+  { zone: '✦ Crossroads', icon: '🗺️', title: 'The Other Road',
+    desc: 'There\'s a faster-looking path heading south. Half the markers on it are rotted out. You stay on yours. Shortcuts announce themselves too confidently.' },
+  { zone: '✦ Fellow Travelers', icon: '🧙', title: 'The Old Walker',
+    desc: 'An old woman resting her feet watches you pass. "Same time yesterday," she says. "Same time the day before." You nod. She seems satisfied.' },
+  { zone: '✦ The Road', icon: '🏕️', title: 'Last Night\'s Camp',
+    desc: 'Someone camped here recently — fire cold, ground worn. They\'ve been on this road a long time. So have you. Different parties, same discipline.' },
+
+  // Edge / tension / honesty
+  { zone: '✦ Crossroads', icon: '↩️', title: 'You Could Turn Back',
+    desc: 'Every day there\'s a version of you that doesn\'t check in. Today you weren\'t that version.' },
+  { zone: '✦ The Road', icon: '⚡', title: 'A Hard Day',
+    desc: 'You checked in on a day when it cost you something. Those are the ones that count double. The streak doesn\'t know that — but you do.' },
+  { zone: '✦ The Road', icon: '😤', title: 'Didn\'t Feel Like It',
+    desc: 'The honest version: you did not want to do this today. You did it anyway. That\'s not a small thing. That\'s actually the whole thing.' },
+  { zone: '✦ Rest Stop', icon: '🪨', title: 'The Weight of It',
+    desc: 'Some days the habit feels effortless. Today wasn\'t that. Today it felt like exactly what it is — something you chose over something easier. Good.' },
+
+  // Compounding / momentum
+  { zone: '✦ The Road', icon: '🌿', title: 'The Habit Holds',
+    desc: 'Day after day, the same motion. It starts to feel different from the inside — less like effort, more like nature.' },
+  { zone: '✦ The Road', icon: '🔥', title: 'Momentum',
+    desc: 'You barely notice it building. Then one day you realize you\'d be surprised if you stopped. That day is closer than it was.' },
+  { zone: '✦ Rest Stop', icon: '📍', title: 'A Marker on the Road',
+    desc: 'You pause at a milestone. Behind you: a chain of days you actually kept. Not perfect — kept. That\'s the record that matters.' },
+  { zone: '✦ The Road', icon: '🔗', title: 'The Chain',
+    desc: 'One more link. That\'s all today is. You add it. The chain gets heavier. Harder to break. That\'s the point.' },
+
+  // Wry / world-building
+  { zone: '✦ The Road', icon: '📜', title: 'A Posted Notice',
+    desc: 'Someone has nailed a notice to a milestone: "HABITS FOR SALE — slightly used, gave up after 11 days." You keep walking. You\'re at a different point in the story.' },
+  { zone: '✦ Roadside Inn', icon: '🍺', title: 'Overheard',
+    desc: 'Two travelers at the bar debating whether consistency or intensity matters more. The one who\'s been on the road longer drinks quietly and says nothing. That tracks.' },
+  { zone: '✦ Fellow Travelers', icon: '🎒', title: 'The Overpacked Traveler',
+    desc: 'A traveler with an enormous pack staggers past you. "All the gear," they pant. "Haven\'t actually started yet." You have been started for a while now.' },
 ];
 
 var _lastRoadEventIdx = -1;
@@ -4647,38 +6592,38 @@ function maybeShowRoadEvent() {
 
 function showLevelUp(level) {
   save();
+  // Mark as active in queue so nothing else interrupts
+  _overlayActive = true;
   var heroClass = (state.party && state.party[0]) ? state.party[0].class : 'Mage';
   document.getElementById('lu-level').textContent = level;
-  document.getElementById('lu-rank').textContent  = getTitle(heroClass, level);
+  document.getElementById('lu-rank').textContent  = getPlayerTitle(level);
   document.getElementById('lu-msg').textContent   = LEVEL_MSGS[Math.min(level - 2, LEVEL_MSGS.length - 1)];
   document.getElementById('levelup-overlay').classList.add('show');
 }
 
 function closeLevelUp() {
   document.getElementById('levelup-overlay').classList.remove('show');
-  // Level-up advances the map — progress is earned
-  if (advanceMap()) {
-    render();
+  // Level-up advances the map
+  advanceMap();
+  render();
+  overlayDismissed(); // releases queue
+  // Zone badge and arrival are queued separately with a small gap
+  setTimeout(function() {
     checkZoneBadge();
-    setTimeout(function() { checkArrival(); }, 400);
-  } else {
-    render();
-    checkZoneBadge();
-    setTimeout(function() { checkArrival(); }, 400);
-  }
-  overlayDismissed();
+    setTimeout(function() { checkArrival(); }, 300);
+  }, 350);
 }
 
 // ─────────────────────────
 //  TOAST
 // ─────────────────────────
 var toastTimer;
-function showToast(msg) {
+function showToast(msg, duration) {
   var t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(function() { t.classList.remove('show'); }, 2800);
+  toastTimer = setTimeout(function() { t.classList.remove('show'); }, duration || 3600);
 }
 
 // ─────────────────────────
@@ -4689,12 +6634,124 @@ document.addEventListener('keydown', function(e) {
   var a = document.activeElement;
   if (a && a.id === 'hero-name-input') {
     var btn = document.getElementById('name-next-btn');
-    if (btn && !btn.disabled) goStep('1-race');
+    if (btn && !btn.disabled) goStep('2');
   } else if (a && a.id === 'habit-input') {
     var btn2 = document.getElementById('habit-next-btn');
     if (btn2 && !btn2.disabled) goToClassStep();
   }
 });
+
+// ─────────────────────────
+//  CHECK-IN PARTICLE BURST
+// ─────────────────────────
+function fireParticleBurst(charClass) {
+  var particles = { Warrior: ['⚔️','🔥','💥'], Cleric: ['💚','✨','🌿'], Mage: ['✨','🔮','💫'], Rogue: ['🗡️','💰','⚡'], Scribe: ['✍️','📜','✨'], Ranger: ['🏹','🌲','🦅'], Monk: ['🧘','☁️','🌸'], Alchemist: ['🧪','✨','💎'] };
+  var emojis = particles[charClass] || ['✨','⭐','💫'];
+  var container = document.getElementById('party-cards');
+  if (!container) return;
+  var rect = container.getBoundingClientRect();
+  var cx = rect.left + rect.width / 2;
+  var cy = rect.top + 80;
+  for (var i = 0; i < 8; i++) {
+    var el = document.createElement('div');
+    el.className = 'checkin-particle';
+    var angle = (i / 8) * Math.PI * 2;
+    var dist = 40 + Math.random() * 30;
+    var px = Math.cos(angle) * dist;
+    var py = Math.sin(angle) * dist;
+    el.style.cssText = 'left:' + (cx + px * 0.3) + 'px;top:' + (cy + py * 0.3) + 'px;' +
+      '--px:' + px + 'px;--py:' + py + 'px;';
+    el.textContent = emojis[i % emojis.length];
+    document.body.appendChild(el);
+    setTimeout(function(e) { return function() { e.remove(); }; }(el), 750);
+  }
+}
+
+function toggleLore(charId) {
+  var panel = document.getElementById('lore-' + charId);
+  if (!panel) return;
+  panel.classList.toggle('open');
+}
+
+// ─────────────────────────
+//  CHECK-IN CARD FLASH
+// ─────────────────────────
+function flashCheckinCard() {
+  var container = document.getElementById('party-cards');
+  if (!container) return;
+  setTimeout(function() {
+    var cards = container.querySelectorAll('.char-card.checked-in');
+    if (cards.length) {
+      var target = cards[cards.length - 1];
+      target.classList.add('checkin-flash');
+      setTimeout(function() { target.classList.remove('checkin-flash'); }, 600);
+    }
+  }, 50);
+}
+
+// ─────────────────────────
+//  BROWSER NOTIFICATIONS
+// ─────────────────────────
+function askNotificationPermission() {
+  if (!('Notification' in window) || Notification.permission !== 'default') return;
+  // Delay slightly so welcome toast clears first
+  setTimeout(function() {
+    var box = document.getElementById('encounter-box');
+    box.className = 'overlay-box friendly';
+    document.getElementById('encounter-zone').textContent  = '🔔 Stay on the Road';
+    document.getElementById('encounter-icon').textContent  = '📯';
+    document.getElementById('encounter-title').textContent = 'Daily Reminder';
+    document.getElementById('encounter-desc').textContent  =
+      'The road is easier when you don\'t forget it\'s there. ' +
+      'Allow a daily nudge and your party will never be left waiting.';
+    var choices = document.getElementById('encounter-choices');
+    choices.innerHTML = '';
+    var btnYes = document.createElement('button');
+    btnYes.className = 'overlay-btn primary-choice';
+    btnYes.innerHTML = '📯 Allow daily reminders <span class="overlay-btn-cost">One notification per day, 8am</span>';
+    btnYes.onclick = function() {
+      document.getElementById('encounter-overlay').classList.remove('show');
+      overlayDismissed();
+      Notification.requestPermission().then(function(perm) {
+        if (perm === 'granted') {
+          showToast('📯 Reminder set. The road calls at 8am.');
+          scheduleNotification();
+        }
+      });
+    };
+    var btnNo = document.createElement('button');
+    btnNo.className = 'overlay-btn';
+    btnNo.innerHTML = 'Not now <span class="overlay-btn-cost">You can enable this later</span>';
+    btnNo.onclick = function() {
+      document.getElementById('encounter-overlay').classList.remove('show');
+      overlayDismissed();
+    };
+    choices.appendChild(btnYes);
+    choices.appendChild(btnNo);
+    document.getElementById('encounter-overlay').classList.add('show');
+  }, 2200);
+}
+
+function scheduleNotification() {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  var now = new Date();
+  var next = new Date(now);
+  next.setHours(8, 0, 0, 0);
+  if (next <= now) next.setDate(next.getDate() + 1);
+  var delay = next - now;
+  setTimeout(function() {
+    new Notification('HabitForge — Your party awaits', {
+      body: 'Check in today and keep the streak alive. The Iron Keep isn\'t going to reach itself.',
+      icon: 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚔️</text></svg>'
+    });
+    // Reschedule for tomorrow
+    setTimeout(scheduleNotification, 1000);
+  }, delay);
+}
+
+// ─────────────────────────
+//  DEV TOOLS
+// ─────────────────────────
 
 // (old dev tools body removed)
 </script>
