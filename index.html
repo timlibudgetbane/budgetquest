@@ -3671,26 +3671,23 @@ async function loadCohortTravelers() {
     console.log('[SharedRoad] querying cohort', state.cohortId, 'near pos', myPos);
 
     // Use direct REST fetch to avoid Supabase SDK auth lock contention
-    var params = new URLSearchParams({
-      select: 'user_id,traveler_name,map_position,updated_at',
-      cohort_id: 'eq.' + state.cohortId,
-      user_id: 'neq.' + currentUserId,
-      map_position: 'gte.' + minPos,
-      updated_at: 'gte.' + cutoff.toISOString(),
-      order: 'map_position.desc',
-      limit: '8'
-    });
+    var cutoffStr = cutoff.toISOString();
+    var url = SUPABASE_URL + '/rest/v1/profiles' +
+      '?select=user_id,traveler_name,map_position,updated_at' +
+      '&cohort_id=eq.' + encodeURIComponent(state.cohortId) +
+      '&user_id=neq.' + encodeURIComponent(currentUserId) +
+      '&map_position=gte.' + minPos +
+      '&map_position=lte.' + maxPos +
+      '&updated_at=gte.' + encodeURIComponent(cutoffStr) +
+      '&order=map_position.desc&limit=8';
 
-    var res = await fetch(
-      SUPABASE_URL + '/rest/v1/profiles?' + params.toString(),
-      {
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': 'Bearer ' + SUPABASE_KEY,
-          'Content-Type': 'application/json'
-        }
+    var res = await fetch(url, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Content-Type': 'application/json'
       }
-    );
+    });
 
     if (!res.ok) {
       console.warn('[SharedRoad] fetch error:', res.status, await res.text());
@@ -3699,8 +3696,6 @@ async function loadCohortTravelers() {
     }
 
     var data = await res.json();
-    // Filter maxPos client-side (URLSearchParams can't do two conditions on same column)
-    data = (data || []).filter(function(t) { return (t.map_position || 0) <= maxPos; });
     console.log('[SharedRoad] found', data.length, 'travelers:', data);
     cohortTravelers = data;
     renderMap();
