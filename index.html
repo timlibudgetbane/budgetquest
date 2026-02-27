@@ -2667,6 +2667,8 @@ body::after {
             <button class="dev-btn" onclick="devOrcPatrol()">Orc</button>
             <button class="dev-btn" onclick="devGrimjaw()">Grimjaw</button>
             <button class="dev-btn" onclick="devHostile()">Hostile</button>
+            <button class="dev-btn" onclick="devAdvanceMap()" title="Move to next map position">Map+</button>
+            <button class="dev-btn" onclick="devResetMap()" title="Reset to start of map">Map↺</button>
           </div>
           <div class="gold-float" id="gold-float"></div>
 
@@ -5296,6 +5298,29 @@ function devRestart() {
   if (fill) fill.style.width = '5%';
 
   save();
+}
+
+function devAdvanceMap() {
+  var pos = state.mapPosition || 0;
+  if (pos >= 10) {
+    showToast('Already at the end of the map!');
+    return;
+  }
+  state.lastMapPosition = pos;
+  state.mapPosition = pos + 1;
+  save();
+  render();
+  showToast('Map advanced to position ' + state.mapPosition);
+}
+
+function devResetMap() {
+  state.mapPosition = 0;
+  state.lastMapPosition = -1;
+  state.badges = [];
+  state.seenArrivals = [];
+  save();
+  render();
+  showToast('Map reset to start.');
 }
 
 function devSimMiss() {
