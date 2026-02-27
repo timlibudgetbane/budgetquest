@@ -74,6 +74,11 @@ body {
   box-shadow: 0 0 5px rgba(196,162,74,0.4);
   flex-shrink: 0;
 }
+.map-traveler-avatar {
+  font-size: 16px;
+  line-height: 1;
+  filter: drop-shadow(0 0 4px rgba(196,162,74,0.6));
+}
 .map-traveler-name {
   font-family: 'Cinzel', serif;
   font-size: 8px;
@@ -2667,8 +2672,6 @@ body::after {
             <button class="dev-btn" onclick="devOrcPatrol()">Orc</button>
             <button class="dev-btn" onclick="devGrimjaw()">Grimjaw</button>
             <button class="dev-btn" onclick="devHostile()">Hostile</button>
-            <button class="dev-btn" onclick="devAdvanceMap()" title="Move to next map position">Map+</button>
-            <button class="dev-btn" onclick="devResetMap()" title="Reset to start of map">Map↺</button>
           </div>
           <div class="gold-float" id="gold-float"></div>
 
@@ -3551,6 +3554,7 @@ function save() {
         updated_at: new Date().toISOString(),
         map_position: state.mapPosition || 0,
         traveler_name: state.name || 'Traveler',
+        traveler_avatar: state.avatar || '🧔',
         cohort_id: getCurrentCohortId()
       }, { onConflict: 'user_id' })
       .then(function(res) {
@@ -3630,11 +3634,10 @@ function showLoginError(msg) {
 
 async function signOut() {
   isSigningOut = true;
-  _appInitDone = false; // allow re-init after next login
-  try { await sb.auth.signOut(); } catch(e) { console.warn('Sign out error:', e); }
+  _appInitDone = false;
   currentUserId = null;
   localStorage.removeItem(SAVE_KEY);
-  // Reset state
+  // Reset state immediately — don't await SDK which may be lock-blocked
   state.name = ''; state.avatar = ''; state.xp = 0;
   state.mapPosition = 0; state.badges = []; state.weekLogDays = [];
   state.weekStart = ''; state.roadBonusesThisMonth = 0;
@@ -3642,12 +3645,15 @@ async function signOut() {
   state.seenStoryEncounters = []; state.seenArrivals = []; state.lastMapPosition = -1;
   state.encounterLogCount = 0; state.lastEncounterAtLog = 0;
   state.bestStreak = 0; state.ironVault = 0; state.party = []; state.activeSlots = 0;
-  // Show login
+  cohortTravelers = [];
+  // Show login immediately
   document.getElementById('header-auth').style.display = 'none';
   document.getElementById('main').style.display = 'none';
   document.getElementById('onboarding').style.display = 'none';
   document.getElementById('login-screen').style.display = 'block';
   isSigningOut = false;
+  // Fire-and-forget — don't block UI on this
+  try { sb.auth.signOut(); } catch(e) { console.warn('Sign out error:', e); }
 }
 
 // ─────────────────────────
@@ -3683,7 +3689,7 @@ async function loadCohortTravelers() {
     // Use direct REST fetch to avoid Supabase SDK auth lock contention
     var cutoffStr = cutoff.toISOString();
     var url = SUPABASE_URL + '/rest/v1/profiles' +
-      '?select=user_id,traveler_name,map_position,updated_at' +
+      '?select=user_id,traveler_name,traveler_avatar,map_position,updated_at' +
       '&cohort_id=eq.' + encodeURIComponent(cohortId) +
       '&user_id=neq.' + encodeURIComponent(currentUserId) +
       '&updated_at=gte.' + encodeURIComponent(cutoffStr) +
@@ -5300,29 +5306,6 @@ function devRestart() {
   save();
 }
 
-function devAdvanceMap() {
-  var pos = state.mapPosition || 0;
-  if (pos >= 10) {
-    showToast('Already at the end of the map!');
-    return;
-  }
-  state.lastMapPosition = pos;
-  state.mapPosition = pos + 1;
-  save();
-  render();
-  showToast('Map advanced to position ' + state.mapPosition);
-}
-
-function devResetMap() {
-  state.mapPosition = 0;
-  state.lastMapPosition = -1;
-  state.badges = [];
-  state.seenArrivals = [];
-  save();
-  render();
-  showToast('Map reset to start.');
-}
-
 function devSimMiss() {
   // Simulate a missed day on first character
   if (state.party && state.party.length > 0) {
@@ -6521,12 +6504,13 @@ function renderMap() {
       travelersHere.forEach(function(t) {
         var entry = document.createElement('div');
         entry.className = 'map-traveler-entry';
-        var dot = document.createElement('div');
-        dot.className = 'map-traveler-dot';
+        var avatarEl = document.createElement('div');
+        avatarEl.className = 'map-traveler-avatar';
+        avatarEl.textContent = t.traveler_avatar || '🧔';
         var nameEl = document.createElement('div');
         nameEl.className = 'map-traveler-name';
         nameEl.textContent = (t.traveler_name || 'Traveler').split(' ')[0];
-        entry.appendChild(dot);
+        entry.appendChild(avatarEl);
         entry.appendChild(nameEl);
         travelerRow.appendChild(entry);
       });
