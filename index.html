@@ -3549,7 +3549,7 @@ function save() {
         updated_at: new Date().toISOString(),
         map_position: state.mapPosition || 0,
         traveler_name: state.name || 'Traveler',
-        cohort_id: state.cohortId || null
+        cohort_id: getCurrentCohortId()
       }, { onConflict: 'user_id' })
       .then(function(res) {
         if (res.error) console.warn('Supabase save error:', res.error.message);
@@ -3656,30 +3656,36 @@ async function signOut() {
 // Shape: [{ traveler_name, map_position, last_active, user_id }]
 var cohortTravelers = [];
 
+// Always compute the current cohort window dynamically so all active users
+// land in the same bucket regardless of when they originally signed up.
+function getCurrentCohortId() {
+  var now = new Date();
+  var startOfYear = new Date(now.getFullYear(), 0, 1);
+  var weekNum = Math.ceil(((now - startOfYear) / 86400000 + startOfYear.getDay() + 1) / 7);
+  var cohortPeriod = Math.floor(weekNum / 2);
+  return now.getFullYear() + '-C' + String(cohortPeriod).padStart(2, '0');
+}
+
 async function loadCohortTravelers() {
-  if (!currentUserId || !state.cohortId) {
-    console.log('[SharedRoad] skipped — no userId or cohortId', { currentUserId, cohortId: state.cohortId });
+  if (!currentUserId) {
+    console.log('[SharedRoad] skipped — no userId');
     return;
   }
   try {
-    var myPos = state.mapPosition || 0;
-    var minPos = Math.max(0, myPos - 3);
-    var maxPos = Math.min(10, myPos + 3);
+    var cohortId = getCurrentCohortId();
     var cutoff = new Date();
     cutoff.setDate(cutoff.getDate() - 14);
 
-    console.log('[SharedRoad] querying cohort', state.cohortId, 'near pos', myPos);
+    console.log('[SharedRoad] querying cohort', cohortId);
 
     // Use direct REST fetch to avoid Supabase SDK auth lock contention
     var cutoffStr = cutoff.toISOString();
     var url = SUPABASE_URL + '/rest/v1/profiles' +
       '?select=user_id,traveler_name,map_position,updated_at' +
-      '&cohort_id=eq.' + encodeURIComponent(state.cohortId) +
+      '&cohort_id=eq.' + encodeURIComponent(cohortId) +
       '&user_id=neq.' + encodeURIComponent(currentUserId) +
-      '&map_position=gte.' + minPos +
-      '&map_position=lte.' + maxPos +
       '&updated_at=gte.' + encodeURIComponent(cutoffStr) +
-      '&order=map_position.desc&limit=8';
+      '&order=map_position.asc&limit=20';
 
     var res = await fetch(url, {
       headers: {
@@ -6482,7 +6488,7 @@ function renderMap() {
     // ── COHORT TRAVELER MARKERS ──────────────────────────────────────
     // Show other travelers at this node position
     var travelersHere = cohortTravelers.filter(function(t) {
-      return (t.map_position || 0) === layout.id;
+      return Number(t.map_position || 0) === layout.id;
     });
     if (travelersHere.length > 0) {
       var travelerRow = document.createElement('div');
