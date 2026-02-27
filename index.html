@@ -56,38 +56,43 @@ body {
 /* ── Cohort Traveler Markers ── */
 .map-traveler-row {
   position: absolute;
-  top: -18px;
+  top: -22px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  gap: 4px;
   pointer-events: none;
+  z-index: 10;
 }
 .map-traveler-dot {
-  width: 8px;
-  height: 8px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
   background: var(--gold-dim);
-  border: 1px solid rgba(196,162,74,0.5);
-  box-shadow: 0 0 4px rgba(196,162,74,0.3);
-  position: absolute;
-  top: 0;
+  border: 1px solid rgba(196,162,74,0.6);
+  box-shadow: 0 0 5px rgba(196,162,74,0.4);
+  flex-shrink: 0;
 }
 .map-traveler-name {
-  position: absolute;
-  top: 10px;
   font-family: 'Cinzel', serif;
   font-size: 8px;
   color: var(--gold-dim);
   white-space: nowrap;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+  line-height: 1;
+  margin-top: 1px;
 }
-  content: '';
-  position: fixed; inset: 0;
-  pointer-events: none; z-index: 9999;
-  opacity: 0.018;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+.map-traveler-entry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+/* Grain */
+body::after {
 }
 
 /* ══════════════════════════════════════════════
@@ -3652,13 +3657,15 @@ async function signOut() {
 var cohortTravelers = [];
 
 async function loadCohortTravelers() {
-  if (!currentUserId || !state.cohortId) return;
+  if (!currentUserId || !state.cohortId) {
+    console.log('[SharedRoad] skipped — no userId or cohortId', { currentUserId, cohortId: state.cohortId });
+    return;
+  }
   try {
     var myPos = state.mapPosition || 0;
-    // Fetch cohort members within 3 positions in either direction
-    // Exclude self, only include players active in last 14 days
     var cutoff = new Date();
     cutoff.setDate(cutoff.getDate() - 14);
+    console.log('[SharedRoad] querying cohort', state.cohortId, 'near pos', myPos);
     var res = await sb.from('profiles')
       .select('user_id, traveler_name, map_position, updated_at')
       .eq('cohort_id', state.cohortId)
@@ -3670,19 +3677,16 @@ async function loadCohortTravelers() {
       .limit(8);
 
     if (res.error) {
-      // Columns may not exist yet — fail silently, multiplayer just won't show
-      if (res.error.code !== 'PGRST204') {
-        console.warn('Cohort query error:', res.error.message);
-      }
+      console.warn('[SharedRoad] query error:', res.error.message, res.error.code);
       cohortTravelers = [];
       return;
     }
+    console.log('[SharedRoad] found', (res.data || []).length, 'travelers:', res.data);
     cohortTravelers = res.data || [];
-    // Re-render map with traveler data now loaded
     renderMap();
   } catch(e) {
     cohortTravelers = [];
-    console.warn('loadCohortTravelers failed:', e);
+    console.warn('[SharedRoad] loadCohortTravelers failed:', e);
   }
 }
 
@@ -6468,18 +6472,17 @@ function renderMap() {
     if (travelersHere.length > 0) {
       var travelerRow = document.createElement('div');
       travelerRow.className = 'map-traveler-row';
-      travelersHere.forEach(function(t, ti) {
+      travelersHere.forEach(function(t) {
+        var entry = document.createElement('div');
+        entry.className = 'map-traveler-entry';
         var dot = document.createElement('div');
         dot.className = 'map-traveler-dot';
-        dot.title = t.traveler_name || 'Traveler';
-        // Stagger dots so they don't all pile at x=0
-        dot.style.marginLeft = (ti * 18) + 'px';
-        travelerRow.appendChild(dot);
-        var name = document.createElement('div');
-        name.className = 'map-traveler-name';
-        name.textContent = (t.traveler_name || 'Traveler').split(' ')[0]; // first name only
-        name.style.marginLeft = (ti * 18) + 'px';
-        travelerRow.appendChild(name);
+        var nameEl = document.createElement('div');
+        nameEl.className = 'map-traveler-name';
+        nameEl.textContent = (t.traveler_name || 'Traveler').split(' ')[0];
+        entry.appendChild(dot);
+        entry.appendChild(nameEl);
+        travelerRow.appendChild(entry);
       });
       wrap.appendChild(travelerRow);
     }
