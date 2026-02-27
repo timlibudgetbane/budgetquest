@@ -53,8 +53,36 @@ body {
   min-height: 100vh;
 }
 
-/* Grain */
-body::after {
+/* ── Cohort Traveler Markers ── */
+.map-traveler-row {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+.map-traveler-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold-dim);
+  border: 1px solid rgba(196,162,74,0.5);
+  box-shadow: 0 0 4px rgba(196,162,74,0.3);
+  position: absolute;
+  top: 0;
+}
+.map-traveler-name {
+  position: absolute;
+  top: 10px;
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  color: var(--gold-dim);
+  white-space: nowrap;
+  letter-spacing: 0.05em;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+}
   content: '';
   position: fixed; inset: 0;
   pointer-events: none; z-index: 9999;
@@ -2521,15 +2549,18 @@ body::after {
       <!-- Step begin: Begin -->
       <div class="ob-step" id="step-begin">
         <div class="ob-icon">🏰</div>
-        <div class="ob-title">The Road Awaits</div>
-        <div class="ob-sub">Your party is assembled. Set out from Hearthstone Village toward the Iron Keep.</div>
+        <div class="ob-title">The Iron Keep Awaits</div>
+        <div class="ob-sub">Your party is assembled. The road runs from Hearthstone Village to the Iron Keep — and its gates open only for those whose records speak for themselves.</div>
         <div class="begin-party-summary" id="begin-party-summary"><!-- populated by JS --></div>
-        <div style="margin-top:16px;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:3px;font-size:14px;color:var(--text-dim);line-height:1.7;">
-          <span style="font-family:'Cinzel',serif;font-size:12px;color:var(--text-dark);text-transform:uppercase;letter-spacing:0.14em;">How it works</span><br>
-          ✦ Check in daily → earn XP &amp; build your streak 🔥<br>
-          ❤️ Champions have 5 HP — miss days and they weaken<br>
+        <div style="margin-top:16px;padding:14px 16px;background:var(--surface2);border:1px solid var(--border-gold);border-radius:3px;font-size:15px;color:var(--text-mid);line-height:1.8;font-style:italic;">
+          "The Keep's quartermaster has turned away a thousand travelers with good intentions. What he reads is the log — not the plan."
+        </div>
+        <div style="margin-top:12px;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:3px;font-size:14px;color:var(--text-dim);line-height:1.7;">
+          <span style="font-family:'Cinzel',serif;font-size:12px;color:var(--text-dark);text-transform:uppercase;letter-spacing:0.14em;">How the road works</span><br>
+          ✦ Check in daily → earn XP &amp; advance toward the Keep<br>
+          ❤️ Champions have 5 HP — missed days cost them<br>
           💰 Earn Road Gold from encounters — spend it to survive hostile ones<br>
-          🗺️ Level up → advance the map toward the Iron Keep
+          🔒 The Iron Keep Registry records every traveler who arrives
         </div>
         <button class="btn-primary" style="margin-top:20px;" onclick="beginJourney()">Enter the Road ⚔</button>
         <div class="ob-nav" style="margin-top:10px;">
@@ -2617,7 +2648,7 @@ body::after {
               <div class="badge-connector"></div>
               <div class="badge-rail-item" id="badge-zone3"><div class="badge-pip locked">🌿</div><div class="badge-rail-label">Thornwood</div></div>
               <div class="badge-connector"></div>
-              <div class="badge-rail-item" id="badge-zone4"><div class="badge-pip locked">🔒</div><div class="badge-rail-label">Iron Keep</div></div>
+              <div class="badge-rail-item" id="badge-zone4"><div class="badge-pip locked">🔒</div><div class="badge-rail-label">The Iron Keep</div></div>
             </div>
           </div>
 
@@ -2709,9 +2740,9 @@ body::after {
 <!-- Broken / 0-Hearts Overlay -->
 <div class="overlay" id="broken-overlay">
   <div class="overlay-box broken" style="max-width:380px;">
-    <div class="broken-icon">💀</div>
-    <div class="broken-title">Fallen</div>
-    <div class="broken-msg">Your champion has fallen — HP at zero. Each check-in restores 1 HP. Keep showing up and they recover, one day at a time.</div>
+    <div class="broken-icon">🔥</div>
+    <div class="broken-title">Camped</div>
+    <div class="broken-msg">Your champion is resting. Every veteran has camped here. Each check-in restores 1 HP — keep showing up and they're back on the road, one day at a time.</div>
     <div class="broken-gold" id="broken-gold-display">0 🪙</div>
     <div class="broken-cost">Road Gold balance</div>
     <div id="broken-choices"></div>
@@ -3171,9 +3202,9 @@ var MAP_WAYPOINTS = [
     zoneComplete: 'Thornwood cleared. Turns out it\'s just a forest if you keep showing up. You come out the other side.' },
   // Zone 4 — The Iron Keep (levels 10+)
   { id: 9,  icon: '🏰', name: 'Iron Keep\nGates',       zone: 4, zoneName: 'The Iron Keep Approach',
-    arrival: 'You\'ve reached the Iron Keep Gates. The gate captain has seen ten thousand travelers. She reads yours in three seconds. A disciplined one — habit clean, party intact. You\'re waved through without a word.' },
+    arrival: 'The gate captain has seen ten thousand travelers. She reads yours in three seconds — habit clean, record intact, party still standing. She steps aside without a word. No fanfare. The gates were always going to open for someone like you.' },
   { id: 10, icon: '⚔️', name: 'The Iron\nKeep',         zone: 4, zoneName: 'The Iron Keep Approach',
-    arrival: 'You\'ve arrived at the Iron Keep. The full road walked. The quartermaster stamps your record without asking to see it twice. When the new moon comes, the road resets. Your Road Gold carries forward. Your legend does too.' },
+    arrival: 'You\'ve arrived. The full road walked. The quartermaster stamps your record without asking to see it twice — he already knows what it says. When the new moon comes, the road resets. Your Road Gold carries forward. Your name stays in the Register. Your legend does too.' },
   { id: 'z4', icon: '🔒', name: 'Zone Badge',          zone: 'badge4', badge: 'zone4', zoneName: 'The Iron Keep Approach',
     zoneComplete: 'Iron Keep reached. Most people fold somewhere in the Thornwood. Your habit, your streak, your party. That\'s what got you here.' },
 ];
@@ -3507,8 +3538,14 @@ function save() {
   localStorage.setItem(SAVE_KEY, JSON.stringify(state));
   if (currentUserId) {
     sb.from('profiles')
-      .upsert({ user_id: currentUserId, save_data: state, updated_at: new Date().toISOString() },
-               { onConflict: 'user_id' })
+      .upsert({
+        user_id: currentUserId,
+        save_data: state,
+        updated_at: new Date().toISOString(),
+        map_position: state.mapPosition || 0,
+        traveler_name: state.name || 'Traveler',
+        cohort_id: state.cohortId || null
+      }, { onConflict: 'user_id' })
       .then(function(res) {
         if (res.error) console.warn('Supabase save error:', res.error.message);
       });
@@ -3522,7 +3559,7 @@ function load() {
     var parsed = JSON.parse(raw);
     if (typeof parsed !== 'object' || !parsed) return;
     if (!Array.isArray(parsed.log)) parsed.log = [];
-    ['name','avatar','xp','mapPosition','badges','weekLogDays','weekStart','roadBonusesThisMonth','lastEncounterLog','pendingEncounter','seenStoryEncounters','seenArrivals','lastMapPosition','encounterLogCount','lastEncounterAtLog','bestStreak','ironVault','firstRun','party','activeSlots'].forEach(function(k) {
+    ['name','avatar','xp','mapPosition','badges','weekLogDays','weekStart','roadBonusesThisMonth','lastEncounterLog','pendingEncounter','seenStoryEncounters','seenArrivals','lastMapPosition','encounterLogCount','lastEncounterAtLog','bestStreak','ironVault','firstRun','party','activeSlots','cohortId'].forEach(function(k) {
       if (parsed[k] !== undefined) state[k] = parsed[k];
     });
   } catch(e) { console.warn('Load failed:', e); }
@@ -3536,7 +3573,7 @@ async function loadFromSupabase() {
     var remote = res.data.save_data;
     if (typeof remote !== 'object') return;
     if (!Array.isArray(remote.log)) remote.log = [];
-    ['name','avatar','xp','mapPosition','badges','weekLogDays','weekStart','roadBonusesThisMonth','lastEncounterLog','pendingEncounter','seenStoryEncounters','seenArrivals','lastMapPosition','encounterLogCount','lastEncounterAtLog','bestStreak','ironVault','firstRun','party','activeSlots'].forEach(function(k) {
+    ['name','avatar','xp','mapPosition','badges','weekLogDays','weekStart','roadBonusesThisMonth','lastEncounterLog','pendingEncounter','seenStoryEncounters','seenArrivals','lastMapPosition','encounterLogCount','lastEncounterAtLog','bestStreak','ironVault','firstRun','party','activeSlots','cohortId'].forEach(function(k) {
       if (remote[k] !== undefined) state[k] = remote[k];
     });
     localStorage.setItem(SAVE_KEY, JSON.stringify(state));
@@ -3607,6 +3644,49 @@ async function signOut() {
 }
 
 // ─────────────────────────
+//  SHARED ROAD — COHORT TRAVELERS
+// ─────────────────────────
+
+// In-memory store of other travelers in the same cohort
+// Shape: [{ traveler_name, map_position, last_active, user_id }]
+var cohortTravelers = [];
+
+async function loadCohortTravelers() {
+  if (!currentUserId || !state.cohortId) return;
+  try {
+    var myPos = state.mapPosition || 0;
+    // Fetch cohort members within 3 positions in either direction
+    // Exclude self, only include players active in last 14 days
+    var cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - 14);
+    var res = await sb.from('profiles')
+      .select('user_id, traveler_name, map_position, updated_at')
+      .eq('cohort_id', state.cohortId)
+      .neq('user_id', currentUserId)
+      .gte('map_position', Math.max(0, myPos - 3))
+      .lte('map_position', Math.min(10, myPos + 3))
+      .gte('updated_at', cutoff.toISOString())
+      .order('map_position', { ascending: false })
+      .limit(8);
+
+    if (res.error) {
+      // Columns may not exist yet — fail silently, multiplayer just won't show
+      if (res.error.code !== 'PGRST204') {
+        console.warn('Cohort query error:', res.error.message);
+      }
+      cohortTravelers = [];
+      return;
+    }
+    cohortTravelers = res.data || [];
+    // Re-render map with traveler data now loaded
+    renderMap();
+  } catch(e) {
+    cohortTravelers = [];
+    console.warn('loadCohortTravelers failed:', e);
+  }
+}
+
+// ─────────────────────────
 //  INIT
 // ─────────────────────────
 var _appInitDone = false; // guard: only run full init once per page load
@@ -3644,22 +3724,24 @@ async function initApp() {
       if (state.ironVault === undefined)           state.ironVault = 0;
       if (!state.party)                            state.party = [];
       if (state.activeSlots === undefined)         state.activeSlots = 0;
+
       // Check for missed check-ins on open (HP decay)
       checkMissedCheckIns();
-      // NOTE: defensive — ensure each party member has required fields
-
       checkStreak();
 
       if (state.avatar && state.name && state.party && state.party.length > 0) {
         document.getElementById('onboarding').style.display = 'none';
         document.getElementById('main').style.display = 'block';
         render();
+        // Load cohort travelers after render — non-blocking, re-renders map when done
+        loadCohortTravelers();
       } else {
         document.getElementById('onboarding').style.display = 'block';
         document.getElementById('main').style.display = 'none';
       }
     } else {
       currentUserId = null;
+      cohortTravelers = [];
       document.getElementById('header-auth').style.display = 'none';
       document.getElementById('login-screen').style.display = 'block';
       document.getElementById('main').style.display = 'none';
@@ -4172,6 +4254,14 @@ function beginJourney() {
   if (!obCompanions.length) { goStep('habit'); return; }
   if (!obAvatar) obAvatar = '🧔';
 
+  // Assign cohort based on the current two-week window
+  // Format: YYYY-WW where WW is the two-week period number (week / 2)
+  var now = new Date();
+  var startOfYear = new Date(now.getFullYear(), 0, 1);
+  var weekNum = Math.ceil(((now - startOfYear) / 86400000 + startOfYear.getDay() + 1) / 7);
+  var cohortPeriod = Math.floor(weekNum / 2);
+  var cohortId = now.getFullYear() + '-C' + String(cohortPeriod).padStart(2, '0');
+
   state.name   = name;
   state.avatar = obAvatar;
   state.xp     = 0;
@@ -4190,6 +4280,7 @@ function beginJourney() {
   state.bestStreak = 0;
   state.party = [];
   state.activeSlots = 0;
+  state.cohortId = cohortId;
 
   obCompanions.forEach(function(c) {
     var char = createCharacter(c.habit, c.class, c.cadence, c.weekTarget, c.useAlt);
@@ -5004,7 +5095,7 @@ function renderParty() {
     if (isCollapsed) {
       var collapsedBar = document.createElement('div');
       collapsedBar.className = 'char-card-collapsed-bar';
-      collapsedBar.innerHTML = '<div class="collapsed-msg">💀 ' + esc(def.personaName || def.name) + ' has fallen. Tap ↺ to begin recovery — XP reduced for 3 days.</div>';
+      collapsedBar.innerHTML = '<div class="collapsed-msg">🔥 ' + esc(def.personaName || def.name) + ' is camped. Tap ↺ to begin recovery — every veteran has been here.</div>';
       card.appendChild(collapsedBar);
     }
 
@@ -5622,9 +5713,9 @@ function showBroken() {
 
   if (gold >= REVIVE_COST) {
     var btnA = document.createElement('button');
-    btnA.className = 'overlay-btn hostile-choice';
+    btnA.className = 'overlay-btn primary-choice';
     btnA.style.width = '100%'; btnA.style.textAlign = 'center';
-    btnA.innerHTML = '🪙 Spend ' + REVIVE_COST + ' 💰 to revive<span class="overlay-btn-cost">Hearts restored to full — road continues</span>';
+    btnA.innerHTML = '🪙 Spend ' + REVIVE_COST + ' 💰 — rise and return<span class="overlay-btn-cost">Hearts restored to full — back on the road</span>';
     btnA.onclick = function() { resolveRevive('gold'); };
     choices.appendChild(btnA);
   }
@@ -5632,7 +5723,7 @@ function showBroken() {
   var btnB = document.createElement('button');
   btnB.className = 'overlay-btn';
   btnB.style.width = '100%'; btnB.style.textAlign = 'center';
-  btnB.innerHTML = '💀 Carry on broke<span class="overlay-btn-cost">Lose ' + XP_PENALTY + ' XP — hearts restored, Road Gold untouched</span>';
+  btnB.innerHTML = '🔥 Push on — recovery XP mode<span class="overlay-btn-cost">Lose ' + XP_PENALTY + ' XP — hearts restored, Road Gold untouched</span>';
   btnB.onclick = function() { resolveRevive('xp'); };
   choices.appendChild(btnB);
 
@@ -5645,11 +5736,11 @@ function resolveRevive(method) {
   state.hearts = 3;
   if (method === 'gold') {
     state.ironVault = Math.max(0, (state.ironVault || 0) - REVIVE_COST);
-    showToast('💰 ' + REVIVE_COST + ' gold spent — back on your feet.');
+    showToast('💰 ' + REVIVE_COST + ' gold spent — back on the road.');
     fireGoldFloat('-' + REVIVE_COST + ' 💰');
   } else {
     state.xp = Math.max(0, (state.xp || 0) - XP_PENALTY);
-    showToast('💀 Carried on broke — ' + XP_PENALTY + ' XP lost. Hearts restored.');
+    showToast('🔥 Recovery mode — ' + XP_PENALTY + ' XP lost. Hearts restored. The road remembers you.');
   }
   save();
   render();
@@ -5919,7 +6010,7 @@ function checkZoneBadge() {
   }
   if (pos >= 10 && badges.indexOf('zone4') === -1) {
     badges.push('zone4'); state.badges = badges; save();
-    queueOverlay(function() { showZoneComplete('🔒', 'Keeper of the Road', 'You have reached the Iron Keep. The road ahead is longer and wider than any map shows. You are ready.'); });
+    queueOverlay(function() { showZoneComplete('🔒', 'Keeper of the Road', 'The Iron Keep. You\'re here. The gates open before you ask — the record speaks first. The quartermaster marks your name without looking up. "Another one," he says. That\'s all. It\'s enough.'); });
   }
 }
 
@@ -6368,6 +6459,31 @@ function renderMap() {
     }
 
     wrap.appendChild(label);
+
+    // ── COHORT TRAVELER MARKERS ──────────────────────────────────────
+    // Show other travelers at this node position
+    var travelersHere = cohortTravelers.filter(function(t) {
+      return (t.map_position || 0) === layout.id;
+    });
+    if (travelersHere.length > 0) {
+      var travelerRow = document.createElement('div');
+      travelerRow.className = 'map-traveler-row';
+      travelersHere.forEach(function(t, ti) {
+        var dot = document.createElement('div');
+        dot.className = 'map-traveler-dot';
+        dot.title = t.traveler_name || 'Traveler';
+        // Stagger dots so they don't all pile at x=0
+        dot.style.marginLeft = (ti * 18) + 'px';
+        travelerRow.appendChild(dot);
+        var name = document.createElement('div');
+        name.className = 'map-traveler-name';
+        name.textContent = (t.traveler_name || 'Traveler').split(' ')[0]; // first name only
+        name.style.marginLeft = (ti * 18) + 'px';
+        travelerRow.appendChild(name);
+      });
+      wrap.appendChild(travelerRow);
+    }
+
     inner.appendChild(wrap);
   });
 
@@ -6741,7 +6857,7 @@ function scheduleNotification() {
   var delay = next - now;
   setTimeout(function() {
     new Notification('HabitForge — Your party awaits', {
-      body: 'Check in today and keep the streak alive. The Iron Keep isn\'t going to reach itself.',
+      body: 'The road is moving. Check in today — the Iron Keep doesn\'t get closer on its own.',
       icon: 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚔️</text></svg>'
     });
     // Reschedule for tomorrow
