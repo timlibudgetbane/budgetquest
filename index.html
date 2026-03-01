@@ -88,6 +88,7 @@ html,body {
 .friend-info { flex:1; min-width:0; }
 .friend-name { font-family:'Cinzel',serif; font-size:13px; color:var(--text); }
 .friend-meta { font-size:12px; color:var(--text-dim); margin-top:2px; }
+.friend-rank { font-family:'Cinzel',serif; font-size:11px; color:var(--text-dark); min-width:16px; }
 .friend-streak { font-family:'Cinzel',serif; font-size:12px; color:var(--gold-dim); white-space:nowrap; }
 .friend-pill { font-size:10px; padding:2px 7px; border-radius:10px; font-family:'Cinzel',serif; letter-spacing:.06em; margin-left:4px; }
 .friend-pill.on-road { background:rgba(61,158,110,.12); color:var(--on-road); border:1px solid rgba(61,158,110,.25); }
@@ -1396,12 +1397,12 @@ var RITUAL_TEASERS = [
   'The road north is quieter than it should be.',
   "Malachar's people are moving. So are you.",
   'The black tower mark keeps appearing. Someone is watching.',
-  'Aldric said the road remembers. You're starting to believe him.',
+  "Aldric said the road remembers. You're starting to believe him.",
   'Six days. The council meets. You need to move.',
   'Sera is still out there. Keep moving.',
-  'The Iron Keep is closer than it's ever been.',
+  "The Iron Keep is closer than it's ever been.",
   'Every day you show up is a day his plan falls further behind.',
-  'The road doesn't care about intentions. Only what gets done.',
+  "The road doesn't care about intentions. Only what gets done.",
   'Tomorrow the road continues. So do you.',
 ];
 
@@ -2342,7 +2343,7 @@ function renderFriends() {
       var row = document.createElement('div');
       row.className = 'friend-row';
       row.innerHTML =
-        '<div class="friend-rank" style="font-family:'Cinzel',serif;font-size:11px;color:var(--text-dark);min-width:16px;">' + (idx+1) + '</div>' +
+        '<div class="friend-rank">' + (idx+1) + '</div>' +
         '<div class="friend-avatar">' + raceIcon + '</div>' +
         '<div class="friend-info">' +
           '<div class="friend-name">' + esc(f.username) + '</div>' +
