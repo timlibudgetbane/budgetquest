@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>HabitForge</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -37,6 +38,83 @@ html,body {
   font-family:'Crimson Text',serif; font-size:18px; line-height:1.5;
   overflow-x:hidden;
 }
+
+
+/* ══ AUTH SCREEN ══ */
+#screen-auth {
+  align-items:center; justify-content:center;
+  min-height:100vh; padding:48px 24px;
+  background:radial-gradient(ellipse at 50% 0%, rgba(200,168,75,.07) 0%, transparent 60%);
+}
+.auth-wrap { width:100%; max-width:380px; }
+.auth-logo { font-family:'Cinzel',serif; font-size:22px; color:var(--gold); letter-spacing:.2em; text-align:center; margin-bottom:6px; }
+.auth-tagline { font-size:15px; color:var(--text-dim); font-style:italic; text-align:center; margin-bottom:40px; }
+.auth-tabs { display:flex; border-bottom:1px solid var(--border-mid); margin-bottom:28px; }
+.auth-tab {
+  flex:1; padding:10px; text-align:center; font-family:'Cinzel',serif;
+  font-size:11px; letter-spacing:.12em; color:var(--text-dark); cursor:pointer;
+  border-bottom:2px solid transparent; transition:all .2s; text-transform:uppercase;
+}
+.auth-tab.active { color:var(--gold); border-bottom-color:var(--gold); }
+.auth-form { display:none; }
+.auth-form.active { display:block; }
+.auth-field-wrap { margin-bottom:16px; }
+.auth-label { font-family:'Cinzel',serif; font-size:10px; color:var(--text-dark); letter-spacing:.16em; text-transform:uppercase; margin-bottom:6px; display:block; }
+.auth-error { font-size:13px; color:var(--red); margin-top:8px; min-height:18px; font-style:italic; }
+.auth-btn {
+  width:100%; padding:14px; background:rgba(200,168,75,.08);
+  border:1px solid var(--border-gold); border-radius:2px;
+  font-family:'Cinzel',serif; font-size:13px; color:var(--gold);
+  letter-spacing:.1em; cursor:pointer; transition:all .25s; margin-top:8px;
+}
+.auth-btn:hover { background:rgba(200,168,75,.15); }
+.auth-btn:disabled { opacity:.4; cursor:not-allowed; }
+.auth-divider { text-align:center; color:var(--text-dark); font-size:12px; margin:20px 0; }
+
+/* ══ FRIENDS PANEL ══ */
+.friends-wrap { margin:16px 18px 0; background:var(--surface); border:1px solid var(--border); border-radius:4px; overflow:hidden; }
+.friends-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 14px; cursor:pointer;
+}
+.friends-title { font-family:'Cinzel',serif; font-size:11px; color:var(--gold-dim); letter-spacing:.14em; text-transform:uppercase; }
+.friends-body { border-top:1px solid var(--border); }
+.friend-row {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 14px; border-bottom:1px solid var(--border);
+}
+.friend-row:last-child { border-bottom:none; }
+.friend-avatar { font-size:20px; }
+.friend-info { flex:1; min-width:0; }
+.friend-name { font-family:'Cinzel',serif; font-size:13px; color:var(--text); }
+.friend-meta { font-size:12px; color:var(--text-dim); margin-top:2px; }
+.friend-streak { font-family:'Cinzel',serif; font-size:12px; color:var(--gold-dim); white-space:nowrap; }
+.friend-pill { font-size:10px; padding:2px 7px; border-radius:10px; font-family:'Cinzel',serif; letter-spacing:.06em; margin-left:4px; }
+.friend-pill.on-road { background:rgba(61,158,110,.12); color:var(--on-road); border:1px solid rgba(61,158,110,.25); }
+.friend-pill.footsore { background:rgba(200,90,40,.12); color:var(--footsore); border:1px solid rgba(200,90,40,.25); }
+.friend-pill.gone { background:rgba(100,60,60,.15); color:#886666; border:1px solid rgba(100,60,60,.25); }
+.friends-add-wrap { padding:12px 14px; display:flex; gap:8px; }
+.friends-add-input { flex:1; background:var(--surface2); border:1px solid var(--border-mid); border-radius:2px; color:var(--text); font-family:'Crimson Text',serif; font-size:16px; padding:8px 12px; outline:none; }
+.friends-add-input:focus { border-color:var(--border-gold); }
+.friends-add-btn { padding:8px 14px; background:transparent; border:1px solid var(--border-gold); border-radius:2px; color:var(--gold-dim); font-family:'Cinzel',serif; font-size:11px; letter-spacing:.08em; cursor:pointer; white-space:nowrap; transition:all .2s; }
+.friends-add-btn:hover { color:var(--gold); background:rgba(200,168,75,.06); }
+.friends-empty { padding:16px 14px; font-size:14px; color:var(--text-dark); font-style:italic; text-align:center; }
+.friends-req-row { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-bottom:1px solid var(--border); background:rgba(200,168,75,.03); }
+.friends-req-text { font-size:13px; color:var(--text-dim); }
+.friends-req-actions { display:flex; gap:6px; }
+.friends-req-btn { padding:4px 10px; border-radius:2px; font-family:'Cinzel',serif; font-size:10px; letter-spacing:.06em; cursor:pointer; border:1px solid; }
+.friends-req-btn.accept { border-color:var(--green); color:var(--green); background:rgba(61,158,110,.08); }
+.friends-req-btn.decline { border-color:var(--border-mid); color:var(--text-dark); background:transparent; }
+
+/* ══ PRESS ON RITUAL ══ */
+.press-on-ritual { text-align:center; padding:20px 0 8px; animation:fadeIn .5s ease; }
+.ritual-line { font-family:'Crimson Text',serif; font-size:16px; color:var(--text-dim); font-style:italic; line-height:1.7; margin-bottom:16px; }
+.ritual-day { font-family:'Cinzel',serif; font-size:11px; color:var(--text-dark); letter-spacing:.14em; text-transform:uppercase; }
+
+/* ══ HEADER AUTH BUTTON ══ */
+.header-user { display:flex; align-items:center; gap:10px; }
+.header-signout { font-family:'Cinzel',serif; font-size:10px; color:var(--text-dark); letter-spacing:.1em; cursor:pointer; padding:4px 8px; border:1px solid var(--border); border-radius:2px; transition:all .2s; }
+.header-signout:hover { color:var(--gold-dim); border-color:var(--border-gold); }
 
 /* ══ SCREENS ══ */
 .screen { display:none; min-height:100vh; flex-direction:column; }
@@ -253,6 +331,7 @@ html,body {
 .node-label.current { color:var(--gold); }
 .node-label.ahead { color:var(--text-dark); }
 .node-sub { font-size:12px; color:var(--text-dark); font-style:italic; margin-top:1px; }
+.node-avatar { transition: transform .3s ease; }
 .node-avatar { font-size:14px; }
 .days-to-next {
   margin-top:12px; padding:8px 10px;
@@ -977,8 +1056,17 @@ var S = {
   todayBeat: null,
   todayBeatDate: null,
 };
-var KEY = 'hf_v1';
+var KEY = 'hf_v3';
 var _devOffset = 0;
+var SUPABASE_URL = 'https://tkitlklvunsdxipgfthd.supabase.co';
+var SUPABASE_KEY = 'sb_publishable_Bgn1lXzYxwswhZidGtRDDA_5krnnTcT';
+var _sb = null;
+var _user = null;
+var _syncTimer = null;
+
+function initSupabase() {
+  _sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+}
 
 function today() {
   var d = new Date();
@@ -986,8 +1074,41 @@ function today() {
   return d.toDateString();
 }
 
-function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} }
-function loadSave() {
+// Local save (always, instant)
+function saveLocal() {
+  try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {}
+}
+
+// Remote save (debounced 2s)
+function save() {
+  saveLocal();
+  if (!_user) return;
+  clearTimeout(_syncTimer);
+  _syncTimer = setTimeout(syncToSupabase, 2000);
+}
+
+async function syncToSupabase() {
+  if (!_sb || !_user) return;
+  try {
+    await _sb.from('game_state').upsert({ id: _user.id, state: S, updated_at: new Date().toISOString() });
+  } catch(e) { console.warn('Sync failed:', e); }
+}
+
+async function loadFromSupabase() {
+  if (!_sb || !_user) return false;
+  try {
+    var res = await _sb.from('game_state').select('state').eq('id', _user.id).single();
+    if (res.data && res.data.state && Object.keys(res.data.state).length > 0) {
+      Object.assign(S, res.data.state);
+      fixState();
+      saveLocal();
+      return true;
+    }
+  } catch(e) { console.warn('Load failed:', e); }
+  return false;
+}
+
+function loadLocal() {
   try {
     var r = localStorage.getItem(KEY);
     if (!r) return false;
@@ -1270,11 +1391,54 @@ function getEncounterOutcome(beat) {
   return { type: 'setback', text: beat.encounter.setback.text };
 }
 
+// Press On ritual teasers by node
+var RITUAL_TEASERS = [
+  'The road north is quieter than it should be.',
+  "Malachar's people are moving. So are you.",
+  'The black tower mark keeps appearing. Someone is watching.',
+  'Aldric said the road remembers. You're starting to believe him.',
+  'Six days. The council meets. You need to move.',
+  'Sera is still out there. Keep moving.',
+  'The Iron Keep is closer than it's ever been.',
+  'Every day you show up is a day his plan falls further behind.',
+  'The road doesn't care about intentions. Only what gets done.',
+  'Tomorrow the road continues. So do you.',
+];
+
 function pressOn() {
   S.pressedOn = true;
   save();
-  renderBeatSection();
-  renderDaySummary();
+
+  // Show ritual moment
+  var inner = document.getElementById('beat-inner');
+  if (inner) {
+    var node = S.currentNode || 0;
+    var teaserPool = RITUAL_TEASERS.filter(function(t, i) {
+      // Weight teasers toward current node
+      return true;
+    });
+    var teaser = teaserPool[Math.floor(Math.random() * teaserPool.length)];
+    var streak = Math.max.apply(null, S.habits.map(function(h){ return h.streak||0; }).concat([0]));
+
+    inner.innerHTML = '<div class="press-on-ritual">' +
+      '<div class="ritual-line">' + esc(teaser) + '</div>' +
+      '<div class="ritual-day">Day ' + S.daysLogged + ' complete · 🔥 ' + streak + ' day streak</div>' +
+    '</div>';
+
+    // Pulse avatar on node map
+    setTimeout(function() {
+      var av = document.querySelector('.node-avatar');
+      if (av) { av.style.transform = 'scale(1.4)'; setTimeout(function() { av.style.transform = ''; }, 400); }
+    }, 200);
+
+    // Fade out after 2.5s then show day summary
+    setTimeout(function() {
+      inner.style.display = 'none';
+      renderDaySummary();
+    }, 2500);
+  } else {
+    renderDaySummary();
+  }
 }
 
 function daysToNextNode() {
@@ -1291,16 +1455,53 @@ var _obClass = 'Warrior';
 var _obFreqs = {};
 var _obHabits = [{ text: '', freq: 'daily' }];
 
-window.addEventListener('load', function() {
+window.addEventListener('load', async function() {
+  initSupabase();
   buildRaceGrid();
   buildClassGrid();
   buildExamples();
-  if (loadSave() && S.habits.length > 0 && !S.firstRun) {
-    goToMain();
+
+  // Check for existing session
+  var { data: { session } } = await _sb.auth.getSession();
+  if (session) {
+    _user = session.user;
+    var loaded = await loadFromSupabase();
+    if (!loaded) loadLocal();
+    if (S.habits && S.habits.length > 0) {
+      goToMain();
+    } else {
+      showScreen('ob');
+      showObStep(0);
+    }
   } else {
-    showScreen('ob');
-    showObStep(0);
+    // Check local storage as fallback
+    if (loadLocal() && S.habits.length > 0) {
+      // Has local data but no account — go to auth to encourage login
+      showScreen('auth');
+      showAuthTab('login');
+    } else {
+      showScreen('auth');
+      showAuthTab('login');
+    }
   }
+
+  // Listen for auth changes
+  _sb.auth.onAuthStateChange(async function(event, session) {
+    if (event === 'SIGNED_IN' && session) {
+      _user = session.user;
+      var loaded = await loadFromSupabase();
+      if (!loaded) loadLocal();
+      if (S.habits && S.habits.length > 0) {
+        goToMain();
+      } else {
+        showScreen('ob');
+        showObStep(0);
+      }
+    } else if (event === 'SIGNED_OUT') {
+      _user = null;
+      showScreen('auth');
+    }
+  });
 });
 
 function showScreen(id) {
@@ -1492,12 +1693,20 @@ function beginJourney() {
   S.firstRun = false;
   S.createdAt = Date.now();
   save();
+  // Save username to profiles table if logged in
+  if (_sb && _user) {
+    _sb.from('profiles').upsert({ id: _user.id, username: S.name }).then(function() {});
+  }
   goToMain();
 }
 
 function goToMain() {
   showScreen('main');
-  setTimeout(render, 50);
+  setTimeout(function() {
+    render();
+    renderNodeMap(); // ensure map renders on load since it's default open
+    if (_user) loadFriends(); // load friends when entering main
+  }, 50);
 }
 
 // Get start-of-week (Monday) date string
@@ -1559,9 +1768,9 @@ function renderCharBar() {
   pill.textContent = pillLabels[consistency] || 'On the Road';
   pill.className = 'consistency-pill ' + (consistency === 'on_road' ? 'on-road' : consistency === 'footsore' ? 'footsore' : 'gone');
 
-  // Update save code
-  var scEl = document.getElementById('save-code-display');
-  if (scEl && S.name) scEl.textContent = generateSaveCode();
+  // Update friends count
+  var fcEl = document.getElementById('friends-count');
+  if (fcEl) fcEl.textContent = _friends.length > 0 ? _friends.length + ' companion' + (_friends.length===1?'':'s') : '';
 }
 
 function renderHabits() {
@@ -1910,6 +2119,260 @@ function promptRestoreCode() {
   showToast('Save codes work across the same browser only in this version.');
 }
 
+// ════════════════════════════════════════════════════════
+//  AUTH
+// ════════════════════════════════════════════════════════
+
+function showAuthTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach(function(t) { t.classList.remove('active'); });
+  document.querySelectorAll('.auth-form').forEach(function(f) { f.classList.remove('active'); });
+  document.getElementById('auth-tab-' + tab).classList.add('active');
+  document.getElementById('auth-form-' + tab).classList.add('active');
+  document.getElementById('auth-error').textContent = '';
+}
+
+async function doSignup() {
+  var email = document.getElementById('auth-signup-email').value.trim();
+  var username = document.getElementById('auth-signup-username').value.trim();
+  var pass = document.getElementById('auth-signup-pass').value;
+  var errEl = document.getElementById('auth-error');
+  errEl.textContent = '';
+
+  if (!email || !username || !pass) { errEl.textContent = 'All fields required.'; return; }
+  if (pass.length < 6) { errEl.textContent = 'Password must be at least 6 characters.'; return; }
+
+  var btn = document.getElementById('auth-signup-btn');
+  btn.disabled = true; btn.textContent = 'Creating account…';
+
+  try {
+    // Check username not taken
+    var check = await _sb.from('profiles').select('id').eq('username', username).maybeSingle();
+    if (check.data) { errEl.textContent = 'That username is taken.'; btn.disabled=false; btn.textContent='Create Account'; return; }
+
+    var { data, error } = await _sb.auth.signUp({ email: email, password: pass });
+    if (error) { errEl.textContent = error.message; btn.disabled=false; btn.textContent='Create Account →'; return; }
+
+    if (data.user) {
+      _user = data.user;
+      // Save username to profiles
+      await _sb.from('profiles').upsert({ id: _user.id, username: username });
+      S.name = username;
+      saveLocal();
+      // Go to onboarding to set up habits
+      showScreen('ob');
+      showObStep(0);
+      document.getElementById('ob-name').value = username;
+      checkStep0();
+    }
+  } catch(e) {
+    errEl.textContent = 'Something went wrong. Try again.';
+    btn.disabled=false; btn.textContent='Create Account →';
+  }
+}
+
+async function doLogin() {
+  var email = document.getElementById('auth-login-email').value.trim();
+  var pass = document.getElementById('auth-login-pass').value;
+  var errEl = document.getElementById('auth-error');
+  errEl.textContent = '';
+
+  if (!email || !pass) { errEl.textContent = 'Email and password required.'; return; }
+
+  var btn = document.getElementById('auth-login-btn');
+  btn.disabled = true; btn.textContent = 'Signing in…';
+
+  var { data, error } = await _sb.auth.signInWithPassword({ email, password: pass });
+  if (error) {
+    errEl.textContent = 'Invalid email or password.';
+    btn.disabled=false; btn.textContent='Sign In';
+    return;
+  }
+  // onAuthStateChange handles the rest
+}
+
+async function doSignOut() {
+  await _sb.auth.signOut();
+  Object.assign(S, { name:'', race:'human', cls:'Warrior', habits:[], currentNode:0, daysLogged:0,
+    advancementPaused:false, pauseReason:'', lastLogDate:null, sessionDate:null, pressedOn:false,
+    beatsSeen:[], journeyLog:[], npcsSeen:[], chapter:1, todayBeat:null, todayBeatDate:null });
+  localStorage.removeItem(KEY);
+  _user = null;
+  showScreen('auth');
+}
+
+// ════════════════════════════════════════════════════════
+//  FRIENDS
+// ════════════════════════════════════════════════════════
+
+var _friends = [];
+var _pendingRequests = [];
+var _friendsLoaded = false;
+
+async function loadFriends() {
+  if (!_sb || !_user) return;
+  try {
+    // Get accepted friendships
+    var { data: fships } = await _sb.from('friendships')
+      .select('user_id, friend_id')
+      .or('user_id.eq.' + _user.id + ',friend_id.eq.' + _user.id);
+
+    var friendIds = (fships || []).map(function(f) {
+      return f.user_id === _user.id ? f.friend_id : f.user_id;
+    });
+
+    if (friendIds.length > 0) {
+      // Get their profiles + game state
+      var { data: profiles } = await _sb.from('profiles').select('id, username').in('id', friendIds);
+      var { data: states } = await _sb.from('game_state').select('id, state, updated_at').in('id', friendIds);
+
+      _friends = (profiles || []).map(function(p) {
+        var gs = (states || []).find(function(s) { return s.id === p.id; });
+        return { id: p.id, username: p.username, state: gs ? gs.state : {} };
+      });
+    } else {
+      _friends = [];
+    }
+
+    // Get pending requests TO this user
+    var { data: reqs } = await _sb.from('friend_requests')
+      .select('id, from_id')
+      .eq('to_id', _user.id);
+
+    if (reqs && reqs.length > 0) {
+      var fromIds = reqs.map(function(r) { return r.from_id; });
+      var { data: reqProfiles } = await _sb.from('profiles').select('id, username').in('id', fromIds);
+      _pendingRequests = reqs.map(function(r) {
+        var p = (reqProfiles || []).find(function(pr) { return pr.id === r.from_id; });
+        return { id: r.id, from_id: r.from_id, username: p ? p.username : 'Unknown' };
+      });
+    } else {
+      _pendingRequests = [];
+    }
+
+    _friendsLoaded = true;
+    renderFriends();
+  } catch(e) { console.warn('Friends load failed:', e); }
+}
+
+async function sendFriendRequest() {
+  var input = document.getElementById('friends-add-input');
+  var username = (input.value || '').trim();
+  if (!username) return;
+
+  // Look up user by username
+  var { data: profile } = await _sb.from('profiles').select('id').eq('username', username).maybeSingle();
+  if (!profile) { showToast('No player found with that username.'); return; }
+  if (profile.id === _user.id) { showToast("That's you!"); return; }
+
+  // Check not already friends
+  var already = _friends.find(function(f) { return f.id === profile.id; });
+  if (already) { showToast('Already friends with ' + username); return; }
+
+  var { error } = await _sb.from('friend_requests').insert({ from_id: _user.id, to_id: profile.id });
+  if (error && error.code === '23505') { showToast('Request already sent.'); }
+  else if (error) { showToast('Could not send request.'); }
+  else { showToast('Friend request sent to ' + username + '!'); input.value = ''; }
+}
+
+async function acceptFriend(reqId, fromId) {
+  await _sb.from('friend_requests').delete().eq('id', reqId);
+  await _sb.from('friendships').insert({ user_id: _user.id, friend_id: fromId });
+  loadFriends();
+}
+
+async function declineFriend(reqId) {
+  await _sb.from('friend_requests').delete().eq('id', reqId);
+  _pendingRequests = _pendingRequests.filter(function(r) { return r.id !== reqId; });
+  renderFriends();
+}
+
+function getFriendConsistency(friendState) {
+  if (!friendState || !friendState.habits) return 'gone';
+  var habits = friendState.habits || [];
+  var allDates = {};
+  habits.forEach(function(h) { (h.log||[]).forEach(function(d) { allDates[d]=true; }); });
+  var total = Object.keys(allDates).length;
+  if (total < 3) return 'on_road';
+  // Count last 7 days
+  var days = 0;
+  for (var i = 0; i < 7; i++) {
+    var d = new Date(); d.setDate(d.getDate() - i);
+    var ds = d.toDateString();
+    if (allDates[ds]) days++;
+  }
+  if (days >= 3) return 'on_road';
+  if (days >= 1) return 'footsore';
+  return 'gone';
+}
+
+function renderFriends() {
+  var body = document.getElementById('friends-body');
+  if (!body) return;
+  body.innerHTML = '';
+
+  // Pending requests first
+  _pendingRequests.forEach(function(req) {
+    var row = document.createElement('div');
+    row.className = 'friends-req-row';
+    row.innerHTML = '<div class="friends-req-text"><strong>' + esc(req.username) + '</strong> wants to join your road.</div>' +
+      '<div class="friends-req-actions">' +
+        '<button class="friends-req-btn accept" onclick="acceptFriend(' + "'" + req.id + "'" + ',' + "'" + req.from_id + "'" + ')">Accept</button>' +
+        '<button class="friends-req-btn decline" onclick="declineFriend(' + "'" + req.id + "'" + ')">Decline</button>' +
+      '</div>';
+    body.appendChild(row);
+  });
+
+  if (_friends.length === 0 && _pendingRequests.length === 0) {
+    body.innerHTML += '<div class="friends-empty">No companions on the road yet.<br>Add a friend by username below.</div>';
+  } else {
+    // Sort friends by streak desc
+    var sorted = _friends.slice().sort(function(a, b) {
+      var sa = Math.max.apply(null, ((a.state||{}).habits||[]).map(function(h){return h.streak||0;}).concat([0]));
+      var sb2 = Math.max.apply(null, ((b.state||{}).habits||[]).map(function(h){return h.streak||0;}).concat([0]));
+      return sb2 - sa;
+    });
+    sorted.forEach(function(f, idx) {
+      var fs = f.state || {};
+      var node = NODES[fs.currentNode || 0] || NODES[0];
+      var streak = Math.max.apply(null, (fs.habits||[]).map(function(h){return h.streak||0;}).concat([0]));
+      var cons = getFriendConsistency(fs);
+      var consLabel = cons === 'on_road' ? 'On the Road' : cons === 'footsore' ? 'Footsore' : 'Gone to Ground';
+      var races = ['🧔','🧝','⛏️','👺','🧙'];
+      var raceIcon = races[f.username.charCodeAt(0) % races.length];
+      var row = document.createElement('div');
+      row.className = 'friend-row';
+      row.innerHTML =
+        '<div class="friend-rank" style="font-family:'Cinzel',serif;font-size:11px;color:var(--text-dark);min-width:16px;">' + (idx+1) + '</div>' +
+        '<div class="friend-avatar">' + raceIcon + '</div>' +
+        '<div class="friend-info">' +
+          '<div class="friend-name">' + esc(f.username) + '</div>' +
+          '<div class="friend-meta">' + node.icon + ' ' + node.name + '</div>' +
+        '</div>' +
+        '<div style="text-align:right;">' +
+          '<div class="friend-streak">🔥 ' + streak + '</div>' +
+          '<div><span class="friend-pill ' + cons + '">' + consLabel + '</span></div>' +
+        '</div>';
+      body.appendChild(row);
+    });
+  }
+
+  // Add friend input
+  var addWrap = document.createElement('div');
+  addWrap.className = 'friends-add-wrap';
+  addWrap.innerHTML = '<input class="friends-add-input" id="friends-add-input" placeholder="Add by username…" maxlength="24">' +
+    '<button class="friends-add-btn" onclick="sendFriendRequest()">Send Request</button>';
+  body.appendChild(addWrap);
+}
+
+function toggleFriends() {
+  var body = document.getElementById('friends-body');
+  var chevron = document.querySelector('.friends-wrap .friends-chevron');
+  var isOpen = body && body.style.display !== 'none' && body.style.display !== '';
+  if (body) body.style.display = isOpen ? 'none' : 'block';
+  if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+  if (!isOpen && !_friendsLoaded) loadFriends();
+}
+
 // ── Dev tools ──
 function devNextDay() {
   _devOffset++;
@@ -1943,8 +2406,53 @@ function devLogAll() {
 </head>
 <body>
 
+<!-- ══ AUTH SCREEN ══ -->
+<div id="screen-auth" class="screen">
+  <div class="auth-wrap">
+    <div class="auth-logo">HabitForge</div>
+    <div class="auth-tagline">The road north doesn't wait.</div>
+
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="auth-tab-login" onclick="showAuthTab('login')">Sign In</div>
+      <div class="auth-tab" id="auth-tab-signup" onclick="showAuthTab('signup')">Create Account</div>
+    </div>
+
+    <!-- Login form -->
+    <div class="auth-form active" id="auth-form-login">
+      <div class="auth-field-wrap">
+        <label class="auth-label">Email</label>
+        <input class="field" id="auth-login-email" type="email" placeholder="your@email.com" autocomplete="email">
+      </div>
+      <div class="auth-field-wrap">
+        <label class="auth-label">Password</label>
+        <input class="field" id="auth-login-pass" type="password" placeholder="Password" autocomplete="current-password">
+      </div>
+      <div class="auth-error" id="auth-error"></div>
+      <button class="auth-btn" id="auth-login-btn" onclick="doLogin()">Sign In ⚔</button>
+    </div>
+
+    <!-- Signup form -->
+    <div class="auth-form" id="auth-form-signup">
+      <div class="auth-field-wrap">
+        <label class="auth-label">Email</label>
+        <input class="field" id="auth-signup-email" type="email" placeholder="your@email.com" autocomplete="email">
+      </div>
+      <div class="auth-field-wrap">
+        <label class="auth-label">Username</label>
+        <input class="field" id="auth-signup-username" type="text" placeholder="Choose a username" maxlength="24" autocomplete="off">
+      </div>
+      <div class="auth-field-wrap">
+        <label class="auth-label">Password</label>
+        <input class="field" id="auth-signup-pass" type="password" placeholder="Min. 6 characters" autocomplete="new-password">
+      </div>
+      <div class="auth-error" id="auth-error-signup"></div>
+      <button class="auth-btn" id="auth-signup-btn" onclick="doSignup()">Create Account ⚔</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══ ONBOARDING ══ -->
-<div id="screen-ob" class="screen active">
+<div id="screen-ob" class="screen">
   <div class="ob-wrap">
 
     <!-- Step 0: Name + Race -->
@@ -2075,6 +2583,7 @@ function devLogAll() {
   <!-- Header -->
   <div class="main-header">
     <div class="header-logo">HabitForge</div>
+    <div class="header-user"><span class="header-signout" onclick="doSignOut()">Sign Out</span></div>
   </div>
 
   <!-- Character bar -->
@@ -2116,9 +2625,21 @@ function devLogAll() {
         <div class="node-map-title">The Ironveil Road</div>
         <div class="node-map-sub" id="node-map-sub">Hearthstone Village</div>
       </div>
-      <div class="node-map-chevron">▼</div>
+      <div class="node-map-chevron" style="transform:rotate(180deg)">▼</div>
     </div>
-    <div class="node-map-body" id="node-map-inner" style="display:none;border-top:1px solid var(--border);padding:16px 14px;"></div>
+    <div class="node-map-body" id="node-map-inner" style="border-top:1px solid var(--border);padding:16px 14px;"></div>
+  </div>
+
+  <!-- Friends / Road Companions -->
+  <div class="friends-wrap" id="friends-wrap">
+    <div class="friends-header" onclick="toggleFriends()">
+      <div class="friends-title">Road Companions</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-family:'Cinzel',serif;font-size:10px;color:var(--text-dark);letter-spacing:.08em;" id="friends-count"></span>
+        <span class="friends-chevron" style="font-size:10px;color:var(--text-dark);">▼</span>
+      </div>
+    </div>
+    <div id="friends-body" style="display:none;"></div>
   </div>
 
   <!-- Journey log -->
@@ -2135,16 +2656,6 @@ function devLogAll() {
 
 </div>
 
-  <!-- Save code -->
-  <div class="save-code-wrap" id="save-code-bar">
-    <div>
-      <div class="save-code-label">Save Code</div>
-      <div class="save-code-val" id="save-code-display">----</div>
-    </div>
-    <button class="save-code-btn" onclick="showSaveCode()">Copy Code</button>
-  </div>
-
-</div>
 
 <!-- Level up overlay -->
 <div id="levelup-overlay">
@@ -2239,7 +2750,7 @@ function devLogAll() {
   window.toggleMap = function() {
     var body = document.getElementById('node-map-inner');
     var chevron = document.querySelector('#node-map-wrap .node-map-chevron');
-    var isOpen = body.style.display !== 'none';
+    var isOpen = body.style.display !== 'none' && body.style.display !== '';
     body.style.display = isOpen ? 'none' : 'block';
     if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
     if (!isOpen) renderNodeMap();
