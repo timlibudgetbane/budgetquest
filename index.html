@@ -1131,6 +1131,26 @@ function fixState() {
   if (S.advancementPaused === undefined) S.advancementPaused = false;
   if (!S.pauseReason) S.pauseReason = '';
   if (!S.daysSinceEncounter) S.daysSinceEncounter = 0;
+
+  // Reset streaks if user missed days — runs on every load so stale streaks
+  // are never shown when returning after a gap.
+  var _today = (function() {
+    var d = new Date();
+    if (_devOffset) d.setDate(d.getDate() + _devOffset);
+    return d.toDateString();
+  })();
+  var _yest = (function() {
+    var d = new Date();
+    if (_devOffset) d.setDate(d.getDate() + _devOffset);
+    d.setDate(d.getDate() - 1);
+    return d.toDateString();
+  })();
+  S.habits.forEach(function(h) {
+    if (!h.streak) return;
+    var log = h.log || [];
+    var loggedRecently = log.indexOf(_today) !== -1 || log.indexOf(_yest) !== -1;
+    if (!loggedRecently) h.streak = 0;
+  });
 }
 
 function resetS() {
