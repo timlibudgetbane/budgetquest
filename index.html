@@ -1103,6 +1103,7 @@ async function loadFromSupabase() {
       Object.assign(S, res.data.state);
       fixState();
       saveLocal();
+      syncToSupabase(); // write back any corrections (e.g. zeroed streaks)
       return true;
     }
   } catch(e) { console.warn('Load failed:', e); }
