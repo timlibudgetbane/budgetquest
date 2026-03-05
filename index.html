@@ -8,28 +8,28 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:          #0b0906;
-  --surface:     #111008;
-  --surface2:    #181410;
-  --surface3:    #1f1a12;
-  --border:      #2a2418;
-  --border-mid:  #3d3520;
-  --border-gold: #56481f;
-  --gold:        #c8a84b;
-  --gold-light:  #dfc068;
-  --gold-dim:    #7a6230;
-  --gold-glow:   rgba(200,168,75,.12);
-  --green:       #3d9e6e;
-  --red:         #b83c2e;
-  --orange:      #c85a28;
+  --bg:          #090804;
+  --surface:     #0f0d07;
+  --surface2:    #151208;
+  --surface3:    #1c1710;
+  --border:      #272010;
+  --border-mid:  #382c14;
+  --border-gold: #5a4818;
+  --gold:        #d4a84b;
+  --gold-light:  #eacc70;
+  --gold-dim:    #7a6228;
+  --gold-glow:   rgba(212,168,75,.15);
+  --green:       #4aac78;
+  --red:         #c04030;
+  --orange:      #c86030;
   --teal:        #2a9e8a;
-  --text:        #ede4cc;
-  --text-mid:    #b8a87c;
-  --text-dim:    #8a7a58;
-  --text-dark:   #554a32;
-  --on-road:     #3d9e6e;
-  --footsore:    #c85a28;
-  --gone:        #664444;
+  --text:        #f2e8cc;
+  --text-mid:    #c4a87a;
+  --text-dim:    #8a7848;
+  --text-dark:   #4a3e20;
+  --on-road:     #4aac78;
+  --footsore:    #c86030;
+  --gone:        #664040;
 }
 
 *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
@@ -38,6 +38,24 @@ html,body {
   font-family:'Crimson Text',serif; font-size:18px; line-height:1.5;
   overflow-x:hidden;
 }
+
+/* ══ ATMOSPHERIC BACKGROUND ══ */
+/* Noise texture overlay */
+body::before {
+  content:'';
+  position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.4;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+#screen-main::before {
+  content:'';
+  position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:
+    radial-gradient(ellipse 100% 50% at 50% 0%, rgba(200,140,40,.09) 0%, transparent 65%),
+    radial-gradient(ellipse 70% 50% at 20% 50%, rgba(180,100,20,.04) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 60% at 50% 100%, rgba(0,0,0,.5) 0%, transparent 70%);
+}
+#screen-main > * { position:relative; z-index:1; }
 
 
 /* ══ AUTH SCREEN ══ */
@@ -71,34 +89,220 @@ html,body {
 .auth-btn:disabled { opacity:.4; cursor:not-allowed; }
 .auth-divider { text-align:center; color:var(--text-dark); font-size:12px; margin:20px 0; }
 
-/* ══ FRIENDS PANEL ══ */
-.friends-wrap { margin:16px 18px 0; background:var(--surface); border:1px solid var(--border); border-radius:4px; overflow:hidden; }
+/* ══ ALWAYS-VISIBLE MAP ══ */
+.node-map-always {
+  margin: 14px 18px 0;
+  background: linear-gradient(180deg, rgba(200,140,40,.05) 0%, var(--surface) 50%);
+  border: 1px solid var(--border-gold);
+  border-radius: 4px;
+  overflow: visible;
+  box-shadow: 0 0 30px rgba(200,168,75,.04), inset 0 1px 0 rgba(200,168,75,.08);
+}
+.node-map-always-header {
+  padding: 12px 16px 10px;
+  border-bottom: 1px solid var(--border);
+  display:flex; align-items:baseline; justify-content:space-between;
+}
+.node-map-title {
+  font-family:'Cinzel',serif; font-size:11px; color:var(--gold-dim);
+  letter-spacing:.18em; text-transform:uppercase;
+}
+.node-map-sub {
+  font-size:12px; color:var(--text-dark); font-style:italic;
+}
+.node-map-always-body {
+  padding: 22px 16px 14px;
+  overflow: visible;
+}
+
+/* Track — horizontal row */
+.node-map-always .node-track {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
+  position: relative;
+  padding: 18px 0 0 !important;
+  gap: 0 !important;
+}
+.node-map-always .node-track::before { display: none !important; }
+
+/* Each node item */
+.node-map-always .node-item {
+  flex: 1;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  position: relative;
+  padding: 0 !important;
+  gap: 5px !important;
+}
+
+/* Connector line between items */
+.node-map-always .node-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 9px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--border-mid);
+  z-index: 0;
+}
+.node-map-always .node-item.node-done-item:not(:last-child)::after {
+  background: linear-gradient(90deg, var(--gold-dim), var(--border-gold));
+  box-shadow: 0 0 6px rgba(200,168,75,.2);
+}
+
+/* Node dots — override absolute positioning from base */
+.node-map-always .node-dot {
+  position: relative !important;
+  left: auto !important;
+  z-index: 1;
+  width: 18px !important;
+  height: 18px !important;
+  font-size: 10px !important;
+  flex-shrink: 0;
+  border-color: var(--border-mid) !important;
+}
+.node-map-always .node-dot.done {
+  background: rgba(200,168,75,.15) !important;
+  border-color: var(--gold-dim) !important;
+}
+.node-map-always .node-dot.current {
+  width: 22px !important;
+  height: 22px !important;
+  font-size: 12px !important;
+  background: rgba(200,168,75,.2) !important;
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 12px rgba(200,168,75,.4), 0 0 24px rgba(200,168,75,.15) !important;
+}
+.node-map-always .node-dot.current::after { display: none; }
+
+/* Labels */
+.node-map-always .node-label {
+  font-size: 9px !important;
+  text-align: center;
+  letter-spacing: .02em;
+  line-height: 1.2;
+  max-width: 52px;
+  word-break: break-word;
+  white-space: normal;
+  overflow: visible;
+}
+
+/* Avatar sits above the dot */
+.node-map-always .node-avatar {
+  position: absolute !important;
+  top: -18px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  font-size: 12px !important;
+  z-index: 2;
+}
+
+/* Days to next note */
+.node-map-always .days-to-next {
+  margin-top: 8px;
+  font-size: 12px;
+  border-left: none !important;
+  padding: 6px 0 0 !important;
+  background: none !important;
+  text-align: center;
+  color: var(--text-dark);
+  font-style: italic;
+}
+
+/* ══ TOMORROW TEASER ══ */
+/* tomorrow-teaser removed — resolved state inline in scroll card */
 .friends-header {
   display:flex; align-items:center; justify-content:space-between;
-  padding:12px 14px; cursor:pointer;
+  padding:12px 16px; cursor:pointer;
 }
 .friends-title { font-family:'Cinzel',serif; font-size:11px; color:var(--gold-dim); letter-spacing:.14em; text-transform:uppercase; }
 .friends-body { border-top:1px solid var(--border); }
-.friend-row {
-  display:flex; align-items:center; gap:10px;
-  padding:10px 14px; border-bottom:1px solid var(--border);
+
+/* ── Dispatch board rows ── */
+.dispatch-self {
+  padding: 13px 16px 11px;
+  border-bottom: 1px solid var(--border);
 }
-.friend-row:last-child { border-bottom:none; }
-.friend-avatar { font-size:20px; }
-.friend-info { flex:1; min-width:0; }
-.friend-name { font-family:'Cinzel',serif; font-size:13px; color:var(--text); }
-.friend-meta { font-size:12px; color:var(--text-dim); margin-top:2px; }
-.friend-rank { font-family:'Cinzel',serif; font-size:11px; color:var(--text-dark); min-width:16px; }
-.friend-streak { font-family:'Cinzel',serif; font-size:12px; color:var(--gold-dim); white-space:nowrap; }
-.friend-pill { font-size:10px; padding:2px 7px; border-radius:10px; font-family:'Cinzel',serif; letter-spacing:.06em; margin-left:4px; }
+.dispatch-self-name {
+  font-family:'Cinzel',serif; font-size:12px; color:var(--gold);
+  letter-spacing:.08em; margin-bottom:3px;
+}
+.dispatch-self-location {
+  font-family:'Cinzel',serif; font-size:9px; color:var(--text-dark);
+  letter-spacing:.1em; text-transform:uppercase; margin-bottom:5px;
+}
+.dispatch-self-line {
+  font-family:'Crimson Text',serif; font-size:15px; color:var(--text-dim);
+  font-style:italic; line-height:1.5;
+}
+.dispatch-self-streak {
+  font-family:'Cinzel',serif; font-size:10px; color:var(--gold-dim);
+  letter-spacing:.08em; margin-top:5px;
+}
+
+.dispatch-row {
+  padding: 12px 16px 10px;
+  border-bottom: 1px solid var(--border);
+  transition: background .15s;
+}
+.dispatch-row:last-of-type { border-bottom: none; }
+.dispatch-name {
+  font-family:'Cinzel',serif; font-size:11px; color:var(--text);
+  letter-spacing:.06em; margin-bottom:4px;
+  display:flex; align-items:center; gap:8px;
+}
+.dispatch-status-dot {
+  width:5px; height:5px; border-radius:50%; flex-shrink:0;
+}
+.dispatch-status-dot.on-road  { background:var(--on-road); box-shadow:0 0 4px var(--on-road); }
+.dispatch-status-dot.footsore { background:var(--footsore); }
+.dispatch-status-dot.gone     { background:#664444; }
+.dispatch-line {
+  font-family:'Crimson Text',serif; font-size:15px;
+  color:var(--text-dim); font-style:italic; line-height:1.55;
+}
+.dispatch-line.on-road  { color:var(--text-dim); }
+.dispatch-line.footsore { color:var(--footsore); opacity:.8; }
+.dispatch-line.gone     { color:#886666; opacity:.7; }
+.dispatch-lastbeat {
+  font-family:'Crimson Text',serif; font-size:13px;
+  color:var(--text-dark); margin-top:5px; font-style:italic;
+  line-height:1.4;
+  padding-left:8px; border-left:1px solid var(--border);
+}
+
+/* Legacy pills — keep for pending requests only */
+.friend-pill { font-size:10px; padding:2px 7px; border-radius:10px; font-family:'Cinzel',serif; letter-spacing:.06em; }
 .friend-pill.on-road { background:rgba(61,158,110,.12); color:var(--on-road); border:1px solid rgba(61,158,110,.25); }
 .friend-pill.footsore { background:rgba(200,90,40,.12); color:var(--footsore); border:1px solid rgba(200,90,40,.25); }
 .friend-pill.gone { background:rgba(100,60,60,.15); color:#886666; border:1px solid rgba(100,60,60,.25); }
-.friends-add-wrap { padding:12px 14px; display:flex; gap:8px; }
-.friends-add-input { flex:1; background:var(--surface2); border:1px solid var(--border-mid); border-radius:2px; color:var(--text); font-family:'Crimson Text',serif; font-size:16px; padding:8px 12px; outline:none; }
-.friends-add-input:focus { border-color:var(--border-gold); }
-.friends-add-btn { padding:8px 14px; background:transparent; border:1px solid var(--border-gold); border-radius:2px; color:var(--gold-dim); font-family:'Cinzel',serif; font-size:11px; letter-spacing:.08em; cursor:pointer; white-space:nowrap; transition:all .2s; }
-.friends-add-btn:hover { color:var(--gold); background:rgba(200,168,75,.06); }
+.friends-add-wrap {
+  display: flex; gap: 8px; align-items: center;
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+}
+.friends-add-input {
+  flex: 1; min-width: 0;
+  background: var(--surface2); border: 1px solid var(--border-mid);
+  border-radius: 2px; color: var(--text);
+  font-family: 'Crimson Text', serif; font-size: 15px;
+  padding: 8px 10px; outline: none;
+}
+.friends-add-input:focus { border-color: var(--border-gold); }
+.friends-add-input::placeholder { color: var(--text-dark); font-style: italic; }
+.friends-add-btn {
+  flex-shrink: 0;
+  padding: 8px 14px; background: transparent;
+  border: 1px solid var(--border-gold); border-radius: 2px;
+  color: var(--gold-dim); font-family: 'Cinzel', serif;
+  font-size: 10px; letter-spacing: .1em; cursor: pointer;
+  white-space: nowrap; transition: all .2s;
+}
+.friends-add-btn:hover { color: var(--gold); background: rgba(200,168,75,.06); }
 .friends-empty { padding:16px 14px; font-size:14px; color:var(--text-dark); font-style:italic; text-align:center; }
 .friends-req-row { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-bottom:1px solid var(--border); background:rgba(200,168,75,.03); }
 .friends-req-text { font-size:13px; color:var(--text-dim); }
@@ -107,7 +311,58 @@ html,body {
 .friends-req-btn.accept { border-color:var(--green); color:var(--green); background:rgba(61,158,110,.08); }
 .friends-req-btn.decline { border-color:var(--border-mid); color:var(--text-dark); background:transparent; }
 
-/* ══ PRESS ON RITUAL ══ */
+/* ══ VITALITY BAR ══ */
+.vitality-wrap { margin-top: 14px; }
+.vitality-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+.vitality-label {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  color: var(--text-dark);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  display:flex; align-items:center; gap:5px;
+}
+.vitality-state {
+  font-family: 'Crimson Text', serif;
+  font-size: 12px;
+  font-style: italic;
+  transition: color .4s ease;
+}
+.vitality-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255,255,255,.05);
+  border-radius: 1px;
+  overflow: hidden;
+}
+.vitality-fill {
+  height: 100%;
+  border-radius: 1px;
+  transition: width 1s ease, background-color .6s ease;
+}
+/* Three states */
+.vitality-fill.state-healthy { background: linear-gradient(90deg, var(--green), #5dc890); }
+.vitality-fill.state-atrisk  { background: linear-gradient(90deg, var(--orange), #e07040); }
+.vitality-fill.state-wounded { background: linear-gradient(90deg, var(--red), #d04030); }
+
+.hp-risk-badge { font-size:10px; opacity:0; transition:opacity .3s; }
+.hp-risk-badge.visible { opacity:1; }
+
+.hp-wound-notice {
+  margin: 10px 20px 0;
+  padding: 12px 16px;
+  border: 1px solid rgba(180,80,40,.2);
+  border-left: 2px solid #b06040;
+  border-radius: 2px;
+  background: rgba(160,60,30,.05);
+  font-family:'Crimson Text',serif; font-size:15px;
+  color:var(--text-dim); font-style:italic; line-height:1.7;
+}
 .press-on-ritual { text-align:center; padding:20px 0 8px; animation:fadeIn .5s ease; }
 .ritual-line { font-family:'Crimson Text',serif; font-size:16px; color:var(--text-dim); font-style:italic; line-height:1.7; margin-bottom:16px; }
 .ritual-day { font-family:'Cinzel',serif; font-size:11px; color:var(--text-dark); letter-spacing:.14em; text-transform:uppercase; }
@@ -238,17 +493,114 @@ html,body {
 .ob-nav { display:flex; flex-direction:column; gap:10px; margin-top:28px; }
 
 /* ══ MAIN SCREEN ══ */
-#screen-main { max-width:480px; margin:0 auto; width:100%; padding-bottom:80px; }
+#screen-main { max-width:480px; margin:0 auto; width:100%; padding-bottom:40px; }
+
+/* ══ MAP STRIP — road progress view ══ */
+.map-strip {
+  margin: 14px 20px 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 16px 18px 14px;
+  overflow: hidden;
+}
+/* Top row: current location name + icon */
+.map-current-row {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+}
+.map-current-icon {
+  font-size: 22px; line-height: 1;
+  filter: drop-shadow(0 0 6px rgba(200,168,75,.3));
+}
+.map-current-name {
+  font-family: 'Cinzel', serif; font-size: 14px;
+  color: var(--gold); letter-spacing: .06em;
+  text-shadow: 0 0 20px rgba(200,168,75,.3);
+}
+.map-current-sub {
+  font-family: 'Crimson Text', serif; font-size: 13px;
+  color: var(--text-dim); font-style: italic; margin-top: 1px;
+}
+/* Progress bar */
+.map-progress-track {
+  position: relative; height: 6px;
+  background: var(--surface3); border-radius: 3px;
+  margin-bottom: 10px; overflow: visible;
+}
+.map-progress-fill {
+  height: 100%; border-radius: 3px;
+  background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+  box-shadow: 0 0 8px rgba(200,168,75,.4);
+  transition: width .6s ease;
+  position: relative;
+}
+.map-progress-fill::after {
+  content: ''; position: absolute; right: -1px; top: -3px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--gold); border: 2px solid var(--bg);
+  box-shadow: 0 0 10px rgba(200,168,75,.7);
+  animation: ring-breathe 3s ease-in-out infinite;
+}
+@keyframes ring-breathe {
+  0%, 100% { box-shadow: 0 0 6px rgba(200,168,75,.5); }
+  50%       { box-shadow: 0 0 16px rgba(200,168,75,.9); }
+}
+/* Node milestone markers below the bar */
+.map-milestones {
+  display: flex; justify-content: space-between;
+  padding: 0 0;
+}
+.map-milestone {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  flex: 1;
+}
+.map-milestone-tick {
+  width: 1px; height: 5px; background: var(--border-mid);
+}
+.map-milestone-label {
+  font-family: 'Cinzel', serif; font-size: 7px; letter-spacing: .04em;
+  text-align: center; white-space: nowrap;
+}
+.map-milestone-label.done    { color: var(--text-dark); }
+.map-milestone-label.current { color: var(--gold-dim); }
+.map-milestone-label.ahead   { color: var(--border-mid); }
+/* Footer: days to next */
+.map-strip-footer {
+  margin-top: 10px; padding-top: 9px;
+  border-top: 1px solid var(--border);
+  font-family: 'Crimson Text', serif; font-size: 13px;
+  color: var(--text-dim); font-style: italic;
+}
+
 
 /* Header */
 .main-header {
   display:flex; align-items:center; justify-content:space-between;
-  padding:14px 18px 12px;
-  border-bottom:1px solid var(--border);
+  padding:18px 20px 16px;
+  border-bottom: 1px solid var(--border-gold);
+  background: linear-gradient(180deg, rgba(200,140,40,.08) 0%, transparent 100%);
+  position: relative;
+}
+.main-header::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background: linear-gradient(90deg, transparent 0%, var(--gold-dim) 30%, var(--gold) 50%, var(--gold-dim) 70%, transparent 100%);
+}
+.main-header::after {
+  content:'';
+  position:absolute; bottom:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg, transparent, rgba(212,168,75,.15), transparent);
 }
 .header-logo {
-  font-family:'Cinzel',serif; font-size:15px; color:var(--gold-dim);
-  letter-spacing:.18em; text-transform:uppercase;
+  font-family:'Cinzel',serif; font-size:15px; color:var(--gold);
+  letter-spacing:.38em; text-transform:uppercase;
+  text-shadow: 0 0 40px rgba(212,168,75,.5), 0 1px 0 rgba(0,0,0,.5);
+  position:relative;
+}
+.header-logo::after {
+  content: attr(data-subtitle);
+  display: block;
+  font-size: 7px; letter-spacing:.22em; color:var(--text-dark);
+  margin-top:2px; text-shadow:none;
 }
 .header-right { display:flex; align-items:center; gap:12px; }
 .streak-badge {
@@ -260,29 +612,39 @@ html,body {
 
 /* Character bar */
 .char-bar {
-  padding:14px 18px 12px;
+  padding:18px 20px 14px;
   border-bottom:1px solid var(--border);
   cursor:pointer; -webkit-tap-highlight-color:transparent;
+  background: var(--surface);
+  position:relative;
 }
-.char-bar-top { display:flex; align-items:center; gap:12px; }
+.char-bar::after {
+  content:''; position:absolute;
+  bottom:0; left:0; right:0; height:1px;
+  background: linear-gradient(90deg, transparent 10%, var(--border-mid) 50%, transparent 90%);
+}
+.char-bar-top { display:flex; align-items:center; gap:14px; }
 .char-name-row { display:flex; align-items:center; gap:10px; }
 .streak-badge-inline {
-  font-family:'Cinzel',serif; font-size:12px; color:var(--gold-dim);
+  font-family:'Cinzel',serif; font-size:11px; color:var(--gold-dim);
   display:flex; align-items:center; gap:3px;
+  background: rgba(200,168,75,.06);
+  border:1px solid var(--border-gold);
+  border-radius:2px; padding:1px 7px;
 }
-.char-avatar { font-size:28px; line-height:1; }
+.char-avatar { font-size:32px; line-height:1; filter: drop-shadow(0 0 8px rgba(200,168,75,.2)); }
 .char-info { flex:1; min-width:0; }
-.char-name { font-family:'Cinzel',serif; font-size:14px; color:var(--gold); letter-spacing:.06em; }
-.char-meta { font-size:13px; color:var(--text-dim); margin-top:2px; }
-.char-consistency { margin-top:8px; }
-.consistency-pill {
-  display:inline-flex; align-items:center; gap:6px;
-  font-family:'Cinzel',serif; font-size:10px; letter-spacing:.12em;
-  text-transform:uppercase; padding:4px 10px; border-radius:2px; border:1px solid;
+.char-name { font-family:'Cinzel',serif; font-size:15px; color:var(--gold); letter-spacing:.06em; text-shadow:0 0 20px rgba(200,168,75,.3); }
+.char-meta { font-size:13px; color:var(--text-dim); margin-top:2px; letter-spacing:.02em; }
+.char-streak-row {
+  display:flex; align-items:center; gap:8px; margin-top:4px;
+  font-family:'Cinzel',serif; font-size:11px; color:var(--gold-dim); letter-spacing:.06em;
 }
-.consistency-pill.on-road { color:var(--on-road); border-color:var(--on-road); background:rgba(61,158,110,.08); }
-.consistency-pill.footsore { color:var(--footsore); border-color:var(--footsore); background:rgba(200,90,40,.08); }
-.consistency-pill.gone { color:var(--gone); border-color:var(--gone); background:rgba(102,68,68,.08); }
+.streak-fire { font-size:12px; }
+.streak-label { opacity:.8; }
+.streak-divider { opacity:.25; margin:0 2px; }
+.days-logged-label { color:var(--text-dark); font-size:10px; letter-spacing:.08em; }
+.char-consistency { display:none; }
 
 /* Node map */
 .node-map {
@@ -342,178 +704,328 @@ html,body {
 }
 
 /* Habits section */
-.habits-section { padding:18px 18px 0; }
+.habits-section { padding:20px 20px 0; }
 .section-label {
-  font-family:'Cinzel',serif; font-size:10px; color:var(--text-dark);
-  text-transform:uppercase; letter-spacing:.18em; margin-bottom:12px;
+  font-family:'Cinzel',serif; font-size:8px; color:var(--text-dark);
+  text-transform:uppercase; letter-spacing:.32em; margin-bottom:16px;
+  display:flex; align-items:center; gap:12px;
+}
+.section-label::before,
+.section-label::after {
+  content:''; flex:1; height:1px;
+  background: linear-gradient(90deg, transparent, var(--border));
+}
+.section-label::before {
+  background: linear-gradient(270deg, transparent, var(--border));
 }
 
 .habit-card {
   background:var(--surface); border:1px solid var(--border);
-  border-radius:4px; overflow:hidden; margin-bottom:8px;
-  transition:border-color .25s;
+  border-radius:4px; overflow:hidden; margin-bottom:10px;
+  transition: border-color .2s, box-shadow .2s, transform .1s;
+  border-left: 3px solid transparent;
+  box-shadow: 0 1px 3px rgba(0,0,0,.3);
 }
-.habit-card.logged { border-color:var(--border-gold); }
-.habit-card-inner { display:flex; align-items:center; gap:14px; padding:14px 16px; }
+.habit-card:active { transform:scale(.995); }
+.habit-card.logged {
+  border-color: var(--border-gold);
+  border-left-color: var(--gold);
+  background: linear-gradient(135deg, rgba(200,168,75,.05) 0%, transparent 50%);
+  box-shadow: 0 2px 12px rgba(200,168,75,.07), inset 0 0 0 1px rgba(200,168,75,.05);
+}
+.habit-card-inner { display:flex; align-items:center; gap:14px; padding:15px 16px; }
 .habit-check {
-  width:36px; height:36px; border-radius:50%; border:2px solid var(--border-mid);
-  display:flex; align-items:center; justify-content:center; font-size:14px;
-  cursor:pointer; flex-shrink:0; transition:all .2s; background:var(--surface2);
+  width:38px; height:38px; border-radius:3px; border:1px solid var(--border-mid);
+  display:flex; align-items:center; justify-content:center; font-size:16px;
+  cursor:pointer; flex-shrink:0; background:var(--surface2);
   -webkit-tap-highlight-color:transparent;
+  transition: border-color .15s, box-shadow .15s, background .15s;
 }
-.habit-check:hover { border-color:var(--gold-dim); }
-.habit-check.done { background:rgba(200,168,75,.15); border-color:var(--gold); color:var(--gold); cursor:default; }
+.habit-check:hover { border-color:var(--gold-dim); background:rgba(200,168,75,.06); }
+.habit-check:active { transform:scale(.9); }
+.habit-check.done {
+  background:rgba(200,168,75,.15); border-color:var(--gold);
+  color:var(--gold); cursor:default;
+  box-shadow: 0 0 14px rgba(200,168,75,.3);
+}
+@keyframes checkBurst {
+  0%   { transform:scale(.8);  box-shadow:0 0 0 0 rgba(200,168,75,.6); }
+  50%  { transform:scale(1.18); box-shadow:0 0 0 8px rgba(200,168,75,0); }
+  100% { transform:scale(1);   box-shadow:0 0 14px rgba(200,168,75,.3); }
+}
+.habit-check.just-checked { animation:checkBurst .4s cubic-bezier(.2,.8,.3,1.2) forwards; }
+@keyframes beatAwaken {
+  from { opacity:0; transform:translateY(12px); }
+  to   { opacity:1; transform:none; }
+}
+.beat-inner.awakening { animation:beatAwaken .55s ease forwards; }
 .habit-body { flex:1; min-width:0; }
 .habit-name { font-size:16px; color:var(--text); font-weight:600; }
 .habit-meta { font-size:13px; color:var(--text-dark); margin-top:2px; }
 .habit-streak { font-size:12px; color:var(--gold-dim); margin-top:3px; }
+.habit-stat-badge {
+  font-family:'Cinzel',serif; font-size:9px; letter-spacing:.1em;
+  padding:1px 6px; border-radius:2px; border:1px solid;
+  display:inline-block; margin-left:4px; vertical-align:middle;
+  opacity:.7;
+}
+.habit-stat-badge.STR { color:#c87040; border-color:rgba(200,112,64,.3); background:rgba(200,112,64,.06); }
+.habit-stat-badge.WIS { color:#6090c8; border-color:rgba(96,144,200,.3); background:rgba(96,144,200,.06); }
+.habit-stat-badge.DIS { color:#7a9a60; border-color:rgba(122,154,96,.3); background:rgba(122,154,96,.06); }
 
-/* Beat section */
-.beat-section {
-  margin:16px 18px 0;
-  background:var(--surface); border:1px solid var(--border-mid);
-  border-radius:4px; overflow:hidden;
-  transition:border-color .3s;
+/* Stat bars in char modal */
+.char-stat-bars { padding:14px 18px 4px; border-top:1px solid var(--border); }
+.char-stat-bar-row {
+  display:flex; align-items:center; gap:10px; margin-bottom:10px;
 }
-.beat-section.has-beat { border-color:var(--border-gold); }
+.char-stat-bar-label {
+  font-family:'Cinzel',serif; font-size:9px; letter-spacing:.1em;
+  text-transform:uppercase; width:24px; flex-shrink:0;
+}
+.char-stat-bar-label.STR { color:#c87040; }
+.char-stat-bar-label.WIS { color:#6090c8; }
+.char-stat-bar-label.DIS { color:#7a9a60; }
+.char-stat-bar-track {
+  flex:1; height:4px; background:var(--surface2); border-radius:2px; overflow:hidden;
+}
+.char-stat-bar-fill {
+  height:100%; border-radius:2px; transition:width .5s ease;
+}
+.char-stat-bar-fill.STR { background:linear-gradient(90deg,#a05030,#e09060); }
+.char-stat-bar-fill.WIS { background:linear-gradient(90deg,#3060a0,#70a0e0); }
+.char-stat-bar-fill.DIS { background:linear-gradient(90deg,#4a7030,#8ab060); }
+.char-stat-bar-val {
+  font-family:'Cinzel',serif; font-size:10px; color:var(--text-dark);
+  width:16px; text-align:right; flex-shrink:0;
+}
+
+/* ══ UNIFIED SCROLL CARD ══
+   One parchment surface: beat → day close → chronicle
+   No internal borders — only ruled separator lines */
+.scroll-wrap {
+  margin: 16px 20px 0;
+  background:
+    linear-gradient(180deg, rgba(200,140,40,.06) 0%, rgba(10,8,4,0) 30%),
+    var(--surface);
+  border: 1px solid var(--border-gold);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+  box-shadow:
+    0 4px 30px rgba(0,0,0,.4),
+    0 0 60px rgba(200,140,40,.07),
+    inset 0 1px 0 rgba(200,168,75,.15),
+    inset 0 0 40px rgba(200,140,40,.03);
+}
+/* Ornamental top rule — slightly thicker for presence */
+.scroll-wrap::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px; z-index:2;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(200,168,75,.3) 15%,
+    var(--gold) 50%,
+    rgba(200,168,75,.3) 85%,
+    transparent 100%);
+}
+/* Subtle corner ornaments */
+.scroll-wrap::after {
+  content:''; position:absolute; top:0; left:0; right:0; bottom:0;
+  pointer-events:none; z-index:0;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(200,168,75,.04) 0%, transparent 40%),
+    radial-gradient(circle at 100% 100%, rgba(200,168,75,.03) 0%, transparent 40%);
+}
+
+/* Chronicle card — plain, no gold border or rule */
+.chronicle-wrap {
+  margin: 12px 20px 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* Beat — no own border, transparent bg, lives inside scroll */
+.beat-section { position:relative; background:transparent; border:none; }
 .beat-locked {
-  padding:14px 16px; font-size:14px; color:var(--text-dark);
-  font-style:italic; text-align:center;
+  padding: 28px 28px;
+  font-family:'Crimson Text',serif; font-size:16px; color:var(--text-dark);
+  font-style: italic; text-align: center; letter-spacing: .02em;
+  line-height: 1.9;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 28px,
+    rgba(200,168,75,.02) 28px,
+    rgba(200,168,75,.02) 29px
+  );
 }
-.beat-inner { padding:16px; display:none; animation:fadeIn .4s ease; }
-.beat-section.has-beat .beat-inner { display:block; }
-@keyframes fadeIn { from{opacity:0;transform:translateY(4px);} to{opacity:1;transform:translateY(0);} }
+.beat-inner {
+  padding: 22px 22px 20px;
+  display: none;
+  animation: fadeIn .5s ease;
+}
+.beat-section.has-beat .beat-inner { display: block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(5px);} to{opacity:1;transform:none;} }
 
 .beat-label {
-  font-family:'Cinzel',serif; font-size:9px; color:var(--text-dark);
-  text-transform:uppercase; letter-spacing:.2em; margin-bottom:10px;
-  display:flex; align-items:center; gap:6px;
+  font-family:'Cinzel',serif; font-size:9px; color:var(--gold-dim);
+  text-transform:uppercase; letter-spacing:.26em; margin-bottom:18px;
+  display:flex; align-items:center; gap:8px;
 }
 .beat-label-dot {
-  width:4px; height:4px; border-radius:50%; background:var(--gold-dim);
+  width:3px; height:3px; border-radius:50%;
+  background:var(--gold); box-shadow:0 0 6px rgba(200,168,75,.8);
+  flex-shrink: 0;
 }
 .beat-text {
-  font-size:16px; color:var(--text-mid); font-style:italic;
-  line-height:1.85; margin-bottom:14px;
+  font-size:20px; color:var(--text-mid); font-style:italic;
+  line-height:2.0; margin-bottom:24px;
+  font-family:'Crimson Text',serif;
+  text-shadow: 0 1px 20px rgba(200,140,40,.06);
 }
 .beat-outcome {
-  padding:10px 12px; border-radius:2px; margin-bottom:12px;
-  font-size:14px; line-height:1.6;
-  border-left:3px solid;
+  padding:10px 14px; margin-bottom:18px;
+  font-family:'Cinzel',serif; font-size:11px; letter-spacing:.05em;
+  line-height:1.7; border-left:2px solid; border-radius:0 2px 2px 0;
 }
-.beat-outcome.prevailed { border-color:var(--green); background:rgba(61,158,110,.06); color:var(--green); }
-.beat-outcome.setback { border-color:var(--orange); background:rgba(200,90,40,.06); color:var(--orange); }
+.beat-outcome.prevailed { border-color:var(--green); background:rgba(74,172,120,.06); color:var(--green); }
+.beat-outcome.setback   { border-color:var(--orange); background:rgba(200,96,48,.06);  color:var(--orange); }
 
 .pause-notice {
-  margin-bottom:12px; padding:10px 12px;
-  background:rgba(200,90,40,.06); border:1px solid rgba(200,90,40,.25);
+  margin-bottom:16px; padding:10px 14px;
+  background:rgba(200,90,40,.05); border:1px solid rgba(200,90,40,.18);
   border-radius:2px; font-size:13px; color:var(--orange); line-height:1.6;
 }
-.pause-notice strong { font-family:'Cinzel',serif; font-size:11px; letter-spacing:.08em; display:block; margin-bottom:3px; }
+.pause-notice strong { font-family:'Cinzel',serif; font-size:10px; letter-spacing:.1em; display:block; margin-bottom:3px; }
 
 .press-on {
-  width:100%; padding:11px; background:transparent;
-  border:1px solid var(--border-mid); border-radius:2px;
-  font-family:'Cinzel',serif; font-size:12px; color:var(--text-dim);
-  letter-spacing:.08em; cursor:pointer; transition:all .2s;
+  width:100%; padding:15px;
+  background: linear-gradient(180deg, rgba(200,168,75,.07) 0%, rgba(200,168,75,.03) 100%);
+  border: 1px solid var(--gold-dim); border-radius:2px;
+  font-family:'Cinzel',serif; font-size:13px; color:var(--gold);
+  letter-spacing:.2em; cursor:pointer; transition:all .2s;
 }
-.press-on:hover { border-color:var(--border-gold); color:var(--text); }
+.press-on:hover {
+  background:linear-gradient(180deg,rgba(200,168,75,.14) 0%,rgba(200,168,75,.07) 100%);
+  border-color:var(--gold);
+  box-shadow:0 0 24px rgba(200,168,75,.18);
+}
+.press-on:active { transform:scale(.99); opacity:.9; }
 
-/* Day summary (post press-on) */
-.day-summary {
-  margin:16px 18px 0; padding:12px 14px;
-  background:var(--surface); border:1px solid var(--border);
-  border-radius:3px; display:flex; align-items:center; gap:10px;
-  animation:fadeIn .3s ease;
+/* Encounter outcome flash after Press On */
+.press-on-outcome {
+  padding:12px 16px; margin:14px 0 0;
+  font-family:'Crimson Text',serif; font-size:16px; font-style:italic; line-height:1.6;
+  border-left:2px solid; border-radius:0 2px 2px 0;
+  animation:fadeIn .5s ease;
 }
-.day-summary-check { font-size:16px; color:var(--gold-dim); flex-shrink:0; }
-.day-summary-text { font-size:14px; color:var(--text-dim); font-style:italic; line-height:1.5; }
+.press-on-outcome.win  { border-color:var(--green);  color:var(--green);  background:rgba(74,172,120,.07); }
+.press-on-outcome.loss { border-color:var(--orange); color:var(--orange); background:rgba(200,96,48,.07); }
 
-/* Journey log */
-.journey-log {
-  margin:16px 18px 0;
-  background:var(--surface); border:1px solid var(--border);
-  border-radius:4px; overflow:hidden;
+/* Resolved state — flows at bottom of scroll card after Press On */
+.press-on-ritual {
+  padding:18px 22px 20px;
+  border-top:1px solid var(--border);
+  animation:fadeIn .6s ease;
 }
-.journey-log-header {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:12px 14px; cursor:pointer; -webkit-tap-highlight-color:transparent;
+.ritual-progress {
+  font-family:'Cinzel',serif; font-size:10px;
+  color:var(--gold-dim); letter-spacing:.14em; text-transform:uppercase;
+  margin-bottom:10px;
 }
-.journey-log-header:active { opacity:.7; }
-.journey-log-title { font-family:'Cinzel',serif; font-size:11px; color:var(--text-dim); letter-spacing:.12em; text-transform:uppercase; }
-.journey-log-count { font-size:12px; color:var(--text-dark); }
-.journey-log-chevron { font-size:12px; color:var(--text-dark); transition:transform .3s; }
-.journey-log.open .journey-log-chevron { transform:rotate(180deg); }
-.journey-log-body { display:none; border-top:1px solid var(--border); }
-.journey-log.open .journey-log-body { display:block; }
+.ritual-hook {
+  font-family:'Crimson Text',serif; font-size:17px;
+  color:var(--text-dim); font-style:italic; line-height:1.75;
+}
+
+/* Day close — ruled separator within scroll card */
+/* day-summary removed — resolved state inline in scroll card */
+
+/* Chronicle — flows below as natural continuation */
+#chronicle-wrap { border-top: 1px solid var(--border); }
+
+.chronicle-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 22px; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.chronicle-title {
+  display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0;
+}
+.chronicle-rule {
+  height: 1px; flex: 1;
+  background: linear-gradient(90deg, var(--border), transparent);
+}
+.chronicle-rule:last-child {
+  background: linear-gradient(270deg, var(--border), transparent);
+}
+.chronicle-label {
+  font-family:'Cinzel',serif; font-size:9px; color:var(--text-dark);
+  letter-spacing: .22em; text-transform: uppercase; white-space: nowrap;
+}
+.journey-log-chevron {
+  font-size: 11px; color: var(--text-dark);
+  transition: transform .3s; flex-shrink: 0; margin-left: 8px;
+}
+.chronicle-body { }
+
+/* Chronicle entries — same padding as beat, visual continuity */
 .journey-entry {
-  padding:12px 14px; border-bottom:1px solid var(--border);
-  display:flex; gap:10px; align-items:flex-start;
+  padding: 11px 22px;
+  border-top: 1px solid var(--border);
+  display: flex; gap: 14px; align-items: flex-start;
 }
-.journey-entry:last-child { border-bottom:none; }
-.je-left { display:flex; flex-direction:column; align-items:center; gap:4px; flex-shrink:0; min-width:38px; padding-top:2px; }
-.je-day { font-family:'Cinzel',serif; font-size:9px; color:var(--text-dark); letter-spacing:.08em; white-space:nowrap; }
-.je-type { font-size:13px; }
-.je-right { flex:1; min-width:0; }
-.je-line { font-size:14px; color:var(--text-dim); font-style:italic; line-height:1.5; margin-bottom:5px; }
-.log-outcome { font-size:12px; font-family:'Cinzel',serif; letter-spacing:.04em; padding:3px 0; margin-bottom:4px; }
+.je-left {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 3px; flex-shrink: 0; min-width: 30px; padding-top: 2px;
+}
+.je-day {
+  font-family:'Cinzel',serif; font-size:9px; color:var(--text-dark);
+  letter-spacing: .06em; white-space: nowrap;
+}
+.je-type { font-size: 11px; opacity: .4; }
+.je-right { flex: 1; min-width: 0; }
+.je-line {
+  font-size: 14px; color: var(--text-dim); font-style: italic;
+  line-height: 1.65; margin-bottom: 4px;
+  font-family:'Crimson Text',serif;
+}
+.log-outcome { font-size:11px; font-family:'Cinzel',serif; letter-spacing:.04em; padding:2px 0; margin-bottom:3px; }
 .log-outcome-win { color:var(--green); }
 .log-outcome-loss { color:var(--orange); }
-.log-attr { font-size:11px; font-family:'Cinzel',serif; letter-spacing:.06em; opacity:.7; }
-.c-onroad { color:var(--on-road); }
-.c-footsore { color:var(--footsore); }
-.c-gone { color:var(--gone); }
-.log-empty { padding:16px; font-size:14px; color:var(--text-dark); font-style:italic; text-align:center; }
+.log-attr { font-size:10px; font-family:'Cinzel',serif; letter-spacing:.06em; opacity:.45; }
+.c-onroad  { color:var(--on-road); }
+.c-footsore{ color:var(--footsore); }
+.c-gone    { color:var(--gone); }
+.log-empty { padding:18px 22px; font-size:13px; color:var(--text-dark); font-style:italic; text-align:center; }
+.je-pinned .je-line { font-size:16px; color:var(--text-mid); }
+.je-pinned .je-day { color:var(--gold-dim); }
 .log-show-more {
-  padding:12px 14px; font-family:'Cinzel',serif; font-size:11px;
-  color:var(--gold-dim); letter-spacing:.08em; cursor:pointer;
-  text-align:center; border-top:1px solid var(--border);
-  transition:color .2s;
+  padding: 9px 22px; font-family:'Cinzel',serif; font-size:10px;
+  color: var(--text-dark); letter-spacing: .12em; cursor: pointer;
+  text-align: center; border-top: 1px solid var(--border);
+  transition: color .2s; text-transform: uppercase;
 }
-.log-show-more:hover { color:var(--gold); }
+.log-show-more:hover { color:var(--gold-dim); }
 
 /* Weekly progress pips */
 .weekly-progress { display:flex; align-items:center; gap:4px; margin-top:5px; }
-.weekly-pip {
-  width:7px; height:7px; border-radius:50%;
-  border:1px solid var(--border-mid); background:var(--surface2);
-  transition:all .2s;
-}
+.weekly-pip { width:7px; height:7px; border-radius:50%; border:1px solid var(--border-mid); background:var(--surface2); transition:all .2s; }
 .weekly-pip.filled { background:var(--gold-dim); border-color:var(--gold); }
 .weekly-label { font-size:11px; color:var(--text-dark); margin-left:4px; font-family:'Cinzel',serif; letter-spacing:.06em; }
-
 .habit-row2 { display:flex; align-items:center; gap:8px; margin-top:3px; flex-wrap:wrap; }
 .habit-freq-tag { font-size:12px; color:var(--text-dark); }
 .habit-streak { font-size:12px; color:var(--gold-dim); }
+.streak-at-risk { font-size:12px; color:var(--orange); }
 
-/* Beat section polish */
-.beat-section { position:relative; }
-.beat-section.has-beat {
-  border-color:var(--border-gold) !important;
-  background:linear-gradient(180deg, var(--surface) 0%, rgba(20,16,8,1) 100%) !important;
-  box-shadow:inset 0 0 40px rgba(200,168,75,.03);
-}
-.beat-inner { padding:20px !important; }
-.beat-text { font-size:17px !important; line-height:2 !important; }
-.beat-outcome {
-  border-left:3px solid; padding:10px 14px; margin-bottom:14px;
-  font-size:14px; border-radius:0 3px 3px 0;
-}
-.beat-outcome.prevailed {
-  border-color:var(--green); background:rgba(61,158,110,.07); color:var(--green);
-  font-family:'Cinzel',serif; font-size:13px; letter-spacing:.04em;
-}
-.beat-outcome.setback {
-  border-color:var(--orange); background:rgba(200,90,40,.07); color:var(--orange);
-  font-family:'Cinzel',serif; font-size:13px; letter-spacing:.04em;
-}
-.press-on {
-  width:100%; padding:14px; background:rgba(200,168,75,.06);
-  border:1px solid var(--border-gold); border-radius:2px;
-  font-family:'Cinzel',serif; font-size:13px; color:var(--gold-dim);
-  letter-spacing:.1em; cursor:pointer; transition:all .25s;
-}
-.press-on:hover { background:rgba(200,168,75,.12); color:var(--gold); }
+/* Friends panel */
+.friends-wrap { margin:12px 20px 0; background:var(--surface); border:1px solid var(--border); border-radius:3px; overflow:hidden; }
+.friends-header { display:flex; align-items:center; justify-content:space-between; padding:11px 16px; cursor:pointer; }
+.friends-title { font-family:'Cinzel',serif; font-size:10px; color:var(--gold-dim); letter-spacing:.2em; text-transform:uppercase; }
+.friends-body { border-top:1px solid var(--border); }
+
 
 /* Habit card polish */
 .habit-card {
@@ -562,27 +1074,77 @@ html,body {
 /* Level up celebration */
 #levelup-overlay {
   position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
-  z-index:9990; opacity:0; pointer-events:none; transition:opacity .3s;
-  background:rgba(0,0,0,.7);
+  z-index:9990; opacity:0; pointer-events:none; transition:opacity .4s;
+  background: radial-gradient(ellipse at center, rgba(90,60,160,.3) 0%, rgba(0,0,0,.88) 100%);
+  backdrop-filter:blur(4px);
 }
 #levelup-overlay.show { opacity:1; pointer-events:all; }
 .levelup-box {
-  background:var(--surface); border:1px solid var(--border-gold);
-  border-radius:6px; padding:32px; text-align:center; max-width:300px;
-  box-shadow:0 0 60px rgba(200,168,75,.15);
-  animation:levelupIn .4s cubic-bezier(.34,1.56,.64,1) both;
+  background: linear-gradient(180deg, rgba(90,60,160,.1) 0%, var(--surface) 40%);
+  border:1px solid var(--border-gold);
+  border-radius:4px; padding:32px 28px; text-align:center; max-width:320px; width:90%;
+  box-shadow: 0 0 80px rgba(200,168,75,.15), 0 0 160px rgba(90,60,160,.1);
+  animation:levelupIn .5s cubic-bezier(.34,1.56,.64,1) both;
+  position:relative;
 }
-@keyframes levelupIn { from{transform:scale(.85);opacity:0;} to{transform:scale(1);opacity:1;} }
-.levelup-icon { font-size:40px; margin-bottom:12px; display:block; }
-.levelup-title { font-family:'Cinzel',serif; font-size:18px; color:var(--gold); margin-bottom:6px; }
-.levelup-node { font-size:15px; color:var(--text-mid); font-style:italic; margin-bottom:20px; line-height:1.6; }
+.levelup-box::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+@keyframes levelupIn { from{transform:scale(.8) translateY(20px);opacity:0;} to{transform:scale(1) translateY(0);opacity:1;} }
+.levelup-icon { font-size:44px; margin-bottom:14px; display:block; filter:drop-shadow(0 0 12px rgba(200,168,75,.4)); }
+.levelup-title { font-family:'Cinzel',serif; font-size:20px; color:var(--gold); margin-bottom:6px; letter-spacing:.04em; text-shadow:0 0 30px rgba(200,168,75,.4); }
+.levelup-node { font-size:15px; color:var(--text-mid); font-style:italic; margin-bottom:20px; line-height:1.7; }
 .levelup-close {
-  width:100%; padding:11px; background:transparent;
+  width:100%; padding:12px; background:rgba(200,168,75,.06);
   border:1px solid var(--border-gold); border-radius:2px;
-  font-family:'Cinzel',serif; font-size:12px; color:var(--gold);
-  letter-spacing:.08em; cursor:pointer; transition:all .2s;
+  font-family:'Cinzel',serif; font-size:12px; color:var(--gold-dim);
+  letter-spacing:.12em; cursor:pointer; transition:all .25s;
 }
-.levelup-close:hover { background:rgba(200,168,75,.1); }
+.levelup-close:hover { background:rgba(200,168,75,.14); color:var(--gold); }
+
+/* Arrival reward */
+.arrival-reward {
+  background: rgba(200,168,75,.06);
+  border: 1px solid var(--border-gold);
+  border-radius: 3px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+.arrival-coin {
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  letter-spacing: .06em;
+  margin-bottom: 6px;
+}
+.arrival-line {
+  font-size: 14px;
+  color: var(--text-dim);
+  font-style: italic;
+  margin-bottom: 4px;
+}
+.arrival-hp {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  color: var(--text-dark);
+  letter-spacing: .08em;
+}
+.arrival-total {
+  font-size: 16px;
+  color: var(--text-dim);
+  letter-spacing: .1em;
+  min-height: 22px;
+}
+
+/* HP at-risk sword badge */
+.hp-risk-badge {
+  font-size: 11px;
+  margin-left: 4px;
+  vertical-align: middle;
+  opacity: 0;
+  transition: opacity .3s;
+}
+.hp-risk-badge.visible { opacity: 1; }
 
 /* Character modal */
 #char-modal {
@@ -639,23 +1201,52 @@ html,body {
 /* Dev panel */
 .dev-panel {
   position:fixed; bottom:16px; right:16px; z-index:9995;
-  background:var(--surface3); border:1px solid var(--border-mid);
-  border-radius:4px; padding:10px 12px; font-size:11px;
+  background:#0c0b08; border:1px solid #2a2010;
+  border-radius:4px; font-size:11px;
   font-family:'Cinzel',serif; color:var(--text-dim);
-  box-shadow:0 4px 20px rgba(0,0,0,.5); min-width:150px;
+  box-shadow:0 8px 30px rgba(0,0,0,.7); width:200px;
+  overflow:hidden;
 }
-.dev-title { font-size:9px; color:var(--text-dark); text-transform:uppercase; letter-spacing:.18em; margin-bottom:8px; }
-.dev-info { font-size:10px; color:var(--text-dark); text-align:center; margin-bottom:6px; }
+.dev-panel-toggle {
+  padding:8px 12px; cursor:pointer; display:flex; align-items:center;
+  justify-content:space-between; border-bottom:1px solid #1a1508;
+  background:#111008; user-select:none;
+}
+.dev-panel-toggle:hover { background:#16130a; }
+.dev-title {
+  font-size:8px; color:#4a3e1a; text-transform:uppercase;
+  letter-spacing:.22em;
+}
+.dev-panel-chevron { font-size:9px; color:#3a3010; transition:transform .2s; }
+.dev-panel.open .dev-panel-chevron { transform:rotate(180deg); }
+.dev-body { display:none; padding:10px 10px 8px; }
+.dev-panel.open .dev-body { display:block; }
+.dev-state {
+  font-size:9px; color:#4a3e1a; line-height:1.8; margin-bottom:8px;
+  padding:6px 8px; background:#080704; border-radius:2px;
+  border:1px solid #1a1508; letter-spacing:.04em;
+}
+.dev-state span { color:#7a6228; }
+.dev-section { font-size:8px; color:#3a3010; letter-spacing:.18em; text-transform:uppercase; margin:8px 0 4px; }
 .dev-btn {
-  display:block; width:100%; padding:7px 10px; margin-bottom:5px;
-  background:var(--surface2); border:1px solid var(--border);
-  border-radius:2px; color:var(--text-dim); font-family:'Cinzel',serif;
-  font-size:11px; letter-spacing:.06em; cursor:pointer; text-align:center;
-  transition:all .15s;
+  display:block; width:100%; padding:6px 8px; margin-bottom:3px;
+  background:#0f0d07; border:1px solid #1e1908;
+  border-radius:2px; color:#5a4e28; font-family:'Cinzel',serif;
+  font-size:9px; letter-spacing:.07em; cursor:pointer; text-align:left;
+  transition:all .12s;
 }
-.dev-btn:last-child { margin-bottom:0; }
-.dev-btn:hover { border-color:var(--border-gold); color:var(--gold); }
-.dev-btn.danger { border-color:rgba(184,60,46,.4); color:var(--red); }
+.dev-btn:hover { border-color:#5a4818; color:var(--gold-dim); background:#141108; }
+.dev-btn.danger { color:#8a3020; border-color:#3a1810; }
+.dev-btn.danger:hover { color:var(--red); border-color:#6a2820; }
+.dev-btn-row { display:flex; gap:3px; }
+.dev-btn-row .dev-btn { text-align:center; flex:1; }
+.dev-input-row { display:flex; gap:4px; margin-bottom:3px; }
+.dev-input {
+  flex:1; background:#080704; border:1px solid #1a1508; border-radius:2px;
+  padding:5px 7px; font-family:'Cinzel',serif; font-size:9px; color:#7a6228;
+  width:100%;
+}
+.dev-input:focus { outline:none; border-color:#3a2e10; }
 
 </style>
 
@@ -685,12 +1276,12 @@ var EXAMPLES = [
 
 // ── NODES ──
 var NODES = [
-  { id:0, icon:'🏘️', name:'Hearthstone Village', zone:'The Starting Road',   daysNeeded:0  },
-  { id:1, icon:'🌾', name:'Harvest Crossing',     zone:'The Open Road',       daysNeeded:3  },
-  { id:2, icon:'🪨', name:'Merchant\'s Gate',     zone:'The Trade Roads',     daysNeeded:6  },
-  { id:3, icon:'🌉', name:'Copperbridge',          zone:'The River Crossing',  daysNeeded:13 },
-  { id:4, icon:'🌲', name:'Thornwood Edge',        zone:'The Deep Forest',     daysNeeded:20 },
-  { id:5, icon:'🏰', name:'The Iron Keep',         zone:'Journey\'s End',      daysNeeded:35 },
+  { id:0, icon:'🏘️', name:'Hearthstone Village', short:'Hearth',    zone:'The Starting Road',   daysNeeded:0  },
+  { id:1, icon:'🌾', name:'Harvest Crossing',     short:'Harvest',   zone:'The Open Road',       daysNeeded:3  },
+  { id:2, icon:'🪨', name:'Merchant\'s Gate',     short:'Merchant',  zone:'The Trade Roads',     daysNeeded:6  },
+  { id:3, icon:'🌉', name:'Copperbridge',          short:'Copper',    zone:'The River Crossing',  daysNeeded:13 },
+  { id:4, icon:'🌲', name:'Thornwood Edge',        short:'Thornwood', zone:'The Deep Forest',     daysNeeded:20 },
+  { id:5, icon:'🏰', name:'The Iron Keep',         short:'Iron Keep', zone:'Journey\'s End',      daysNeeded:35 },
 ];
 
 // ── NPC CAST ──
@@ -1053,6 +1644,10 @@ var S = {
   npcsSeen: [],
   chapter: 1,
   daysSinceEncounter: 0,
+  // Health
+  hp: 100,
+  maxHp: 100,
+  hpDamagedDate: null, // last date we applied damage, prevents double-hitting same day
   // Session (not persisted between days)
   todayBeat: null,
   todayBeatDate: null,
@@ -1132,6 +1727,9 @@ function fixState() {
   if (S.advancementPaused === undefined) S.advancementPaused = false;
   if (!S.pauseReason) S.pauseReason = '';
   if (!S.daysSinceEncounter) S.daysSinceEncounter = 0;
+  if (S.hp === undefined || S.hp === null) S.hp = 100;
+  if (!S.maxHp) S.maxHp = 100;
+  if (!S.coins) S.coins = { gold: 0, silver: 0, copper: 0 };
 
   // Reset streaks if user missed days — runs on every load so stale streaks
   // are never shown when returning after a gap.
@@ -1152,6 +1750,60 @@ function fixState() {
     var loggedRecently = log.indexOf(_today) !== -1 || log.indexOf(_yest) !== -1;
     if (!loggedRecently) h.streak = 0;
   });
+
+  // Apply HP damage for missed days since last login
+  applyMissedDayDamage(_today);
+  backfillHabitStats();
+}
+
+// HP drain: 15 HP per fully missed day (no habits logged at all), 7 HP for partial day
+// Recovery: +10 HP when all habits logged, capped at maxHp
+// Never damages the same calendar day twice
+function applyMissedDayDamage(_today) {
+  if (!S.habits || S.habits.length === 0) return;
+  if (!S.lastLogDate) return; // brand new player, no history
+
+  // Build set of all dates any habit was logged
+  var loggedDates = {};
+  S.habits.forEach(function(h) {
+    (h.log || []).forEach(function(d) { loggedDates[d] = true; });
+  });
+
+  // Walk backwards from yesterday to find unlogged days since lastLogDate
+  var lastLog = new Date(S.lastLogDate);
+  var todayD = new Date(_today);
+
+  // Count missed days between lastLogDate (exclusive) and today (exclusive)
+  var damage = 0;
+  var missedDays = 0;
+  var d = new Date(lastLog);
+  d.setDate(d.getDate() + 1); // start from day after last log
+
+  while (d < todayD) {
+    var ds = d.toDateString();
+    // Only damage days we haven't already processed
+    if (ds !== S.hpDamagedDate) {
+      var anyLogged = loggedDates[ds];
+      var allLogged = anyLogged && S.habits.every(function(h) {
+        return (h.log || []).indexOf(ds) !== -1;
+      });
+      if (!anyLogged) {
+        damage += 15; // full miss
+        missedDays++;
+      } else if (!allLogged) {
+        damage += 7; // partial
+        missedDays++;
+      }
+    }
+    d.setDate(d.getDate() + 1);
+  }
+
+  if (damage > 0) {
+    S.hp = Math.max(0, (S.hp || 100) - damage);
+    S.hpDamagedDate = _today;
+  }
+  // Store missed count regardless — show notice even if damage already applied this session
+  if (missedDays > 0) S._missedDaysOnLoad = missedDays;
 }
 
 function resetS() {
@@ -1163,12 +1815,82 @@ function resetS() {
     lastLogDate: null, sessionDate: null, pressedOn: false,
     beatsSeen: [], journeyLog: [], npcsSeen: [],
     chapter: 1, todayBeat: null, todayBeatDate: null,
+    hp: 100, maxHp: 100, hpDamagedDate: null,
+    coins: { gold: 0, silver: 0, copper: 0 },
   });
 }
 
 // ════════════════════════════════════════════════════════
 //  ENGINE
 // ════════════════════════════════════════════════════════
+
+// ── Stat scoring: how well have you done your STR/WIS/DIS habits in the last 7 days?
+// Returns 0–10. 10 = every STR habit logged every eligible day this week.
+// ── Character epithet — earned title from dominant habit pattern ──────────
+// Uses a longer 30-day window so it feels stable, not jittery.
+// Returns { text, stat } or null if no clear pattern.
+function getEpithet() {
+  if (!S.habits || S.habits.length === 0) return null;
+  var now = new Date();
+  if (_devOffset) now.setDate(now.getDate() + _devOffset);
+
+  // Score each stat over last 30 days
+  var scores = { STR: 0, WIS: 0, DIS: 0 };
+  var possible = { STR: 0, WIS: 0, DIS: 0 };
+  for (var i = 0; i < 30; i++) {
+    var d = new Date(now); d.setDate(d.getDate() - i);
+    var ds = d.toDateString();
+    S.habits.forEach(function(h) {
+      var stat = h.stat || 'WIS';
+      possible[stat]++;
+      if ((h.log || []).indexOf(ds) !== -1) scores[stat]++;
+    });
+  }
+
+  // Find dominant stat — must be at least 30% of possible days and 20% more than next highest
+  var statKeys = ['STR','WIS','DIS'];
+  var best = null, bestPct = 0;
+  statKeys.forEach(function(k) {
+    if (possible[k] === 0) return;
+    var pct = scores[k] / possible[k];
+    if (pct > bestPct) { bestPct = pct; best = k; }
+  });
+
+  if (!best || bestPct < 0.3) return null;
+
+  // Tiers by consistency: casual / consistent / devoted
+  var tier = bestPct >= 0.75 ? 2 : bestPct >= 0.5 ? 1 : 0;
+
+  var epithets = {
+    STR: ['the Hardy', 'the Strong', 'the Relentless'],
+    WIS: ['the Keen',  'the Wise',   'the Cunning'   ],
+    DIS: ['the Steady','the Steadfast','the Iron-Willed'],
+  };
+
+  return { text: epithets[best][tier], stat: best };
+}
+
+function getStat(statKey) {
+  var statHabits = S.habits.filter(function(h) { return h.stat === statKey; });
+  if (statHabits.length === 0) return 0;
+  var totalPossible = 0;
+  var totalLogged = 0;
+  var now = new Date();
+  if (_devOffset) now.setDate(now.getDate() + _devOffset);
+  for (var i = 0; i < 7; i++) {
+    var d = new Date(now); d.setDate(d.getDate() - i);
+    var ds = d.toDateString();
+    statHabits.forEach(function(h) {
+      var freq = parseInt(h.freq) || (h.freq === 'daily' ? 7 : 3);
+      // Daily habits count every day; weekly habits count proportionally
+      var dailyWeight = h.freq === 'daily' ? 1 : freq / 7;
+      totalPossible += dailyWeight;
+      if ((h.log || []).indexOf(ds) !== -1) totalLogged += dailyWeight;
+    });
+  }
+  if (totalPossible === 0) return 0;
+  return Math.round((totalLogged / totalPossible) * 10);
+}
 
 function getConsistency() {
   // Collect all unique logged dates across all habits
@@ -1204,7 +1926,15 @@ function getConsistency() {
 
 function allLoggedToday() {
   var t = today();
-  return S.habits.length > 0 && S.habits.every(function(h) {
+  var dailyHabits = S.habits.filter(function(h) { return h.freq === 'daily'; });
+  if (dailyHabits.length > 0) {
+    // Must log all daily habits
+    return dailyHabits.every(function(h) {
+      return (h.log || []).indexOf(t) !== -1;
+    });
+  }
+  // Weekly-only player: beat fires only on days they actually logged something
+  return S.habits.some(function(h) {
     return (h.log || []).indexOf(t) !== -1;
   });
 }
@@ -1241,13 +1971,27 @@ function doLog(habitId) {
 
   save();
 
-  // Animate the check
+  // Animate check — gold burst
   var tap = document.getElementById('habit-check-' + habitId);
-  if (tap) { tap.className = 'habit-check done'; tap.textContent = '✓'; }
+  if (tap) {
+    tap.textContent = '✓';
+    tap.className = 'habit-check done just-checked';
+    setTimeout(function() { tap.classList.remove('just-checked'); }, 450);
+  }
 
-  // If all habits now logged, fire the beat
   if (allLoggedToday()) {
-    processDayComplete();
+    // Let the last burst animation breathe, then fire
+    setTimeout(function() {
+      processDayComplete();
+      // Awaken beat section after render
+      setTimeout(function() {
+        var inner = document.getElementById('beat-inner');
+        if (inner && inner.style.display !== 'none') {
+          inner.classList.add('awakening');
+          setTimeout(function() { inner.classList.remove('awakening'); }, 650);
+        }
+      }, 80);
+    }, 260);
   } else {
     render();
   }
@@ -1260,6 +2004,10 @@ function processDayComplete() {
   S.sessionDate = t;
   S.lastLogDate = t;
   S.pressedOn = false;
+
+  // HP recovery: +10 per fully logged day, cap at maxHp
+  S.hp = Math.min(S.maxHp || 100, (S.hp || 100) + 10);
+  S._missedDaysOnLoad = 0; // clear wound notice once they've logged
 
   var consistency = getConsistency();
 
@@ -1281,6 +2029,22 @@ function processDayComplete() {
       nodeAdvanced = true;
       S.advancementPaused = false;
       S.pauseReason = '';
+
+      // Award coins based on HP at arrival
+      if (!S.coins) S.coins = { gold: 0, silver: 0, copper: 0 };
+      var arrivalHp = Math.max(0, Math.min(S.maxHp || 100, S.hp || 100));
+      var arrivalPct = arrivalHp / (S.maxHp || 100);
+      if (arrivalPct >= 0.8) {
+        S.coins.gold++;
+        S._lastArrivalReward = 'gold';
+      } else if (arrivalPct >= 0.4) {
+        S.coins.silver++;
+        S._lastArrivalReward = 'silver';
+      } else {
+        S.coins.copper++;
+        S._lastArrivalReward = 'copper';
+      }
+      S._lastArrivalHp = arrivalHp;
     }
   } else if (consistency === 'gone') {
     // gone_to_ground never advances
@@ -1409,58 +2173,63 @@ function getBeatText(beat) {
 function getEncounterOutcome(beat) {
   if (!beat || beat.type !== 'encounter') return null;
   var c = getConsistency();
+  // On the road always prevails
   if (c === 'on_road') return { type: 'prevailed', text: beat.encounter.prevailed.text };
+  // Gone to ground always fails
+  if (c === 'gone') return { type: 'setback', text: beat.encounter.setback.text };
+  // Footsore: STR score >= 6 means your body carried you through
+  var str = getStat('STR');
+  if (str >= 6) return { type: 'prevailed', text: beat.encounter.prevailed.text };
   return { type: 'setback', text: beat.encounter.setback.text };
 }
 
 // Press On ritual teasers by node
-var RITUAL_TEASERS = [
-  'The road north is quieter than it should be.',
-  "Malachar's people are moving. So are you.",
-  'The black tower mark keeps appearing. Someone is watching.',
-  "Aldric said the road remembers. You're starting to believe him.",
-  'Six days. The council meets. You need to move.',
-  'Sera is still out there. Keep moving.',
-  "The Iron Keep is closer than it's ever been.",
-  'Every day you show up is a day his plan falls further behind.',
-  "The road doesn't care about intentions. Only what gets done.",
-  'Tomorrow the road continues. So do you.',
-];
+// RITUAL_TEASERS removed — TEASERS array used directly in pressOn
 
 function pressOn() {
   S.pressedOn = true;
   save();
 
-  // Show ritual moment
   var inner = document.getElementById('beat-inner');
-  if (inner) {
-    var node = S.currentNode || 0;
-    var teaserPool = RITUAL_TEASERS.filter(function(t, i) {
-      // Weight teasers toward current node
-      return true;
-    });
-    var teaser = teaserPool[Math.floor(Math.random() * teaserPool.length)];
-    var streak = Math.max.apply(null, S.habits.map(function(h){ return h.streak||0; }).concat([0]));
+  if (!inner) { renderJourneyLog(); return; }
 
-    inner.innerHTML = '<div class="press-on-ritual">' +
-      '<div class="ritual-line">' + esc(teaser) + '</div>' +
-      '<div class="ritual-day">Day ' + S.daysLogged + ' complete · 🔥 ' + streak + ' day streak</div>' +
-    '</div>';
+  // Remove Press On button immediately
+  var btn = inner.querySelector('.press-on');
+  if (btn) btn.remove();
 
-    // Pulse avatar on node map
-    setTimeout(function() {
-      var av = document.querySelector('.node-avatar');
-      if (av) { av.style.transform = 'scale(1.4)'; setTimeout(function() { av.style.transform = ''; }, 400); }
-    }, 200);
-
-    // Fade out after 2.5s then show day summary
-    setTimeout(function() {
-      inner.style.display = 'none';
-      renderDaySummary();
-    }, 2500);
-  } else {
-    renderDaySummary();
+  // Encounter outcome — inline, same voice as beat text
+  var beat = S.todayBeat;
+  var isEncounter = beat && beat.type === 'encounter';
+  var outcome = isEncounter ? getEncounterOutcome(beat) : null;
+  if (outcome) {
+    var od = document.createElement('div');
+    od.className = 'press-on-outcome ' + (outcome.type === 'prevailed' ? 'win' : 'loss');
+    od.textContent = outcome.text;
+    inner.appendChild(od);
   }
+
+  // Single resolved state — day count + progress + tomorrow hook
+  var dtnn = daysToNextNode();
+  var nextNode = NODES[S.currentNode + 1];
+  var progressLine = dtnn === null ? 'Journey complete.' :
+    dtnn === 0 ? 'Arriving at ' + nextNode.name + '.' :
+    dtnn === 1 ? '1 day to ' + nextNode.name + '.' :
+    dtnn + ' days to ' + nextNode.name + '.';
+
+  // Tomorrow hook — pick from TEASERS, node-appropriate
+  var teaserPool = TEASERS.filter(function(t) { return !t.node || t.node <= S.currentNode; });
+  if (teaserPool.length === 0) teaserPool = TEASERS;
+  var tHook = teaserPool[S.daysLogged % teaserPool.length].text;
+
+  var rd = document.createElement('div');
+  rd.className = 'press-on-ritual';
+  rd.innerHTML =
+    '<div class="ritual-progress">Day ' + S.daysLogged + ' · ' + esc(progressLine) + '</div>' +
+    '<div class="ritual-hook">' + esc(tHook) + '</div>';
+  inner.appendChild(rd);
+
+  // Chronicle updates after beat settles
+  setTimeout(renderJourneyLog, 600);
 }
 
 function daysToNextNode() {
@@ -1726,8 +2495,8 @@ function goToMain() {
   showScreen('main');
   setTimeout(function() {
     render();
-    renderNodeMap(); // ensure map renders on load since it's default open
-    if (_user) loadFriends(); // load friends when entering main
+    renderFriends(); // show self row immediately, friends load async
+    if (_user) loadFriends();
   }, 50);
 }
 
@@ -1750,13 +2519,22 @@ function weeklyCount(h) {
 
 function inferStat(text) {
   var l = (text || '').toLowerCase();
-  var STR = ['workout','exercise','run','lift','train','walk','swim','stretch','hike','cycle','gym','weights','cardio','sport','physical','push','pull','yoga','bike'];
-  var DIS = ['sugar','alcohol','spend','budget','screen','phone','quit','cut','reduce','track','diet','calories','sleep','fast','sober','no ','less ','stop ','limit','journal'];
+  var STR = ['workout','exercise','run','lift','train','walk','swim','stretch','hike','cycle','gym','weights','cardio','sport','physical','push','pull','yoga','bike','jog','climb','row','crossfit','martial','fight','spar','drill'];
+  var DIS = ['sugar','alcohol','spend','budget','screen','phone','quit','cut','reduce','track','diet','calories','sleep','fast','sober','no ','less ','stop ','limit','journal','cold','smoke','drink','limit','scroll'];
   var sScore = STR.filter(function(k) { return l.indexOf(k) !== -1; }).length;
   var dScore = DIS.filter(function(k) { return l.indexOf(k) !== -1; }).length;
   if (sScore > 0 && sScore >= dScore) return 'STR';
   if (dScore > 0) return 'DIS';
   return 'WIS';
+}
+
+// Backfill stat for any habits that were created before stat field existed
+function backfillHabitStats() {
+  var changed = false;
+  S.habits.forEach(function(h) {
+    if (!h.stat) { h.stat = inferStat(h.text); changed = true; }
+  });
+  if (changed) save();
 }
 
 // ════════════════════════════════════════════════════════
@@ -1767,7 +2545,7 @@ function render() {
   renderCharBar();
   renderHabits();
   renderBeatSection();
-  renderDaySummary();
+  // day summary + teaser now handled inline by pressOn
   renderNodeMap();
   renderJourneyLog();
   renderDevPanel();
@@ -1782,13 +2560,90 @@ function renderCharBar() {
 
   var av = document.getElementById('main-avatar'); if(av) av.textContent = race.icon;
   document.getElementById('char-name').textContent = S.name || 'Traveler';
-  document.getElementById('char-meta').textContent = cls.icon + ' ' + cls.name + ' · ' + node.zone;
-  document.getElementById('streak-val').textContent = streak;
+  var epithet = getEpithet();
+  var metaParts = [cls.name];
+  if (epithet) metaParts.push(epithet.text);
+  document.getElementById('char-meta').textContent = metaParts.join(' · ');
+  // streak-val removed from char bar
+  var streakRow = document.getElementById('char-streak-row');
+  var streakValEl = document.getElementById('streak-val');
+  if (streakRow && streakValEl) {
+    var daysEl = document.getElementById('days-logged-val');
+    if (streak > 0) {
+      streakValEl.textContent = streak;
+      if (daysEl) daysEl.textContent = S.daysLogged || 0;
+      streakRow.style.display = 'flex';
+    } else if ((S.daysLogged || 0) > 0) {
+      streakValEl.textContent = '0';
+      if (daysEl) daysEl.textContent = S.daysLogged || 0;
+      streakRow.style.display = 'flex';
+    } else {
+      streakRow.style.display = 'none';
+    }
+  }
 
-  var pill = document.getElementById('consistency-pill');
-  var pillLabels = { on_road:'On the Road', footsore:'Footsore', gone:'Gone to Ground' };
-  pill.textContent = pillLabels[consistency] || 'On the Road';
-  pill.className = 'consistency-pill ' + (consistency === 'on_road' ? 'on-road' : consistency === 'footsore' ? 'footsore' : 'gone');
+  // consistency pill removed — HP bar handles this now
+
+  // ── HP bar — three states, color only (no animation) ──
+  var hp     = Math.max(0, Math.min(S.maxHp || 100, S.hp || 100));
+  var maxHp  = S.maxHp || 100;
+  var pct    = (hp / maxHp) * 100;
+  var loggedTodayAny = S.habits.length > 0 && S.habits.some(function(h) {
+    return (h.log || []).indexOf(today()) !== -1;
+  });
+  var hasActiveStreak = S.habits.some(function(h) { return (h.streak || 0) > 0; });
+  var missedDays = S._missedDaysOnLoad || 0;
+
+  var vState, vStateColor;
+  if (missedDays > 0 && S.sessionDate !== today()) {
+    vState = 'state-wounded';
+    vStateColor = 'var(--red)';
+  } else if (!loggedTodayAny && hasActiveStreak) {
+    vState = 'state-atrisk';
+    vStateColor = 'var(--orange)';
+  } else {
+    vState = 'state-healthy';
+    vStateColor = 'var(--green)';
+  }
+
+  var fill    = document.getElementById('hp-fill');
+  var stateEl = document.getElementById('vitality-state');
+  var badge   = document.getElementById('hp-risk-badge');
+  if (fill) {
+    fill.style.width = pct + '%';
+    fill.className = 'vitality-fill ' + vState;
+  }
+  if (stateEl) stateEl.style.color = vStateColor;
+  if (badge) badge.className = 'hp-risk-badge' + (vState === 'state-atrisk' ? ' visible' : '');
+
+  // Atmospheric absence notice
+  var notice = document.getElementById('wound-notice');
+  if (notice) {
+    var missed = S._missedDaysOnLoad || 0;
+    if (missed > 0 && S.sessionDate !== today()) {
+      var msgs = [
+        { who:'Aldric', line: missed + ' day' + (missed>1?'s':'') + ' off the road. The black tower network doesn\'t rest.' },
+        { who:'Sera',   line: '"Still here. Still waiting. The window doesn\'t stay open." ' + missed + ' day' + (missed>1?'s':'') + ' gone.' },
+        { who:null,     line: missed + ' day' + (missed>1?'s':'') + ' passed. The waymarkers kept count. The trail is still there.' },
+        { who:'Aldric', line: '"' + missed + ' day' + (missed>1?'s':'') + '." Just that. The way a soldier says a number with consequences.' },
+      ];
+      var msg = msgs[(missed + (S.daysLogged||0)) % msgs.length];
+      var hdr = msg.who
+        ? '<span style="font-family:\'Cinzel\',serif;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#b06040;display:block;margin-bottom:5px;">\u2212' + (missed*15) + ' HP \u00b7 ' + msg.who + ' sent word</span>'
+        : '<span style="font-family:\'Cinzel\',serif;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#b06040;display:block;margin-bottom:5px;">\u2212' + (missed*15) + ' HP \u00b7 The road moved on</span>';
+      notice.innerHTML = hdr + esc(msg.line);
+      notice.style.display = 'block';
+    } else {
+      notice.style.display = 'none';
+    }
+  }
+
+  // Show/hide friends panel — always show (player is always in it)
+  var fw = document.getElementById('friends-wrap');
+  if (fw) fw.style.display = 'block';
+
+  // Show/hide chronicle — only show when there are entries
+  // chronicle visibility handled by renderJourneyLog
 
   // Update friends count
   var fcEl = document.getElementById('friends-count');
@@ -1805,7 +2660,12 @@ function renderHabits() {
     card.className = 'habit-card' + (done ? ' logged' : '');
 
     var freqLabel = h.freq === 'daily' ? 'Daily' : h.freq + '× per week';
-    var streakText = (h.streak || 0) > 1 ? '🔥 ' + h.streak + ' day streak' : '';
+
+    // Streak — only show when logged (bar handles the at-risk warning)
+    var streakHtml = '';
+    if ((h.streak || 0) > 1 && done) {
+      streakHtml = '<span class="habit-streak">🔥 ' + h.streak + ' day streak</span>';
+    }
 
     // Weekly progress for non-daily habits
     var weeklyHtml = '';
@@ -1826,7 +2686,8 @@ function renderHabits() {
         '<div class="habit-name">' + esc(h.text) + '</div>' +
         '<div class="habit-row2">' +
           '<span class="habit-freq-tag">' + freqLabel + '</span>' +
-          (streakText ? '<span class="habit-streak">' + streakText + '</span>' : '') +
+          (h.stat ? '<span class="habit-stat-badge ' + h.stat + '">' + h.stat + '</span>' : '') +
+          streakHtml +
         '</div>' +
         weeklyHtml +
       '</div>' +
@@ -1841,6 +2702,13 @@ function renderBeatSection() {
   var inner = document.getElementById('beat-inner');
   var allDone = allLoggedToday();
   var hasBeat = S.sessionDate === today() && S.todayBeat;
+  // Set locked text based on habit types
+  if (locked) {
+    var hasDaily = S.habits.some(function(h) { return h.freq === 'daily'; });
+    locked.textContent = hasDaily
+      ? "Log today’s habits to see what happens on the road."
+      : "Log a habit today to continue the road.";
+  }
 
   if (!allDone && !hasBeat) {
     section.classList.remove('has-beat');
@@ -1856,7 +2724,8 @@ function renderBeatSection() {
   inner.style.display = 'block';
 
   if (S.pressedOn) {
-    inner.style.display = 'none';
+    // Resolved state is already rendered inside inner by pressOn() — keep visible
+    // but don't re-render the beat (it was built live)
     return;
   }
 
@@ -1894,145 +2763,126 @@ function renderBeatSection() {
   inner.innerHTML = html;
 }
 
-function renderDaySummary() {
-  var area = document.getElementById('day-summary-area');
-  area.innerHTML = '';
-  if (!S.pressedOn || S.sessionDate !== today()) return;
-  var el = document.createElement('div');
-  el.className = 'day-summary';
-  var node = NODES[S.currentNode] || NODES[0];
-  var consistency = getConsistency();
-  var stateLabel = consistency === 'on_road' ? 'On the Road' : consistency === 'footsore' ? 'Footsore' : 'Gone to Ground';
-  el.innerHTML = '<div class="day-summary-check">✓</div>' +
-    '<div class="day-summary-text">Day ' + S.daysLogged + ' logged · ' + node.name + ' · ' + stateLabel + '. Come back tomorrow.</div>';
-  area.appendChild(el);
-}
+// renderDaySummary removed — handled inline in pressOn
 
 function renderNodeMap() {
   var inner = document.getElementById('node-map-inner');
   if (!inner) return;
   inner.innerHTML = '';
 
+  var curNode  = NODES[S.currentNode] || NODES[0];
+  var nextNode = NODES[S.currentNode + 1];
+  var dtnn     = daysToNextNode();
+
+  // Total journey days = last node's daysNeeded
+  var totalDays = NODES[NODES.length - 1].daysNeeded;
+  var pct = Math.min(100, Math.round(((S.daysLogged || 0) / totalDays) * 100));
+
+  // ── Current location header ──
+  var subText = !nextNode ? 'Journey complete.' :
+    dtnn === 0 ? 'Arriving at ' + nextNode.name + '…' :
+    dtnn === 1 ? '1 day to ' + nextNode.name :
+    dtnn + ' days to ' + nextNode.name;
+
+  var header = document.createElement('div');
+  header.className = 'map-current-row';
+  header.innerHTML =
+    '<div class="map-current-icon">' + curNode.icon + '</div>' +
+    '<div>' +
+      '<div class="map-current-name">' + curNode.name + '</div>' +
+      '<div class="map-current-sub">' + subText + '</div>' +
+    '</div>';
+  inner.appendChild(header);
+
+  // ── Progress bar ──
   var track = document.createElement('div');
-  track.className = 'node-track';
-
-  NODES.forEach(function(node) {
-    var isDone = node.id < S.currentNode;
-    var isCurrent = node.id === S.currentNode;
-    var item = document.createElement('div');
-    item.className = 'node-item';
-
-    var dot = document.createElement('div');
-    dot.className = 'node-dot ' + (isDone ? 'done' : isCurrent ? 'current' : '');
-    dot.textContent = node.icon;
-
-    var info = document.createElement('div');
-    var label = document.createElement('div');
-    label.className = 'node-label ' + (isDone ? 'done' : isCurrent ? 'current' : 'ahead');
-    label.textContent = node.name;
-
-    info.appendChild(label);
-
-    if (isCurrent) {
-      var race = RACES.find(function(r) { return r.id === S.race; }) || RACES[0];
-      var av = document.createElement('div');
-      av.className = 'node-avatar';
-      av.textContent = race.icon;
-      item.appendChild(dot);
-      item.appendChild(info);
-      item.appendChild(av);
-    } else {
-      item.appendChild(dot);
-      item.appendChild(info);
-    }
-
-    track.appendChild(item);
-  });
-
+  track.className = 'map-progress-track';
+  var fill = document.createElement('div');
+  fill.className = 'map-progress-fill';
+  fill.style.width = Math.max(2, pct) + '%';
+  track.appendChild(fill);
   inner.appendChild(track);
 
-  var dtnn = daysToNextNode();
-  if (dtnn !== null) {
-    var note = document.createElement('div');
-    note.className = 'days-to-next';
-    if (S.currentNode >= 5) {
-      note.textContent = 'Journey complete. Chapter 2 begins when you\'re ready.';
-    } else if (dtnn === 0) {
-      note.textContent = 'Advancing to next waypoint...';
-    } else {
-      var nextNode = NODES[S.currentNode + 1];
-      note.textContent = dtnn + ' consistent day' + (dtnn === 1 ? '' : 's') + ' to ' + (nextNode ? nextNode.name : 'the next waypoint') + '.';
-    }
-    inner.appendChild(note);
-  }
+  // ── Milestone labels ──
+  var milestones = document.createElement('div');
+  milestones.className = 'map-milestones';
+  NODES.forEach(function(node) {
+    var state = node.id < S.currentNode ? 'done' : node.id === S.currentNode ? 'current' : 'ahead';
+    var m = document.createElement('div');
+    m.className = 'map-milestone';
+    m.innerHTML =
+      '<div class="map-milestone-tick"></div>' +
+      '<div class="map-milestone-label ' + state + '">' + node.short + '</div>';
+    milestones.appendChild(m);
+  });
+  inner.appendChild(milestones);
 
-  // Update map header sub
-  var node = NODES[S.currentNode] || NODES[0];
-  var next = NODES[S.currentNode + 1];
-  document.getElementById('node-map-sub').textContent =
-    node.name + (next ? ' → ' + next.name : ' · Journey complete');
+  // Clear old footer text (now inline in header)
+  var subEl = document.getElementById('node-map-sub');
+  if (subEl) subEl.textContent = '';
 }
+
+// Tomorrow hook teasers — used inline in pressOn
+var TEASERS = [
+  { text: 'Someone was asking about you at the last waypoint.' },
+  { text: 'Movement in the tree line. Something is tracking the road.' },
+  { text: 'Aldric left a mark on the waymarker. You haven\'t figured out what it means.' },
+  { text: 'The black tower mark keeps appearing.' },
+  { text: 'Fresh tracks. Someone is moving faster than you.' },
+  { text: 'A folded note appeared under your pack overnight.' },
+  { text: 'The next waypoint is closer than the maps suggest.' },
+  { text: 'Sera sent word ahead. Something is waiting.' },
+  { text: 'The road north bends toward the Keep. It\'s starting to feel real.' },
+  { text: 'The road remembers who shows up.' },
+];
 
 var _logExpanded = false;
 function renderJourneyLog() {
   var body = document.getElementById('journey-log-body');
-  var countEl = document.getElementById('journey-log-count');
+  var wrap = document.getElementById('chronicle-wrap');
   if (!body) return;
-  countEl.textContent = S.journeyLog.length + ' entries';
   body.innerHTML = '';
-  if (S.journeyLog.length === 0) {
-    body.innerHTML = '<div class="log-empty">Your journey log is empty. Log your first habit to begin.</div>';
+  if (wrap) wrap.style.display = 'block';
+
+  if (!S.journeyLog || S.journeyLog.length === 0) {
+    body.innerHTML = '<div style="padding:18px 22px;font-family:\'Crimson Text\',serif;font-size:15px;color:var(--text-dark);font-style:italic;text-align:center;line-height:1.9;">Your chronicle begins the first time you press on.<br>The road remembers everything.</div>';
     return;
   }
 
   var entries = S.journeyLog;
-  var showAll = _logExpanded || entries.length <= 10;
-  var toShow = showAll ? entries : entries.slice(0, 10);
 
-  toShow.forEach(function(entry) {
+  // Render all entries using the same je-* structure — pinned first is just the first one
+  var showAll = _logExpanded || entries.length <= 3;
+  var toShow = showAll ? entries : entries.slice(0, 3);
+
+  toShow.forEach(function(entry, idx) {
     var div = document.createElement('div');
-    div.className = 'journey-entry';
-
-    // Beat type icon
-    var typeIcon = entry.beatType === 'encounter' ? '⚔️' : entry.beatType === 'arrival' ? '🏁' : '🛤️';
-    // Consistency color class
+    div.className = 'journey-entry' + (idx === 0 ? ' je-pinned' : '');
+    var typeIcon = entry.beatType === 'encounter' ? '⚔' : entry.beatType === 'arrival' ? '⬡' : '·';
     var cClass = entry.consistency === 'on_road' ? 'c-onroad' : entry.consistency === 'footsore' ? 'c-footsore' : 'c-gone';
-    // Outcome line
     var outcomeHtml = '';
     if (entry.outcome) {
-      var outcomeIcon = entry.outcome.type === 'prevailed' ? '✦' : '✧';
-      var outcomeClass = entry.outcome.type === 'prevailed' ? 'log-outcome-win' : 'log-outcome-loss';
-      outcomeHtml = '<div class="log-outcome ' + outcomeClass + '">' + outcomeIcon + ' ' + esc(entry.outcome.text) + '</div>';
+      var oClass = entry.outcome.type === 'prevailed' ? 'log-outcome-win' : 'log-outcome-loss';
+      outcomeHtml = '<div class="log-outcome ' + oClass + '">' + esc(entry.outcome.text) + '</div>';
     }
-    // Consistency attribution
-    var attrHtml = '<div class="log-attr ' + cClass + '">' +
-      entry.consistencyLabel +
-      (entry.streak > 1 ? ' · 🔥 ' + entry.streak + ' day streak' : '') +
-      '</div>';
-
     div.innerHTML =
-      '<div class="je-left">' +
-        '<div class="je-day">Day ' + entry.day + '</div>' +
-        '<div class="je-type">' + typeIcon + '</div>' +
-      '</div>' +
-      '<div class="je-right">' +
-        '<div class="je-line">' + esc(entry.logLine) + '</div>' +
-        outcomeHtml +
-        attrHtml +
-      '</div>';
+      '<div class="je-left"><div class="je-day">Day ' + entry.day + '</div><div class="je-type">' + typeIcon + '</div></div>' +
+      '<div class="je-right"><div class="je-line">' + esc(entry.logLine) + '</div>' + outcomeHtml +
+      '<div class="log-attr ' + cClass + '">' + entry.consistencyLabel + '</div></div>';
     body.appendChild(div);
   });
 
   if (!showAll) {
+    var hidden = rest.length - 2;
     var more = document.createElement('div');
     more.className = 'log-show-more';
-    more.textContent = 'Show all ' + entries.length + ' entries';
+    more.textContent = 'Recall ' + hidden + ' earlier ' + (hidden===1?'day':'days') + ' on the road →';
     more.onclick = function() { _logExpanded = true; renderJourneyLog(); };
     body.appendChild(more);
-  } else if (_logExpanded && entries.length > 10) {
+  } else if (_logExpanded && rest.length > 2) {
     var less = document.createElement('div');
     less.className = 'log-show-more';
-    less.textContent = 'Show less';
+    less.textContent = '← return to recent days';
     less.onclick = function() { _logExpanded = false; renderJourneyLog(); };
     body.appendChild(less);
   }
@@ -2040,22 +2890,29 @@ function renderJourneyLog() {
 
 function renderDevPanel() {
   var el = document.getElementById('dev-info');
-  if (el) {
-    el.textContent = 'Day ' + S.daysLogged + ' · Node ' + S.currentNode + ' · +'  + _devOffset;
-  }
-}
-
-// ── Map toggle ──
-function toggleMap() {
-  var m = document.getElementById('node-map-wrap');
-  m.classList.toggle('open');
-  if (m.classList.contains('open')) renderNodeMap();
+  if (!el) return;
+  var c = getConsistency();
+  var ep = getEpithet();
+  var str = getStat('STR'), wis = getStat('WIS'), dis = getStat('DIS');
+  var hp = Math.round(S.hp || 100);
+  var node = NODES[S.currentNode] || NODES[0];
+  el.innerHTML =
+    'Day <span>' + S.daysLogged + '</span> · offset <span>+' + _devOffset + '</span><br>' +
+    'Node <span>' + S.currentNode + '</span> · ' + node.short + '<br>' +
+    'HP <span>' + hp + '</span> · ' + c.replace('_',' ') + '<br>' +
+    'STR <span>' + str + '</span> · WIS <span>' + wis + '</span> · DIS <span>' + dis + '</span><br>' +
+    'Epithet: <span>' + (ep ? ep.text : 'none') + '</span>';
 }
 
 // ── Journey log toggle ──
 function toggleJourneyLog() {
-  var j = document.getElementById('journey-log-wrap');
-  j.classList.toggle('open');
+  var body = document.getElementById('journey-log-body');
+  var chevron = document.getElementById('chronicle-chevron');
+  if (!body) return;
+  var isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : 'block';
+  if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+  if (!isOpen) renderJourneyLog();
 }
 
 // ── Character modal ──
@@ -2068,13 +2925,27 @@ function openCharModal() {
 
   document.getElementById('cm-avatar').textContent = race.icon;
   document.getElementById('cm-name').textContent = S.name || 'Traveler';
-  document.getElementById('cm-sub').textContent = cls.icon + ' ' + cls.name + ' · ' + race.label;
+  var ep = getEpithet();
+  var subParts = [cls.icon + ' ' + cls.name, race.label];
+  if (ep) subParts.push(ep.text);
+  document.getElementById('cm-sub').textContent = subParts.join(' · ');
   document.getElementById('cm-node').textContent = node.name;
   document.getElementById('cm-node-sub').textContent = next ? 'Heading to: ' + next.name : 'Journey complete';
   document.getElementById('cm-days').textContent = S.daysLogged;
-  document.getElementById('cm-streak').textContent = streak + (streak === 1 ? ' day' : ' days');
+  document.getElementById('cm-streak').textContent = streak;
   document.getElementById('cm-chapter').textContent = 'Chapter ' + (S.chapter || 1);
-  document.getElementById('cm-consistency').textContent = getConsistency().replace('_', ' ');
+  var coins = S.coins || { gold:0, silver:0, copper:0 };
+  var coinsEl = document.getElementById('cm-coins');
+  if (coinsEl) {
+    var total = coins.gold + coins.silver + coins.copper;
+    coinsEl.textContent = total === 0 ? '—' :
+      (coins.gold   > 0 ? '🥇×' + coins.gold + '  '  : '') +
+      (coins.silver > 0 ? '🥈×' + coins.silver + '  ' : '') +
+      (coins.copper > 0 ? '🥉×' + coins.copper         : '');
+  }
+  // cm-consistency removed from modal
+  var cmHp = document.getElementById('cm-hp');
+  if (cmHp) cmHp.textContent = Math.max(0, S.hp || 100);
 
   var habitsHtml = S.habits.map(function(h) {
     return '<div class="char-habit-row">' +
@@ -2084,6 +2955,40 @@ function openCharModal() {
   }).join('');
   document.getElementById('cm-habits').innerHTML = habitsHtml;
 
+  // Stat bars — only show if player has habits with these stats
+  var statBarsEl = document.getElementById('cm-stat-bars');
+  if (statBarsEl) {
+    var statDefs = [
+      { key:'STR', label:'STR', desc:'Strength' },
+      { key:'WIS', label:'WIS', desc:'Wisdom'   },
+      { key:'DIS', label:'DIS', desc:'Resolve'  },
+    ];
+    var hasAnyStat = statDefs.some(function(sd) {
+      return S.habits.some(function(h) { return h.stat === sd.key; });
+    });
+    if (hasAnyStat) {
+      var barsHtml = '';
+      statDefs.forEach(function(sd) {
+        var hasThis = S.habits.some(function(h) { return h.stat === sd.key; });
+        if (!hasThis) return;
+        var val = getStat(sd.key);
+        barsHtml +=
+          '<div class="char-stat-bar-row">' +
+            '<div class="char-stat-bar-label ' + sd.key + '">' + sd.label + '</div>' +
+            '<div class="char-stat-bar-track">' +
+              '<div class="char-stat-bar-fill ' + sd.key + '" style="width:' + (val*10) + '%"></div>' +
+            '</div>' +
+            '<div class="char-stat-bar-val">' + val + '</div>' +
+          '</div>';
+      });
+      statBarsEl.innerHTML =
+        '<div class="char-stat-label" style="margin-bottom:8px;">Attributes <span style="font-size:9px;color:var(--text-dark);font-family:\'Crimson Text\',serif;font-style:italic;font-weight:normal;letter-spacing:0;text-transform:none;">— last 7 days</span></div>' + barsHtml;
+      statBarsEl.style.display = 'block';
+    } else {
+      statBarsEl.style.display = 'none';
+    }
+  }
+
   document.getElementById('char-modal').classList.add('show');
 }
 function closeCharModal() { document.getElementById('char-modal').classList.remove('show'); }
@@ -2091,9 +2996,32 @@ function closeCharModal() { document.getElementById('char-modal').classList.remo
 // ── Level up ──
 function showLevelUp(node) {
   var wp = NODES[node] || NODES[0];
+  var reward = S._lastArrivalReward || 'copper';
+  var arrivalHp = S._lastArrivalHp || S.hp || 0;
+  var coins = S.coins || { gold: 0, silver: 0, copper: 0 };
+
+  var rewardData = {
+    gold:   { icon: '🥇', label: 'Gold',   line: 'Full strength arrival. The road was merciful.', color: '#c8a84b' },
+    silver: { icon: '🥈', label: 'Silver', line: 'Arrived wounded, but you made it.', color: '#a0a8b0' },
+    copper: { icon: '🥉', label: 'Copper', line: 'Barely standing. The road cost you.', color: '#b87840' },
+  };
+  var rd = rewardData[reward];
+
   document.getElementById('lu-icon').textContent = wp.icon;
   document.getElementById('lu-title').textContent = 'You reached ' + wp.name;
-  document.getElementById('lu-text').textContent = wp.zone + ' · Node ' + node + ' of 5';
+  document.getElementById('lu-text').innerHTML =
+    '<div style="margin-bottom:12px;color:var(--text-dim);">' + wp.zone + ' · Waypoint ' + node + ' of 5</div>' +
+    '<div class="arrival-reward">' +
+      '<div class="arrival-coin" style="color:' + rd.color + '">' + rd.icon + ' ' + rd.label + ' Coin</div>' +
+      '<div class="arrival-line">' + rd.line + '</div>' +
+      '<div class="arrival-hp">Arrived at ' + arrivalHp + ' / ' + (S.maxHp||100) + ' HP</div>' +
+    '</div>' +
+    '<div class="arrival-total">' +
+      (coins.gold  > 0 ? '🥇 ×' + coins.gold + '  '  : '') +
+      (coins.silver > 0 ? '🥈 ×' + coins.silver + '  ' : '') +
+      (coins.copper > 0 ? '🥉 ×' + coins.copper        : '') +
+    '</div>';
+
   document.getElementById('levelup-overlay').classList.add('show');
 }
 function closeLevelUp() { document.getElementById('levelup-overlay').classList.remove('show'); }
@@ -2347,33 +3275,96 @@ function renderFriends() {
   if (_friends.length === 0 && _pendingRequests.length === 0) {
     body.innerHTML += '<div class="friends-empty">No companions on the road yet.<br>Add a friend by username below.</div>';
   } else {
-    // Sort friends by streak desc
-    var sorted = _friends.slice().sort(function(a, b) {
+    // Build combined list: friends + self
+    var selfEntry = {
+      id: _user ? _user.id : 'self',
+      username: S.name || 'You',
+      state: S,
+      isSelf: true,
+    };
+    var everyone = _friends.concat([selfEntry]);
+
+    // Sort by map position first, then streak as tiebreaker
+    var sorted = everyone.slice().sort(function(a, b) {
+      var nodeA = (a.state || {}).currentNode || 0;
+      var nodeB = (b.state || {}).currentNode || 0;
+      if (nodeB !== nodeA) return nodeB - nodeA;
       var sa = Math.max.apply(null, ((a.state||{}).habits||[]).map(function(h){return h.streak||0;}).concat([0]));
       var sb2 = Math.max.apply(null, ((b.state||{}).habits||[]).map(function(h){return h.streak||0;}).concat([0]));
       return sb2 - sa;
     });
-    sorted.forEach(function(f, idx) {
+
+    // ── Self row — always first, written as protagonist ──
+    var selfNode  = NODES[S.currentNode] || NODES[0];
+    var selfNext  = NODES[S.currentNode + 1];
+    var selfStreak = Math.max.apply(null, (S.habits||[]).map(function(h){return h.streak||0;}).concat([0]));
+    var selfDtnn  = selfNext ? Math.max(0, selfNext.daysNeeded - (S.daysLogged||0)) : null;
+    var selfProgressLine = selfDtnn === null
+      ? 'Journey complete.'
+      : selfDtnn === 0 ? 'Arriving at ' + selfNext.name + '.'
+      : selfDtnn === 1 ? '1 day from ' + selfNext.name + '.'
+      : selfDtnn + ' days from ' + selfNext.name + '.';
+    var selfRow = document.createElement('div');
+    selfRow.className = 'dispatch-self';
+    selfRow.innerHTML =
+      '<div class="dispatch-self-name">' + esc(S.name || 'You') + ' <span style="color:var(--text-dark);font-size:10px;font-weight:normal;">· You</span></div>' +
+      '<div class="dispatch-self-location">' + selfNode.icon + ' ' + selfNode.name + '</div>' +
+      '<div class="dispatch-self-line">' + esc(selfProgressLine) + '</div>' +
+      (selfStreak > 1 ? '<div class="dispatch-self-streak">🔥 ' + selfStreak + (selfStreak===1?' day':' days') + ' on the road</div>' : '');
+    body.insertBefore(selfRow, body.firstChild);
+
+    // ── Companion rows — narrative dispatch, not scoreboard ──
+    var companions = sorted.filter(function(f) { return !f.isSelf; });
+    companions.forEach(function(f) {
       var fs = f.state || {};
-      var node = NODES[fs.currentNode || 0] || NODES[0];
-      var streak = Math.max.apply(null, (fs.habits||[]).map(function(h){return h.streak||0;}).concat([0]));
-      var cons = getFriendConsistency(fs);
-      var consLabel = cons === 'on_road' ? 'On the Road' : cons === 'footsore' ? 'Footsore' : 'Gone to Ground';
-      var races = ['🧔','🧝','⛏️','👺','🧙'];
-      var raceIcon = races[f.username.charCodeAt(0) % races.length];
+      var fNode   = NODES[fs.currentNode || 0] || NODES[0];
+      var fNext   = NODES[(fs.currentNode||0) + 1];
+      var fStreak = Math.max.apply(null, (fs.habits||[]).map(function(h){return h.streak||0;}).concat([0]));
+      var fDays   = fs.daysLogged || 0;
+      var myDays  = S.daysLogged  || 0;
+      var cons    = getFriendConsistency(fs);
+
+      // Relative position line — the core of the row
+      var myNode  = S.currentNode || 0;
+      var fNodeId = fs.currentNode || 0;
+      var relLine = '';
+      if (fNodeId > myNode) {
+        var ahead = fNodeId - myNode;
+        relLine = (ahead===1?'One waypoint':'Two waypoints') + ' ahead, at ' + fNode.name + '.';
+      } else if (fNodeId < myNode) {
+        var behind = myNode - fNodeId;
+        relLine = (behind===1?'One waypoint':'Two waypoints') + ' behind you, at ' + fNode.name + '.';
+      } else {
+        // Same node — use days as signal
+        var dayDiff = myDays - fDays;
+        if (dayDiff > 3)       relLine = fDays + ' days into ' + fNode.name + '. You\'re pulling ahead.';
+        else if (dayDiff < -3) relLine = fDays + ' days into ' + fNode.name + '. Gaining on you.';
+        else if (dayDiff > 0)  relLine = 'On the same stretch. ' + dayDiff + ' day' + (dayDiff>1?'s':'') + ' behind you.';
+        else if (dayDiff < 0)  relLine = 'On the same stretch. ' + Math.abs(dayDiff) + ' day' + (Math.abs(dayDiff)>1?'s':'') + ' ahead of you.';
+        else                   relLine = 'Neck and neck with you at ' + fNode.name + '.';
+      }
+
+      // Footsore / gone override
+      if (cons === 'footsore') relLine += ' Moving slowly.';
+      if (cons === 'gone')     relLine = 'Off the road. Last seen at ' + fNode.name + '.';
+
+      // Last logLine as a quote if available
+      var lastBeat = '';
+      if (fs.journeyLog && fs.journeyLog.length > 0) {
+        var ll = fs.journeyLog[0].logLine || '';
+        if (ll) lastBeat = ll.length > 70 ? ll.slice(0,67)+'…' : ll;
+      }
+
       var row = document.createElement('div');
-      row.className = 'friend-row';
+      row.className = 'dispatch-row';
       row.innerHTML =
-        '<div class="friend-rank">' + (idx+1) + '</div>' +
-        '<div class="friend-avatar">' + raceIcon + '</div>' +
-        '<div class="friend-info">' +
-          '<div class="friend-name">' + esc(f.username) + '</div>' +
-          '<div class="friend-meta">' + node.icon + ' ' + node.name + '</div>' +
+        '<div class="dispatch-name">' +
+          '<span class="dispatch-status-dot ' + cons + '"></span>' +
+          esc(f.username) +
+          (fStreak > 1 ? ' <span style="font-family:\'Cinzel\',serif;font-size:9px;color:var(--gold-dim);letter-spacing:.06em;">\U0001f525 ' + fStreak + 'd</span>' : '') +
         '</div>' +
-        '<div style="text-align:right;">' +
-          '<div class="friend-streak">🔥 ' + streak + '</div>' +
-          '<div><span class="friend-pill ' + cons + '">' + consLabel + '</span></div>' +
-        '</div>';
+        '<div class="dispatch-line ' + cons + '">' + esc(relLine) + '</div>' +
+        (lastBeat ? '<div class="dispatch-lastbeat">"' + esc(lastBeat) + '"</div>' : '');
       body.appendChild(row);
     });
   }
@@ -2392,7 +3383,8 @@ function toggleFriends() {
   var isOpen = body && body.style.display !== 'none' && body.style.display !== '';
   if (body) body.style.display = isOpen ? 'none' : 'block';
   if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
-  if (!isOpen && !_friendsLoaded) loadFriends();
+  if (!isOpen && !_friendsLoaded && _user) loadFriends();
+  if (!isOpen) renderFriends(); // always re-render self row even without friends loaded
 }
 
 // ── Dev tools ──
@@ -2414,15 +3406,119 @@ function devReset() {
   }
 }
 function devLogAll() {
-  // Log all habits for today without full processDayComplete to test beats
   S.habits.forEach(function(h) {
     var t = today();
     if (!Array.isArray(h.log)) h.log = [];
-    if (h.log.indexOf(t) === -1) h.log.push(t);
-    h.streak = (h.streak || 0) + 1;
+    if (h.log.indexOf(t) === -1) { h.log.push(t); h.streak = (h.streak||0)+1; }
   });
-  save();
-  processDayComplete();
+  save(); processDayComplete();
+}
+
+function toggleDevPanel() {
+  var panel = document.getElementById('dev-panel');
+  if (panel) panel.classList.toggle('open');
+}
+
+function devSkipDays(n) {
+  // Skip n days without logging — simulates being off the road
+  for (var i = 0; i < n; i++) {
+    _devOffset++;
+  }
+  S.sessionDate = null;
+  S.pressedOn = false;
+  S.todayBeat = null;
+  S.todayBeatDate = null;
+  // Apply HP damage for the missed days
+  applyMissedDayDamage(today());
+  save(); render();
+  showToast('Skipped ' + n + ' days · offset +' + _devOffset + ' · HP: ' + Math.round(S.hp||100));
+}
+
+function devLogByStat(stat) {
+  var t = today();
+  var count = 0;
+  S.habits.forEach(function(h) {
+    if (h.stat === stat) {
+      if (!Array.isArray(h.log)) h.log = [];
+      if (h.log.indexOf(t) === -1) { h.log.push(t); h.streak = (h.streak||0)+1; count++; }
+    }
+  });
+  save(); render();
+  showToast('Logged ' + count + ' ' + stat + ' habit' + (count!==1?'s':''));
+}
+
+function devSetHP(val) {
+  if (val === undefined) {
+    var input = document.getElementById('dev-hp-val');
+    val = parseInt(input ? input.value : 0);
+    if (isNaN(val)) { showToast('Enter a number 0–100'); return; }
+  }
+  S.hp = Math.max(0, Math.min(S.maxHp||100, val));
+  save(); render();
+  showToast('HP set to ' + S.hp);
+}
+
+function devSetNode(n) {
+  S.currentNode = Math.max(0, Math.min(NODES.length-1, n));
+  S.daysLogged = NODES[n].daysNeeded || 0;
+  S.sessionDate = null;
+  S.pressedOn = false;
+  S.todayBeat = null;
+  save(); render();
+  showToast('Jumped to ' + NODES[n].name);
+}
+
+function devForceEncounter() {
+  S.sessionDate = null;
+  S.pressedOn = false;
+  // Find an encounter beat for current node
+  var beats = BEATS.filter(function(b) {
+    return b.type === 'encounter' && b.node <= S.currentNode;
+  });
+  if (beats.length === 0) { showToast('No encounter beats for this node'); return; }
+  S.todayBeat = beats[Math.floor(Math.random() * beats.length)];
+  S.todayBeatDate = today();
+  // Mark all habits logged so beat is visible
+  var t = today();
+  S.habits.forEach(function(h) {
+    if (!Array.isArray(h.log)) h.log = [];
+    if (h.log.indexOf(t) === -1) h.log.push(t);
+  });
+  if (!S.sessionDate) {
+    S.sessionDate = today();
+    S.lastLogDate = today();
+    S.pressedOn = false;
+    var allDates = {};
+    S.habits.forEach(function(h){ (h.log||[]).forEach(function(d){ allDates[d]=true; }); });
+    S.daysLogged = Object.keys(allDates).length;
+  }
+  save(); render();
+  showToast('Encounter: ' + S.todayBeat.id);
+}
+
+function devForceRoad() {
+  S.sessionDate = null;
+  S.pressedOn = false;
+  var beats = BEATS.filter(function(b) {
+    return b.type === 'road' && b.node <= S.currentNode;
+  });
+  if (beats.length === 0) { showToast('No road beats for this node'); return; }
+  S.todayBeat = beats[Math.floor(Math.random() * beats.length)];
+  S.todayBeatDate = today();
+  var t = today();
+  S.habits.forEach(function(h) {
+    if (!Array.isArray(h.log)) h.log = [];
+    if (h.log.indexOf(t) === -1) h.log.push(t);
+  });
+  if (!S.sessionDate) {
+    S.sessionDate = today();
+    S.lastLogDate = today();
+    var allDates = {};
+    S.habits.forEach(function(h){ (h.log||[]).forEach(function(d){ allDates[d]=true; }); });
+    S.daysLogged = Object.keys(allDates).length;
+  }
+  save(); render();
+  showToast('Road beat: ' + S.todayBeat.id);
 }
 </script>
 </head>
@@ -2604,7 +3700,7 @@ function devLogAll() {
 
   <!-- Header -->
   <div class="main-header">
-    <div class="header-logo">HabitForge</div>
+    <div class="header-logo" data-subtitle="The road north doesn't wait.">HabitForge</div>
     <div class="header-user"><span class="header-signout" onclick="doSignOut()">Sign Out</span></div>
   </div>
 
@@ -2615,14 +3711,33 @@ function devLogAll() {
       <div class="char-info">
         <div class="char-name-row">
           <span class="char-name" id="char-name">Traveler</span>
-          <span class="streak-badge-inline"><span class="streak-fire">🔥</span><span id="streak-val">0</span></span>
         </div>
-        <div class="char-meta" id="char-meta">Warrior · The Starting Road</div>
+        <div class="char-meta" id="char-meta">Warrior · Hearthstone Village</div>
+        <div class="char-streak-row" id="char-streak-row" style="display:none;">
+          <span class="streak-fire">🔥</span><span id="streak-val">0</span><span class="streak-label"> streak</span>
+          <span class="streak-divider">·</span>
+          <span class="days-logged-label"><span id="days-logged-val">0</span> days logged</span>
+        </div>
       </div>
     </div>
-    <div class="char-consistency">
-      <div class="consistency-pill on-road" id="consistency-pill">On the Road</div>
+    <div class="vitality-wrap" id="vitality-wrap">
+      <div class="vitality-header">
+        <span class="vitality-label">HP <span class="hp-risk-badge" id="hp-risk-badge">⚔</span></span>
+        <span class="vitality-state" id="vitality-state"></span>
+      </div>
+      <div class="vitality-track">
+        <div class="vitality-fill" id="hp-fill"></div>
+      </div>
     </div>
+  </div>
+
+  <!-- Wound notice -->
+  <div id="wound-notice" style="display:none;" class="hp-wound-notice"></div>
+
+  <!-- Map strip — compact single line -->
+  <div class="map-strip" id="map-strip" onclick="switchTab && switchTab('road')">
+    <div class="map-strip-inner" id="node-map-inner"></div>
+    <div class="map-strip-footer" id="node-map-sub"></div>
   </div>
 
   <!-- Habits -->
@@ -2631,28 +3746,28 @@ function devLogAll() {
     <div id="habits-wrap"></div>
   </div>
 
-  <!-- Beat -->
-  <div class="beat-section" id="beat-section" style="margin:16px 18px 0;background:var(--surface);border:1px solid var(--border-mid);border-radius:4px;overflow:hidden;">
-    <div class="beat-locked" id="beat-locked">Log your habits above to see what happens on the road today.</div>
-    <div class="beat-inner" id="beat-inner" style="padding:16px;display:none;animation:fadeIn .4s ease;"></div>
-  </div>
-
-  <!-- Day summary -->
-  <div id="day-summary-area"></div>
-
-  <!-- Node map -->
-  <div class="node-map" id="node-map-wrap" style="margin:16px 18px 0;background:var(--surface);border:1px solid var(--border);border-radius:4px;overflow:hidden;">
-    <div class="node-map-header" onclick="toggleMap()">
-      <div>
-        <div class="node-map-title">The Ironveil Road</div>
-        <div class="node-map-sub" id="node-map-sub">Hearthstone Village</div>
-      </div>
-      <div class="node-map-chevron" style="transform:rotate(180deg)">▼</div>
+  <!-- Scroll card: beat + resolved state. Chronicle flows below as continuation. -->
+  <div class="scroll-wrap" id="scroll-wrap">
+    <div id="beat-section" class="beat-section">
+      <div class="beat-locked" id="beat-locked" data-weekly="Log a habit today to continue the road." data-daily="Log today's habits to see what happens on the road.">Log today's habits to see what happens on the road.</div>
+      <div class="beat-inner" id="beat-inner" style="display:none;"></div>
     </div>
-    <div class="node-map-body" id="node-map-inner" style="border-top:1px solid var(--border);padding:16px 14px;"></div>
   </div>
 
-  <!-- Friends / Road Companions -->
+  <!-- Chronicle — separate card below -->
+  <div class="chronicle-wrap" id="chronicle-wrap" style="display:none;">
+      <div class="chronicle-header" onclick="toggleJourneyLog()">
+        <div class="chronicle-title">
+          <span class="chronicle-rule"></span>
+          <span class="chronicle-label">Chronicle</span>
+          <span class="chronicle-rule"></span>
+        </div>
+        <span class="journey-log-chevron" id="chronicle-chevron" style="transform:rotate(180deg);">▾</span>
+      </div>
+      <div class="chronicle-body" id="journey-log-body" style="display:block;"></div>
+  </div>
+
+  <!-- Companions -->
   <div class="friends-wrap" id="friends-wrap">
     <div class="friends-header" onclick="toggleFriends()">
       <div class="friends-title">Road Companions</div>
@@ -2661,19 +3776,7 @@ function devLogAll() {
         <span class="friends-chevron" style="font-size:10px;color:var(--text-dark);">▼</span>
       </div>
     </div>
-    <div id="friends-body" style="display:none;"></div>
-  </div>
-
-  <!-- Journey log -->
-  <div class="journey-log" id="journey-log-wrap" style="margin:16px 18px 0;background:var(--surface);border:1px solid var(--border);border-radius:4px;overflow:hidden;">
-    <div class="journey-log-header" onclick="toggleJourneyLog()">
-      <div class="journey-log-title">Journey Log</div>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <span class="journey-log-count" id="journey-log-count">0 entries</span>
-        <span class="journey-log-chevron">▼</span>
-      </div>
-    </div>
-    <div class="journey-log-body" id="journey-log-body"></div>
+    <div id="friends-body" style="display:block;"></div>
   </div>
 
 </div>
@@ -2708,21 +3811,32 @@ function devLogAll() {
         <div class="char-stat-sub" id="cm-node-sub">Heading north</div>
       </div>
       <div class="char-stat-cell">
-        <div class="char-stat-label">Days Logged</div>
-        <div class="char-stat-val" id="cm-days">0</div>
-        <div class="char-stat-sub">total check-ins</div>
+        <div class="char-stat-label">Progress</div>
+        <div class="char-stat-val" id="cm-days" style="font-size:18px;">0</div>
+        <div class="char-stat-sub">days logged</div>
+        <div style="margin-top:6px;">
+          <span class="char-stat-label">Streak </span>
+          <span style="font-family:'Cinzel',serif;font-size:13px;color:var(--gold);" id="cm-streak">0</span>
+          <span class="char-stat-sub"> days</span>
+        </div>
       </div>
       <div class="char-stat-cell">
-        <div class="char-stat-label">Best Streak</div>
-        <div class="char-stat-val" id="cm-streak">0 days</div>
-        <div class="char-stat-sub" id="cm-consistency">on road</div>
+        <div class="char-stat-label">HP</div>
+        <div class="char-stat-val" id="cm-hp" style="font-size:18px;">100</div>
+        <div class="char-stat-sub">/ 100</div>
       </div>
       <div class="char-stat-cell">
         <div class="char-stat-label">Journey</div>
         <div class="char-stat-val" id="cm-chapter" style="font-size:16px;">Chapter 1</div>
         <div class="char-stat-sub">The Ironveil Road</div>
       </div>
+      <div class="char-stat-cell">
+        <div class="char-stat-label">Coins Earned</div>
+        <div class="char-stat-val" id="cm-coins" style="font-size:15px;letter-spacing:.04em;">—</div>
+        <div class="char-stat-sub">arrival rewards</div>
+      </div>
     </div>
+    <div class="char-stat-bars" id="cm-stat-bars"></div>
     <div class="char-habits-section">
       <div class="char-stat-label" style="margin-bottom:8px;">What you carry</div>
       <div id="cm-habits"></div>
@@ -2733,11 +3847,54 @@ function devLogAll() {
 
 <!-- Dev panel -->
 <div class="dev-panel" id="dev-panel">
-  <div class="dev-title">⚙ Dev Tools</div>
-  <div class="dev-info" id="dev-info">Day 0 · Node 0</div>
-  <button class="dev-btn" onclick="devNextDay()">Next Day →</button>
-  <button class="dev-btn" onclick="devLogAll()">Log All Habits</button>
-  <button class="dev-btn danger" onclick="devReset()">Reset</button>
+  <div class="dev-panel-toggle" onclick="toggleDevPanel()">
+    <span class="dev-title">⚙ Dev Tools</span>
+    <span class="dev-panel-chevron">▲</span>
+  </div>
+  <div class="dev-body">
+    <div class="dev-state" id="dev-info">—</div>
+
+    <div class="dev-section">Time</div>
+    <button class="dev-btn" onclick="devNextDay()">→ Next Day (skip)</button>
+    <button class="dev-btn" onclick="devSkipDays(2)">→ Skip 2 Days (missed)</button>
+    <button class="dev-btn" onclick="devSkipDays(5)">→ Skip 5 Days (wounded)</button>
+
+    <div class="dev-section">Logging</div>
+    <button class="dev-btn" onclick="devLogAll()">Log all habits today</button>
+    <button class="dev-btn" onclick="devLogByStat('STR')">Log STR habits only</button>
+    <button class="dev-btn" onclick="devLogByStat('WIS')">Log WIS habits only</button>
+    <button class="dev-btn" onclick="devLogByStat('DIS')">Log DIS habits only</button>
+
+    <div class="dev-section">HP</div>
+    <div class="dev-input-row">
+      <input class="dev-input" id="dev-hp-val" type="number" placeholder="HP (0–100)" min="0" max="100">
+      <button class="dev-btn" style="flex:0 0 auto;padding:5px 10px;" onclick="devSetHP()">Set</button>
+    </div>
+    <div class="dev-btn-row">
+      <button class="dev-btn" onclick="devSetHP(100)">Full</button>
+      <button class="dev-btn" onclick="devSetHP(50)">50%</button>
+      <button class="dev-btn" onclick="devSetHP(15)">Low</button>
+      <button class="dev-btn danger" onclick="devSetHP(0)">0</button>
+    </div>
+
+    <div class="dev-section">Location</div>
+    <div class="dev-btn-row">
+      <button class="dev-btn" onclick="devSetNode(0)">Node 0</button>
+      <button class="dev-btn" onclick="devSetNode(1)">Node 1</button>
+      <button class="dev-btn" onclick="devSetNode(2)">Node 2</button>
+    </div>
+    <div class="dev-btn-row">
+      <button class="dev-btn" onclick="devSetNode(3)">Node 3</button>
+      <button class="dev-btn" onclick="devSetNode(4)">Node 4</button>
+    </div>
+
+    <div class="dev-section">Beat</div>
+    <button class="dev-btn" onclick="devForceEncounter()">Force encounter beat</button>
+    <button class="dev-btn" onclick="devForceRoad()">Force road beat</button>
+
+    <div class="dev-section">Danger</div>
+    <button class="dev-btn danger" onclick="devReset()">⚠ Reset all data</button>
+  </div>
 </div>
 
 <div id="toast"></div>
@@ -2764,26 +3921,6 @@ function devLogAll() {
       var link = document.getElementById('ob-add-habit-link');
       if (link) link.style.display = 'none';
     }
-  };
-})();
-
-// Map toggle fix
-(function() {
-  window.toggleMap = function() {
-    var body = document.getElementById('node-map-inner');
-    var chevron = document.querySelector('#node-map-wrap .node-map-chevron');
-    var isOpen = body.style.display !== 'none' && body.style.display !== '';
-    body.style.display = isOpen ? 'none' : 'block';
-    if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
-    if (!isOpen) renderNodeMap();
-  };
-  window.toggleJourneyLog = function() {
-    var body = document.getElementById('journey-log-body');
-    var chevron = document.querySelector('#journey-log-wrap .journey-log-chevron');
-    var isOpen = body.style.display !== 'none' && body.style.display !== '';
-    body.style.display = isOpen ? 'none' : 'block';
-    if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
-    if (!isOpen) renderJourneyLog();
   };
 })();
 </script>
