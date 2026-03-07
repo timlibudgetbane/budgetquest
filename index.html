@@ -1828,6 +1828,26 @@ body::before {
   animation: beatReveal .55s ease-out forwards;
 }
 /* ── End habit logging sequence ─────────────────────────────── */
+
+/* ── Mobile background swap ─────────────────────────────────── */
+@media (max-width: 768px) {
+
+  /* login screen background */
+  .auth-bg {
+    background-image: url('login mobile.png');
+    background-size: cover;
+    background-position: center top;
+  }
+
+  /* main game background */
+  body.main-bg {
+    background-image: url('mobile main.png');
+    background-size: cover;
+    background-position: center;
+  }
+
+}
+/* ── End mobile background swap ─────────────────────────────── */
 </style>
 
 <script>
