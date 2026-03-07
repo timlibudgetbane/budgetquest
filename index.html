@@ -23,9 +23,9 @@
   --red:         #c04030;
   --orange:      #c86030;
   --teal:        #2a9e8a;
-  --text:        #f2e8cc;
-  --text-mid:    #c4a87a;
-  --text-dim:    #8a7848;
+  --text:        #f8f0dc;
+  --text-mid:    #d4b988;
+  --text-dim:    #a89060;
   --text-dark:   #4a3e20;
   --on-road:     #4aac78;
   --footsore:    #c86030;
@@ -564,7 +564,7 @@ body::before {
 .stat-pick-btn:hover { border-color:var(--border-gold); color:var(--text-dim); }
 .stat-pick-btn.sel.STR { border-color:#c87040; color:#c87040; background:rgba(200,112,64,.08); }
 .stat-pick-btn.sel.WIS { border-color:#6090c8; color:#6090c8; background:rgba(96,144,200,.08); }
-.stat-pick-btn.sel.DIS { border-color:#7a9a60; color:#7a9a60; background:rgba(122,154,96,.08); }
+.stat-pick-btn.sel.DISC { border-color:#7a9a60; color:#7a9a60; background:rgba(122,154,96,.08); }
 .stat-pick-label { font-size:9px; color:var(--text-dark); margin-top:7px; font-family:'Cinzel',serif; letter-spacing:.1em; }
 .freq-opt {
   padding:10px 4px; text-align:center; border:1px solid var(--border);
@@ -665,17 +665,29 @@ body::before {
 }
 .map-progress-fill {
   height: 100%; border-radius: 3px;
-  background: linear-gradient(90deg, var(--gold-dim), var(--gold));
-  box-shadow: 0 0 8px rgba(200,168,75,.4);
+  background: linear-gradient(90deg, rgba(90,70,30,.9), var(--gold-dim) 60%, var(--gold));
+  box-shadow: 0 0 6px rgba(200,168,75,.35), 0 0 2px rgba(200,168,75,.2);
   transition: width .6s ease;
   position: relative;
 }
+/* Traveled trail: subtle warm glow along the filled road */
+.map-progress-fill::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; top: 0; bottom: 0;
+  border-radius: 3px;
+  background: linear-gradient(90deg, transparent 50%, rgba(200,168,75,.12));
+  pointer-events: none;
+}
+/* Player marker at the leading edge */
 .map-progress-fill::after {
-  content: ''; position: absolute; right: -1px; top: -3px;
-  width: 12px; height: 12px; border-radius: 50%;
-  background: var(--gold); border: 2px solid var(--bg);
-  box-shadow: 0 0 10px rgba(200,168,75,.7);
+  content: ''; position: absolute; right: -6px; top: -4px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #f0d878, var(--gold));
+  border: 2px solid rgba(8,6,3,.9);
+  box-shadow: 0 0 10px rgba(200,168,75,.7), 0 0 4px rgba(200,168,75,.5);
   animation: ring-breathe 3s ease-in-out infinite;
+  z-index: 2;
 }
 @keyframes ring-breathe {
   0%, 100% { box-shadow: 0 0 6px rgba(200,168,75,.5); }
@@ -856,12 +868,14 @@ body::before {
 
 .habit-card {
   background:var(--surface); border:1px solid var(--border);
-  border-radius:4px; overflow:hidden; margin-bottom:10px;
+  border-radius:4px; margin-bottom:10px;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   transition: border-color .2s, box-shadow .2s, transform .1s;
   border-left: 3px solid transparent;
   box-shadow: 0 1px 3px rgba(0,0,0,.3);
+  position: relative;
+  min-height: 110px; /* reserves space for reaction row — card never grows on log */
 }
 .habit-card:active { transform:scale(.995); }
 .habit-card.logged {
@@ -908,7 +922,7 @@ body::before {
 }
 .habit-stat-badge.STR { color:#c87040; border-color:rgba(200,112,64,.3); background:rgba(200,112,64,.06); }
 .habit-stat-badge.WIS { color:#6090c8; border-color:rgba(96,144,200,.3); background:rgba(96,144,200,.06); }
-.habit-stat-badge.DIS { color:#7a9a60; border-color:rgba(122,154,96,.3); background:rgba(122,154,96,.06); }
+.habit-stat-badge.DISC { color:#7a9a60; border-color:rgba(122,154,96,.3); background:rgba(122,154,96,.06); }
 
 /* Stat bars in char modal */
 .char-stat-bars { padding:14px 18px 4px; border-top:1px solid var(--border); }
@@ -921,7 +935,7 @@ body::before {
 }
 .char-stat-bar-label.STR { color:#c87040; }
 .char-stat-bar-label.WIS { color:#6090c8; }
-.char-stat-bar-label.DIS { color:#7a9a60; }
+.char-stat-bar-label.DISC { color:#7a9a60; }
 .char-stat-bar-track {
   flex:1; height:4px; background:var(--surface2); border-radius:2px; overflow:hidden;
 }
@@ -930,7 +944,7 @@ body::before {
 }
 .char-stat-bar-fill.STR { background:linear-gradient(90deg,#a05030,#e09060); }
 .char-stat-bar-fill.WIS { background:linear-gradient(90deg,#3060a0,#70a0e0); }
-.char-stat-bar-fill.DIS { background:linear-gradient(90deg,#4a7030,#8ab060); }
+.char-stat-bar-fill.DISC { background:linear-gradient(90deg,#4a7030,#8ab060); }
 .char-stat-bar-val {
   font-family:'Cinzel',serif; font-size:10px; color:var(--text-dark);
   width:16px; text-align:right; flex-shrink:0;
@@ -1000,7 +1014,7 @@ body::before {
   );
 }
 .beat-inner {
-  padding: 22px 22px 20px;
+  padding: 24px 24px 48px;
   display: none;
   animation: fadeIn .5s ease;
   background: var(--surface);
@@ -1009,6 +1023,18 @@ body::before {
   border: 1px solid var(--border);
   border-radius: 4px;
   margin: 0 20px 12px;
+  position: relative;
+}
+.beat-inner::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  background: linear-gradient(to bottom, transparent, rgba(6,4,2,.85));
+  pointer-events: none;
+  border-radius: 0 0 4px 4px;
 }
 .beat-section.has-beat .beat-inner { display: block; }
 @keyframes fadeIn { from{opacity:0;transform:translateY(5px);} to{opacity:1;transform:none;} }
@@ -1023,9 +1049,63 @@ body::before {
   background:var(--gold); box-shadow:0 0 6px rgba(200,168,75,.8);
   flex-shrink: 0;
 }
+.journal-day-label {
+  font-size: .72em;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #6a5535;
+  font-family: var(--font-ui, sans-serif);
+  margin-bottom: 18px;
+}
+.journal-block {
+  margin-bottom: 22px;
+}
+.journal-section-header {
+  font-size: .7em;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #9a7c52;
+  font-family: var(--font-ui, sans-serif);
+  margin-bottom: 6px;
+}
+.journal-world-text {
+  font-size: .9em;
+  color: #b89868;
+  font-style: italic;
+  font-family: var(--font-body, serif);
+  line-height: 1.65;
+}
+.journal-divider {
+  border-top: 1px solid rgba(160,120,60,.25);
+  margin: 22px 0 16px;
+}
+.journal-progress {
+  font-size: .72em;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #8a6e45;
+  font-family: var(--font-ui, sans-serif);
+  margin-bottom: 16px;
+}
+.journal-teaser-block { margin-bottom: 0; }
+.journal-teaser-text {
+  font-style: italic;
+  color: #d4b070;
+  font-size: .93em;
+  font-family: var(--font-body, serif);
+  line-height: 1.65;
+}
+.beat-teaser-pre {
+  font-style: italic;
+  color: #d4b070;
+  font-size: .93em;
+  line-height: 1.65;
+  font-family: var(--font-body, serif);
+  padding: 4px 0 8px;
+}
 .beat-text {
-  font-size:20px; color:var(--text-mid); font-style:italic;
-  line-height:2.0; margin-bottom:24px;
+  font-size:21px; color:var(--text-mid); font-style:italic;
+  line-height:2.1; margin-bottom:24px;
   font-family:'Crimson Text',serif;
   text-shadow: 0 1px 20px rgba(200,140,40,.06);
 }
@@ -1538,7 +1618,7 @@ body::before {
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   box-shadow: 0 0 40px rgba(200,140,40,.08), inset 0 1px 0 rgba(200,168,75,.1);
-  overflow: hidden;
+  overflow: visible;
   z-index: 10;
 }
 .hud-story-header {
@@ -1572,15 +1652,29 @@ body::before {
 }
 .hud-story-body {
   border-top: 1px solid var(--border);
-  max-height: 260px;
+  height: 400px;
+  min-height: 400px;
+  max-height: 400px;
   overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  /* Stable height — content scrolls inside, layout never jumps */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-mid) transparent;
 }
+.hud-story-body::-webkit-scrollbar { width: 4px; }
+.hud-story-body::-webkit-scrollbar-track { background: transparent; }
+.hud-story-body::-webkit-scrollbar-thumb { background: var(--border-mid); border-radius: 2px; }
 .hud-story-body .beat-locked,
 .hud-story-body .beat-inner {
   margin: 0;
   border: none;
   border-radius: 0;
   background: transparent;
+  width: 100%;
+  align-self: flex-start;
 }
 
 /* ── LOWER-LEFT: Chronicle (above story, dynamic top via JS) ── */
@@ -1595,7 +1689,7 @@ body::before {
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   z-index: 9;
-  max-height: 260px;
+  max-height: 640px;
   overflow-y: auto;
 }
 
@@ -1692,6 +1786,42 @@ body::before {
   left: 20px;
   max-width: 260px;
 }
+
+
+
+/* ── Habit logging sequence ─────────────────────────────────── */
+@keyframes habitGlow {
+  0%   { box-shadow: 0 1px 3px rgba(0,0,0,.3); border-color: var(--border); }
+  25%  { box-shadow: 0 0 0 3px rgba(200,168,75,.25), 0 0 18px rgba(200,168,75,.3), inset 0 1px 0 rgba(255,255,255,.05); border-color: var(--gold-dim); }
+  60%  { box-shadow: 0 0 0 1px rgba(200,168,75,.12), 0 0 10px rgba(200,168,75,.18), inset 0 1px 0 rgba(255,255,255,.03); border-color: var(--border-gold); }
+  100% { box-shadow: 0 0 0 0 rgba(200,168,75,0), 0 2px 8px rgba(200,168,75,.06); border-color: var(--border-gold); }
+}
+.habit-logging {
+  animation: habitGlow .55s ease-out forwards;
+}
+
+/* Floating stat gain */
+/* stat-float removed */
+
+/* Map progress fill pulse */
+@keyframes mapAdvancePulse {
+  0%   { filter: brightness(1);   box-shadow: none; }
+  50%  { filter: brightness(1.7); box-shadow: 0 0 8px rgba(200,168,75,.5); }
+  100% { filter: brightness(1);   box-shadow: none; }
+}
+.map-advance-pulse {
+  animation: mapAdvancePulse .5s ease-out forwards;
+}
+
+/* Road log reveal */
+@keyframes beatReveal {
+  0%   { opacity: 0;   transform: translateY(8px); }
+  100% { opacity: 1;   transform: translateY(0); }
+}
+.beat-reveal {
+  animation: beatReveal .55s ease-out forwards;
+}
+/* ── End habit logging sequence ─────────────────────────────── */
 </style>
 
 <script>
@@ -1710,7 +1840,7 @@ var RACES = [
 var CLASSES = [
   { id:'Warrior', icon:'⚔️',  name:'Warrior', stat:'STR', desc:'Physical discipline' },
   { id:'Mage',    icon:'🔮', name:'Mage',    stat:'WIS', desc:'Mental mastery'      },
-  { id:'Rogue',   icon:'🗡️',  name:'Rogue',  stat:'DIS', desc:'Iron restraint'      },
+  { id:'Rogue',   icon:'🗡️',  name:'Rogue',  stat:'DISC', desc:'Iron restraint'      },
 ];
 
 var EXAMPLES = [
@@ -1743,322 +1873,399 @@ var NPCS = {
 
 var BEATS = [
 
-  { id:'d01', day:1,  type:'road',      node:0,
-    teaser:   'Tomorrow you leave. The north road has been there your whole life. You\'ve never taken it.',
-    success:  'You shoulder your pack and it feels right. The village disappears behind you faster than you expected.',
-    failure:  'You got a late start. The road north feels longer than it looked from the village.',
-    STR: 'Your legs find the pace immediately. The road feels easy in a way it hasn\'t before.',
-    WIS: 'You spent the morning preparing. Out here it\'s already paying off.',
-    DIS: 'You left at the hour you planned. The road is quiet and that suits you.',
-    logLine: 'Left Hearthstone. The north road opens up.' },
+  // ── ZONE 1: HEARTHSTONE → HARVEST CROSSING (Days 1–3) ──────────
+  { id:'d01', day:1,  zone:1, type:'road',
+    teaser:  'Tomorrow you leave Hearthstone and take the north road for the first time.',
+    success: 'You shoulder your pack and step onto the north road. The village fades behind you.',
+    STR:     'Your legs settle into a strong rhythm. The road opens easily beneath you.',
+    WIS:     'Your careful packing pays off quickly. Everything you need is within reach.',
+    DISC:    'You leave exactly when you planned. The quiet road feels right.',
+    failure: 'You start later than planned. The road feels longer already.',
+    logLine: 'Left Hearthstone on the north road.' },
 
-  { id:'d02', day:2,  type:'encounter', node:0,
-    teaser:   'There\'s a waypoint shelter on the road north. Travelers stop there. So does everyone else.',
-    success:  'Two rough-looking men give you a long look. Something about you makes them decide it\'s not worth it. They let you pass.',
-    failure:  'They stop you. Go through your pack, ask questions, help themselves to your provisions. You lose an hour and more than that.',
-    STR: 'They clock your pack, your posture, the way you\'re moving. One shakes his head slightly. You walk through.',
-    WIS: 'You read the situation early and adjust your line — confident, unhurried. They lose interest before you reach them.',
-    DIS: 'You don\'t slow down, don\'t make eye contact, don\'t give them anything to work with. They let you through.',
-    logLine: 'Waypoint shelter. Two men who weren\'t traveling.' },
+  { id:'d02', day:2,  zone:1, type:'encounter',
+    teaser:  'Tomorrow you reach a waypoint shelter where two rough travelers have been bothering people.',
+    success: 'Two rough men watch you approach the shelter. After a moment they decide you\'re not worth the trouble.',
+    STR:     'They notice your posture and step aside without a word.',
+    WIS:     'You read the tension early and approach calmly. They lose interest.',
+    DISC:    'You keep your pace steady and give them nothing to react to.',
+    failure: 'They stop you at the shelter and search your pack before letting you pass.',
+    logLine: 'Passed the waypoint shelter.' },
 
-  { id:'d03', day:3,  type:'arrival',   node:1,
-    teaser:   'Harvest Crossing is the first real stop on the north road. Someone there has been asking about travelers heading north.',
-    success:  'Aldric finds you at the bridge before you find him. \"You look like someone who means it,\" he says. Coming from him that\'s something.',
-    failure:  'Aldric is at the bridge but the look on his face says he was expecting someone in better shape. He doesn\'t say it. That\'s almost worse.',
-    STR: 'Aldric sees the way you\'ve been moving and nods once. \"Good,\" he says. \"The road north needs that.\"',
-    WIS: 'Aldric asks you one question and listens to the whole answer. \"Sharp,\" he says. \"Good.\"',
-    DIS: 'Aldric is at the bridge at the time he said he would be. So are you. He seems to find that significant.',
-    logLine: 'Arrived at Harvest Crossing. Aldric was waiting.' },
+  { id:'d03', day:3,  zone:1, type:'arrival',
+    teaser:  'Tomorrow you reach Harvest Crossing, the first real stop on the north road.',
+    success: 'You arrive at Harvest Crossing and cross the old bridge into town.',
+    STR:     'A guard notices your strong stride and waves you through the bridge traffic.',
+    WIS:     'You ask a merchant about the road north and learn useful details.',
+    DISC:    'You arrive exactly when the bridge traffic clears.',
+    failure: 'You arrive tired and later than expected.',
+    logLine: 'Arrived at Harvest Crossing.' },
 
-  { id:'d04', day:4,  type:'road',      node:1,
-    teaser:   'The market at Harvest Crossing is worth moving through carefully. Not everyone there is buying or selling.',
-    success:  'You move through the market and read it well — who\'s watching, who isn\'t, where the north road comes out. You leave knowing more than you arrived with.',
-    failure:  'The market swallows an hour you didn\'t mean to give it. You leave later than planned, lighter in the pocket, having learned nothing useful.',
-    STR: 'The crowd parts for you without you asking. You\'re through and onto the north road before most people have found their footing.',
-    WIS: 'You notice three things in the market that don\'t add up. You file them and keep moving.',
-    DIS: 'You move through without stopping, without being drawn in. The market tries. You don\'t bite.',
-    logLine: 'Through the market at Harvest Crossing.' },
+  // ── ZONE 2: HARVEST CROSSING → MERCHANT'S GATE (Days 4–6) ──────
+  { id:'d04', day:4,  zone:2, type:'road',
+    teaser:  'Tomorrow you pass through the crowded Harvest Crossing market.',
+    success: 'You move through the busy market and secure supplies for the road north.',
+    STR:     'You push through the stalls quickly and reach the road again.',
+    WIS:     'You spot a trader quietly undercutting the others and buy supplies at a better price.',
+    DISC:    'You avoid the distractions and move straight through the market.',
+    failure: 'You spend longer than planned and leave lighter in coin.',
+    logLine: 'Passed through the Harvest Crossing market.' },
 
-  { id:'d05', day:5,  type:'encounter', node:1,
-    teaser:   'A merchant on the road north has a cart with a broken wheel and no one stopping to help. Tomorrow that\'s you passing by.',
-    success:  'You stop and help him get the wheel right. He tells you something about the road ahead that saves you half a day.',
-    failure:  'You pass him by. Two hours later you hit the delay on the road he would have warned you about. You think about that.',
-    STR: 'The wheel takes muscle to seat properly. You manage it in one go. The merchant watches with something like relief.',
-    WIS: 'You spot the actual problem before he finishes explaining. Fixed in ten minutes. He looks at you differently after.',
-    DIS: 'You stop, do the work, don\'t make it a production. He tells you about the road instead of paying you. Better.',
-    logLine: 'Helped a merchant on the road. The road gave something back.' },
+  { id:'d05', day:5,  zone:2, type:'encounter',
+    teaser:  'Tomorrow you meet a merchant stranded with a broken cart wheel.',
+    success: 'You help repair the cart. The merchant shares useful information about the road ahead.',
+    STR:     'You lift the heavy wheel and set it properly.',
+    WIS:     'You find the real problem immediately and fix it.',
+    DISC:    'You finish the repair carefully and quickly.',
+    failure: 'You pass the merchant by. Later you hit the delay he warned others about.',
+    logLine: 'Helped repair a merchant\'s cart.' },
 
-  { id:'d06', day:6,  type:'encounter', node:1,
-    teaser:   'Someone has been behind you at distance since the market. Not gaining, not falling back. Tomorrow you deal with it.',
-    success:  'You pick your moment and turn around. Whoever it was melts into the tree line. They wanted someone who wouldn\'t notice.',
-    failure:  'They follow you all the way to the Gate. You never deal with it. Someone at Merchant\'s Gate knows you\'re coming before you arrive.',
-    STR: 'You stop, turn, and stand your ground. A long moment and then they\'re gone.',
-    WIS: 'You\'d already mapped three places they\'d go if you turned. You turn. They take the one you expected.',
-    DIS: 'You don\'t speed up, don\'t look back. You pick your moment. They\'re gone before you reach the Gate.',
-    logLine: 'Someone was following. Not anymore.' },
+  { id:'d06', day:6,  zone:2, type:'encounter',
+    teaser:  'Tomorrow you deal with someone who has been following you since the market.',
+    success: 'You turn suddenly and confront the follower. They vanish into the trees.',
+    STR:     'You stand your ground and the follower decides not to test you.',
+    WIS:     'You anticipate their escape route and glimpse who they were.',
+    DISC:    'You wait for the perfect moment before forcing them to retreat.',
+    failure: 'They follow you all the way to Merchant\'s Gate.',
+    logLine: 'Someone had been following you on the road.' },
 
-  { id:'d07', day:7,  type:'arrival',   node:2,
-    teaser:   'Mira runs the supply post at the Gate. She\'s been holding something back, waiting for the right person.',
-    success:  'Mira looks at you for a long moment and then starts talking. She\'s been waiting three days to say this to someone she trusts.',
-    failure:  'Mira looks at you and gives you the short version. You get the shape of it but not the detail. She was hoping for someone sharper.',
-    STR: 'Mira sees you\'re road-ready, not worn down, and visibly relaxes. \"Good,\" she says, and pulls out a ledger.',
-    WIS: 'You ask the right question before she\'s finished her opening sentence. She stops, smiles slightly, and gets to the real thing.',
-    DIS: 'You listen without interrupting. She notices. \"Most people start guessing,\" she says. \"I\'m glad you didn\'t.\"',
-    logLine: 'Arrived at Merchant\'s Gate. Mira was waiting.' },
+  // ── ZONE 3: MERCHANT'S GATE → COPPERBRIDGE (Days 7–13) ─────────
+  { id:'d07', day:7,  zone:3, type:'arrival',
+    teaser:  'Tomorrow you arrive at Merchant\'s Gate where Mira runs the supply post.',
+    success: 'Mira greets you at the gate and begins explaining what she has discovered.',
+    STR:     'She sees you\'re still strong from the road and decides you\'re capable.',
+    WIS:     'Your questions reveal the real problem she has been tracking.',
+    DISC:    'You listen patiently until she trusts you with the full story.',
+    failure: 'She shares only part of what she knows.',
+    logLine: 'Arrived at Merchant\'s Gate and met Mira.' },
 
-  { id:'d08', day:8,  type:'road',      node:2,
-    teaser:   'Mira has six months of supply orders going north, all paid for by a name nobody can find. Tomorrow she walks you through it.',
-    success:  'The numbers tell a story once you know how to read them. By the end you understand what someone has been quietly building up north.',
-    failure:  'You follow most of it. The part you miss is probably the part that matters. Mira doesn\'t know what you got and what you didn\'t.',
-    STR: 'You follow it all the way through without needing it repeated. Mira closes the ledger. \"Now you know what I know.\"',
-    WIS: 'You spot the pattern before she points to it. She looks at you. \"Yes,\" she says. \"Exactly that.\"',
-    DIS: 'You read every page before saying anything. One question at the end. She answers it. Done.',
-    logLine: 'Mira\'s ledger. Six months of orders going north.' },
+  { id:'d08', day:8,  zone:3, type:'road',
+    teaser:  'Tomorrow Mira shows you a strange supply ledger.',
+    success: 'The ledger reveals shipments quietly moving north.',
+    STR:     'You work through the numbers quickly and follow the pattern.',
+    WIS:     'You recognize the hidden pattern immediately.',
+    DISC:    'You study every page carefully before speaking.',
+    failure: 'You miss something important in the records.',
+    logLine: 'Studied Mira\'s ledger.' },
 
-  { id:'d09', day:9,  type:'encounter', node:2,
-    teaser:   'Someone has been stopping travelers on the road north of the Gate — asking about cargo, destinations. Tomorrow that\'s you.',
-    success:  'He stops you, asks his questions. You give him nothing useful and he doesn\'t know it. You walk away knowing what he was actually looking for.',
-    failure:  'He stops you for a long time. Gets more than he should. When he waves you through he writes something specific in his book.',
-    STR: 'He looks at you and recalibrates — asks softer questions than he meant to. You answer them easily.',
-    WIS: 'His questions tell you more than your answers tell him. You walk away with a clearer picture of what\'s happening on this road.',
-    DIS: 'Steady, unhurried, unremarkable. He waves you through. You\'re nobody to him. That\'s exactly right.',
-    logLine: 'Road watch north of the Gate. Gave nothing away.' },
+  { id:'d09', day:9,  zone:3, type:'encounter',
+    teaser:  'Tomorrow someone stops travelers north of the Gate asking questions.',
+    success: 'You answer his questions carefully and give away nothing useful.',
+    STR:     'Your confidence shortens the conversation.',
+    WIS:     'You learn more from his questions than he learns from you.',
+    DISC:    'You remain unremarkable and he waves you through.',
+    failure: 'He writes your description in his book.',
+    logLine: 'Passed a road watcher.' },
 
-  { id:'d10', day:10, type:'road',      node:2,
-    teaser:   'Mira said she\'d have one more thing for you before you left the Gate. Tomorrow she does.',
-    success:  'She catches you at the door with a name — someone further up the road who owes her a favor. \"Tell them I sent you,\" she says. \"They\'ll help.\"',
-    failure:  'She starts toward you as you leave and then stops herself. Goes back inside. Whatever she was going to say, you don\'t get it.',
-    STR: 'She presses a sealed letter into your hand. \"For the crossing at Copperbridge. You\'ll know when to use it.\"',
-    WIS: 'She gives you a detail she\'s been sitting on — something small that makes everything else make more sense.',
-    DIS: 'She gives you the name and the favor attached to it. Clean, no preamble. You thank her and go.',
-    logLine: 'Mira had one more thing. Worth stopping for.' },
+  { id:'d10', day:10, zone:3, type:'road',
+    teaser:  'Tomorrow Mira has one last favor to offer before you leave.',
+    success: 'She gives you the name of someone ahead who owes her a favor.',
+    STR:     'She hands you a sealed letter for Copperbridge.',
+    WIS:     'She shares a detail that makes the ledger clearer.',
+    DISC:    'She quietly gives you the name and favor.',
+    failure: 'She decides not to share everything yet.',
+    logLine: 'Left Merchant\'s Gate with Mira\'s help.' },
 
-  { id:'d11', day:11, type:'encounter', node:2,
-    teaser:   'The toll crossing before Copperbridge has a reputation. The man running it makes his own rules. Tomorrow you deal with him.',
-    success:  'He tries three different angles and you don\'t give him any of them. You cross on fair terms. He watches you go like he\'s trying to work out what just happened.',
-    failure:  'He gets more than he should out of you — coin, time, information. You cross poorer and later than you should be.',
-    STR: 'He looks at you and decides the conversation he was planning isn\'t worth having. You cross without drama.',
-    WIS: 'You know what he\'s going to try before he tries it. By the time he gets to his third angle he knows you know.',
-    DIS: 'You pay the fair toll and wait him out when he pushes. Eventually he waves you through.',
-    logLine: 'Toll crossing. Held the line.' },
+  { id:'d11', day:11, zone:3, type:'encounter',
+    teaser:  'Tomorrow you cross the toll bridge before Copperbridge.',
+    success: 'The toll keeper tries a few tricks but lets you pass fairly.',
+    STR:     'He decides arguing with you isn\'t worth it.',
+    WIS:     'You anticipate every angle he tries.',
+    DISC:    'You calmly wait until he gives up pushing.',
+    failure: 'He squeezes extra coin and time from you.',
+    logLine: 'Crossed the toll before Copperbridge.' },
 
-  { id:'d12', day:12, type:'road',      node:2,
-    teaser:   'Open road between the toll crossing and Copperbridge. Long day, quiet, just you and the north road.',
-    success:  'Good miles. You hit a pace that feels sustainable and hold it. By evening Copperbridge is closer than you hoped.',
-    failure:  'Hard day. The road feels longer than it is. You make camp earlier than you meant to and arrive at Copperbridge late.',
-    STR: 'Your body is in it today. The miles go by without demanding anything. You arrive feeling like you could have kept going.',
-    WIS: 'The quiet gives you time to think. By the time you see Copperbridge you\'ve worked something out that\'s been sitting unresolved.',
-    DIS: 'You keep the same pace all day. Exactly where you planned to be by evening.',
-    logLine: 'Long stretch to Copperbridge. Good miles.' },
+  { id:'d12', day:12, zone:3, type:'road',
+    teaser:  'Tomorrow is a long quiet stretch toward Copperbridge.',
+    success: 'You find a steady pace and cover good miles.',
+    STR:     'Your body handles the miles easily.',
+    WIS:     'The quiet gives you time to think clearly.',
+    DISC:    'You hold the same pace all day.',
+    failure: 'The miles feel longer than expected.',
+    logLine: 'Made strong miles toward Copperbridge.' },
 
-  { id:'d13', day:13, type:'arrival',   node:3,
-    teaser:   'Copperbridge is a crossroads — everyone heading north comes through it. Someone there has been watching who arrives.',
-    success:  'Halfway across the bridge a woman falls into step beside you. She was waiting for someone moving with purpose. She decided that\'s you.',
-    failure:  'You make it to Copperbridge. Sera is there but she gives you the short version — she was hoping for someone who looked less worn.',
-    STR: 'Sera watches you cross the bridge from the far end. \"You\'ll do,\" she says.',
-    WIS: 'Sera picks you out of the crowd before you\'re halfway across. \"You\'ve been thinking on the road,\" she says. \"Good.\"',
-    DIS: 'Sera is at the bridge at a specific hour because she knew the right traveler would be too. You are.',
-    logLine: 'Arrived at Copperbridge. Sera was watching.' },
+  { id:'d13', day:13, zone:3, type:'arrival',
+    teaser:  'Tomorrow you reach Copperbridge, a major crossroads.',
+    success: 'Halfway across the bridge a traveler named Sera joins your stride.',
+    STR:     'She notices your strong pace and decides you\'re capable.',
+    WIS:     'She sees you\'ve been thinking carefully about the journey.',
+    DISC:    'You arrive exactly when she expected the right traveler.',
+    failure: 'She meets you but seems uncertain.',
+    logLine: 'Arrived at Copperbridge and met Sera.' },
 
-  { id:'d14', day:14, type:'road',      node:3,
-    teaser:   'Sera has been traveling this road alone for two weeks. Tomorrow she walks it with you. She\'s deciding how much to say.',
-    success:  'Sera talks as you walk — not everything, but enough. By midday you understand why she needed someone heading north and why she picked you.',
-    failure:  'Sera walks with you but stays quiet. She\'s still deciding. You don\'t get much out of her today.',
-    STR: 'Sera matches your pace without comment. After an hour she starts talking. The road opened her up.',
-    WIS: 'Sera asks you a question partway through the morning. Your answer makes her say more than she planned to.',
-    DIS: 'You walk in comfortable silence until Sera is ready to talk. When she does it\'s the real thing.',
-    logLine: 'Sera talks on the road. The picture gets clearer.' },
+  // ── ZONE 4: COPPERBRIDGE → THORNWOOD EDGE (Days 14–20) ─────────
+  { id:'d14', day:14, zone:4, type:'road',
+    teaser:  'Tomorrow you continue north with Sera.',
+    success: 'Sera walks beside you and begins sharing what she knows.',
+    STR:     'She keeps pace easily with you.',
+    WIS:     'Your answers convince her to explain more.',
+    DISC:    'You walk quietly until she is ready to speak.',
+    failure: 'She keeps most of her thoughts to herself.',
+    logLine: 'Started traveling with Sera.' },
 
-  { id:'d15', day:15, type:'encounter', node:3,
-    teaser:   'Something large has been resting on the path through the river pass for two days. Travelers have been going around. Tomorrow you go through.',
-    success:  'You find it blocking the path and slow right down — calm, giving it room. Eventually it shifts and the path clears. Sera exhales. \"Well handled.\"',
-    failure:  'You come around the bend moving too fast. It rears up and you scramble back. You wait in the trees for an hour. Sera doesn\'t say anything. That\'s its own comment.',
-    STR: 'You approach steadily, no hesitation. It reads your body language and decides you\'re not a threat. It moves.',
-    WIS: 'You knew what it needed — space, calm, no sudden moves. You gave it exactly that. The path clears.',
-    DIS: 'You slow to a complete stop and wait it out. Eventually it moves on. Patience got you through.',
-    logLine: 'River pass. Something large. Patience got us through.' },
+  { id:'d15', day:15, zone:4, type:'encounter',
+    teaser:  'Tomorrow something large blocks the path through the river pass.',
+    success: 'You approach slowly and the creature eventually moves aside.',
+    STR:     'Your steady approach convinces it you are no threat.',
+    WIS:     'You recognize the creature and know how to behave.',
+    DISC:    'You wait patiently until it leaves the path.',
+    failure: 'You startle it and must wait a long time.',
+    logLine: 'Passed safely through the river pass.' },
 
-  { id:'d16', day:16, type:'encounter', node:3,
-    teaser:   'There are ruins east of the road that travelers mention in a specific tone of voice. Tomorrow you pass them.',
-    success:  'The ruins have a weight to them — a stillness that notices you. You walk past without hurrying, without flinching. Whatever is in there decides you\'re alright.',
-    failure:  'The ruins get under your skin more than they should. You hurry past and spend the next mile looking back. Sera notices.',
-    STR: 'You feel the attention of the place and meet it squarely. It lets you by.',
-    WIS: 'You keep your mind clear and your destination fixed. The ruins seem to respond to people who know where they\'re going.',
-    DIS: 'You walk past at the same pace you\'ve held all day. The ruins watch. You don\'t give them anything to work with.',
-    logLine: 'The old ruins east of the road. Walked through steady.' },
+  { id:'d16', day:16, zone:4, type:'encounter',
+    teaser:  'Tomorrow you pass ancient ruins beside the road.',
+    success: 'You walk past the ruins without disturbing whatever lingers there.',
+    STR:     'You meet the silence of the place without hesitation.',
+    WIS:     'You recognize the signs of an old watch site.',
+    DISC:    'You maintain the same steady pace past the ruins.',
+    failure: 'The ruins unsettle you and slow your pace.',
+    logLine: 'Passed the old roadside ruins.' },
 
-  { id:'d17', day:17, type:'road',      node:3,
-    teaser:   'Sera knows a route that doesn\'t appear on any road map. Tomorrow she shows you why it exists.',
-    success:  'Sera takes you off the main road onto a path most people would walk past without seeing. It cuts two hours off the journey.',
-    failure:  'Sera offers the shortcut but looking at your pace she decides against it. Two hours longer and you feel every minute.',
-    STR: 'The unmarked path is rough going but your legs handle it. You arrive feeling like you found something.',
-    WIS: 'Sera explains the route as you walk it. By the end you understand the road north better.',
-    DIS: 'You follow the unmarked path carefully, noting the landmarks. You could find it again on your own.',
-    logLine: 'Sera\'s unmarked route. Two hours saved.' },
+  { id:'d17', day:17, zone:4, type:'road',
+    teaser:  'Tomorrow Sera shows you a path few travelers notice.',
+    success: 'Sera guides you along a hidden path that saves hours.',
+    STR:     'The rough terrain slows others but not you.',
+    WIS:     'You memorize the landmarks of the hidden route.',
+    DISC:    'You follow the path carefully from start to finish.',
+    failure: 'You take the longer road instead.',
+    logLine: 'Followed Sera\'s hidden path.' },
 
-  { id:'d18', day:18, type:'encounter', node:3,
-    teaser:   'The stretch of road before Thornwood Edge has a reputation for trouble. Sera has been watching the tree line all morning.',
-    success:  'They come out of the trees and it\'s over faster than it should be — you were ready and they weren\'t expecting that. Sera: \"Good.\"',
-    failure:  'It\'s messy. You get through it but Sera takes a hit covering for where you should have been. She doesn\'t say anything. You both know.',
-    STR: 'You take the front before anyone decides who should. Done in under a minute. Sera: \"I needed to see that.\"',
-    WIS: 'You\'d read the tree line right — you knew before they moved. The warning you gave Sera made all the difference.',
-    DIS: 'You held your role from start to finish, no panic, no wasted effort. Sera: \"You\'re the same in a crisis as out of one.\"',
-    logLine: 'Ambush before the Thornwood. Came out ahead.' },
+  { id:'d18', day:18, zone:4, type:'encounter',
+    teaser:  'Tomorrow danger waits in the trees before Thornwood.',
+    success: 'The ambushers strike but you are ready.',
+    STR:     'You take the lead and drive them off quickly.',
+    WIS:     'You notice the signs before they attack.',
+    DISC:    'You hold your position and the fight ends fast.',
+    failure: 'The fight is messy and leaves you shaken.',
+    logLine: 'Survived an ambush on the road.' },
 
-  { id:'d19', day:19, type:'road',      node:3,
-    teaser:   'Aldric is ahead of you on the road — he moved fast to get here. Whatever brought him north couldn\'t wait.',
-    success:  'Aldric falls into step with you like he never left. He has news — urgent but not bad. The kind that makes the road feel shorter.',
-    failure:  'Aldric takes one look at you and shortens the version he gives you. \"Just stay close,\" he says. \"That\'s enough for now.\"',
-    STR: 'Aldric sees your condition and visibly relaxes. \"Good. I need you sharp for the next stretch.\"',
-    WIS: 'Aldric briefs you and then asks what you think. You tell him. He listens all the way through. \"That\'s useful.\"',
-    DIS: 'Aldric gives you the news in order and waits while you take it in. \"You\'re steady. The Thornwood needs that.\"',
-    logLine: 'Aldric back on the road. News from the north.' },
+  { id:'d19', day:19, zone:4, type:'road',
+    teaser:  'Tomorrow Aldric catches up to your group with urgent news.',
+    success: 'Aldric joins you and explains the situation ahead.',
+    STR:     'He relaxes when he sees you\'re still strong.',
+    WIS:     'Your ideas help shape the next step.',
+    DISC:    'You listen carefully as he explains everything.',
+    failure: 'He shortens the explanation and asks you to follow.',
+    logLine: 'Aldric caught up on the road.' },
 
-  { id:'d20', day:20, type:'arrival',   node:4,
-    teaser:   'The Thornwood is the last stretch before the Keep. Everyone who\'s been through it mentions something moving in the canopy.',
-    success:  'Something in the canopy keeps pace with you for a while. You don\'t slow down. Eventually it goes. You think it made a decision about you.',
-    failure:  'Something in the canopy follows you the whole way. You never settle. It\'s gone by the edge but so is an hour you didn\'t have.',
-    STR: 'Whatever is up there tracks you for an hour. Your pace doesn\'t change. Eventually it peels off.',
-    WIS: '\"Curious, not hostile,\" Sera says. \"It decided you were worth letting through.\"',
-    DIS: 'Your rhythm never breaks through the whole Thornwood. Aldric: \"That tested for exactly the thing you\'ve been building.\"',
-    logLine: 'Through the Thornwood. Something old watched us go.' },
+  { id:'d20', day:20, zone:4, type:'arrival',
+    teaser:  'Tomorrow you enter the Thornwood forest.',
+    success: 'Something watches from the canopy but eventually lets you pass.',
+    STR:     'Your steady pace earns its respect.',
+    WIS:     'You notice it before the others do.',
+    DISC:    'You keep your rhythm the entire way.',
+    failure: 'You feel its presence the whole journey.',
+    logLine: 'Entered the Thornwood forest.' },
 
-  { id:'d21', day:21, type:'road',      node:4,
-    teaser:   'The forest north of Thornwood is harder going than anything before it. Tomorrow you find out what you\'re made of.',
-    success:  'Hard miles but good ones. You find a pace that works and hold it. The forest is beautiful in a way that helps.',
-    failure:  'The forest takes more out of you than it should. You make camp earlier than planned. The Keep feels further away tonight.',
-    STR: 'Your body handles the terrain without complaint. By midday you\'ve covered more ground than expected.',
-    WIS: 'You read the forest well — better paths, better footing. The miles go easier than they should.',
-    DIS: 'Same pace in difficult terrain as easy. That\'s the whole thing and the forest seems to know it.',
-    logLine: 'Deep forest. Hard miles, good pace.' },
+  // ── ZONE 5: THORNWOOD → IRON KEEP → RETURN (Days 21–35) ────────
+  { id:'d21', day:21, zone:5, type:'road',
+    teaser:  'Tomorrow the forest grows harder to cross.',
+    success: 'You move steadily through the deep forest.',
+    STR:     'The rough terrain barely slows you.',
+    WIS:     'You find easier paths between the trees.',
+    DISC:    'You keep the same pace all day.',
+    failure: 'The forest slows you more than expected.',
+    logLine: 'Crossed deep forest terrain.' },
 
-  { id:'d22', day:22, type:'encounter', node:4,
-    teaser:   'Something large has been seen resting on the north path. Travelers have been turning back for three days. Tomorrow you don\'t turn back.',
-    success:  'You come around the bend and there it is — huge, watching. You slow right down, stay calm, give it space. It looks at you for a long moment and then moves off the path.',
-    failure:  'You come around the bend moving too fast and it rears up. You scramble back into the trees and wait an hour. You\'re through, but shaken, and late.',
-    STR: 'It sees the way you carry yourself and makes a decision. You give it room and it gives you the path.',
-    WIS: 'You knew what it needed — space, calm, no sudden moves. You gave it exactly that.',
-    DIS: 'You slow to a complete stop and wait. No fidgeting, no hurrying it. It moves on in its own time.',
-    logLine: 'Wyvern on the north path. Stillness got us through.' },
+  { id:'d22', day:22, zone:5, type:'encounter',
+    teaser:  'Tomorrow a wyvern blocks the north path.',
+    success: 'You give the wyvern space and it leaves the road.',
+    STR:     'It senses your confidence and moves aside.',
+    WIS:     'You know exactly how to approach the creature.',
+    DISC:    'You wait patiently until it flies off.',
+    failure: 'You startle it and must hide until it leaves.',
+    logLine: 'Passed a wyvern on the road.' },
 
-  { id:'d23', day:23, type:'road',      node:4,
-    teaser:   'Hard terrain, long day ahead. The Keep is close enough now that what you bring to it is starting to matter.',
-    success:  'You find your pace early and the miles go. Aldric walks with you for a stretch without talking. That feels like something.',
-    failure:  'Slow day. The terrain wins more than it should. You arrive later than planned and more tired than you want to be.',
-    STR: 'Your body is working well today. Good miles, good pace.',
-    WIS: 'The quiet gives you space to think something through. By evening you\'ve worked out something useful.',
-    DIS: 'Consistent pace all day. Aldric: \"Every day like this one. That\'s how you get here.\"',
-    logLine: 'Finding the pace. The Keep is getting close.' },
+  { id:'d23', day:23, zone:5, type:'road',
+    teaser:  'Tomorrow the terrain tests your endurance.',
+    success: 'You cover strong miles in difficult terrain.',
+    STR:     'Your body handles the climb easily.',
+    WIS:     'You find the best route through the hills.',
+    DISC:    'You keep your steady rhythm.',
+    failure: 'The hills slow your progress.',
+    logLine: 'Made hard miles toward the Keep.' },
 
-  { id:'d24', day:24, type:'encounter', node:4,
-    teaser:   'Something has been following at distance for two days. Moving when you move, stopping when you stop. Tomorrow it closes.',
-    success:  'You pick your moment and deal with it before it deals with you. Clean and fast. Aldric: \"That\'s been behind you since the Gate. Good timing.\"',
-    failure:  'It catches you at a low moment and the encounter is messier than it should be. Aldric: \"Two days ago that ends differently. Get some rest.\"',
-    STR: 'You were ready for it. The physical edge made it quick.',
-    WIS: 'You\'d already worked out where and when. Aldric: \"You saw that coming. I almost didn\'t.\"',
-    DIS: 'You dealt with it methodically, no drama. Aldric: \"Glad you finally handled it.\"',
-    logLine: 'Something that had been following. Not anymore.' },
+  { id:'d24', day:24, zone:5, type:'encounter',
+    teaser:  'Tomorrow something that has followed you finally strikes.',
+    success: 'You deal with the threat before it becomes dangerous.',
+    STR:     'You overpower it quickly.',
+    WIS:     'You anticipated the attack.',
+    DISC:    'You stay calm and methodical.',
+    failure: 'The fight is messy but you survive.',
+    logLine: 'Dealt with the thing following you.' },
 
-  { id:'d25', day:25, type:'road',      node:4,
-    teaser:   'Aldric has been sitting on information since before the Thornwood. Tonight he decides you\'re ready to hear it.',
-    success:  'Aldric tells you what he knows about what\'s waiting at the Keep. It changes the approach. Everyone is quiet for a mile after.',
-    failure:  'Aldric gives you the short version. \"Just follow my lead inside,\" he says. You sense there was more and you didn\'t get it.',
-    STR: 'Aldric gives you the full version because you\'re in the kind of shape that can hold it.',
-    WIS: 'You ask the question Aldric was hoping someone would ask. He tells you everything. \"Now we have a real plan.\"',
-    DIS: 'Aldric tells you and you listen all the way through. One question. The plan is better for your steadiness.',
-    logLine: 'Aldric\'s news. The plan for the Keep takes shape.' },
+  { id:'d25', day:25, zone:5, type:'road',
+    teaser:  'Tomorrow Aldric finally shares his full plan.',
+    success: 'Aldric explains what waits at the Iron Keep.',
+    STR:     'He trusts you because you are still strong.',
+    WIS:     'Your questions improve the plan.',
+    DISC:    'You listen carefully to every detail.',
+    failure: 'He gives you only the basic version.',
+    logLine: 'Learned Aldric\'s plan.' },
 
-  { id:'d26', day:26, type:'encounter', node:4,
-    teaser:   'There\'s a patrol on the road between here and the Keep — six of them, checking faces. Tomorrow you walk past them.',
-    success:  'You adjust your pace and your line before they\'re close enough to study you. You\'re nobody to them. They pass without marking you.',
-    failure:  'One of them looks at you a beat too long. Behind you a rider breaks off and heads toward the Keep faster than the rest.',
-    STR: 'You carry yourself like someone who belongs on this road. They look and look away.',
-    WIS: 'You read the patrol early and made small adjustments. By the time they look you\'re already unremarkable.',
-    DIS: 'Same bearing you\'ve held for twenty-six days. Unremarkable on purpose. They pass.',
-    logLine: 'Patrol on the road. Walked through clean.' },
+  { id:'d26', day:26, zone:5, type:'encounter',
+    teaser:  'Tomorrow a mounted patrol searches travelers.',
+    success: 'You pass the patrol without drawing attention.',
+    STR:     'You carry yourself like you belong there.',
+    WIS:     'You adjust your path before they see you.',
+    DISC:    'You remain unremarkable.',
+    failure: 'One rider studies you closely.',
+    logLine: 'Passed a road patrol.' },
 
-  { id:'d27', day:27, type:'road',      node:4,
-    teaser:   'The Keep is visible from the ridge tomorrow for the first time. Aldric says what you see from the road isn\'t the whole story.',
-    success:  'You see it from the ridge and it\'s larger than the road prepared you for. Aldric: \"Everything you\'ve done to get here. It was for this.\"',
-    failure:  'You see it from the ridge and it\'s larger than expected. Aldric is quiet. You get the feeling he was hoping you\'d have more in the tank.',
-    STR: 'You\'ve been moving toward this for weeks. Seeing it on the horizon makes the whole road make sense.',
-    WIS: 'Aldric tells you what to look for, what to ignore. By the time you leave the ridge you have a picture of what\'s inside.',
-    DIS: 'You look at it for exactly as long as you need to. Then you start moving again. Aldric: \"Good. Don\'t stop now.\"',
-    logLine: 'First sight of the Iron Keep. Larger than expected.' },
+  { id:'d27', day:27, zone:5, type:'road',
+    teaser:  'Tomorrow you see the Iron Keep for the first time.',
+    success: 'From the ridge the Iron Keep rises on the horizon.',
+    STR:     'Seeing it confirms the strength of your journey.',
+    WIS:     'Aldric explains what to look for inside the fortress.',
+    DISC:    'You take one look and continue forward.',
+    failure: 'The sight of the Keep drains your energy.',
+    logLine: 'Saw the Iron Keep from the ridge.' },
 
-  { id:'d28', day:28, type:'road',      node:5,
-    teaser:   'Tomorrow you\'re inside the Keep for the first time. Moving through it like you belong there.',
-    success:  'The corridors are busy and you move through them like you\'ve been here before. You find what Aldric needed. You leave it exactly as you found it.',
-    failure:  'You move through carefully but not quite confidently enough. Someone glances at you in a corridor. It takes longer than it should.',
-    STR: 'You move with purpose and people give you room. The Keep doesn\'t push back against someone who belongs.',
-    WIS: 'Every turn is where Aldric said it would be. You\'re in and out without a second glance.',
-    DIS: 'Methodical, unhurried, unremarkable. You find it. You leave. Nobody notices.',
-    logLine: 'Inside the Keep. Found what Aldric needed.' },
+  { id:'d28', day:28, zone:5, type:'road',
+    teaser:  'Tomorrow you enter the Iron Keep.',
+    success: 'You move through the Keep unnoticed and recover what Aldric needed.',
+    STR:     'People instinctively give you room.',
+    WIS:     'You remember every turn Aldric described.',
+    DISC:    'You move methodically and leave no trace.',
+    failure: 'Someone notices you in the corridor.',
+    logLine: 'Entered the Iron Keep.' },
 
-  { id:'d29', day:29, type:'encounter', node:5,
-    teaser:   'Someone inside the Keep noticed something yesterday. Tomorrow they act on it.',
-    success:  'You see it before it develops — a guard whose routine changed. You deal with it quietly before it becomes something. Nobody knows anything happened.',
-    failure:  'It goes loud. Aldric contains it but it costs him something he was saving for tomorrow. \"That cost us,\" he says. \"We\'ll manage. But it cost us.\"',
-    STR: 'You moved first and it ended before it started. Aldric: \"Clean. Good.\"',
-    WIS: 'You read the pattern change before it committed. Aldric: \"I wouldn\'t have caught that.\"',
-    DIS: 'You stayed calm all the way through — no rush, no alarm. It resolved quietly.',
-    logLine: 'Trouble inside the Keep. Handled quietly.' },
+  { id:'d29', day:29, zone:5, type:'encounter',
+    teaser:  'Tomorrow someone in the Keep begins asking questions.',
+    success: 'You resolve the suspicion before it spreads.',
+    STR:     'You confront the problem directly.',
+    WIS:     'You detect the change in routine early.',
+    DISC:    'You stay calm until it passes.',
+    failure: 'The incident becomes louder than intended.',
+    logLine: 'Quietly resolved suspicion in the Keep.' },
 
-  { id:'d30', day:30, type:'road',      node:5,
-    teaser:   'The council meets tomorrow. Tonight is the last quiet night before it matters.',
-    success:  'Aldric, Sera, you. The evidence laid out and gone over. Nobody says much. Everything already said. You sleep well.',
-    failure:  'Something feels unresolved. You don\'t sleep well. Tomorrow requires more than last night gave you.',
-    STR: 'You feel ready. Whatever tomorrow asks for, you\'ve built it.',
-    WIS: 'You find one detail in the evidence that everyone else missed. Small but useful. Sera: \"Good catch.\"',
-    DIS: 'You\'ve done everything you can do. You let that be enough. You sleep.',
-    logLine: 'Eve of the council. Everything laid out.' },
+  { id:'d30', day:30, zone:5, type:'road',
+    teaser:  'Tomorrow the council meets.',
+    success: 'You review the evidence with Aldric and Sera.',
+    STR:     'You feel ready for what comes.',
+    WIS:     'You notice a final detail in the evidence.',
+    DISC:    'You rest calmly before the meeting.',
+    failure: 'Something still feels unresolved.',
+    logLine: 'Prepared for the council.' },
 
-  { id:'d31', day:31, type:'encounter', node:5,
-    teaser:   'Tomorrow is the reason the road existed. Everything you\'ve built leads into that room.',
-    success:  'The evidence is challenged and you hold the room — steady, clear, present. It lands. Sera: \"Every day on that road built toward this. You made it count.\"',
-    failure:  'The evidence lands but not cleanly. Aldric watches something close that should have stayed open. He doesn\'t say anything. He doesn\'t need to.',
-    STR: 'You stood your ground in that room the same way you stood it on the road. It was enough.',
-    WIS: 'You caught the moment when it almost went wrong and corrected it quietly. Sera: \"I wouldn\'t have seen that.\"',
-    DIS: 'Same in that room as on day one. Sera: \"That\'s why I picked you on that bridge.\"',
-    logLine: 'The council. The room turned.' },
+  { id:'d31', day:31, zone:5, type:'encounter',
+    teaser:  'Tomorrow the road\'s purpose is revealed.',
+    success: 'The council hears the evidence and the room shifts.',
+    STR:     'You stand firm under pressure.',
+    WIS:     'You guide the conversation at the right moment.',
+    DISC:    'You remain steady throughout the debate.',
+    failure: 'The decision is less clear than hoped.',
+    logLine: 'Faced the council.' },
 
-  { id:'d32', day:32, type:'road',      node:5,
-    teaser:   'The day after something big is its own kind of road. Tomorrow you walk it.',
-    success:  'The morning after. You walk through the Keep and it feels different — lighter, more yours. Aldric: \"Well done.\"',
-    failure:  'The morning after. You walk through the Keep and it feels unfinished. Aldric: \"We got most of it. That has to be enough.\"',
-    STR: 'Your body knows it\'s over. Good tired. The kind you earn.',
-    WIS: 'You think through what happened. By midday you understand something you didn\'t yesterday.',
-    DIS: 'You showed up the same every day and it added up to this.',
-    logLine: 'Morning after the council. The Keep feels different.' },
+  { id:'d32', day:32, zone:5, type:'road',
+    teaser:  'Tomorrow the road turns south.',
+    success: 'The Keep feels different the next morning.',
+    STR:     'Your body finally relaxes.',
+    WIS:     'You understand more about what happened.',
+    DISC:    'You accept the result calmly.',
+    failure: 'Loose ends remain.',
+    logLine: 'The morning after the council.' },
 
-  { id:'d33', day:33, type:'road',      node:5,
-    teaser:   'The road south looks different than it did going north. Tomorrow you see why.',
-    success:  'The road south is the same road. You\'re not the same traveler. The miles go easier than they did thirty days ago.',
-    failure:  'The road south is the same road. It doesn\'t feel shorter. You\'re more tired than you expected to be.',
-    STR: 'Your body handles the return road like it\'s nothing. You\'ve built something real.',
-    WIS: 'You notice things on the road south that you missed going north. The road didn\'t change. You did.',
-    DIS: 'Same pace south as north. The road is familiar now. You belong on it.',
-    logLine: 'The road south. Different traveler than the one who came north.' },
+  { id:'d33', day:33, zone:5, type:'road',
+    teaser:  'Tomorrow the road home begins.',
+    success: 'The road south feels familiar.',
+    STR:     'The miles pass easily.',
+    WIS:     'You notice things you missed before.',
+    DISC:    'Your steady rhythm returns.',
+    failure: 'The return feels longer than expected.',
+    logLine: 'Began the road home.' },
 
-  { id:'d34', day:34, type:'road',      node:5,
-    teaser:   'One more day. The road home is in sight. Tomorrow you finish it.',
-    success:  'Good last miles. You find yourself thinking about the road differently than you did on day one. Something changed and you know exactly when it happened.',
-    failure:  'Hard last miles. You get there. That counts. But you arrive knowing there was more you could have given it.',
-    STR: 'Strong finish. You arrive the way you set out — moving like someone who means it.',
-    WIS: 'You spend the last miles turning it over. By the time you arrive you know what the road actually taught you.',
-    DIS: 'You finish the same way you started — consistent, present, on time.',
-    logLine: 'Last stretch. The road home.' },
+  { id:'d34', day:34, zone:5, type:'road',
+    teaser:  'Tomorrow you return to Hearthstone.',
+    success: 'The final miles pass quickly.',
+    STR:     'You finish strong.',
+    WIS:     'You understand the road\'s lessons.',
+    DISC:    'You finish exactly as you began.',
+    failure: 'The last miles are harder than expected.',
+    logLine: 'Nearing home.' },
 
-  { id:'d35', day:35, type:'arrival',   node:5,
-    teaser:   'Tomorrow the road ends. You started this in Hearthstone. Tomorrow you finish it.',
-    success:  'You made it. Thirty-five days. Aldric puts a hand on your shoulder and doesn\'t say anything. That says everything.',
-    failure:  'You made it. Aldric is there. \"You got here,\" he says. \"That\'s real.\" He means it. So do you.',
-    STR: 'You arrive strong. The road built something in you. You can feel it.',
-    WIS: 'You arrive knowing things you didn\'t when you left. The road does that to people who pay attention.',
-    DIS: 'Thirty-five days. Every one of them. That\'s not a small thing.',
-    logLine: 'Journey complete. Thirty-five days on the road.' },
+  { id:'d35', day:35, zone:5, type:'arrival',
+    teaser:  'Tomorrow the journey ends.',
+    success: 'You return to Hearthstone after thirty-five days on the road.',
+    STR:     'You arrive stronger than when you left.',
+    WIS:     'You arrive wiser from everything the road showed you.',
+    DISC:    'You arrive knowing you kept showing up every day.',
+    failure: 'You still made it home. That counts.',
+    logLine: 'Returned to Hearthstone. Journey complete.' },
 
 ];
+
+var WORLD_CONDITIONS = {
+  1: [
+    'The morning air is cool and still.',
+    'Pale light filters through thin clouds.',
+    'Dew sits heavy on the grass beside the road.',
+    'A light mist clings to the low ground.',
+    'The sky is clear and the air sharp.',
+    'Clouds move slowly from the west.',
+    'The road is soft from last night\'s rain.',
+    'Early sun cuts low across the fields.',
+    'A cold edge in the air this morning.',
+    'The light is grey and even.'
+  ],
+  2: [
+    'The wind picks up from the north.',
+    'Broken cloud throws moving shadows on the road.',
+    'The air smells of turned earth and rain.',
+    'A heavy overcast sits low on the hills.',
+    'Light drizzle comes and goes.',
+    'The morning is bright but the wind is cold.',
+    'Mud from yesterday still clings to the verges.',
+    'The sky is white from edge to edge.',
+    'A brief rain passes and the road steams.',
+    'The afternoon sun is hazy through thin cloud.'
+  ],
+  3: [
+    'The river smell comes and goes on the breeze.',
+    'Fog sits thick in the low places.',
+    'A grey morning, damp and quiet.',
+    'The light is flat and the air still.',
+    'Rain moves across the hills to the east.',
+    'Cold and clear, the kind that lasts all day.',
+    'The road is dry but the sky promises otherwise.',
+    'Cloud builds slowly in the north.',
+    'A sharp wind has dried the road overnight.',
+    'The sun breaks through briefly then hides again.'
+  ],
+  4: [
+    'The trees close in and the light changes.',
+    'Mist moves through the upper branches.',
+    'The air is damp and smells of leaf rot.',
+    'A still morning under a grey canopy.',
+    'Rain drips slowly from the leaves long after it stopped.',
+    'The forest light is green and dim.',
+    'Something moves in the upper canopy. Wind, probably.',
+    'The undergrowth is wet from last night.',
+    'Cold comes early here under the trees.',
+    'The forest absorbs sound in a way the open road does not.'
+  ],
+  5: [
+    'Stone and shadow. The air is cool and close.',
+    'Wind moves through the high passes with a low sound.',
+    'The sky is enormous from the ridge.',
+    'Cloud sits on the peaks to the north.',
+    'The air is thin and clear.',
+    'Frost on the ground this morning.',
+    'The light comes hard and flat off the stone.',
+    'A deep silence in the high country.',
+    'The wind has teeth this far north.',
+    'Clear sky, no cover, the kind of day that asks something of you.'
+  ]
+};
+
+function getWorldCondition() {
+  var beat = S.todayBeat;
+  var zone = (beat && beat.zone) ? beat.zone : (S.currentNode ? Math.min(S.currentNode + 1, 5) : 1);
+  var pool = WORLD_CONDITIONS[zone] || WORLD_CONDITIONS[1];
+  // Use daysLogged as seed for stability within the day
+  return pool[(S.daysLogged || 0) % pool.length];
+}
+
 
 
 </script>
@@ -2195,6 +2402,20 @@ function fixState() {
   // Apply HP damage for missed days since last login
   applyMissedDayDamage(_today);
   backfillHabitStats();
+  // Re-resolve todayBeat from current BEATS array (clears stale localStorage text)
+  if (S.todayBeat && S.todayBeat.day) {
+    var _freshBeat = BEATS.find(function(b) { return b.day === S.todayBeat.day; });
+    if (_freshBeat) S.todayBeat = _freshBeat;
+  }
+
+  // Always re-resolve todayBeat from the current BEATS array.
+  // S.todayBeat is stored as a plain object in localStorage, so its text
+  // reflects whatever version of BEATS was live when it was last saved.
+  // Re-fetching by day number ensures the player always sees current text.
+  if (S.todayBeat && S.todayBeat.day) {
+    var freshBeat = BEATS.find(function(b) { return b.day === S.todayBeat.day; });
+    if (freshBeat) S.todayBeat = freshBeat;
+  }
 }
 
 // HP drain: 15 HP per fully missed day (no habits logged at all), 7 HP for partial day
@@ -2276,8 +2497,8 @@ function getEpithet() {
   if (_devOffset) now.setDate(now.getDate() + _devOffset);
 
   // Score each stat over last 30 days
-  var scores = { STR: 0, WIS: 0, DIS: 0 };
-  var possible = { STR: 0, WIS: 0, DIS: 0 };
+  var scores = { STR: 0, WIS: 0, DISC: 0 };
+  var possible = { STR: 0, WIS: 0, DISC: 0 };
   for (var i = 0; i < 30; i++) {
     var d = new Date(now); d.setDate(d.getDate() - i);
     var ds = d.toDateString();
@@ -2289,7 +2510,7 @@ function getEpithet() {
   }
 
   // Find dominant stat — must be at least 30% of possible days and 20% more than next highest
-  var statKeys = ['STR','WIS','DIS'];
+  var statKeys = ['STR','WIS','DISC'];
   var best = null, bestPct = 0;
   statKeys.forEach(function(k) {
     if (possible[k] === 0) return;
@@ -2305,7 +2526,7 @@ function getEpithet() {
   var epithets = {
     STR: ['the Hardy', 'the Strong', 'the Relentless'],
     WIS: ['the Keen',  'the Wise',   'the Cunning'   ],
-    DIS: ['the Steady','the Steadfast','the Iron-Willed'],
+    DISC: ['the Steady','the Steadfast','the Iron-Willed'],
   };
 
   return { text: epithets[best][tier], stat: best };
@@ -2397,7 +2618,7 @@ function doLog(habitId) {
   if (!h) return;
   var t = today();
   if (!Array.isArray(h.log)) h.log = [];
-  if (h.log.indexOf(t) !== -1) return; // already logged
+  if (h.log.indexOf(t) !== -1) return;
 
   h.log.push(t);
 
@@ -2409,75 +2630,110 @@ function doLog(habitId) {
   if (h.log.indexOf(yd) !== -1 || h.streak === 0) {
     h.streak = (h.streak || 0) + 1;
   } else {
-    // Check if within weekly frequency tolerance
-    if (h.freq !== 'daily') {
-      h.streak = (h.streak || 0) + 1;
-    } else {
-      h.streak = 1; // reset
-    }
+    h.freq !== 'daily' ? h.streak = (h.streak || 0) + 1 : h.streak = 1;
   }
 
-  // Always update daysLogged from current logs (any habit logged counts)
-  var _allDates = {};
-  S.habits.forEach(function(hh) {
-    (hh.log || []).forEach(function(d) { _allDates[d] = true; });
-  });
-  S.daysLogged = Object.keys(_allDates).length;
+  // NOTE: daysLogged is NOT updated here.
+  // It advances only when the day completes (all habits logged) inside processDayComplete().
+  // Individual habit logs affect stats and animations only.
 
   save();
 
-  // Animate check — gold burst
-  var tap = document.getElementById('habit-check-' + habitId);
-  if (tap) {
-    tap.textContent = '✓';
-    tap.className = 'habit-check done just-checked';
-    setTimeout(function() { tap.classList.remove('just-checked'); }, 450);
+  var _habitId = habitId;
+  var _stat    = (h.stat || 'STR').toUpperCase();
+  var _rxStat  = h.stat || 'default';
+
+  // ── STEP 1 (0ms): checkmark + tile glow ─────────────────────
+  var checkEl = document.getElementById('habit-check-' + _habitId);
+  if (checkEl) {
+    checkEl.textContent = '✓';
+    checkEl.className = 'habit-check done just-checked';
+    setTimeout(function() { checkEl.classList.remove('just-checked'); }, 450);
+  }
+  var cardEl = document.getElementById('habit-card-' + _habitId);
+  if (cardEl) {
+    cardEl.classList.add('habit-logging');
+    setTimeout(function() {
+      var c = document.getElementById('habit-card-' + _habitId);
+      if (c) c.classList.remove('habit-logging');
+    }, 600);
   }
 
-  // Per-habit micro-reaction line
-  // Must fire AFTER any render() call — render() rebuilds DOM, destroying the element
-  var _rxId = habitId;
-  var _rxStat = h.stat || 'default';
-  function showHabitReaction() {
-    var el = document.getElementById('habit-reaction-' + _rxId);
-    if (!el) return;
+  // ── STEP 2 (220ms): inline stat feedback inside card ────────
+  setTimeout(function() {
+    var statEl = document.getElementById('habit-reaction-stat-' + _habitId);
+    var textEl = document.getElementById('habit-reaction-text-' + _habitId);
+    var rxEl   = document.getElementById('habit-reaction-' + _habitId);
+    if (!rxEl || !statEl || !textEl) return;
     var pool = (STAT_REACTIONS[_rxStat] && STAT_REACTIONS[_rxStat].length)
       ? STAT_REACTIONS[_rxStat] : STAT_REACTIONS.default;
-    el.textContent = pool[Math.floor(Math.random() * pool.length)];
-    el.className = 'habit-reaction visible';
+    var statLabel = { STR: 'STRENGTH', WIS: 'WISDOM', DISC: 'DISCIPLINE' }[_stat] || _stat;
+    statEl.textContent = '+1 ' + statLabel;
+    textEl.textContent = pool[Math.floor(Math.random() * pool.length)];
+    rxEl.className = 'habit-reaction visible';
     setTimeout(function() {
-      var e = document.getElementById('habit-reaction-' + _rxId);
+      var e = document.getElementById('habit-reaction-' + _habitId);
       if (e) e.classList.add('fade-out');
-    }, 2800);
+    }, 4500);
     setTimeout(function() {
-      var e = document.getElementById('habit-reaction-' + _rxId);
-      if (e) { e.className = 'habit-reaction'; e.textContent = ''; }
-    }, 3600);
+      var e  = document.getElementById('habit-reaction-' + _habitId);
+      var es = document.getElementById('habit-reaction-stat-' + _habitId);
+      var et = document.getElementById('habit-reaction-text-' + _habitId);
+      if (e)  e.className = 'habit-reaction';
+      if (es) es.textContent = '';
+      if (et) et.textContent = '';
+    }, 6000);
+  }, 220);
+
+  // ── STEP 3 (450ms): map progress fill pulse ──────────────────
+  setTimeout(function() {
+    var fill = document.querySelector('.map-progress-fill');
+    if (fill) {
+      fill.classList.add('map-advance-pulse');
+      setTimeout(function() { fill.classList.remove('map-advance-pulse'); }, 500);
+    }
+  }, 450);
+
+  // ── STEP 4 (800ms): update UI without rebuilding the habits list ────────────
+  // renderHabits() would destroy the reaction elements mid-display.
+  // Instead: update the logged card's visual state in-place, render everything else.
+
+  function renderWithoutHabits() {
+    renderCharBar();
+    renderBeatSection();
+    renderNodeMap();
+    renderJourneyLog();
+    renderDevPanel();
+    mobSync();
+    // Update just this card's logged state in-place
+    var c = document.getElementById('habit-card-' + _habitId);
+    if (c) c.classList.add('logged');
   }
 
   if (allLoggedToday()) {
-    // Let the last burst animation breathe, then fire
+    // Commit all state immediately so map + road log update without delay
+    processDayCommit();
+    renderWithoutHabits();
+    // Delay only the encounter reveal (full render) until reaction animation is done
     setTimeout(function() {
-      processDayComplete();
-      // Show reaction AFTER processDayComplete re-renders habits
-      setTimeout(showHabitReaction, 80);
-      // Awaken beat section
+      processDayReveal();
       setTimeout(function() {
         var inner = document.getElementById('beat-inner');
         if (inner && inner.style.display !== 'none') {
-          inner.classList.add('awakening');
-          setTimeout(function() { inner.classList.remove('awakening'); }, 650);
+          inner.classList.add('beat-reveal');
+          setTimeout(function() { inner.classList.remove('beat-reveal'); }, 700);
         }
-      }, 80);
-    }, 260);
+      }, 120);
+    }, 5200);
   } else {
-    render();
-    // Show reaction AFTER render() rebuilds the habit cards
-    setTimeout(showHabitReaction, 60);
+    renderWithoutHabits();
   }
 }
 
-function processDayComplete() {
+// processDayCommit: write all state immediately so map + road log update at once.
+// Does NOT call render() - caller does renderWithoutHabits() after this.
+var _pendingNodeAdvanced = false;
+function processDayCommit() {
   var t = today();
   if (S.sessionDate === t) return;
 
@@ -2485,37 +2741,30 @@ function processDayComplete() {
   S.lastLogDate = t;
   S.pressedOn = false;
 
-  var loggedToday = anyLoggedToday();
-  var allDone = allLoggedToday();
   var consistency = getConsistency();
 
   if (!S.hp) S.hp = 100;
   if (!S.maxHp) S.maxHp = 100;
-
-  // HP: +5 all done, -10 nothing logged, no change for partial
-  if (allDone) {
-    S.hp = Math.min(S.maxHp, S.hp + 5);
-  } else if (!loggedToday) {
-    S.hp = Math.max(0, S.hp - 10);
-  }
+  S.hp = Math.min(S.maxHp, S.hp + 5);
   S._missedDaysOnLoad = 0;
 
-  // Map only moves if at least one habit logged today
-  if (loggedToday) {
-    var allDates = {};
-    S.habits.forEach(function(h) {
-      (h.log || []).forEach(function(d) { allDates[d] = true; });
-    });
-    S.daysLogged = Object.keys(allDates).length;
-  }
+  var encounterDay = Math.min((S.daysLogged || 0) + 1, 35);
+  var beat = BEATS.find(function(b) { return b.day === encounterDay; }) || null;
+  S.todayBeat     = beat;
+  S.todayBeatDate = t;
 
-  // Node advancement
-  var nodeAdvanced = false;
-  if (loggedToday && !S.advancementPaused) {
+  var allDates = {};
+  S.habits.forEach(function(h) {
+    (h.log || []).forEach(function(d) { allDates[d] = true; });
+  });
+  S.daysLogged = Object.keys(allDates).length;
+
+  _pendingNodeAdvanced = false;
+  if (!S.advancementPaused) {
     var nextNode = NODES[S.currentNode + 1];
     if (nextNode && S.daysLogged >= nextNode.daysNeeded) {
       S.currentNode++;
-      nodeAdvanced = true;
+      _pendingNodeAdvanced = true;
       if (!S.coins) S.coins = { total: 0 };
       var arrivalHp  = Math.max(0, Math.min(S.maxHp, S.hp));
       var arrivalPct = arrivalHp / S.maxHp;
@@ -2527,16 +2776,12 @@ function processDayComplete() {
     }
   }
 
-  var beat = pickBeat(S.currentNode, nodeAdvanced);
-  S.todayBeat     = beat;
-  S.todayBeatDate = t;
-
   if (beat) {
     var cLabel = consistency === 'on_road' ? 'On the Road'
                : consistency === 'footsore' ? 'Footsore' : 'Gone to Ground';
     var streak = Math.max.apply(null, S.habits.map(function(h){ return h.streak||0; }).concat([0]));
     S.journeyLog.unshift({
-      day: S.daysLogged, logLine: beat.logLine || '',
+      day: encounterDay, logLine: beat.logLine || '',
       node: S.currentNode, beatType: beat.type,
       consistency: consistency, consistencyLabel: cLabel,
       streak: streak, outcome: null
@@ -2545,11 +2790,22 @@ function processDayComplete() {
   }
 
   save();
-  render();
-
-  if (nodeAdvanced) setTimeout(function() { showLevelUp(S.currentNode); }, 600);
 }
 
+// processDayReveal: full render after reaction animation finishes
+function processDayReveal() {
+  render();
+  if (_pendingNodeAdvanced) {
+    _pendingNodeAdvanced = false;
+    setTimeout(function() { showLevelUp(S.currentNode); }, 600);
+  }
+}
+
+// Legacy entry point used by dev panel / force-complete etc.
+function processDayComplete() {
+  processDayCommit();
+  processDayReveal();
+}
 function peekNextBeat() {
   var node = S.currentNode || 0;
   var nodeBtBeats = BEATS.filter(function(b) { return b.node === node; });
@@ -2596,14 +2852,17 @@ function getBeatTeaser(beat) {
   return rawText.slice(0, 80).trim() + '…';
 }
 
-function pickBeat(node, isArrival) {
-  var targetDay = (S.daysLogged || 0) + 1;
-  if (targetDay > 35) targetDay = 35;
-  return BEATS.find(function(b) { return b.day === targetDay; }) || null;
+function pickBeat() {
+  // Used only by fixState() to re-hydrate S.todayBeat on page load.
+  // S.todayBeat.day is the source of truth — re-fetch by that day number.
+  if (S.todayBeat && S.todayBeat.day) {
+    return BEATS.find(function(b) { return b.day === S.todayBeat.day; }) || null;
+  }
+  return null;
 }
 
 function getDominantStat() {
-  var stats = ['STR','WIS','DIS'];
+  var stats = ['STR','WIS','DISC'];
   var best = null, bestScore = 0;
   // 7-day score
   stats.forEach(function(s) {
@@ -2630,27 +2889,24 @@ function getBeatText(beat) {
   var loggedToday = anyLoggedToday();
   if (loggedToday) {
     var dom = typeof getDominantStat === 'function' ? getDominantStat() : null;
-    if (dom && beat[dom]) return beat[dom];
-    return beat.success || (beat.text && beat.text.on_road) || '';
+    if (dom && beat[dom]) {
+      // Extract first sentence of success as scene intro
+      var intro = '';
+      if (beat.success) {
+        var m = beat.success.match(/^[^.!?]+[.!?]/);
+        intro = m ? m[0] : beat.success;
+      }
+      return (intro ? intro + '\n' : '') + beat[dom];
+    }
+    return beat.success || '';
   }
-  if (beat.failure) return beat.failure;
-  var c = getConsistency();
-  if (c === 'on_road')  return (beat.text && beat.text.on_road)  || beat.success || '';
-  if (c === 'footsore') return (beat.text && beat.text.footsore) || beat.failure || '';
-  return (beat.text && beat.text.gone) || beat.failure || '';
+  return beat.failure || beat.success || '';
 }
 
 function getEncounterOutcome(beat) {
   if (!beat || beat.type !== 'encounter') return null;
-  var c = getConsistency();
-  // On the road always prevails
-  if (c === 'on_road') return { type: 'prevailed', text: beat.encounter.prevailed.text };
-  // Gone to ground always fails
-  if (c === 'gone') return { type: 'setback', text: beat.encounter.setback.text };
-  // Footsore: STR score >= 6 means your body carried you through
-  var str = getStat('STR');
-  if (str >= 6) return { type: 'prevailed', text: beat.encounter.prevailed.text };
-  return { type: 'setback', text: beat.encounter.setback.text };
+  // beat.STR/WIS/DIS is shown as main body via getBeatText — no separate outcome badge
+  return null;
 }
 
 // Press On ritual teasers by node
@@ -2874,7 +3130,7 @@ var _obHabitCount = 1;
 var _obStats = {}; // stat overrides keyed by h1/h2/h3
 function setStat(stat, prefix) {
   _obStats[prefix] = stat;
-  ['STR','WIS','DIS'].forEach(function(s) {
+  ['STR','WIS','DISC'].forEach(function(s) {
     var el = document.getElementById(prefix + '-stat-' + s);
     if (el) { el.className = 'stat-pick-btn' + (s === stat ? ' sel ' + s : ''); }
   });
@@ -2961,9 +3217,9 @@ function beginJourney() {
   S.firstRun = false;
   S.createdAt = Date.now();
   save();
-  // Save username to profiles table if logged in
+  // Update display_name in profiles but do NOT overwrite username (already set during signup)
   if (_sb && _user) {
-    _sb.from('profiles').upsert({ id: _user.id, username: S.name }).then(function() {});
+    _sb.from('profiles').update({ display_name: S.name }).eq('id', _user.id).then(function() {});
   }
   goToMain();
 }
@@ -3019,7 +3275,7 @@ function inferStat(text) {
   var sScore = STR.filter(function(k) { return l.indexOf(k) !== -1; }).length;
   var dScore = DIS.filter(function(k) { return l.indexOf(k) !== -1; }).length;
   if (sScore > 0 && sScore >= dScore) return 'STR';
-  if (dScore > 0) return 'DIS';
+  if (dScore > 0) return 'DISC';
   return 'WIS';
 }
 
@@ -3145,6 +3401,7 @@ function renderCharBar() {
   if (fcEl) fcEl.textContent = _friends.length > 0 ? _friends.length + ' companion' + (_friends.length===1?'':'s') : '';
 }
 
+
 function renderHabits() {
   var wrap = document.getElementById('habits-wrap');
   wrap.innerHTML = '';
@@ -3153,6 +3410,7 @@ function renderHabits() {
     var done = (h.log || []).indexOf(t) !== -1;
     var card = document.createElement('div');
     card.className = 'habit-card' + (done ? ' logged' : '');
+    card.id = 'habit-card-' + h.id;
 
     var freqLabel = h.freq === 'daily' ? 'Daily' : h.freq + '× per week';
 
@@ -3187,136 +3445,174 @@ function renderHabits() {
         weeklyHtml +
       '</div>' +
     '</div>' +
-    '<div class="habit-reaction" id="habit-reaction-' + h.id + '"></div>';
+    '<div class="habit-reaction" id="habit-reaction-' + h.id + '">' +
+      '<span class="habit-reaction-stat" id="habit-reaction-stat-' + h.id + '"></span>' +
+      '<span class="habit-reaction-text" id="habit-reaction-text-' + h.id + '"></span>' +
+    '</div>';
     wrap.appendChild(card);
   });
 }
 
+// Guard: only write innerHTML if content actually changed — prevents flicker
+function _setHTML(el, html) {
+  if (el && el.innerHTML !== html) el.innerHTML = html;
+}
+
 function renderBeatSection() {
   var section = document.getElementById('beat-section');
-  var locked = document.getElementById('beat-locked');
-  var inner = document.getElementById('beat-inner');
-  var allDone = allLoggedToday();
-  var hasBeat = S.sessionDate === today() && S.todayBeat;
-  // Set locked text based on habit types
-  if (locked) {
-    var hasDaily = S.habits.some(function(h) { return h.freq === 'daily'; });
-    locked.textContent = hasDaily
-      ? "Log today’s habits to see what happens on the road."
-      : "Log a habit today to continue the road.";
+  var locked  = document.getElementById('beat-locked');
+  var inner   = document.getElementById('beat-inner');
+
+  // ── THE ONLY TWO INPUTS ───────────────────────────────────────
+  // completedDays: days fully finished (all habits logged + Press On)
+  var completedDays     = S.daysLogged || 0;
+  // encounterRevealed: true only after all habits logged AND processDayComplete ran today
+  var encounterRevealed = (S.sessionDate === today()) && !!S.todayBeat;
+
+  // ── DERIVED ───────────────────────────────────────────────────
+  // Encounter beat: locked at completion time, stored in S.todayBeat
+  var encounterBeat = encounterRevealed ? S.todayBeat : null;
+
+  // Teaser beat: always the NEXT encounter after whatever is currently revealed.
+  // Before encounter: teaser for (completedDays + 1)
+  // After Press On:   completedDays already incremented, teaser for (completedDays + 1)
+  var teaserDay  = completedDays + 1;
+  var teaserBeat = BEATS.find(function(b) { return b.day === teaserDay; }) || null;
+
+  // INVARIANT: encounter and teaser must NEVER be from the same beat
+  if (encounterBeat && teaserBeat && encounterBeat.day === teaserBeat.day) {
+    teaserBeat = null;
   }
 
-  // Update story preview line in HUD banner
+  // ── HUD banner ────────────────────────────────────────────────
   var preview = document.getElementById('hud-story-preview');
   if (preview) {
-    if (hasBeat && S.todayBeat) {
+    if (encounterBeat) {
       var node = NODES[S.currentNode] || NODES[0];
-      preview.textContent = node.name + ' · ' + (S.todayBeat.type === 'arrival' ? 'Arriving' : S.todayBeat.type === 'encounter' ? 'Encounter' : 'The Road');
+      preview.textContent = node.name + ' · ' + (encounterBeat.type === 'arrival' ? 'Arriving' : encounterBeat.type === 'encounter' ? 'Encounter' : 'The Road');
     } else {
-      var hasDaily2 = S.habits.some(function(h) { return h.freq === 'daily'; });
-      preview.textContent = hasDaily2 ? "Log today's habits to see what happens on the road." : "Log a habit today to continue the road.";
+      preview.textContent = 'Log today to continue the road.';
     }
   }
 
-  if (!hasBeat) {
-    // No beat yet — show locked state regardless of allDone
+  var greetEl = document.getElementById('beat-return-greeting');
+  if (greetEl) greetEl.style.display = 'none';
+
+  // ── STATE A: PRE-ENCOUNTER — three sub-states ─────────────────
+  if (!encounterRevealed) {
     section.classList.remove('has-beat');
     locked.style.display = 'block';
-    inner.style.display = 'none';
+    inner.style.display  = 'none';
 
-    // Daily return greeting — only on fresh day open, before any logging
-    var greetEl = document.getElementById('beat-return-greeting');
-    if (greetEl) {
-      var isNewDay = S.sessionDate !== today();
-      var hasSomeLog = S.habits.some(function(h) {
-        return (h.log || []).indexOf(today()) !== -1;
-      });
-      if (isNewDay && !hasSomeLog && S.daysLogged > 0) {
-        var cons = getConsistency();
-        var gPool = RETURN_GREETINGS[cons] || RETURN_GREETINGS.on_road;
-        // Use daysLogged as seed so it's stable within the day
-        var gLine = gPool[S.daysLogged % gPool.length];
-        greetEl.textContent = gLine;
-        greetEl.style.display = 'block';
+    var someLogged = anyLoggedToday();
+
+    if (!someLogged) {
+      // A1: Nothing logged yet — teaser only
+      if (teaserBeat && teaserBeat.teaser) {
+        _setHTML(locked, '<div class="beat-teaser-pre">' + esc(teaserBeat.teaser) + '</div>');
       } else {
-        greetEl.style.display = 'none';
+        _setHTML(locked, '<div class="beat-teaser-pre">The road north doesn\'t wait.</div>');
       }
+
+    } else {
+      // A2: Some habits logged — world condition + preparation line + teaser
+      var zone2 = S.currentNode ? Math.min(S.currentNode + 1, 5) : 1;
+      var condPool2 = WORLD_CONDITIONS[zone2] || WORLD_CONDITIONS[1];
+      var worldLine2 = condPool2[(completedDays || 0) % condPool2.length];
+
+      var prepLines = [
+        'You gather your things and make ready for the day.',
+        'The road waits. You are nearly prepared.',
+        'Almost everything accounted for. One foot in front of the other.',
+        'You move through the morning with purpose.',
+        'The routine holds. You finish what needs finishing.',
+        'Progress is being made. Keep going.',
+        'Each task completed shortens the distance ahead.',
+        'The work continues. The road respects those who prepare.',
+        'You are further along than when you started this morning.',
+        'Discipline here. The road ahead notices.'
+      ];
+      var prepLine = prepLines[(completedDays + S.habits.length) % prepLines.length];
+
+      var partialHtml = '<div class="journal-block">'
+        + '<div class="journal-section-header">✦ Morning on the Road</div>'
+        + '<div class="journal-world-text">' + esc(worldLine2) + '</div>'
+        + '</div>'
+        + '<div class="journal-block">'
+        + '<div class="journal-world-text" style="color:var(--text-mid);font-style:italic;">' + esc(prepLine) + '</div>'
+        + '</div>';
+
+      if (teaserBeat && teaserBeat.teaser) {
+        partialHtml += '<div class="journal-divider"></div>'
+          + '<div class="beat-teaser-pre">' + esc(teaserBeat.teaser) + '</div>';
+      }
+
+      _setHTML(locked, partialHtml);
     }
+
     return;
   }
 
-  // Hide greeting once beat is active
-  var greetElActive = document.getElementById('beat-return-greeting');
-  if (greetElActive) greetElActive.style.display = 'none';
-
-  // We have a beat — show it
+  // ── STATE B+C: ENCOUNTER REVEALED ────────────────────────────
   section.classList.add('has-beat');
   locked.style.display = 'none';
-  inner.style.display = 'block';
+  inner.style.display  = 'block';
 
-  var beat = S.todayBeat;
-  var beatText = getBeatText(beat);
-  var outcome = getEncounterOutcome(beat);
-  var consistency = getConsistency();
+  var beatText    = getBeatText(encounterBeat);
+  var worldHeader = '✦ Morning on the Road';
+  var eventHeader = encounterBeat.type === 'arrival'   ? 'Arriving'
+                  : encounterBeat.type === 'encounter' ? 'Roadside Encounter'
+                  : 'On the Road';
 
-  var typeLabel = beat.type === 'arrival' ? 'Arriving' : beat.type === 'encounter' ? 'Encounter' : 'The Road';
-  var npcHtml = '';
-  if (beat.npc && NPCS[beat.npc]) {
-    npcHtml = ' · ' + NPCS[beat.npc].icon + ' ' + NPCS[beat.npc].name;
-  }
+  // Day label: the day whose encounter is being shown
+  var html = '<div class="journal-day-label">Day ' + encounterBeat.day + '</div>';
 
-  var html = '<div class="beat-label"><div class="beat-label-dot"></div>' + typeLabel + npcHtml + '</div>';
-  html += '<div class="beat-text">' + esc(beatText) + '</div>';
+  // World condition
+  var worldLine = getWorldCondition();
+  html += '<div class="journal-block">'
+    + '<div class="journal-section-header">' + worldHeader + '</div>'
+    + '<div class="journal-world-text">' + esc(worldLine) + '</div>'
+    + '</div>';
 
+  // Encounter text
+  html += '<div class="journal-block">'
+    + '<div class="journal-section-header">' + eventHeader + '</div>'
+    + '<div class="beat-text">' + esc(beatText).split('\n').join('<br>') + '</div>'
+    + '</div>';
+
+  // ── STATE C: AFTER PRESS ON — progress + next teaser ─────────
   if (S.pressedOn) {
-    // Re-render resolved state from S on every render — survives reloads
-    if (outcome) {
-      html += '<div class="press-on-outcome ' + (outcome.type === 'prevailed' ? 'win' : 'loss') + '">' + esc(outcome.text) + '</div>';
+    var dtnn     = daysToNextNode();
+    var nextNodeObj = NODES[S.currentNode + 1];
+    var pLine = dtnn === null ? 'Journey complete.' :
+      dtnn === 0 ? 'Arriving at ' + nextNodeObj.name + '.' :
+      dtnn === 1 ? '1 day to ' + nextNodeObj.name + '.' :
+      dtnn + ' days to ' + nextNodeObj.name + '.';
+
+    html += '<div class="journal-divider"></div>'
+      + '<div class="journal-progress">' + esc(pLine) + '</div>';
+
+    if (teaserBeat && teaserBeat.teaser) {
+      html += '<div class="journal-block journal-teaser-block">'
+        + '<div class="journal-section-header">Further Down the Road</div>'
+        + '<div class="journal-teaser-text">' + esc(teaserBeat.teaser) + '</div>'
+        + '</div>';
     }
-    var dtnn2 = daysToNextNode();
-    var nextNode2 = NODES[S.currentNode + 1];
-    var pLine = dtnn2 === null ? 'Journey complete.' :
-      dtnn2 === 0 ? 'Arriving at ' + nextNode2.name + '.' :
-      dtnn2 === 1 ? '1 day to ' + nextNode2.name + '.' :
-      dtnn2 + ' days to ' + nextNode2.name + '.';
-    // Derive teaser from actual next beat if possible, else fall back to TEASERS pool
-    var nextBeatPeek = peekNextBeat();
-    var derivedTeaser = nextBeatPeek ? getBeatTeaser(nextBeatPeek) : null;
-    var tHook;
-    if (derivedTeaser) {
-      tHook = derivedTeaser;
-    } else {
-      var tPool = TEASERS.filter(function(tx) { return !tx.node || tx.node <= S.currentNode; });
-      if (!tPool.length) tPool = TEASERS;
-      tHook = tPool[S.daysLogged % tPool.length].text;
-    }
-    html += '<div class="press-on-ritual">'
-      + '<div class="ritual-progress">Day ' + S.daysLogged + ' · ' + esc(pLine) + '</div>'
-      + '<div class="ritual-horizon-label">Further down the road —</div>'
-      + '<div class="ritual-hook">' + esc(tHook) + '</div>'
-      + '</div>';
-    inner.innerHTML = html;
+
+    _setHTML(inner, html);
     return;
   }
 
-  if (outcome && beat.type === 'encounter') {
-    html += '<div class="beat-outcome ' + outcome.type + '">' + esc(outcome.text) + '</div>';
-  }
-
+  // ── STATE B: ENCOUNTERED, AWAITING PRESS ON ──────────────────
+  var consistency = getConsistency();
   if (S.advancementPaused && S.pauseReason) {
-    html += '<div class="pause-notice">' +
-      '<strong>⚠ Advancement Paused</strong>' +
-      esc(S.pauseReason) + ' Log consistently to get back on track.' +
-    '</div>';
+    html += '<div class="pause-notice"><strong>⚠ Advancement Paused</strong>' + esc(S.pauseReason) + ' Log consistently to get back on track.</div>';
   } else if (consistency === 'gone' && S.daysLogged >= 3) {
-    html += '<div class="pause-notice">' +
-      '<strong>⚠ Advancement Paused</strong>' +
-      'You\'ve been off the road. Log consistently over the next few days to resume progress.' +
-    '</div>';
+    html += '<div class="pause-notice"><strong>⚠ Advancement Paused</strong>You\'ve been off the road. Log consistently to resume progress.</div>';
   }
 
   html += '<button class="press-on" onclick="pressOn()">Press On ⚔</button>';
-  inner.innerHTML = html;
+  _setHTML(inner, html);
 }
 
 // renderDaySummary removed — handled inline in pressOn
@@ -3324,7 +3620,7 @@ function renderBeatSection() {
 function renderNodeMap() {
   var inner = document.getElementById('node-map-inner');
   if (!inner) return;
-  inner.innerHTML = '';
+  _setHTML(inner, '');
 
   var curNode  = NODES[S.currentNode] || NODES[0];
   var nextNode = NODES[S.currentNode + 1];
@@ -3428,7 +3724,7 @@ var STAT_REACTIONS = {
     'You carry more than a pack now.',
     'Clarity. The road ahead looks different today.',
   ],
-  DIS: [
+  DISC: [
     'Discipline logged. This is what separates travelers.',
     'Resolve builds quietly. The road rewards it.',
     'Another day you showed up. That is everything.',
@@ -3445,17 +3741,17 @@ var STAT_REACTIONS = {
 };
 
 var TEASERS = [
-  { text: 'Further down the road, the tree line thins. Something is waiting at the next waypoint.' },
-  { text: 'The road ahead narrows. Aldric left a mark on the waymarker — you\'ll know what it means when you arrive.' },
-  { text: 'Ahead: fresh tracks in the mud. Someone is moving faster than you.' },
-  { text: 'The next stretch promises harder terrain — and better company.' },
-  { text: 'A folded note under your pack. It mentions the crossing ahead.' },
-  { text: 'The next waypoint is closer than the maps suggest. Keep moving.' },
-  { text: 'Sera sent word ahead. Something is waiting at the pass.' },
-  { text: 'The road bends north toward the Keep. Press on and see what the road reveals.' },
-  { text: 'Smoke on the horizon. The next settlement is within reach.' },
-  { text: 'Tomorrow the road opens up. What you do today decides what you find there.' },
-  { text: 'Further on, the road remembers who showed up.' },
+  { text: "The road ahead narrows into tree cover. Hard to see what's waiting in the shade." },
+  { text: "Fresh tracks in the mud going the same direction. Someone moving faster than you." },
+  { text: "Smoke on the horizon. A settlement, or something else." },
+  { text: "The terrain changes ahead. What you've built will decide how it goes." },
+  { text: "The next stretch is exposed. No cover, no shortcuts. Just the miles." },
+  { text: "Word at the last waypost: the road ahead has been busy lately." },
+  { text: "The weather is turning. Tomorrow will ask more of you than today did." },
+  { text: "The road bends north. Whatever is around that bend, you'll reach it tomorrow." },
+  { text: "Harder ground ahead. The kind that separates those who've been training from those who haven't." },
+  { text: "Tomorrow the road opens up. What you do today decides what you find there." },
+  { text: "Further on, the road remembers who showed up." },
 ];
 
 var _logExpanded = false;
@@ -3463,12 +3759,15 @@ function renderJourneyLog() {
   var body = document.getElementById('journey-log-body');
   var wrap = document.getElementById('chronicle-wrap');
   if (!body) return;
-  body.innerHTML = '';
   var wasOpen = wrap && wrap.getAttribute('data-was-open') === 'true';
   if (wrap) wrap.style.display = wasOpen ? 'block' : 'none';
 
+  // Build full HTML as string first, then diff — no clear+rebuild flicker
+  var newHtml = '';
+
   if (!S.journeyLog || S.journeyLog.length === 0) {
-    body.innerHTML = '<div class="tl-empty">Your chronicle begins the first time you press on.<br>The road remembers everything.</div>';
+    newHtml = '<div class="tl-empty">Your chronicle begins the first time you press on.<br>The road remembers everything.</div>';
+    _setHTML(body, newHtml);
     return;
   }
 
@@ -3478,7 +3777,6 @@ function renderJourneyLog() {
 
   toShow.forEach(function(entry, idx) {
     var isFirst = idx === 0;
-    // Icon by beat type
     var typeIcon = entry.beatType === 'encounter' ? '⚔' :
                    entry.beatType === 'arrival'   ? '⬡' :
                    entry.beatType === 'rest'       ? '◎' : '·';
@@ -3490,35 +3788,29 @@ function renderJourneyLog() {
       outcomeHtml = '<div class="tl-outcome ' + (win ? 'tl-outcome--win' : 'tl-outcome--loss') + '">' +
         (win ? '▲' : '▼') + ' ' + esc(entry.outcome.text) + '</div>';
     }
-    var div = document.createElement('div');
-    div.className = 'tl-entry' + (isFirst ? ' tl-entry--latest' : '');
-    div.innerHTML =
-      '<div class="tl-spine">' +
-        '<div class="tl-dot ' + consClass + '">' + typeIcon + '</div>' +
-        (idx < toShow.length - 1 ? '<div class="tl-line"></div>' : '') +
-      '</div>' +
-      '<div class="tl-body">' +
-        '<div class="tl-meta">Day ' + entry.day + ' · ' + esc(entry.consistencyLabel) + '</div>' +
-        '<div class="tl-text">' + esc(entry.logLine) + '</div>' +
-        outcomeHtml +
+    newHtml +=
+      '<div class="tl-entry' + (isFirst ? ' tl-entry--latest' : '') + '">' +
+        '<div class="tl-spine">' +
+          '<div class="tl-dot ' + consClass + '">' + typeIcon + '</div>' +
+          (idx < toShow.length - 1 ? '<div class="tl-line"></div>' : '') +
+        '</div>' +
+        '<div class="tl-body">' +
+          '<div class="tl-meta">Day ' + entry.day + ' · ' + esc(entry.consistencyLabel) + '</div>' +
+          '<div class="tl-text">' + esc(entry.logLine) + '</div>' +
+          outcomeHtml +
+        '</div>' +
       '</div>';
-    body.appendChild(div);
   });
 
   if (!showAll) {
     var hidden = entries.length - 4;
-    var more = document.createElement('div');
-    more.className = 'tl-more';
-    more.textContent = '↑ ' + hidden + ' earlier ' + (hidden === 1 ? 'day' : 'days') + ' on the road';
-    more.onclick = function() { _logExpanded = true; renderJourneyLog(); };
-    body.appendChild(more);
+    newHtml += '<div class="tl-more" onclick="_logExpanded=true;renderJourneyLog()">↑ ' +
+      hidden + ' earlier ' + (hidden === 1 ? 'day' : 'days') + ' on the road</div>';
   } else if (_logExpanded && entries.length > 4) {
-    var less = document.createElement('div');
-    less.className = 'tl-more';
-    less.textContent = '↓ Show recent only';
-    less.onclick = function() { _logExpanded = false; renderJourneyLog(); };
-    body.appendChild(less);
+    newHtml += '<div class="tl-more" onclick="_logExpanded=false;renderJourneyLog()">↓ Show recent only</div>';
   }
+
+  _setHTML(body, newHtml);
 }
 
 function renderDevPanel() {
@@ -3526,7 +3818,7 @@ function renderDevPanel() {
   if (!el) return;
   var c = getConsistency();
   var ep = getEpithet();
-  var str = getStat('STR'), wis = getStat('WIS'), dis = getStat('DIS');
+  var str = getStat('STR'), wis = getStat('WIS'), dis = getStat('DISC');
   var hp = Math.round(S.hp || 100);
   var node = NODES[S.currentNode] || NODES[0];
   el.innerHTML =
@@ -3589,7 +3881,7 @@ function openCharModal() {
     var statDefs = [
       { key:'STR', label:'STR', desc:'Strength' },
       { key:'WIS', label:'WIS', desc:'Wisdom'   },
-      { key:'DIS', label:'DIS', desc:'Resolve'  },
+      { key:'DISC', label:'DISC', desc:'Resolve'  },
     ];
     var hasAnyStat = statDefs.some(function(sd) {
       return S.habits.some(function(h) { return h.stat === sd.key; });
@@ -3871,14 +4163,15 @@ function showAuthTab(tab) {
   document.querySelectorAll('.auth-form').forEach(function(f) { f.classList.remove('active'); });
   document.getElementById('auth-tab-' + tab).classList.add('active');
   document.getElementById('auth-form-' + tab).classList.add('active');
-  document.getElementById('auth-error').textContent = '';
+  var e1 = document.getElementById('auth-error'); if (e1) e1.textContent = '';
+  var e2 = document.getElementById('auth-error-signup'); if (e2) e2.textContent = '';
 }
 
 async function doSignup() {
   var email = document.getElementById('auth-signup-email').value.trim();
   var username = document.getElementById('auth-signup-username').value.trim();
   var pass = document.getElementById('auth-signup-pass').value;
-  var errEl = document.getElementById('auth-error');
+  var errEl = document.getElementById('auth-error-signup');
   errEl.textContent = '';
 
   if (!email || !username || !pass) { errEl.textContent = 'All fields required.'; return; }
@@ -3890,15 +4183,25 @@ async function doSignup() {
   try {
     // Check username not taken
     var check = await _sb.from('profiles').select('id').eq('username', username).maybeSingle();
-    if (check.data) { errEl.textContent = 'That username is taken.'; btn.disabled=false; btn.textContent='Create Account'; return; }
+    if (check.data) { errEl.textContent = 'That username is taken.'; btn.disabled=false; btn.textContent='Create Account ⚔'; return; }
 
     var { data, error } = await _sb.auth.signUp({ email: email, password: pass });
-    if (error) { errEl.textContent = error.message; btn.disabled=false; btn.textContent='Create Account →'; return; }
+    if (error) { errEl.textContent = error.message; btn.disabled=false; btn.textContent='Create Account ⚔'; return; }
 
-    if (data.user) {
-      _user = data.user;
-      // Save username to profiles
-      await _sb.from('profiles').upsert({ id: _user.id, username: username });
+    var userId = (data.user && data.user.id) || (data.session && data.session.user && data.session.user.id);
+
+    if (userId) {
+      _user = data.user || data.session.user;
+      // Save username to profiles — use upsert with explicit conflict target
+      try {
+        await _sb.from('profiles').upsert(
+          { id: userId, username: username },
+          { onConflict: 'id' }
+        );
+      } catch(profileErr) {
+        // Non-fatal — user can still proceed
+        console.warn('Profile save failed:', profileErr);
+      }
       S.name = username;
       saveLocal();
       // Go to onboarding to set up habits
@@ -3906,10 +4209,18 @@ async function doSignup() {
       showObStep(0);
       document.getElementById('ob-name').value = username;
       checkStep0();
+    } else if (data.session === null && data.user === null) {
+      // Supabase email confirmation is enabled — account created but needs confirmation
+      errEl.style.color = '#a8c47a';
+      errEl.textContent = 'Account created! Check your email to confirm, then sign in.';
+      btn.disabled=false; btn.textContent='Create Account ⚔';
+    } else {
+      errEl.textContent = 'Something went wrong. Please try again.';
+      btn.disabled=false; btn.textContent='Create Account ⚔';
     }
   } catch(e) {
-    errEl.textContent = 'Something went wrong. Try again.';
-    btn.disabled=false; btn.textContent='Create Account →';
+    errEl.textContent = 'Something went wrong: ' + (e.message || e);
+    btn.disabled=false; btn.textContent='Create Account ⚔';
   }
 }
 
@@ -4051,7 +4362,7 @@ function getFriendConsistency(friendState) {
 function renderFriends() {
   var body = document.getElementById('friends-body');
   if (!body) return;
-  body.innerHTML = '';
+  _setHTML(body, '');
 
   // Pending requests first
   _pendingRequests.forEach(function(req) {
@@ -4160,6 +4471,8 @@ function toggleHudStory() {
 }
 
 function positionChronicle() {
+  // On mobile the chronicle is flow-positioned; skip JS override
+  if (window.innerWidth <= 768) return;
   var storyWrap = document.querySelector('.hud-story-wrap');
   var chronicleWrap = document.getElementById('chronicle-wrap');
   if (!chronicleWrap || chronicleWrap.style.display === 'none') return;
@@ -4519,8 +4832,8 @@ body:has(#screen-main.active)::before {
 
 /* ── STORY TEXT: reduce to readable HUD scale ── */
 .beat-text {
-  font-size: 14px !important;
-  line-height: 1.7 !important;
+  font-size: 15px !important;
+  line-height: 1.8 !important;
   margin-bottom: 14px !important;
 }
 .beat-label {
@@ -4542,14 +4855,8 @@ body:has(#screen-main.active)::before {
   padding: 14px 16px 12px !important;
 }
 /* Constrain story wrap height so it doesn't overflow up */
-.hud-story-wrap {
-  max-height: 300px !important;
-  overflow-y: auto !important;
-}
-.hud-story-body {
-  max-height: 240px !important;
-  overflow-y: auto !important;
-}
+
+
 
 /* ── ACTION BAR: clean single rule, naturally sized ── */
 .hud-actionbar {
@@ -4769,31 +5076,42 @@ body:has(#screen-main.active)::before {
    PER-HABIT MICRO-REACTION
 ══════════════════════════════════════════════ */
 .habit-reaction {
-  height: 0;
+  /* Fixed reserved height — always occupies space, only opacity changes */
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  height: 36px;
+  padding: 4px 12px 0 66px;
   overflow: hidden;
-  font-family: 'Crimson Text', serif;
-  font-size: 13px;
-  font-style: italic;
-  color: var(--gold-dim);
-  letter-spacing: .02em;
-  line-height: 1.5;
-  padding: 0 14px;
-  transition: height .2s ease, opacity .6s ease, padding .2s ease;
   opacity: 0;
+  transition: opacity .4s ease;
+  pointer-events: none;
+  flex-shrink: 0;
 }
 .habit-reaction.visible {
-  height: auto;
   opacity: 1;
-  padding: 6px 14px 4px;
-  animation: reactionFadeIn .35s ease forwards;
 }
 .habit-reaction.fade-out {
   opacity: 0;
-  transition: opacity .8s ease;
+  transition: opacity 1.5s ease;
 }
-@keyframes reactionFadeIn {
-  from { opacity: 0; transform: translateY(-4px); }
-  to   { opacity: 1; transform: translateY(0); }
+.habit-reaction-stat {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  color: var(--gold);
+  white-space: nowrap;
+  line-height: 1.4;
+}
+.habit-reaction-text {
+  font-family: 'Crimson Text', serif;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--text-dim);
+  white-space: normal;
+  line-height: 1.4;
+  word-break: break-word;
 }
 
 /* ══════════════════════════════════════════════
@@ -4817,6 +5135,310 @@ body:has(#screen-main.active)::before {
   padding-top: 2px !important;
 }
 
+/* ══════════════════════════════════════════════
+   MOBILE — hide all desktop HUD panels
+   These rules live inside hud-override to beat
+   the !important fixed-positioning rules above.
+══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .hud-char,
+  .hud-logo-wrap,
+  .hud-wound,
+  .hud-map-wrap,
+  .hud-story-wrap,
+  .hud-chronicle-wrap,
+  .hud-companions-wrap,
+  .hud-actionbar {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    z-index: -999 !important;
+  }
+}
+
+/* ── MOBILE SINGLE-COLUMN REORDER ── */
+/* Applied inside @media (max-width: 768px) below alongside the existing rules */
+
+/* ══════════════════════════════════════════════════════════
+   MOBILE LAYOUT ≤ 768px — TWO TAB ARCHITECTURE
+   Desktop (> 768px) untouched above.
+══════════════════════════════════════════════════════════ */
+
+/* ── #mob-shell is display:none inline on desktop (set in HTML).
+   On mobile the media query overrides that inline style via !important.
+   This is the only place mob visibility is controlled. ── */
+
+@media (max-width: 768px) {
+
+  /* Show the shell */
+  #mob-shell {
+    display: contents !important;
+  }
+
+  /* ── Viewport ── */
+  body:has(#screen-main.active),
+  html:has(#screen-main.active) {
+    overflow: hidden !important;
+    height: 100dvh !important;
+  }
+
+  /* ── screen-main: full-viewport flex column, no scroll ── */
+  #screen-main, #screen-main.active {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: transparent !important;
+    pointer-events: none !important;
+  }
+
+  /* ── Hide ALL desktop HUD panels ── */
+  .hud-char, .hud-logo-wrap, .hud-map-wrap,
+  .hud-story-wrap, .hud-chronicle-wrap,
+  .hud-companions-wrap, .hud-actionbar, .hud-wound {
+    display: none !important;
+  }
+
+  /* ── Mobile topbar ── */
+  .mob-topbar {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 10px 14px 8px !important;
+    flex-shrink: 0 !important;
+    pointer-events: auto !important;
+    z-index: 10 !important;
+  }
+  .mob-char { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+  .mob-avatar { font-size: 22px; line-height: 1; }
+  .mob-char-info { display: flex; flex-direction: column; gap: 3px; }
+  .mob-char-name {
+    font-family: 'Cinzel', serif; font-size: 13px;
+    color: var(--text); letter-spacing: .05em;
+  }
+  .mob-hp-track {
+    width: 80px; height: 4px;
+    background: var(--surface2); border-radius: 2px; overflow: hidden;
+  }
+  .mob-hp-fill { height: 100%; border-radius: 2px; transition: width .4s, background .4s; }
+  .mob-logo {
+    font-family: 'Cinzel', serif; font-size: 13px;
+    color: var(--gold-dim); letter-spacing: .1em;
+  }
+  .mob-signout {
+    font-family: 'Cinzel', serif; font-size: 8px;
+    color: var(--text-dark); letter-spacing: .08em;
+    text-transform: uppercase; cursor: pointer;
+  }
+
+  /* ── Tab panes: hidden by default, active one shows as flex column ── */
+  .mob-pane {
+    display: none;
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    pointer-events: auto;
+    padding: 8px 12px 12px;
+    box-sizing: border-box;
+    gap: 10px;
+  }
+  .mob-pane-active {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* ── Cards inside panes ── */
+  .mob-card {
+    background: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 4px !important;
+    overflow: hidden !important;
+    backdrop-filter: blur(14px) !important;
+    flex-shrink: 0 !important;
+  }
+  .mob-card-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 10px 14px !important;
+  }
+  .mob-card-header.mob-accordion { cursor: pointer !important; }
+  .mob-card-dot {
+    font-size: 8px !important; color: var(--gold-dim) !important;
+    margin-right: 8px !important;
+  }
+  .mob-card-title {
+    font-family: 'Cinzel', serif !important;
+    font-size: 10px !important; color: var(--gold-dim) !important;
+    letter-spacing: .14em !important; text-transform: uppercase !important;
+    flex: 1 !important;
+  }
+
+  /* ── Chevron: ▼ = closed (content hidden), rotated 180° = open ── */
+  .mob-chev {
+    font-size: 10px !important;
+    color: var(--text-dark) !important;
+    transition: transform .2s !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* ── Habit cards: full width stacked ── */
+  #mob-habits-wrap { padding: 0 14px 14px !important; }
+  #mob-habits-wrap .habit-card {
+    width: 100% !important; margin-bottom: 8px !important;
+    min-width: unset !important; max-width: 100% !important;
+  }
+  #mob-habits-wrap .habit-card:last-child { margin-bottom: 0 !important; }
+
+  /* Beat content padding */
+  #mob-beat-section { padding: 0 !important; }
+  #mob-beat-section .beat-locked { padding: 14px 16px !important; }
+  #mob-beat-section .beat-inner  { padding: 0 !important; }
+
+  /* Chronicle full height */
+  #mob-journey-log-body {
+    max-height: none !important; overflow: visible !important;
+  }
+
+  /* Map body padding */
+  #mob-map-body { padding: 8px 0 !important; }
+
+  /* ── Bottom tab bar ── */
+  .mob-tabbar {
+    display: flex !important;
+    flex-shrink: 0 !important;
+    pointer-events: auto !important;
+    background: rgba(4,3,1,.94) !important;
+    border-top: 1px solid var(--border) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    z-index: 200 !important;
+  }
+  .mob-tab {
+    flex: 1 !important;
+    display: flex !important; flex-direction: column !important;
+    align-items: center !important; justify-content: center !important;
+    padding: 10px 0 env(safe-area-inset-bottom, 14px) !important;
+    font-family: 'Cinzel', serif !important;
+    font-size: 9px !important; letter-spacing: .14em !important;
+    text-transform: uppercase !important;
+    color: var(--text-dark) !important;
+    background: transparent !important; border: none !important;
+    cursor: pointer !important; gap: 4px !important;
+    transition: color .15s !important;
+  }
+  .mob-tab-active { color: var(--gold) !important; }
+  .mob-tab-icon { font-size: 18px !important; line-height: 1 !important; }
+
+
+
+  /* ════════════════════════════════════════════════
+     MOBILE SINGLE-COLUMN LAYOUT
+     Order: Character (topbar) → Habits → Map → Road Log
+     No tab switching — one scrollable page.
+  ════════════════════════════════════════════════ */
+
+  /* Hide the tab bar — not needed in single-column layout */
+  .mob-tabbar { display: none !important; }
+
+  /* Both panes always visible, stacked vertically */
+  .mob-pane {
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* The shell becomes a scrollable single column */
+  #mob-shell {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100% !important;
+    min-height: 100dvh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-bottom: 24px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Topbar stays at top — character card */
+  .mob-topbar {
+    width: 93% !important;
+    box-sizing: border-box !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* Panes: full width, centered */
+  #mob-pane-today,
+  #mob-pane-journey {
+    width: 93% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Cards: full width, consistent spacing */
+  .mob-card {
+    width: 100% !important;
+    margin-bottom: 16px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* ── ORDER: Today pane ──
+     Habits first (order:1), Road Log second (order:2) */
+  #mob-pane-today {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  /* Habits card — primary action, comes first */
+  #mob-pane-today .mob-card:has(#mob-habits-wrap) {
+    order: 1 !important;
+  }
+  /* Road Log card — comes after habits */
+  #mob-pane-today .mob-card:has(#mob-beat-section) {
+    order: 2 !important;
+  }
+
+  /* ── Journey pane immediately follows today pane ── */
+  #mob-pane-journey {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  /* Map card — first in journey section */
+  #mob-pane-journey .mob-card:has(#mob-map-inner) {
+    order: 1 !important;
+  }
+  /* Chronicle card — after map */
+  #mob-pane-journey .mob-card:has(#mob-journey-log-body) {
+    order: 2 !important;
+  }
+  /* Road companions — last */
+  #mob-pane-journey #mob-friends-section {
+    order: 3 !important;
+  }
+
+  /* Chronicle starts expanded; map starts collapsed.
+     Both are togglable — initial state is set in HTML inline styles. */
+
+  /* Suppress screen-main fixed positioning — let shell scroll naturally */
+  #screen-main, #screen-main.active {
+    position: static !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  body:has(#screen-main.active),
+  html:has(#screen-main.active) {
+    overflow: auto !important;
+    height: auto !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -4950,7 +5572,7 @@ body:has(#screen-main.active)::before {
         <div class="stat-pick-row">
           <div class="stat-pick-btn" id="h1-stat-STR" onclick="setStat('STR','h1')">STR<br><span style="font-size:8px;opacity:.6;letter-spacing:.04em;">Physical</span></div>
           <div class="stat-pick-btn" id="h1-stat-WIS" onclick="setStat('WIS','h1')">WIS<br><span style="font-size:8px;opacity:.6;letter-spacing:.04em;">Mental</span></div>
-          <div class="stat-pick-btn" id="h1-stat-DIS" onclick="setStat('DIS','h1')">DIS<br><span style="font-size:8px;opacity:.6;letter-spacing:.04em;">Discipline</span></div>
+          <div class="stat-pick-btn" id="h1-stat-DISC" onclick="setStat('DISC','h1')">DIS<br><span style="font-size:8px;opacity:.6;letter-spacing:.04em;">Discipline</span></div>
         </div>
       </div>
 
@@ -4970,7 +5592,7 @@ body:has(#screen-main.active)::before {
           <div class="stat-pick-row">
             <div class="stat-pick-btn" id="h2-stat-STR" onclick="setStat('STR','h2')">STR<br><span style="font-size:8px;opacity:.6;letter-spacing:.04em;">Physical</span></div>
             <div class="stat-pick-btn" id="h2-stat-WIS" onclick="setStat('WIS','h2')">WIS<br><span style="font-size:8px;opacity:.6;letter-spacing:.04em;">Mental</span></div>
-            <div class="stat-pick-btn" id="h2-stat-DIS" onclick="setStat('DIS','h2')">DIS<br><span style="font-size:8px;opacity:.6;letter-spacing:.04em;">Discipline</span></div>
+            <div class="stat-pick-btn" id="h2-stat-DISC" onclick="setStat('DISC','h2')">DIS<br><span style="font-size:8px;opacity:.6;letter-spacing:.04em;">Discipline</span></div>
           </div>
         </div>
       </div>
@@ -4991,7 +5613,7 @@ body:has(#screen-main.active)::before {
           <div class="stat-pick-row">
             <div class="stat-pick-btn" id="h3-stat-STR" onclick="setStat('STR','h3')">STR<br><span style="font-size:8px;opacity:.6;letter-spacing:.04em;">Physical</span></div>
             <div class="stat-pick-btn" id="h3-stat-WIS" onclick="setStat('WIS','h3')">WIS<br><span style="font-size:8px;opacity:.6;letter-spacing:.04em;">Mental</span></div>
-            <div class="stat-pick-btn" id="h3-stat-DIS" onclick="setStat('DIS','h3')">DIS<br><span style="font-size:8px;opacity:.6;letter-spacing:.04em;">Discipline</span></div>
+            <div class="stat-pick-btn" id="h3-stat-DISC" onclick="setStat('DISC','h3')">DIS<br><span style="font-size:8px;opacity:.6;letter-spacing:.04em;">Discipline</span></div>
           </div>
         </div>
       </div>
@@ -5030,7 +5652,22 @@ body:has(#screen-main.active)::before {
 <div id="screen-main-bg"></div>
 <div id="screen-main" class="screen">
 
-  <!-- TOP-LEFT: Character chip -->
+  <!-- ═══════════════════════════════════════════════════════
+       SHARED ELEMENTS — rendered by JS, positioned by CSS.
+       Desktop: fixed HUD panels via hud-override CSS.
+       Mobile: these live directly in mob-pane-today/journey.
+  ══════════════════════════════════════════════════════════ -->
+
+  <!-- Hidden JS-compat refs (always in DOM, never shown) -->
+  <div style="display:none" aria-hidden="true">
+    <div id="vitality-wrap"></div>
+    <span id="hp-risk-badge"></span>
+    <span id="streak-val">0</span>
+    <span id="days-logged-val">0</span>
+    <div id="char-streak-row"></div>
+  </div>
+
+  <!-- ─── DESKTOP-ONLY HUD WRAPPERS (hidden on mobile) ─── -->
   <div class="hud-char" onclick="openCharModal()">
     <div class="hud-avatar" id="main-avatar">🧔</div>
     <div class="hud-char-info">
@@ -5041,26 +5678,15 @@ body:has(#screen-main.active)::before {
       </div>
       <div class="hud-hp-state" id="vitality-state"></div>
     </div>
-    <!-- Hidden refs kept for JS compat -->
-    <div style="display:none">
-      <div id="vitality-wrap"></div>
-      <span id="hp-risk-badge"></span>
-      <span id="streak-val">0</span>
-      <span id="days-logged-val">0</span>
-      <div id="char-streak-row"></div>
-    </div>
   </div>
 
-  <!-- TOP-RIGHT: Logo + sign out -->
   <div class="hud-logo-wrap">
     <div class="header-logo">HabitForge</div>
     <span class="header-signout" onclick="doSignOut()">Sign Out</span>
   </div>
 
-  <!-- Wound notice -->
   <div id="wound-notice" style="display:none;" class="hp-wound-notice hud-wound"></div>
 
-  <!-- MAP: collapsible, top-center -->
   <div class="hud-map-wrap" id="map-strip">
     <div class="hud-map-header" onclick="toggleHudMap()">
       <span class="hud-map-static-label" id="hud-map-static-label" style="display:none;">Traveler's Map</span>
@@ -5072,7 +5698,6 @@ body:has(#screen-main.active)::before {
     </div>
   </div>
 
-  <!-- STORY BEAT: slim banner lower-left, expands on click -->
   <div class="hud-story-wrap" id="scroll-wrap">
     <div class="hud-story-header" onclick="toggleHudStory()">
       <span class="hud-story-dot">◆</span>
@@ -5083,13 +5708,12 @@ body:has(#screen-main.active)::before {
     <div class="hud-story-body" id="hud-story-body" style="display:block;">
       <div id="beat-section" class="beat-section">
         <div class="beat-return-greeting" id="beat-return-greeting" style="display:none;"></div>
-        <div class="beat-locked" id="beat-locked" data-weekly="Log a habit today to continue the road." data-daily="Log today's habits to see what happens on the road.">Log today's habits to see what happens on the road.</div>
+        <div class="beat-locked" id="beat-locked">Log today's habits to see what happens on the road.</div>
         <div class="beat-inner" id="beat-inner" style="display:none;"></div>
       </div>
     </div>
   </div>
 
-  <!-- CHRONICLE: below story, collapsible -->
   <div class="hud-chronicle-wrap" id="chronicle-wrap" style="display:none;">
     <div class="chronicle-header" onclick="toggleJourneyLog()">
       <div class="chronicle-title">
@@ -5102,7 +5726,6 @@ body:has(#screen-main.active)::before {
     <div class="chronicle-body" id="journey-log-body" style="display:block;"></div>
   </div>
 
-  <!-- COMPANIONS: bottom-right, collapsed by default -->
   <div class="hud-companions-wrap" id="friends-wrap">
     <div class="friends-header" onclick="toggleFriends()">
       <div class="friends-title">Road Companions</div>
@@ -5114,11 +5737,113 @@ body:has(#screen-main.active)::before {
     <div id="friends-body" style="display:none;"></div>
   </div>
 
-  <!-- HABITS ACTION BAR: fixed bottom -->
   <div class="hud-actionbar" id="habits-wrap-outer">
     <div class="hud-actionbar-label">Today's Habits</div>
     <div class="hud-actionbar-habits" id="habits-wrap"></div>
   </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       MOBILE SHELL — single scrollable page, hidden on desktop
+  ══════════════════════════════════════════════════════════ -->
+
+  <!-- Mobile top bar: char chip + logo (fixed) -->
+  <!-- ── MOBILE SHELL: hidden on desktop via inline style, shown by media query ── -->
+  <div id="mob-shell" style="display:none;contents:normal;">
+  <div class="mob-topbar">
+    <div class="mob-char" onclick="openCharModal()">
+      <div class="mob-avatar" id="mob-avatar">🧔</div>
+      <div class="mob-char-info">
+        <div class="mob-char-name" id="mob-char-name">Traveler</div>
+        <div class="mob-hp-track">
+          <div class="mob-hp-fill" id="mob-hp-fill" style="width:100%;background:var(--on-road);"></div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:right;">
+      <div class="mob-logo">HabitForge</div>
+      <span class="mob-signout" onclick="doSignOut()">Sign Out</span>
+    </div>
+  </div>
+
+  <!-- ── TODAY tab pane ── -->
+  <div class="mob-pane mob-pane-active" id="mob-pane-today">
+
+    <!-- Road Log — always expanded, no accordion -->
+    <div class="mob-card">
+      <div class="mob-card-header">
+        <span class="mob-card-dot">◆</span>
+        <span class="mob-card-title">Road Log</span>
+      </div>
+      <div id="mob-beat-section" class="beat-section">
+        <div class="beat-return-greeting" id="mob-beat-return-greeting" style="display:none;"></div>
+        <div class="beat-locked" id="mob-beat-locked">Log today's habits to see what happens on the road.</div>
+        <div class="beat-inner" id="mob-beat-inner" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- Today's Habits — always expanded, no accordion -->
+    <div class="mob-card">
+      <div class="mob-card-header">
+        <span class="mob-card-title">Today's Habits</span>
+      </div>
+      <div id="mob-habits-wrap"></div>
+    </div>
+
+  </div>
+
+  <!-- ── JOURNEY tab pane ── -->
+  <div class="mob-pane" id="mob-pane-journey">
+
+    <!-- Map — collapsed by default, ▼ = open, ▲ = closed -->
+    <div class="mob-card">
+      <div class="mob-card-header mob-accordion" onclick="mobToggle('mob-map-body','mob-map-chev')">
+        <span class="mob-card-title" id="mob-map-label">The Road North</span>
+        <span class="mob-chev" id="mob-map-chev">▼</span>
+      </div>
+      <div id="mob-map-body" style="display:none;">
+        <div class="map-strip-inner" id="mob-map-inner"></div>
+      </div>
+    </div>
+
+    <!-- Chronicle — expanded by default -->
+    <div class="mob-card">
+      <div class="mob-card-header mob-accordion" onclick="mobToggle('mob-journey-log-body','mob-chron-chev')">
+        <div class="chronicle-title">
+          <span class="chronicle-rule"></span>
+          <span class="chronicle-label">Chronicle</span>
+          <span class="chronicle-rule"></span>
+        </div>
+        <span class="mob-chev" id="mob-chron-chev" style="transform:rotate(180deg);">▼</span>
+      </div>
+      <div class="chronicle-body" id="mob-journey-log-body" style="display:block;"></div>
+    </div>
+
+    <!-- Road Companions — collapsed by default -->
+    <div class="mob-card" id="mob-friends-section">
+      <div class="mob-card-header mob-accordion" onclick="mobToggle('mob-friends-body','mob-friends-chev')">
+        <span class="mob-card-title">Road Companions
+          <span style="font-size:9px;color:var(--text-dark);margin-left:6px;letter-spacing:.06em;" id="mob-friends-count"></span>
+        </span>
+        <span class="mob-chev" id="mob-friends-chev">▼</span>
+      </div>
+      <div id="mob-friends-body" style="display:none;"></div>
+    </div>
+
+  </div>
+
+  <!-- ── Bottom tab bar ── -->
+  <div class="mob-tabbar">
+    <button class="mob-tab mob-tab-active" id="mob-tab-today" onclick="mobSwitchTab('today')">
+      <span class="mob-tab-icon">⚔</span>
+      <span>Today</span>
+    </button>
+    <button class="mob-tab" id="mob-tab-journey" onclick="mobSwitchTab('journey')">
+      <span class="mob-tab-icon">🗺</span>
+      <span>Journey</span>
+    </button>
+  </div>
+
+  </div><!-- /#mob-shell -->
 
 </div>
 
@@ -5200,7 +5925,7 @@ body:has(#screen-main.active)::before {
     <button class="dev-btn" onclick="devLogAll()">Log all habits today</button>
     <button class="dev-btn" onclick="devLogByStat('STR')">Log STR habits only</button>
     <button class="dev-btn" onclick="devLogByStat('WIS')">Log WIS habits only</button>
-    <button class="dev-btn" onclick="devLogByStat('DIS')">Log DIS habits only</button>
+    <button class="dev-btn" onclick="devLogByStat('DISC')">Log DIS habits only</button>
 
     <div class="dev-section">HP</div>
     <div class="dev-input-row">
@@ -5260,6 +5985,99 @@ body:has(#screen-main.active)::before {
     }
   };
 })();
+
+/* ══════════════════════════════════════════════════════════
+   MOBILE TAB + ACCORDION SYSTEM
+══════════════════════════════════════════════════════════ */
+function isMobile() { return window.innerWidth <= 768; }
+
+/* Called once after every render() — copies desktop output into mobile slots.
+   Uses innerHTML (not cloneNode) so no duplicate IDs enter the DOM. */
+function mobSync() {
+  if (!isMobile()) return;
+
+  // Char bar
+  var fill = document.getElementById('hp-fill');
+  var mFill = document.getElementById('mob-hp-fill');
+  if (fill && mFill) { mFill.style.width = fill.style.width; mFill.style.background = fill.style.background; }
+  var nameEl = document.getElementById('char-name');
+  var mName  = document.getElementById('mob-char-name');
+  // Use S.name directly — desktop element may not be rendered on mobile
+  if (mName) mName.textContent = (typeof S !== 'undefined' && S.name) ? S.name : (nameEl ? nameEl.textContent : 'Traveler');
+  var avEl = document.getElementById('main-avatar');
+  var mAv  = document.getElementById('mob-avatar');
+  if (avEl && mAv) mAv.textContent = avEl.textContent;
+
+  // Beat section
+  var beatSrc = document.getElementById('hud-story-body');
+  var beatDst = document.getElementById('mob-beat-section');
+  if (beatSrc && beatDst) beatDst.innerHTML = beatSrc.innerHTML;
+
+  // Habits
+  var habSrc = document.getElementById('habits-wrap');
+  var habDst = document.getElementById('mob-habits-wrap');
+  if (habSrc && habDst) habDst.innerHTML = habSrc.innerHTML;
+
+  // Map
+  var mapSrc = document.getElementById('node-map-inner');
+  var mapDst = document.getElementById('mob-map-inner');
+  if (mapSrc && mapDst) mapDst.innerHTML = mapSrc.innerHTML;
+  var lblSrc = document.getElementById('node-map-sub');
+  var lblDst = document.getElementById('mob-map-label');
+  if (lblSrc && lblDst) lblDst.textContent = lblSrc.textContent;
+
+  // Chronicle
+  var chrSrc = document.getElementById('journey-log-body');
+  var chrDst = document.getElementById('mob-journey-log-body');
+  if (chrSrc && chrDst) chrDst.innerHTML = chrSrc.innerHTML;
+
+  // Friends
+  var frSrc  = document.getElementById('friends-body');
+  var frDst  = document.getElementById('mob-friends-body');
+  if (frSrc && frDst && frDst.style.display !== 'none') frDst.innerHTML = frSrc.innerHTML;
+  var fcSrc  = document.getElementById('friends-count');
+  var fcDst  = document.getElementById('mob-friends-count');
+  if (fcSrc && fcDst) fcDst.textContent = fcSrc.textContent;
+}
+
+/* Patch render() to call mobSync after every full render */
+var _origRender = typeof render === 'function' ? render : null;
+if (_origRender) {
+  render = function() {
+    _origRender();
+    mobSync();
+  };
+}
+
+/* Switch between Today / Journey tabs */
+function mobSwitchTab(tab) {
+  ['today', 'journey'].forEach(function(p) {
+    var pane = document.getElementById('mob-pane-' + p);
+    var btn  = document.getElementById('mob-tab-' + p);
+    var isActive = p === tab;
+    if (pane) {
+      pane.style.display = isActive ? 'flex' : 'none';
+      pane.classList.toggle('mob-pane-active', isActive);
+    }
+    if (btn) btn.classList.toggle('mob-tab-active', isActive);
+  });
+  if (tab === 'journey') mobSync();
+}
+
+/* Generic accordion toggle */
+function mobToggle(bodyId, chevId) {
+  var body = document.getElementById(bodyId);
+  var chev = document.getElementById(chevId);
+  if (!body) return;
+  var isOpen = body.style.display !== 'none' && body.style.display !== '';
+  body.style.display = isOpen ? 'none' : 'block';
+  if (chev) chev.style.transform = isOpen ? '' : 'rotate(180deg)';
+  if (!isOpen) mobSync();
+}
+
+function toggleMobMap()       { mobToggle('mob-map-body',         'mob-map-chev'); }
+function toggleMobChronicle() { mobToggle('mob-journey-log-body', 'mob-chron-chev'); }
+function toggleMobFriends()   { mobToggle('mob-friends-body',     'mob-friends-chev'); }
 </script>
 
 </body>
