@@ -690,8 +690,14 @@ body::before {
   z-index: 2;
 }
 @keyframes ring-breathe {
-  0%, 100% { box-shadow: 0 0 6px rgba(200,168,75,.5); }
-  50%       { box-shadow: 0 0 16px rgba(200,168,75,.9); }
+  0%, 100% {
+    box-shadow: 0 0 6px rgba(200,168,75,.5), 0 0 0 0 rgba(200,168,75,0);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 14px rgba(200,168,75,.85), 0 0 0 4px rgba(200,168,75,.12);
+    transform: scale(1.12);
+  }
 }
 /* Node milestone markers below the bar */
 .map-milestones {
@@ -5385,7 +5391,7 @@ body:has(#screen-main.active)::before {
   /* Cards: full width, consistent spacing */
   .mob-card {
     width: 100% !important;
-    margin-bottom: 16px !important;
+    margin-bottom: 12px !important;
     box-sizing: border-box !important;
   }
 
@@ -5437,6 +5443,14 @@ body:has(#screen-main.active)::before {
   html:has(#screen-main.active) {
     overflow: auto !important;
     height: auto !important;
+  }
+
+  /* ── Background image: prevent zoom on mobile ── */
+  body:has(#screen-main.active) {
+    background-size: cover !important;
+    background-position: center top !important;
+    background-repeat: no-repeat !important;
+    background-attachment: scroll !important;
   }
 }
 </style>
@@ -6078,6 +6092,24 @@ function mobToggle(bodyId, chevId) {
 function toggleMobMap()       { mobToggle('mob-map-body',         'mob-map-chev'); }
 function toggleMobChronicle() { mobToggle('mob-journey-log-body', 'mob-chron-chev'); }
 function toggleMobFriends()   { mobToggle('mob-friends-body',     'mob-friends-chev'); }
+
+/* ── Mobile: tap anywhere on habit card to log ──────────────────────────────
+   Only active on mobile (≤768px). Delegated on document so it works after
+   mobSync re-renders the habit list. Skips if: desktop, card already logged,
+   or the tap was directly on .habit-check (which has its own onclick). */
+document.addEventListener('click', function(e) {
+  if (!isMobile()) return;
+  var card = e.target.closest('.habit-card');
+  if (!card) return;
+  if (card.classList.contains('logged')) return;
+  // Let the checkbox handle its own onclick — don't double-fire
+  if (e.target.closest('.habit-check')) return;
+  // Extract habit id from card id ("habit-card-{id}")
+  var cardId = card.id || '';
+  var match = cardId.match(/^habit-card-(\d+)$/);
+  if (!match) return;
+  doLog(parseInt(match[1], 10));
+});
 </script>
 
 </body>
