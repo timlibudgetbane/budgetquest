@@ -2999,6 +2999,20 @@ function showScreen(id) {
   var el = document.getElementById('screen-' + id);
   el.classList.add('active');
 
+  // ── Mobile shell: only show when authenticated (main screen) ──
+  var mobShell = document.getElementById('mob-shell');
+  if (mobShell) {
+    if (id === 'main') {
+      // Remove the forced-none so CSS media query takes over on mobile
+      mobShell.style.removeProperty('display');
+      // Populate data after render completes
+      if (typeof mobSync === 'function') setTimeout(mobSync, 80);
+    } else {
+      // Not authenticated / not on main — force hidden regardless of screen size
+      mobShell.style.setProperty('display', 'none', 'important');
+    }
+  }
+
   // HUD panels: only visible on main screen
   var HUD_PANELS = ['.hud-char', '.hud-logo-wrap', '.hud-map-wrap',
                     '.hud-story-wrap', '.hud-chronicle-wrap',
@@ -5163,8 +5177,18 @@ body:has(#screen-main.active)::before {
   }
 }
 
-/* ── MOBILE SINGLE-COLUMN REORDER ── */
-/* Applied inside @media (max-width: 768px) below alongside the existing rules */
+/* ═══════════════════════════════════════════════════════════
+   DESKTOP GUARD — mob shell must NEVER render above 768px.
+   !important beats any inline style removal from JS.
+═══════════════════════════════════════════════════════════ */
+@media (min-width: 769px) {
+  #mob-shell {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+}
+
 
 /* ══════════════════════════════════════════════════════════
    MOBILE LAYOUT ≤ 768px — TWO TAB ARCHITECTURE
