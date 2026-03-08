@@ -1866,69 +1866,79 @@ body::before {
     overflow: visible !important;
   }
 
-  /* ── 2. Compact habit tiles (~90–100px) ──────────────────── */
+  /* ── 2. Compact habit tiles (88px) ──────────────────────── */
   .habit-card {
-    min-height: 90px !important;
+    min-height: 88px !important;
     background: rgba(10,7,5,.92) !important;
   }
   .habit-card-inner {
-    padding: 12px 16px !important;
-    min-height: 90px !important;
+    padding: 8px 14px !important;
+    min-height: 88px !important;
     align-items: center !important;
     display: flex !important;
   }
   .habit-row2 {
-    margin-top: 3px !important;
+    margin-top: 2px !important;
     display: flex !important;
     align-items: center !important;
   }
 
-  /* ── 3. Road log readability ─────────────────────────────── */
-  /* beat-inner is the road log container */
+  /* ── 3. Road log — narrative flow ───────────────────────── */
   #mob-beat-section .beat-inner {
-    padding: 18px 16px !important;
+    padding: 16px 16px !important;
   }
   .journal-day-label {
-    font-size: 12px !important;
+    font-size: 11px !important;
     letter-spacing: 2px !important;
-    opacity: .7 !important;
-    margin-bottom: 14px !important;
+    opacity: .6 !important;
+    margin-bottom: 10px !important;
   }
+  /* Section headers: larger, bold, clear hierarchy */
   .journal-section-header {
-    font-size: 14px !important;
-    letter-spacing: 1.5px !important;
-    margin-top: 14px !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.4px !important;
+    margin-top: 12px !important;
+    margin-bottom: 4px !important;
+  }
+  /* Blocks: tight spacing for narrative flow */
+  .journal-block {
+    margin-bottom: 12px !important;
+  }
+  /* World text: italic scene-setting */
+  .journal-world-text {
+    font-size: 15px !important;
+    font-style: italic !important;
+    line-height: 1.55 !important;
+    margin-top: 4px !important;
+  }
+  /* Beat text: normal body narrative */
+  .beat-text {
+    font-size: 15px !important;
+    font-style: normal !important;
+    line-height: 1.55 !important;
+    margin-top: 4px !important;
     margin-bottom: 8px !important;
   }
-  .journal-block {
-    margin-bottom: 20px !important;
-  }
-  .journal-world-text {
-    font-size: 16px !important;
-    line-height: 1.65 !important;
-    margin-top: 10px !important;
-  }
-  .beat-text {
-    font-size: 16px !important;
-    line-height: 1.65 !important;
-    margin-top: 10px !important;
-    margin-bottom: 20px !important;
-  }
-  /* Thin gold divider between road log sections */
+  /* Dividers: only where structurally meaningful, very subtle */
   .journal-divider {
-    border-top: 1px solid rgba(201,160,64,.25) !important;
-    margin: 18px 0 !important;
+    border-top: 1px solid rgba(201,160,64,.15) !important;
+    margin: 10px 0 !important;
   }
+  /* Remove decorative dividers between journal blocks */
   .journal-block + .journal-block {
-    border-top: 1px solid rgba(201,160,64,.25);
-    padding-top: 18px;
+    border-top: none !important;
+    padding-top: 0 !important;
   }
 
-  /* ── 4. Darker panel backgrounds ────────────────────────── */
+  /* ── 4. Darker panel backgrounds (.journal-block excluded) ── */
   .panel {
     background: rgba(10,7,5,.92) !important;
   }
   .mob-card {
+    background: rgba(10,7,5,.92) !important;
+  }
+  .habit-card {
     background: rgba(10,7,5,.92) !important;
   }
   #mob-beat-section .beat-inner {
@@ -1938,11 +1948,11 @@ body::before {
     background: rgba(10,7,5,.92) !important;
   }
 
-  /* ── 5. Map visibility ───────────────────────────────────── */
+  /* ── 5. Map: visible and height-capped ───────────────────── */
   #mob-map-body {
     display: block !important;
     width: 100% !important;
-    min-height: 120px !important;
+    max-height: 140px !important;
     overflow: hidden !important;
     position: relative !important;
   }
@@ -1950,7 +1960,6 @@ body::before {
   .map-strip-inner {
     display: block !important;
     width: 100% !important;
-    min-height: 120px !important;
     overflow: hidden !important;
     position: relative !important;
   }
@@ -2010,312 +2019,346 @@ var BEATS = [
 
   // ── ZONE 1: HEARTHSTONE → HARVEST CROSSING (Days 1–3) ──────────
   { id:'d01', day:1,  zone:1, type:'road',
-    teaser:  'Tomorrow you leave Hearthstone and take the north road for the first time.',
-    success: 'You shoulder your pack and step onto the north road. The village fades behind you.',
-    STR:     'Your legs settle into a strong rhythm. The road opens easily beneath you.',
-    WIS:     'Your careful packing pays off quickly. Everything you need is within reach.',
-    DISC:    'You leave exactly when you planned. The quiet road feels right.',
-    failure: 'You start later than planned. The road feels longer already.',
-    logLine: 'Left Hearthstone on the north road.' },
+    teaser:  'Tomorrow you leave. The north road has been there your whole life. You\'ve never taken it.',
+    success: 'You shoulder your pack and step onto the north road. Hearthstone fades behind you faster than expected.',
+    STR:     'Your legs settle into an easy rhythm. The road feels lighter than you expected.',
+    WIS:     'Your careful packing pays off immediately. Everything you need is exactly where you placed it.',
+    DISC:    'You leave exactly when you planned. The quiet morning road feels right.',
+    INT:     'You pause once at the crest of the hill and realize: you finally started.',
+    failure: 'You start later than planned. The road already feels longer than it should.',
+    logLine: 'Left Hearthstone and began the north road.' },
 
   { id:'d02', day:2,  zone:1, type:'encounter',
-    teaser:  'Tomorrow you reach a waypoint shelter where two rough travelers have been bothering people.',
-    success: 'Two rough men watch you approach the shelter. After a moment they decide you\'re not worth the trouble.',
-    STR:     'They notice your posture and step aside without a word.',
+    teaser:  'A waypoint shelter sits beside the road. Two rough men have been bothering travelers.',
+    success: 'The men watch you approach the shelter. After a moment they decide you\'re not worth the trouble.',
+    STR:     'They see the way you carry your pack and step aside without a word.',
     WIS:     'You read the tension early and approach calmly. They lose interest.',
     DISC:    'You keep your pace steady and give them nothing to react to.',
-    failure: 'They stop you at the shelter and search your pack before letting you pass.',
+    INT:     'You notice the whole scene before reaching the shelter and understand immediately what kind of men they are.',
+    failure: 'They stop you, search your pack, and help themselves to some food before letting you pass.',
     logLine: 'Passed the waypoint shelter.' },
 
   { id:'d03', day:3,  zone:1, type:'arrival',
-    teaser:  'Tomorrow you reach Harvest Crossing, the first real stop on the north road.',
-    success: 'You arrive at Harvest Crossing and cross the old bridge into town.',
-    STR:     'A guard notices your strong stride and waves you through the bridge traffic.',
-    WIS:     'You ask a merchant about the road north and learn useful details.',
+    teaser:  'Harvest Crossing lies beyond the old stone bridge.',
+    success: 'You cross the bridge and enter Harvest Crossing.',
+    STR:     'A guard notices your confident stride and waves you through the crowd.',
+    WIS:     'You ask a merchant about the road north and learn something useful.',
     DISC:    'You arrive exactly when the bridge traffic clears.',
-    failure: 'You arrive tired and later than expected.',
+    INT:     'Standing on the bridge, you realize the journey already feels real.',
+    failure: 'You arrive tired and later than planned.',
     logLine: 'Arrived at Harvest Crossing.' },
 
   // ── ZONE 2: HARVEST CROSSING → MERCHANT'S GATE (Days 4–6) ──────
   { id:'d04', day:4,  zone:2, type:'road',
-    teaser:  'Tomorrow you pass through the crowded Harvest Crossing market.',
-    success: 'You move through the busy market and secure supplies for the road north.',
-    STR:     'You push through the stalls quickly and reach the road again.',
-    WIS:     'You spot a trader quietly undercutting the others and buy supplies at a better price.',
-    DISC:    'You avoid the distractions and move straight through the market.',
-    failure: 'You spend longer than planned and leave lighter in coin.',
+    teaser:  'The Harvest Crossing market is crowded and loud.',
+    success: 'You pass through the busy market and secure supplies for the road ahead.',
+    STR:     'You push through the crowd quickly and reach the road again.',
+    WIS:     'You notice a trader quietly undercutting the others and buy supplies cheaply.',
+    DISC:    'You move through the market without distractions.',
+    INT:     'Watching the crowd teaches you how many different journeys share this road.',
+    failure: 'The market slows you down and costs more coin than planned.',
     logLine: 'Passed through the Harvest Crossing market.' },
 
   { id:'d05', day:5,  zone:2, type:'encounter',
-    teaser:  'Tomorrow you meet a merchant stranded with a broken cart wheel.',
-    success: 'You help repair the cart. The merchant shares useful information about the road ahead.',
-    STR:     'You lift the heavy wheel and set it properly.',
-    WIS:     'You find the real problem immediately and fix it.',
-    DISC:    'You finish the repair carefully and quickly.',
-    failure: 'You pass the merchant by. Later you hit the delay he warned others about.',
+    teaser:  'A merchant sits beside the road with a broken cart wheel.',
+    success: 'You help repair the cart. The merchant thanks you and shares useful news about the road ahead.',
+    STR:     'You lift the heavy wheel and seat it properly.',
+    WIS:     'You identify the real problem quickly.',
+    DISC:    'You finish the repair carefully and efficiently.',
+    INT:     'You realize how rarely travelers stop to help each other anymore.',
+    failure: 'You pass him by. Later you run into the delay he would have warned you about.',
     logLine: 'Helped repair a merchant\'s cart.' },
 
   { id:'d06', day:6,  zone:2, type:'encounter',
-    teaser:  'Tomorrow you deal with someone who has been following you since the market.',
-    success: 'You turn suddenly and confront the follower. They vanish into the trees.',
-    STR:     'You stand your ground and the follower decides not to test you.',
-    WIS:     'You anticipate their escape route and glimpse who they were.',
-    DISC:    'You wait for the perfect moment before forcing them to retreat.',
+    teaser:  'Someone has been following you since the market.',
+    success: 'You turn suddenly and confront the follower. They disappear into the trees.',
+    STR:     'You stand your ground until they retreat.',
+    WIS:     'You predicted where they would escape.',
+    DISC:    'You wait patiently for the right moment before forcing them away.',
+    INT:     'You realize you\'ve started paying closer attention to the road behind you.',
     failure: 'They follow you all the way to Merchant\'s Gate.',
-    logLine: 'Someone had been following you on the road.' },
+    logLine: 'Someone had been following you.' },
 
   // ── ZONE 3: MERCHANT'S GATE → COPPERBRIDGE (Days 7–13) ─────────
   { id:'d07', day:7,  zone:3, type:'arrival',
-    teaser:  'Tomorrow you arrive at Merchant\'s Gate where Mira runs the supply post.',
-    success: 'Mira greets you at the gate and begins explaining what she has discovered.',
+    teaser:  'Merchant\'s Gate rises ahead. Mira runs the supply post here.',
+    success: 'Mira greets you at the gate and begins explaining something she has discovered.',
     STR:     'She sees you\'re still strong from the road and decides you\'re capable.',
-    WIS:     'Your questions reveal the real problem she has been tracking.',
+    WIS:     'Your questions reveal the real problem she\'s been tracking.',
     DISC:    'You listen patiently until she trusts you with the full story.',
+    INT:     'You realize the journey may be part of something larger.',
     failure: 'She shares only part of what she knows.',
     logLine: 'Arrived at Merchant\'s Gate and met Mira.' },
 
   { id:'d08', day:8,  zone:3, type:'road',
-    teaser:  'Tomorrow Mira shows you a strange supply ledger.',
+    teaser:  'Mira shows you a strange supply ledger.',
     success: 'The ledger reveals shipments quietly moving north.',
-    STR:     'You work through the numbers quickly and follow the pattern.',
+    STR:     'You follow the numbers quickly.',
     WIS:     'You recognize the hidden pattern immediately.',
-    DISC:    'You study every page carefully before speaking.',
+    DISC:    'You read every page before speaking.',
+    INT:     'You begin to understand the larger story unfolding along the road.',
     failure: 'You miss something important in the records.',
     logLine: 'Studied Mira\'s ledger.' },
 
   { id:'d09', day:9,  zone:3, type:'encounter',
-    teaser:  'Tomorrow someone stops travelers north of the Gate asking questions.',
-    success: 'You answer his questions carefully and give away nothing useful.',
+    teaser:  'A man north of the Gate has been questioning travelers.',
+    success: 'He asks several careful questions but learns nothing useful from you.',
     STR:     'Your confidence shortens the conversation.',
-    WIS:     'You learn more from his questions than he learns from you.',
-    DISC:    'You remain unremarkable and he waves you through.',
-    failure: 'He writes your description in his book.',
+    WIS:     'You learn more from his questions than he learns from your answers.',
+    DISC:    'You remain completely unremarkable.',
+    INT:     'You realize he believes you\'ve been traveling this road awhile.',
+    failure: 'He writes your description in his notebook.',
     logLine: 'Passed a road watcher.' },
 
   { id:'d10', day:10, zone:3, type:'road',
-    teaser:  'Tomorrow Mira has one last favor to offer before you leave.',
+    teaser:  'Mira promised one final favor before you left.',
     success: 'She gives you the name of someone ahead who owes her a favor.',
-    STR:     'She hands you a sealed letter for Copperbridge.',
-    WIS:     'She shares a detail that makes the ledger clearer.',
+    STR:     'She presses a sealed letter into your hand.',
+    WIS:     'She shares a detail that clarifies the ledger.',
     DISC:    'She quietly gives you the name and favor.',
+    INT:     'You realize how much trust she has placed in you.',
     failure: 'She decides not to share everything yet.',
     logLine: 'Left Merchant\'s Gate with Mira\'s help.' },
 
   { id:'d11', day:11, zone:3, type:'encounter',
-    teaser:  'Tomorrow you cross the toll bridge before Copperbridge.',
-    success: 'The toll keeper tries a few tricks but lets you pass fairly.',
+    teaser:  'The toll bridge before Copperbridge has a reputation.',
+    success: 'The keeper tries several tricks but lets you pass fairly.',
     STR:     'He decides arguing with you isn\'t worth it.',
-    WIS:     'You anticipate every angle he tries.',
-    DISC:    'You calmly wait until he gives up pushing.',
+    WIS:     'You anticipate each tactic he tries.',
+    DISC:    'You wait patiently until he gives up pushing.',
+    INT:     'You realize how many travelers must be intimidated here.',
     failure: 'He squeezes extra coin and time from you.',
     logLine: 'Crossed the toll before Copperbridge.' },
 
   { id:'d12', day:12, zone:3, type:'road',
-    teaser:  'Tomorrow is a long quiet stretch toward Copperbridge.',
-    success: 'You find a steady pace and cover good miles.',
-    STR:     'Your body handles the miles easily.',
+    teaser:  'A long quiet stretch leads toward Copperbridge.',
+    success: 'You find a steady pace and cover strong miles.',
+    STR:     'Your body handles the distance easily.',
     WIS:     'The quiet gives you time to think clearly.',
-    DISC:    'You hold the same pace all day.',
+    DISC:    'You keep the same pace all day.',
+    INT:     'You begin to understand the rhythm of the road.',
     failure: 'The miles feel longer than expected.',
     logLine: 'Made strong miles toward Copperbridge.' },
 
   { id:'d13', day:13, zone:3, type:'arrival',
-    teaser:  'Tomorrow you reach Copperbridge, a major crossroads.',
-    success: 'Halfway across the bridge a traveler named Sera joins your stride.',
-    STR:     'She notices your strong pace and decides you\'re capable.',
-    WIS:     'She sees you\'ve been thinking carefully about the journey.',
+    teaser:  'Copperbridge is the largest crossing on the north road.',
+    success: 'Halfway across the bridge a traveler named Sera falls into step beside you.',
+    STR:     'She notices your strong pace immediately.',
+    WIS:     'She sees you\'ve been thinking carefully on the road.',
     DISC:    'You arrive exactly when she expected the right traveler.',
-    failure: 'She meets you but seems uncertain.',
+    INT:     'You sense she has been watching travelers for someone specific.',
+    failure: 'She greets you but seems uncertain.',
     logLine: 'Arrived at Copperbridge and met Sera.' },
 
   // ── ZONE 4: COPPERBRIDGE → THORNWOOD EDGE (Days 14–20) ─────────
   { id:'d14', day:14, zone:4, type:'road',
-    teaser:  'Tomorrow you continue north with Sera.',
-    success: 'Sera walks beside you and begins sharing what she knows.',
-    STR:     'She keeps pace easily with you.',
-    WIS:     'Your answers convince her to explain more.',
-    DISC:    'You walk quietly until she is ready to speak.',
-    failure: 'She keeps most of her thoughts to herself.',
-    logLine: 'Started traveling with Sera.' },
+    teaser:  'Sera has been traveling this road alone for weeks. Tomorrow she walks it beside you.',
+    success: 'Sera falls into step beside you and begins sharing what she knows about the road ahead.',
+    STR:     'She matches your pace easily and nods in approval.',
+    WIS:     'Your questions draw out details she hadn\'t planned to share.',
+    DISC:    'You walk quietly beside her until she chooses to speak.',
+    INT:     'You realize how much easier the road feels with a companion.',
+    failure: 'Sera walks beside you but keeps most of her thoughts to herself.',
+    logLine: 'Began traveling north with Sera.' },
 
   { id:'d15', day:15, zone:4, type:'encounter',
-    teaser:  'Tomorrow something large blocks the path through the river pass.',
-    success: 'You approach slowly and the creature eventually moves aside.',
-    STR:     'Your steady approach convinces it you are no threat.',
-    WIS:     'You recognize the creature and know how to behave.',
-    DISC:    'You wait patiently until it leaves the path.',
-    failure: 'You startle it and must wait a long time.',
+    teaser:  'Something large has been resting on the narrow pass through the river valley.',
+    success: 'You approach slowly and the creature eventually shifts aside, clearing the path.',
+    STR:     'Your calm approach convinces it you\'re no threat.',
+    WIS:     'You recognize the creature and know how to behave around it.',
+    DISC:    'You wait patiently until it moves on.',
+    INT:     'You realize the road demands patience as much as strength.',
+    failure: 'You startle it and must wait a long time before it leaves the path.',
     logLine: 'Passed safely through the river pass.' },
 
   { id:'d16', day:16, zone:4, type:'encounter',
-    teaser:  'Tomorrow you pass ancient ruins beside the road.',
-    success: 'You walk past the ruins without disturbing whatever lingers there.',
+    teaser:  'Ancient ruins sit just off the road. Travelers speak of them quietly.',
+    success: 'You pass the ruins without disturbing whatever still lingers there.',
     STR:     'You meet the silence of the place without hesitation.',
-    WIS:     'You recognize the signs of an old watch site.',
-    DISC:    'You maintain the same steady pace past the ruins.',
-    failure: 'The ruins unsettle you and slow your pace.',
-    logLine: 'Passed the old roadside ruins.' },
+    WIS:     'You recognize signs of an old watch post long forgotten.',
+    DISC:    'You maintain your steady pace past the ruins.',
+    INT:     'The place reminds you how many travelers have walked this road before.',
+    failure: 'The ruins unsettle you and slow your steps.',
+    logLine: 'Passed the roadside ruins.' },
 
   { id:'d17', day:17, zone:4, type:'road',
-    teaser:  'Tomorrow Sera shows you a path few travelers notice.',
-    success: 'Sera guides you along a hidden path that saves hours.',
-    STR:     'The rough terrain slows others but not you.',
-    WIS:     'You memorize the landmarks of the hidden route.',
+    teaser:  'Sera mentions a hidden path most travelers miss.',
+    success: 'She leads you along a narrow route through the hills, saving hours.',
+    STR:     'The rough terrain barely slows you.',
+    WIS:     'You memorize the landmarks along the hidden route.',
     DISC:    'You follow the path carefully from start to finish.',
-    failure: 'You take the longer road instead.',
+    INT:     'You begin to understand how many roads exist beyond the obvious one.',
+    failure: 'You take the longer main road instead.',
     logLine: 'Followed Sera\'s hidden path.' },
 
   { id:'d18', day:18, zone:4, type:'encounter',
-    teaser:  'Tomorrow danger waits in the trees before Thornwood.',
-    success: 'The ambushers strike but you are ready.',
-    STR:     'You take the lead and drive them off quickly.',
-    WIS:     'You notice the signs before they attack.',
-    DISC:    'You hold your position and the fight ends fast.',
+    teaser:  'The forest before Thornwood has a reputation for ambushes.',
+    success: 'When attackers emerge from the trees, you are already prepared.',
+    STR:     'You drive them off quickly.',
+    WIS:     'You notice the warning signs before they strike.',
+    DISC:    'You hold your ground until the fight ends.',
+    INT:     'You realize how much sharper your instincts have become.',
     failure: 'The fight is messy and leaves you shaken.',
-    logLine: 'Survived an ambush on the road.' },
+    logLine: 'Survived an ambush near Thornwood.' },
 
   { id:'d19', day:19, zone:4, type:'road',
-    teaser:  'Tomorrow Aldric catches up to your group with urgent news.',
-    success: 'Aldric joins you and explains the situation ahead.',
-    STR:     'He relaxes when he sees you\'re still strong.',
-    WIS:     'Your ideas help shape the next step.',
-    DISC:    'You listen carefully as he explains everything.',
-    failure: 'He shortens the explanation and asks you to follow.',
+    teaser:  'Aldric has been trying to catch up since Harvest Crossing.',
+    success: 'He finally catches up and brings urgent news from the south.',
+    STR:     'He sees you\'re still strong and relaxes.',
+    WIS:     'Your ideas shape the next step of the journey.',
+    DISC:    'You listen carefully while he explains everything.',
+    INT:     'You realize this journey now involves more than just travel.',
+    failure: 'He shortens his explanation and urges you to keep moving.',
     logLine: 'Aldric caught up on the road.' },
 
   { id:'d20', day:20, zone:4, type:'arrival',
-    teaser:  'Tomorrow you enter the Thornwood forest.',
-    success: 'Something watches from the canopy but eventually lets you pass.',
+    teaser:  'The Thornwood forest marks the final stretch before the Iron Keep.',
+    success: 'You enter the Thornwood. Something watches from the canopy but lets you pass.',
     STR:     'Your steady pace earns its respect.',
-    WIS:     'You notice it before the others do.',
-    DISC:    'You keep your rhythm the entire way.',
-    failure: 'You feel its presence the whole journey.',
-    logLine: 'Entered the Thornwood forest.' },
+    WIS:     'You notice the watcher before anyone else.',
+    DISC:    'You keep your rhythm through the dark trees.',
+    INT:     'You sense the forest testing everyone who walks beneath it.',
+    failure: 'You feel its presence the entire journey through.',
+    logLine: 'Entered Thornwood Edge.' },
 
   // ── ZONE 5: THORNWOOD → IRON KEEP → RETURN (Days 21–35) ────────
   { id:'d21', day:21, zone:5, type:'road',
-    teaser:  'Tomorrow the forest grows harder to cross.',
+    teaser:  'The forest north of Thornwood is dense and difficult.',
     success: 'You move steadily through the deep forest.',
-    STR:     'The rough terrain barely slows you.',
+    STR:     'The rough ground barely slows you.',
     WIS:     'You find easier paths between the trees.',
-    DISC:    'You keep the same pace all day.',
-    failure: 'The forest slows you more than expected.',
+    DISC:    'You maintain the same pace all day.',
+    INT:     'You begin to enjoy the quiet rhythm of the journey.',
+    failure: 'The terrain slows you more than expected.',
     logLine: 'Crossed deep forest terrain.' },
 
   { id:'d22', day:22, zone:5, type:'encounter',
-    teaser:  'Tomorrow a wyvern blocks the north path.',
-    success: 'You give the wyvern space and it leaves the road.',
-    STR:     'It senses your confidence and moves aside.',
-    WIS:     'You know exactly how to approach the creature.',
-    DISC:    'You wait patiently until it flies off.',
+    teaser:  'A wyvern has been seen resting on the northern road.',
+    success: 'You approach carefully and give it space until it lifts away.',
+    STR:     'Your calm confidence convinces it to leave.',
+    WIS:     'You recognize its behavior and avoid provoking it.',
+    DISC:    'You wait patiently until the road clears.',
+    INT:     'You realize the road sometimes belongs to other creatures first.',
     failure: 'You startle it and must hide until it leaves.',
     logLine: 'Passed a wyvern on the road.' },
 
   { id:'d23', day:23, zone:5, type:'road',
-    teaser:  'Tomorrow the terrain tests your endurance.',
-    success: 'You cover strong miles in difficult terrain.',
+    teaser:  'The hills beyond the forest test your endurance.',
+    success: 'You cover strong miles across the rising terrain.',
     STR:     'Your body handles the climb easily.',
-    WIS:     'You find the best route through the hills.',
-    DISC:    'You keep your steady rhythm.',
+    WIS:     'You find the best path through the hills.',
+    DISC:    'You keep a steady rhythm all day.',
+    INT:     'You recognize how far you\'ve already come.',
     failure: 'The hills slow your progress.',
     logLine: 'Made hard miles toward the Keep.' },
 
   { id:'d24', day:24, zone:5, type:'encounter',
-    teaser:  'Tomorrow something that has followed you finally strikes.',
-    success: 'You deal with the threat before it becomes dangerous.',
-    STR:     'You overpower it quickly.',
+    teaser:  'Something has been following you at a distance for days.',
+    success: 'It finally strikes — and you deal with it quickly.',
+    STR:     'You overpower it before it becomes dangerous.',
     WIS:     'You anticipated the attack.',
     DISC:    'You stay calm and methodical.',
+    INT:     'You realize how much sharper you\'ve become on this road.',
     failure: 'The fight is messy but you survive.',
     logLine: 'Dealt with the thing following you.' },
 
   { id:'d25', day:25, zone:5, type:'road',
-    teaser:  'Tomorrow Aldric finally shares his full plan.',
-    success: 'Aldric explains what waits at the Iron Keep.',
-    STR:     'He trusts you because you are still strong.',
+    teaser:  'Aldric finally shares the full plan for the Iron Keep.',
+    success: 'He explains what must happen once you reach the fortress.',
+    STR:     'He trusts you because you\'re still strong.',
     WIS:     'Your questions improve the plan.',
     DISC:    'You listen carefully to every detail.',
-    failure: 'He gives you only the basic version.',
-    logLine: 'Learned Aldric\'s plan.' },
+    INT:     'You realize the road was preparing you for this moment.',
+    failure: 'He gives only the short version.',
+    logLine: 'Learned Aldric\'s full plan.' },
 
   { id:'d26', day:26, zone:5, type:'encounter',
-    teaser:  'Tomorrow a mounted patrol searches travelers.',
-    success: 'You pass the patrol without drawing attention.',
+    teaser:  'A mounted patrol is searching travelers on the road.',
+    success: 'You pass them without drawing attention.',
     STR:     'You carry yourself like you belong there.',
-    WIS:     'You adjust your path before they see you.',
-    DISC:    'You remain unremarkable.',
+    WIS:     'You adjust your path before they notice you.',
+    DISC:    'You remain completely unremarkable.',
+    INT:     'You understand how easily a small mistake could expose you.',
     failure: 'One rider studies you closely.',
-    logLine: 'Passed a road patrol.' },
+    logLine: 'Passed a mounted patrol.' },
 
   { id:'d27', day:27, zone:5, type:'road',
-    teaser:  'Tomorrow you see the Iron Keep for the first time.',
-    success: 'From the ridge the Iron Keep rises on the horizon.',
+    teaser:  'From the next ridge you will see the Iron Keep for the first time.',
+    success: 'The fortress rises on the horizon as you crest the ridge.',
     STR:     'Seeing it confirms the strength of your journey.',
-    WIS:     'Aldric explains what to look for inside the fortress.',
-    DISC:    'You take one look and continue forward.',
-    failure: 'The sight of the Keep drains your energy.',
-    logLine: 'Saw the Iron Keep from the ridge.' },
+    WIS:     'Aldric explains what to expect inside.',
+    DISC:    'You study it briefly and continue forward.',
+    INT:     'You realize the entire journey has led here.',
+    failure: 'The sight drains your energy.',
+    logLine: 'First sight of the Iron Keep.' },
 
   { id:'d28', day:28, zone:5, type:'road',
     teaser:  'Tomorrow you enter the Iron Keep.',
-    success: 'You move through the Keep unnoticed and recover what Aldric needed.',
-    STR:     'People instinctively give you room.',
-    WIS:     'You remember every turn Aldric described.',
+    success: 'You move through the fortress unnoticed and recover what Aldric needed.',
+    STR:     'People instinctively give you space.',
+    WIS:     'You remember every instruction Aldric gave.',
     DISC:    'You move methodically and leave no trace.',
-    failure: 'Someone notices you in the corridor.',
+    INT:     'You realize how far you\'ve come from your first day on the road.',
+    failure: 'Someone notices you briefly in a corridor.',
     logLine: 'Entered the Iron Keep.' },
 
   { id:'d29', day:29, zone:5, type:'encounter',
-    teaser:  'Tomorrow someone in the Keep begins asking questions.',
-    success: 'You resolve the suspicion before it spreads.',
+    teaser:  'Someone inside the Keep has begun asking questions.',
+    success: 'You resolve the suspicion quietly.',
     STR:     'You confront the problem directly.',
     WIS:     'You detect the change in routine early.',
-    DISC:    'You stay calm until it passes.',
+    DISC:    'You remain calm until it passes.',
+    INT:     'You realize how fragile plans can be inside walls like these.',
     failure: 'The incident becomes louder than intended.',
     logLine: 'Quietly resolved suspicion in the Keep.' },
 
   { id:'d30', day:30, zone:5, type:'road',
-    teaser:  'Tomorrow the council meets.',
+    teaser:  'The council meets tomorrow.',
     success: 'You review the evidence with Aldric and Sera.',
-    STR:     'You feel ready for what comes.',
+    STR:     'You feel ready for the confrontation.',
     WIS:     'You notice a final detail in the evidence.',
     DISC:    'You rest calmly before the meeting.',
+    INT:     'You reflect on everything the road taught you.',
     failure: 'Something still feels unresolved.',
     logLine: 'Prepared for the council.' },
 
   { id:'d31', day:31, zone:5, type:'encounter',
-    teaser:  'Tomorrow the road\'s purpose is revealed.',
+    teaser:  'Tomorrow the truth will be revealed.',
     success: 'The council hears the evidence and the room shifts.',
     STR:     'You stand firm under pressure.',
     WIS:     'You guide the conversation at the right moment.',
     DISC:    'You remain steady throughout the debate.',
+    INT:     'You realize the journey mattered more than the destination.',
     failure: 'The decision is less clear than hoped.',
     logLine: 'Faced the council.' },
 
   { id:'d32', day:32, zone:5, type:'road',
-    teaser:  'Tomorrow the road turns south.',
-    success: 'The Keep feels different the next morning.',
+    teaser:  'The morning after the council feels different.',
+    success: 'The Keep is quieter as you walk its halls.',
     STR:     'Your body finally relaxes.',
     WIS:     'You understand more about what happened.',
     DISC:    'You accept the result calmly.',
+    INT:     'You realize the road is calling you home.',
     failure: 'Loose ends remain.',
     logLine: 'The morning after the council.' },
 
   { id:'d33', day:33, zone:5, type:'road',
-    teaser:  'Tomorrow the road home begins.',
-    success: 'The road south feels familiar.',
+    teaser:  'The road south begins.',
+    success: 'The journey home feels familiar.',
     STR:     'The miles pass easily.',
     WIS:     'You notice things you missed before.',
     DISC:    'Your steady rhythm returns.',
+    INT:     'You realize you\'re no longer the traveler who left.',
     failure: 'The return feels longer than expected.',
     logLine: 'Began the road home.' },
 
   { id:'d34', day:34, zone:5, type:'road',
-    teaser:  'Tomorrow you return to Hearthstone.',
-    success: 'The final miles pass quickly.',
+    teaser:  'The final miles remain.',
+    success: 'You walk the last stretch toward Hearthstone.',
     STR:     'You finish strong.',
     WIS:     'You understand the road\'s lessons.',
     DISC:    'You finish exactly as you began.',
+    INT:     'You realize how much the journey changed you.',
     failure: 'The last miles are harder than expected.',
     logLine: 'Nearing home.' },
 
@@ -2325,6 +2368,7 @@ var BEATS = [
     STR:     'You arrive stronger than when you left.',
     WIS:     'You arrive wiser from everything the road showed you.',
     DISC:    'You arrive knowing you kept showing up every day.',
+    INT:     'You understand the road changed you.',
     failure: 'You still made it home. That counts.',
     logLine: 'Returned to Hearthstone. Journey complete.' },
 
@@ -3024,16 +3068,18 @@ function getBeatText(beat) {
   var loggedToday = anyLoggedToday();
   if (loggedToday) {
     var dom = typeof getDominantStat === 'function' ? getDominantStat() : null;
-    if (dom && beat[dom]) {
-      // Extract first sentence of success as scene intro
-      var intro = '';
-      if (beat.success) {
-        var m = beat.success.match(/^[^.!?]+[.!?]/);
-        intro = m ? m[0] : beat.success;
-      }
-      return (intro ? intro + '\n' : '') + beat[dom];
+    // Extract first sentence of success as scene intro
+    var intro = '';
+    if (beat.success) {
+      var m = beat.success.match(/^[^.!?]+[.!?]/);
+      intro = m ? m[0] : beat.success;
     }
-    return beat.success || '';
+    var prefix = intro ? intro + '\n' : '';
+    if (dom === 'STR'  && beat.STR)  return prefix + beat.STR;
+    if (dom === 'WIS'  && beat.WIS)  return prefix + beat.WIS;
+    if (dom === 'DISC' && beat.DISC) return prefix + beat.DISC;
+    // No dominant stat — use INT fallback
+    return prefix + (beat.INT || beat.success || '');
   }
   return beat.failure || beat.success || '';
 }
