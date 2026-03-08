@@ -5341,8 +5341,11 @@ function devForceRoad() {
     overflow-x: hidden !important;
   }
 
-  /* ── screen-main: plain block in document flow ── */
-  #screen-main, #screen-main.active {
+  /* ── screen-main: plain block in document flow (only when active) ── */
+  #screen-main {
+    display: none !important;
+  }
+  #screen-main.active {
     position: relative !important;
     inset: auto !important;
     width: 100% !important;
@@ -5350,6 +5353,14 @@ function devForceRoad() {
     overflow: visible !important;
     display: block !important;
     pointer-events: auto !important;
+  }
+
+  /* ── auth screen: fixed full-viewport on mobile too ── */
+  #screen-auth.active {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 50 !important;
+    display: block !important;
   }
 
   /* ── mob-shell: normal scrollable block ── */
