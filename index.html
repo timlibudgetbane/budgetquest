@@ -3917,7 +3917,7 @@ function renderNodeMap() {
     // Section label
     var zoneLabel = document.createElement('div');
     zoneLabel.className = 'vmap-zone-label';
-    zoneLabel.textContent = curNode.zone || 'The Road North';
+    zoneLabel.textContent = 'Your Journey';
     inner.appendChild(zoneLabel);
 
     // One row per node — rendered top to bottom (Hearthstone first)
@@ -3968,7 +3968,7 @@ function renderNodeMap() {
 
     // Clear the header sub-text (managed inline above)
     var subEl = document.getElementById('node-map-sub');
-    if (subEl) subEl.textContent = curNode.name;
+    if (subEl) subEl.textContent = 'Your Journey';
     return;
   }
 
@@ -5122,10 +5122,10 @@ function devForceRoad() {
     justify-content: flex-start !important;
     overflow-y: visible !important;
     overflow-x: hidden !important;
-    /* No background here — map panel carries its own styling */
     background: transparent !important;
     border-right: none !important;
     backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
   .dt-col-center {
     grid-column: 2 !important;
@@ -5160,11 +5160,13 @@ function devForceRoad() {
     display: flex !important;
     flex-direction: column !important;
     align-self: flex-start !important;
-    /* Panel carries its own visual treatment */
+    /* Panel carries its own visual treatment — sized to content */
     background: rgba(4,3,1,.72) !important;
+    border-bottom: 1px solid var(--border) !important;
     border-right: 1px solid var(--border) !important;
     backdrop-filter: blur(10px) !important;
     -webkit-backdrop-filter: blur(10px) !important;
+    overflow: hidden !important;
     z-index: auto !important;
   }
   .hud-map-header {
@@ -6483,24 +6485,6 @@ function devForceRoad() {
   ══════════════════════════════════════════════════════════ -->
   <div class="dt-grid" id="dt-grid">
 
-    <!-- ── FLOATING TOPBAR: logo + sign out ── -->
-    <div class="hud-topbar" id="hud-topbar">
-      <div class="header-logo">HabitForge</div>
-      <span class="header-signout" onclick="doSignOut()">Sign Out</span>
-    </div>
-
-    <!-- ── FLOATING COMPANIONS PANEL ── -->
-    <div class="hud-companions-wrap" id="friends-wrap">
-      <div class="friends-header" onclick="toggleFriends()">
-        <div class="friends-title">Road Companions</div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span style="font-family:'Cinzel',serif;font-size:10px;color:var(--text-dark);letter-spacing:.08em;" id="friends-count"></span>
-          <span class="friends-chevron" style="font-size:10px;color:var(--text-dark);">▼</span>
-        </div>
-      </div>
-      <div id="friends-body" style="display:none;"></div>
-    </div>
-
     <!-- ── HEADER ROW (hidden — char chip uses own floating rules) ── -->
     <div class="dt-header">
       <!-- Header left: character -->
@@ -6537,7 +6521,7 @@ function devForceRoad() {
       <div class="dt-col-left">
         <div class="hud-map-wrap" id="map-strip">
           <div class="hud-map-header">
-            <span class="hud-map-label" id="node-map-sub">The Road North</span>
+            <span class="hud-map-label" id="node-map-sub">Your Journey</span>
           </div>
           <div class="hud-map-body" id="hud-map-body">
             <div class="map-strip-inner" id="node-map-inner"></div>
@@ -6583,6 +6567,24 @@ function devForceRoad() {
     </div><!-- /.dt-columns -->
 
   </div><!-- /#dt-grid -->
+
+  <!-- ── FLOATING TOPBAR: outside grid, absolute in screen-main ── -->
+  <div class="hud-topbar" id="hud-topbar">
+    <div class="header-logo">HabitForge</div>
+    <span class="header-signout" onclick="doSignOut()">Sign Out</span>
+  </div>
+
+  <!-- ── FLOATING COMPANIONS PANEL: outside grid, absolute in screen-main ── -->
+  <div class="hud-companions-wrap" id="friends-wrap">
+    <div class="friends-header" onclick="toggleFriends()">
+      <div class="friends-title">Road Companions</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-family:'Cinzel',serif;font-size:10px;color:var(--text-dark);letter-spacing:.08em;" id="friends-count"></span>
+        <span class="friends-chevron" style="font-size:10px;color:var(--text-dark);">▼</span>
+      </div>
+    </div>
+    <div id="friends-body" style="display:none;"></div>
+  </div>
 
   <!-- ═══════════════════════════════════════════════════════
        MOBILE SHELL — single scrollable page, hidden on desktop
