@@ -5355,12 +5355,46 @@ function devForceRoad() {
     pointer-events: auto !important;
   }
 
-  /* ── auth screen: fixed full-viewport on mobile too ── */
+  /* ── auth screen: scrollable on mobile ── */
   #screen-auth.active {
     position: fixed !important;
     inset: 0 !important;
     z-index: 50 !important;
     display: block !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* ── auth panel: static flow so it scrolls with container ── */
+  .auth-wrap {
+    position: relative !important;
+    bottom: auto !important;
+    left: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+    box-sizing: border-box !important;
+  }
+
+  /* ── auth wrap visible: push to bottom of screen ── */
+  .auth-wrap.visible {
+    animation: none !important;
+  }
+
+  /* ── Continue button: keep in flow, centered ── */
+  .auth-continue-btn {
+    position: relative !important;
+    bottom: auto !important;
+    left: auto !important;
+    transform: none !important;
+    display: block !important;
+    margin: 0 auto !important;
+    /* sit near bottom of background image */
+    margin-top: 60vh !important;
   }
 
   /* ── mob-shell: normal scrollable block ── */
