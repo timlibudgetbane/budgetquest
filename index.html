@@ -5385,7 +5385,7 @@ function devForceRoad() {
     animation: none !important;
   }
 
-  /* ── Continue button: sits ~35% down the screen ── */
+  /* ── Continue button: filled gold on mobile ── */
   .auth-continue-btn {
     position: relative !important;
     bottom: auto !important;
@@ -5393,6 +5393,16 @@ function devForceRoad() {
     transform: none !important;
     display: block !important;
     margin: 35vh auto 0 !important;
+    background: linear-gradient(180deg, #c8a84b 0%, #a07830 100%) !important;
+    border: 1px solid #d4a84b !important;
+    color: #1a1208 !important;
+    text-shadow: none !important;
+    box-shadow: 0 2px 18px rgba(200,140,40,.45), 0 0 0 1px rgba(200,168,75,.3) !important;
+    font-weight: 600 !important;
+  }
+  .auth-continue-btn:hover {
+    background: linear-gradient(180deg, #d4b85a 0%, #b08840 100%) !important;
+    box-shadow: 0 4px 28px rgba(200,140,40,.65), 0 0 0 1px rgba(212,184,90,.5) !important;
   }
 
   /* ── Auth form panel: sits immediately below the button ── */
