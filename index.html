@@ -5030,14 +5030,14 @@ function devForceRoad() {
     width: 100% !important;
     height: 100vh !important;
     min-height: 0 !important;
-    /* 2 structural columns: map | center — right is open background */
-    grid-template-columns: 240px 1fr !important;
+    /* 3 structural columns: map | story | open background */
+    grid-template-columns: 240px minmax(0, 760px) 1fr !important;
     grid-template-rows: 1fr !important;
     grid-template-areas:
-      "dt-left   dt-center" !important;
+      "dt-left dt-center dt-right" !important;
     pointer-events: none !important;
     z-index: 2 !important;
-    overflow: hidden !important;
+    overflow: visible !important;
   }
   .dt-grid > * { pointer-events: auto !important; }
 
@@ -5084,7 +5084,7 @@ function devForceRoad() {
 
   /* ── FLOATING TOPBAR: HabitForge logo + sign out ── */
   .hud-topbar {
-    position: absolute !important;
+    position: fixed !important;
     top: 20px !important;
     right: 30px !important;
     z-index: 200 !important;
@@ -5107,7 +5107,7 @@ function devForceRoad() {
     grid-column: 1 / 3 !important;
     grid-row: 1 !important;
     display: grid !important;
-    grid-template-columns: 240px 1fr !important;
+    grid-template-columns: 240px minmax(0, 760px) !important;
     min-height: 0 !important;
     height: 100% !important;
     overflow: hidden !important;
@@ -5137,13 +5137,15 @@ function devForceRoad() {
     overflow-x: hidden !important;
     padding: 60px 36px 48px !important;
     box-sizing: border-box !important;
-    background: radial-gradient(circle at center,
-      rgba(0,0,0,0.2),
-      rgba(0,0,0,0.75)) !important;
+    background: transparent !important;
   }
-  /* dt-col-right removed — companions are now a floating panel */
+  /* dt-col-right = open background zone, col 3 */
   .dt-col-right {
-    display: none !important;
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    display: block !important;
+    background: transparent !important;
+    pointer-events: none !important;
   }
 
   /* ── LEFT: map panel fills column ── */
@@ -5461,9 +5463,9 @@ function devForceRoad() {
     margin: 0 !important;
   }
 
-  /* ── RIGHT: companions panel — floating card over background ── */
+  /* ── RIGHT: companions panel — floating in open right zone ── */
   .hud-companions-wrap {
-    position: absolute !important;
+    position: fixed !important;
     top: 80px !important;
     right: 30px !important;
     bottom: auto !important;
