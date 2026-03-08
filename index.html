@@ -499,33 +499,48 @@ body::before {
 
 /* ══ ONBOARDING ══ */
 #screen-ob {
-  align-items:center; justify-content:flex-start;
+  align-items:center;
   padding:48px 24px 80px;
   position:relative;
   background:
-    linear-gradient(to bottom, rgba(6,4,2,.55) 0%, rgba(6,4,2,.35) 40%, rgba(6,4,2,.65) 100%),
+    radial-gradient(ellipse at 50% 80%, rgba(0,0,0,.52) 0%, rgba(0,0,0,.82) 100%),
     url('onboarding desktop.png') center center / cover no-repeat;
 }
+/* Mobile: vertically centered, mobile image */
 @media (max-width: 768px) {
   #screen-ob {
+    justify-content: center;
+    padding-top: 0;
     background:
-      linear-gradient(to bottom, rgba(6,4,2,.55) 0%, rgba(6,4,2,.35) 40%, rgba(6,4,2,.65) 100%),
+      radial-gradient(ellipse at 50% 80%, rgba(0,0,0,.52) 0%, rgba(0,0,0,.82) 100%),
       url('onboarding mobile.png') center center / cover no-repeat;
     background-attachment: scroll;
   }
 }
+/* Desktop: panel sits at ~30vh so atmosphere shows above */
+@media (min-width: 769px) {
+  #screen-ob {
+    justify-content: flex-start;
+    padding-top: 30vh;
+  }
+}
 .ob-wrap {
-  width:100%; max-width:420px;
+  width:100%; max-width:480px;
   position:relative; z-index:1;
-  background:rgba(6,4,2,.55);
+  background:rgba(5,3,1,.65);
   border:1px solid var(--border);
   border-radius:6px;
   padding:32px 28px;
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  box-shadow: 0 8px 40px rgba(0,0,0,.55);
 }
 .ob-step { display:none; }
-.ob-step.active { display:block; }
+.ob-step.active { display:block; animation: ob-in .28s ease forwards; }
+@keyframes ob-in {
+  from { opacity:0; transform:translateY(8px); }
+  to   { opacity:1; transform:translateY(0); }
+}
 
 .ob-eyebrow {
   font-family:'Cinzel',serif; font-size:10px; color:var(--gold-dim);
@@ -2086,7 +2101,7 @@ body::before {
 // ════════════════════════════════════════════════════════
 
 var RACES = [
-  { id:'human',  icon:'🧔', label:'Human'  },
+  { id:'human',  icon:'🧭', label:'Human'  },
   { id:'elf',    icon:'🧝', label:'Elf'    },
   { id:'dwarf',  icon:'⛏️',  label:'Dwarf'  },
   { id:'orc',    icon:'👺', label:'Orc'    },
@@ -3352,16 +3367,34 @@ function showObStep(n) {
   document.getElementById('ob-step-' + n).classList.add('active');
 }
 
-// Step 0: name validation
-function onObName() {
-  var n = document.getElementById('ob-name').value.trim();
-  document.getElementById('ob-step0-next').disabled = n.length < 1;
+// Step 1 → 2: carry habits forward, populate summary on name screen
+function goObStep2() {
+  var habits = _obSelectedHabits.slice();
+  var customText = _obCustomShown ? (document.getElementById('ob-custom-text').value.trim()) : '';
+  if (customText.length >= 2) habits.push({ text: customText, stat: 'DISC' });
+  if (habits.length === 0) return;
+
+  // Populate habit summary shown on name step
+  var listHtml = habits.map(function(h) {
+    return '<div style="font-family:\'Cinzel\',serif;font-size:12px;color:var(--gold);padding:3px 0;">' + esc(h.text) + '</div>';
+  }).join('');
+  var listEl = document.getElementById('ob-name-habits-list');
+  if (listEl) listEl.innerHTML = listHtml;
+
+  showObStep(2);
 }
 
-function goObStep1() {
+// Step 2 name validation
+function onObName() {
+  var n = document.getElementById('ob-name').value.trim();
+  var btn = document.getElementById('ob-step2-next');
+  if (btn) btn.disabled = n.length < 1;
+}
+
+function goObConfirm() {
   var n = document.getElementById('ob-name').value.trim();
   if (!n) return;
-  showObStep(1);
+  beginJourney();
 }
 
 // Step 1: habit tile toggling
@@ -3407,30 +3440,13 @@ function obCheckStep1() {
   });
 }
 
-function goObStep2() {
-  // Collect all selected habits
-  var habits = _obSelectedHabits.slice();
-  var customText = _obCustomShown ? (document.getElementById('ob-custom-text').value.trim()) : '';
-  if (customText.length >= 2) habits.push({ text: customText, stat: 'DISC' });
-  if (habits.length === 0) return;
-
-  // Render gate preview
-  var habitsHtml = habits.map(function(h) {
-    return '<div class="gate-habit-row"><span class="gate-habit-name">' + esc(h.text) + '</span></div>';
-  }).join('');
-  document.getElementById('gate-habits-list').innerHTML = habitsHtml;
-
-  showObStep(2);
-}
-
 function beginJourney() {
   resetS();
   var name = document.getElementById('ob-name').value.trim() || 'Traveler';
   S.name  = name;
-  S.race  = 'human';   // default — identity emerges from habits
-  S.cls   = 'Warrior'; // default — kept for story system
+  S.race  = 'human';
+  S.cls   = 'Warrior';
 
-  // Build habits from selection
   var habits = _obSelectedHabits.slice();
   var customText = _obCustomShown ? (document.getElementById('ob-custom-text').value.trim()) : '';
   if (customText.length >= 2) habits.push({ text: customText, stat: 'DISC' });
@@ -3449,12 +3465,13 @@ function beginJourney() {
   goToMain();
 }
 
-// Legacy stubs — kept so any residual references don't throw
+// Legacy stubs
 function buildRaceGrid()  {}
 function buildClassGrid() {}
 function buildExamples()  {}
-function goStep1()        { goObStep1(); }
-function goStep2()        { showObStep(2); }
+function goObStep1()      { showObStep(1); }
+function goStep1()        { showObStep(1); }
+function goStep2()        { showObStep(1); }
 function goGate()         { goObStep2(); }
 function addHabit()       {}
 function onHabitInput()   {}
@@ -3502,6 +3519,7 @@ function showScreen(id) {
     el.style.cssText = '';
   }
   if (id === 'auth') { _fxRunning = false; setTimeout(initEmbers, 100); }
+  if (id === 'ob')   { setTimeout(initObEmbers, 100); }
 }
 
 function goToMain() {
@@ -3580,14 +3598,36 @@ function render() {
   renderDevPanel();
 }
 
+// Derive class dynamically from logged habit stats
+function deriveClass() {
+  var counts = { STR: 0, WIS: 0, DISC: 0 };
+  S.habits.forEach(function(h) {
+    var s = h.stat || inferStat(h.text);
+    if (counts[s] !== undefined) counts[s] += (h.log || []).length;
+  });
+  var dominant = 'WIS';
+  if (counts.STR >= counts.WIS && counts.STR >= counts.DISC) dominant = 'STR';
+  else if (counts.DISC > counts.WIS) dominant = 'DISC';
+  var map = {
+    STR:  { id:'Warrior', name:'Warrior', icon:'⚔' },
+    WIS:  { id:'Mage',    name:'Mage',    icon:'✦' },
+    DISC: { id:'Rogue',   name:'Rogue',   icon:'🗡' },
+  };
+  // Fallback to stored cls if no logs yet
+  if (counts.STR === 0 && counts.WIS === 0 && counts.DISC === 0) {
+    var stored = CLASSES.find(function(c) { return c.id === S.cls; });
+    return stored || map.WIS;
+  }
+  return map[dominant];
+}
+
 function renderCharBar() {
-  var race = RACES.find(function(r) { return r.id === S.race; }) || RACES[0];
-  var cls = CLASSES.find(function(c) { return c.id === S.cls; }) || CLASSES[0];
+  var cls = deriveClass();
   var node = NODES[S.currentNode] || NODES[0];
   var streak = Math.max.apply(null, S.habits.map(function(h) { return h.streak || 0; }).concat([0]));
   var consistency = getConsistency();
 
-  var av = document.getElementById('main-avatar'); if(av) av.textContent = race.icon;
+  var av = document.getElementById('main-avatar'); if(av) av.textContent = '🧭';
   document.getElementById('char-name').textContent = S.name || 'Traveler';
   var epithet = getEpithet();
   var metaParts = [cls.name];
@@ -4238,16 +4278,15 @@ function toggleJourneyLog() {
 
 // ── Character modal ──
 function openCharModal() {
-  var race = RACES.find(function(r) { return r.id === S.race; }) || RACES[0];
-  var cls = CLASSES.find(function(c) { return c.id === S.cls; }) || CLASSES[0];
+  var cls = deriveClass();
   var node = NODES[S.currentNode] || NODES[0];
   var next = NODES[S.currentNode + 1];
   var streak = Math.max.apply(null, S.habits.map(function(h) { return h.streak || 0; }).concat([0]));
 
-  document.getElementById('cm-avatar').textContent = race.icon;
+  document.getElementById('cm-avatar').textContent = '🧭';
   document.getElementById('cm-name').textContent = S.name || 'Traveler';
   var ep = getEpithet();
-  var subParts = [cls.icon + ' ' + cls.name, race.label];
+  var subParts = [cls.icon + ' ' + cls.name];
   if (ep) subParts.push(ep.text);
   document.getElementById('cm-sub').textContent = subParts.join(' · ');
   document.getElementById('cm-node').textContent = node.name;
@@ -4506,11 +4545,69 @@ function initEmbers() {
   tick();
 }
 
-window.addEventListener('load', function() {
-  var authScreen = document.getElementById('screen-auth');
-  if (authScreen && authScreen.classList.contains('active')) {
-    initEmbers();
+// ── Onboarding embers — low-density fireflies on ob screen ─────────────
+var _obFxRunning = false;
+function initObEmbers() {
+  var canvas = document.getElementById('ob-fx');
+  if (!canvas || _obFxRunning) return;
+  _obFxRunning = true;
+  var ctx = canvas.getContext('2d');
+  var W, H;
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // 22 slow firefly embers — lower half, warm gold/orange
+  var embers = [];
+  for (var i = 0; i < 22; i++) {
+    embers.push({
+      x: Math.random() * window.innerWidth,
+      y: window.innerHeight * (0.55 + Math.random() * 0.42),
+      size: 0.8 + Math.random() * 1.4,
+      vy: 0.18 + Math.random() * 0.38,
+      vx: (Math.random() - .5) * 0.22,
+      life: Math.random(),
+      phase: Math.random() * Math.PI * 2,
+    });
   }
+
+  var frame = 0;
+  function tick() {
+    if (!document.getElementById('screen-ob') || !document.getElementById('screen-ob').classList.contains('active')) {
+      _obFxRunning = false; return;
+    }
+    requestAnimationFrame(tick);
+    ctx.clearRect(0, 0, W, H);
+    frame++;
+    var CEIL = H * 0.52;
+    embers.forEach(function(p) {
+      p.life += 0.004;
+      if (p.life > 1 || p.y < CEIL) {
+        p.life = 0;
+        p.x = W * (0.15 + Math.random() * 0.70);
+        p.y = H * (0.68 + Math.random() * 0.30);
+        p.vy = 0.18 + Math.random() * 0.35;
+        p.vx = (Math.random() - .5) * 0.20;
+      }
+      p.y -= p.vy;
+      p.x += p.vx + Math.sin(p.phase + p.life * 4) * 0.3;
+      var fade = Math.max(0, Math.min(1, (p.y - CEIL) / (H * 0.14)));
+      var op = Math.sin(p.life * Math.PI) * 0.42 * fade;
+      var g = Math.floor(110 + Math.sin(frame * 0.05 + p.phase) * 70);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255,' + g + ',20,' + op + ')';
+      ctx.fill();
+    });
+  }
+  requestAnimationFrame(tick);
+}
+
+
+  var authScreen = document.getElementById('screen-auth');
+  if (authScreen && authScreen.classList.contains('active')) initEmbers();
+  var obScreen = document.getElementById('screen-ob');
+  if (obScreen && obScreen.classList.contains('active')) initObEmbers();
 });
 
 var _origShowScreen = typeof showScreen === 'function' ? showScreen : null;
@@ -6386,28 +6483,24 @@ function devForceRoad() {
 
 <!-- ══ ONBOARDING ══ -->
 <div id="screen-ob" class="screen">
+  <canvas id="ob-fx" style="position:fixed;inset:0;pointer-events:none;z-index:0;"></canvas>
+
   <div class="ob-wrap">
 
-    <!-- Step 0: Name -->
+    <!-- Step 0: The Road Awaits (entry) -->
     <div id="ob-step-0" class="ob-step active">
-      <div class="ob-eyebrow">HabitForge</div>
-      <div class="ob-title">Who are you?</div>
-      <div class="ob-sub">Name your traveler. The road remembers everyone who walks it.</div>
-      <div style="margin-bottom:20px;">
-        <input class="field" id="ob-name" type="text" placeholder="Name your traveler…" maxlength="24" autocomplete="off" oninput="onObName()" onkeydown="if(event.key==='Enter'&&!document.getElementById('ob-step0-next').disabled)goObStep1()">
-      </div>
-      <div class="ob-nav">
-        <button class="btn btn-gold" id="ob-step0-next" onclick="goObStep1()" disabled>Continue →</button>
+      <div class="ob-title">The Road Awaits</div>
+      <div class="ob-sub">A road stretches north into the dark. It does not care about intentions — only what actually gets done.</div>
+      <div class="ob-nav" style="margin-top:32px;">
+        <button class="btn btn-gold" onclick="showObStep(1)">Begin →</button>
       </div>
     </div>
 
     <!-- Step 1: Choose habits -->
     <div id="ob-step-1" class="ob-step">
-      <div class="ob-eyebrow">HabitForge</div>
       <div class="ob-title">What are you carrying?</div>
       <div class="ob-sub">Choose one or two habits to carry onto the road.</div>
 
-      <!-- Curated habit tiles -->
       <div class="ob-habit-tiles" id="ob-habit-tiles">
         <div class="ob-habit-tile" onclick="obToggleTile(this,'Move your body','STR')">
           <span class="ob-tile-icon">⚔</span>
@@ -6431,36 +6524,39 @@ function devForceRoad() {
         </div>
       </div>
 
-      <!-- Custom habit input -->
-      <div style="margin-top:16px;">
+      <div style="margin-top:14px;">
         <div id="ob-custom-toggle" class="add-habit-link" onclick="obShowCustom()" style="display:inline-block;cursor:pointer;">+ Add your own habit</div>
         <div id="ob-custom-wrap" style="display:none;margin-top:10px;">
           <input class="field" id="ob-custom-text" type="text" placeholder="Describe your habit…" maxlength="60" autocomplete="off" oninput="obCheckStep1()">
         </div>
       </div>
 
-      <div style="margin-top:8px;min-height:18px;">
+      <div style="margin-top:6px;min-height:18px;">
         <div id="ob-habit-hint" style="font-family:'Cinzel',serif;font-size:10px;color:var(--text-dark);letter-spacing:.08em;display:none;">Select up to 2 habits</div>
       </div>
 
-      <div class="ob-nav" style="margin-top:16px;">
+      <div class="ob-nav" style="margin-top:14px;">
         <button class="btn btn-gold" id="ob-step1-next" onclick="goObStep2()" disabled>Continue →</button>
         <button class="btn btn-ghost" onclick="showObStep(0)">← Back</button>
       </div>
     </div>
 
-    <!-- Step 2: Gate / Enter the road -->
+    <!-- Step 2: Name your traveler -->
     <div id="ob-step-2" class="ob-step">
-      <div class="gate-scene">
-        <div class="gate-icon">🏘️</div>
-        <div class="ob-title" style="margin-bottom:10px;">The Road Awaits</div>
-        <div class="gate-quote">The road ahead does not care about intentions —<br>only what actually gets done.</div>
-        <div class="gate-habits" style="margin-top:20px;">
-          <div id="gate-habits-list"></div>
-        </div>
+      <div class="ob-title">Who are you?</div>
+      <div class="ob-sub">Name your traveler. The road remembers everyone who walks it.</div>
+      <div style="margin-bottom:8px;">
+        <input class="field" id="ob-name" type="text" placeholder="Name your traveler…" maxlength="24" autocomplete="off" oninput="onObName()" onkeydown="if(event.key==='Enter'&&!document.getElementById('ob-step2-next').disabled)goObConfirm()">
       </div>
-      <div class="ob-nav">
-        <button class="btn btn-gold" onclick="beginJourney()">Enter the road →</button>
+
+      <!-- Habit summary -->
+      <div id="ob-name-habits" style="margin-top:14px;padding:10px 12px;border:1px solid var(--border);border-radius:4px;background:rgba(6,4,2,.4);">
+        <div style="font-family:'Cinzel',serif;font-size:9px;color:var(--text-dark);letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px;">You're carrying</div>
+        <div id="ob-name-habits-list"></div>
+      </div>
+
+      <div class="ob-nav" style="margin-top:20px;">
+        <button class="btn btn-gold" id="ob-step2-next" onclick="goObConfirm()" disabled>Enter the road →</button>
         <button class="btn btn-ghost" onclick="showObStep(1)">← Back</button>
       </div>
     </div>
@@ -6504,7 +6600,7 @@ function devForceRoad() {
 
         <!-- ── DESKTOP HUD — sits above the map, no container ── -->
         <div class="dt-hud" onclick="openCharModal()">
-          <div class="hud-mini-nameline"><span class="hud-mini-avatar" id="main-avatar">🧔</span> <span class="hud-mini-name" id="char-name">Traveler</span> <span class="hud-mini-sep">—</span> <span class="hud-mini-class" id="char-meta">Warrior</span></div>
+          <div class="hud-mini-nameline"><span class="hud-mini-avatar" id="main-avatar">🧭</span> <span class="hud-mini-name" id="char-name">Traveler</span> <span class="hud-mini-sep">—</span> <span class="hud-mini-class" id="char-meta">Warrior</span></div>
           <div class="hud-mini-location"><span class="hud-mini-icon">📍</span> <span id="hud-mini-location-text">Hearthstone Village</span></div>
           <div class="hud-mini-stats">
             <span><span class="hud-mini-icon">❤️</span> <span id="hud-mini-hp">100</span> / <span id="hud-mini-maxhp">100</span></span>
@@ -6592,7 +6688,7 @@ function devForceRoad() {
   <!-- ── MOBILE HUD STRIP ── -->
   <div class="mob-topbar">
     <div class="mob-char" onclick="openCharModal()">
-      <div class="mob-avatar" id="mob-avatar">🧔</div>
+      <div class="mob-avatar" id="mob-avatar">🧭</div>
       <div class="mob-char-info">
         <div class="mob-hud-nameline"><span id="mob-char-name">Traveler</span> <span class="mob-hud-sep">—</span> <span id="mob-char-class">Warrior</span></div>
         <div class="mob-hud-location"><span>📍</span> <span id="mob-char-location-text">Hearthstone Village</span></div>
@@ -6709,7 +6805,7 @@ function devForceRoad() {
   <div class="char-sheet">
     <div class="char-handle"></div>
     <div class="char-hero">
-      <div class="char-hero-avatar" id="cm-avatar">🧔</div>
+      <div class="char-hero-avatar" id="cm-avatar">🧭</div>
       <div>
         <div class="char-hero-name" id="cm-name">Traveler</div>
         <div class="char-hero-sub" id="cm-sub">Warrior · Human</div>
