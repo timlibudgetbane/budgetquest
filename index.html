@@ -1829,103 +1829,128 @@ body::before {
 }
 /* ── End habit logging sequence ─────────────────────────────── */
 
-/* ── Mobile background swap ─────────────────────────────────── */
+/* ── Mobile styles ───────────────────────────────────────────── */
 @media (max-width: 768px) {
 
-  /* login screen background */
+  /* ── Backgrounds ─────────────────────────────────────────── */
   .auth-bg {
     background-image: url('login mobile.png');
     background-size: cover;
     background-position: center top;
   }
-
-  /* main game background */
   body.main-bg {
     background-image: url('mobile main.png');
     background-size: cover;
     background-position: center;
   }
 
-  /* ── 1. Compact habit tiles (~95–110px) ──────────────────── */
+  /* ── 1. Fix scrolling ────────────────────────────────────── */
+  /* Override the earlier :has rule that locks overflow+height  */
+  html:has(#screen-main.active),
+  body:has(#screen-main.active) {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    height: auto !important;
+  }
+  html, body {
+    overflow-y: auto !important;
+    height: auto !important;
+  }
+  #screen-main, #screen-main.active {
+    position: static !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* ── 2. Compact habit tiles (~90–100px) ──────────────────── */
   .habit-card {
-    min-height: 95px;
-    background: rgba(10,7,5,.88);
+    min-height: 90px !important;
+    background: rgba(10,7,5,.92) !important;
   }
   .habit-card-inner {
-    padding: 14px 16px;
-    min-height: 95px;
-    align-items: center;
+    padding: 12px 16px !important;
+    min-height: 90px !important;
+    align-items: center !important;
+    display: flex !important;
   }
   .habit-row2 {
-    margin-top: 4px;
+    margin-top: 3px !important;
+    display: flex !important;
+    align-items: center !important;
   }
 
-  /* ── 2. Road log readability ─────────────────────────────── */
+  /* ── 3. Road log readability ─────────────────────────────── */
+  /* beat-inner is the road log container */
+  #mob-beat-section .beat-inner {
+    padding: 18px 16px !important;
+  }
   .journal-day-label {
-    font-size: 12px;
-    letter-spacing: 2px;
-    opacity: .7;
-    margin-bottom: 14px;
+    font-size: 12px !important;
+    letter-spacing: 2px !important;
+    opacity: .7 !important;
+    margin-bottom: 14px !important;
   }
   .journal-section-header {
-    font-size: 14px;
-    letter-spacing: 1.5px;
-    margin-top: 14px;
-    margin-bottom: 8px;
-  }
-  .beat-text {
-    font-size: 16px;
-    line-height: 1.6;
-    margin-top: 8px;
-    margin-bottom: 18px;
-  }
-  .journal-world-text {
-    font-size: 16px;
-    line-height: 1.6;
-    margin-top: 8px;
+    font-size: 14px !important;
+    letter-spacing: 1.5px !important;
+    margin-top: 14px !important;
+    margin-bottom: 8px !important;
   }
   .journal-block {
-    margin-bottom: 18px;
+    margin-bottom: 20px !important;
   }
-
-  /* Section divider between road log blocks */
-  .journal-section-header + .journal-world-text,
-  .journal-section-header ~ .beat-text {
-    border-top: 1px solid rgba(201,160,64,.25);
-    padding-top: 14px;
-    margin-top: 8px;
+  .journal-world-text {
+    font-size: 16px !important;
+    line-height: 1.65 !important;
+    margin-top: 10px !important;
   }
+  .beat-text {
+    font-size: 16px !important;
+    line-height: 1.65 !important;
+    margin-top: 10px !important;
+    margin-bottom: 20px !important;
+  }
+  /* Thin gold divider between road log sections */
   .journal-divider {
+    border-top: 1px solid rgba(201,160,64,.25) !important;
+    margin: 18px 0 !important;
+  }
+  .journal-block + .journal-block {
     border-top: 1px solid rgba(201,160,64,.25);
-    margin: 18px 0;
+    padding-top: 18px;
   }
 
-  /* ── 3. Darken panel backgrounds ─────────────────────────── */
+  /* ── 4. Darker panel backgrounds ────────────────────────── */
   .panel {
-    background: rgba(10,7,5,.88);
+    background: rgba(10,7,5,.92) !important;
   }
-  .beat-inner {
-    background: rgba(10,7,5,.88);
+  .mob-card {
+    background: rgba(10,7,5,.92) !important;
+  }
+  #mob-beat-section .beat-inner {
+    background: rgba(10,7,5,.92) !important;
   }
   .chronicle-body {
-    background: rgba(10,7,5,.88);
+    background: rgba(10,7,5,.92) !important;
   }
 
-  /* ── 4. Map visibility ───────────────────────────────────── */
+  /* ── 5. Map visibility ───────────────────────────────────── */
   #mob-map-body {
-    display: block;
-    width: 100%;
-    min-height: 120px;
-    overflow: hidden;
-    position: relative;
+    display: block !important;
+    width: 100% !important;
+    min-height: 120px !important;
+    overflow: hidden !important;
+    position: relative !important;
   }
   #mob-map-inner,
   .map-strip-inner {
-    display: block;
-    width: 100%;
-    min-height: 120px;
-    overflow: hidden;
-    position: relative;
+    display: block !important;
+    width: 100% !important;
+    min-height: 120px !important;
+    overflow: hidden !important;
+    position: relative !important;
   }
 
 }
