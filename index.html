@@ -3168,11 +3168,16 @@ function showScreen(id) {
     el.style.setProperty('pointer-events', 'none', 'important');
     el.style.setProperty('flex-direction', 'unset', 'important');
   } else if (onMain) {
-    el.style.removeProperty('position');
-    el.style.removeProperty('inset');
-    el.style.removeProperty('height');
-    el.style.removeProperty('overflow');
-    el.style.removeProperty('pointer-events');
+    // Mobile: screen-main is fixed background layer; mob-shell handles scroll
+    el.style.setProperty('position', 'fixed', 'important');
+    el.style.setProperty('inset', '0', 'important');
+    el.style.setProperty('width', '100vw', 'important');
+    el.style.setProperty('height', '100dvh', 'important');
+    el.style.setProperty('overflow', 'hidden', 'important');
+    el.style.setProperty('background', 'transparent', 'important');
+    el.style.setProperty('pointer-events', 'none', 'important');
+    el.style.setProperty('z-index', '0', 'important');
+    el.style.setProperty('display', 'block', 'important');
   }
   if (id === 'auth') { _fxRunning = false; setTimeout(initEmbers, 100); }
 }
@@ -3399,7 +3404,9 @@ function goToMain() {
       'z-index:1'
     ].join(' !important;') + ' !important';
   } else if (sm) {
-    sm.style.cssText = '';
+    // Mobile: screen-main is a fixed background layer only
+    // mob-shell floats above it and handles all scrolling
+    sm.style.cssText = 'position:fixed !important;inset:0 !important;width:100vw !important;height:100dvh !important;overflow:hidden !important;background:transparent !important;pointer-events:none !important;z-index:0 !important;display:block !important';
   }
   setTimeout(function() {
     render();
@@ -5333,12 +5340,23 @@ function devForceRoad() {
 
 @media (max-width: 768px) {
 
-  /* Show the shell */
+  /* ── Show shell as real block (not contents phantom) ── */
   #mob-shell {
-    display: contents !important;
+    display: flex !important;
+    flex-direction: column !important;
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    z-index: 10 !important;
+    pointer-events: auto !important;
   }
 
   /* ── Viewport: allow scroll on mobile ── */
+  html, body,
   body:has(#screen-main.active),
   html:has(#screen-main.active) {
     overflow-y: auto !important;
@@ -5346,16 +5364,19 @@ function devForceRoad() {
     height: auto !important;
   }
 
-  /* ── screen-main: static flow on mobile, not fixed ── */
+  /* ── screen-main: pull out of flow entirely on mobile ──
+     mob-shell handles all mobile layout; screen-main just
+     provides the background layer                         */
   #screen-main, #screen-main.active {
-    position: static !important;
-    inset: auto !important;
-    width: 100% !important;
-    height: auto !important;
-    overflow: visible !important;
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    overflow: hidden !important;
     display: block !important;
     background: transparent !important;
-    pointer-events: auto !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
   }
 
   /* ── Hide ALL desktop HUD panels ── */
@@ -5587,19 +5608,8 @@ function devForceRoad() {
   /* Chronicle starts expanded; map starts collapsed.
      Both are togglable — initial state is set in HTML inline styles. */
 
-  /* Suppress screen-main fixed positioning — let shell scroll naturally */
-  #screen-main, #screen-main.active {
-    position: static !important;
-    inset: auto !important;
-    width: 100% !important;
-    height: auto !important;
-    overflow: visible !important;
-  }
-  body:has(#screen-main.active),
-  html:has(#screen-main.active) {
-    overflow: auto !important;
-    height: auto !important;
-  }
+  /* screen-main stays fixed as background layer on mobile;
+     mob-shell is the real scrolling container (z-index above) */
 
   /* ── Background image: prevent zoom on mobile ── */
   body:has(#screen-main.active) {
