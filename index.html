@@ -5084,7 +5084,7 @@ function devForceRoad() {
 
   /* ── FLOATING TOPBAR: HabitForge logo + sign out ── */
   .hud-topbar {
-    position: fixed !important;
+    position: absolute !important;
     top: 20px !important;
     right: 30px !important;
     z-index: 200 !important;
@@ -5120,11 +5120,12 @@ function devForceRoad() {
     flex-direction: column !important;
     align-items: stretch !important;
     justify-content: flex-start !important;
-    overflow-y: auto !important;
+    overflow-y: visible !important;
     overflow-x: hidden !important;
-    background: rgba(4,3,1,.55) !important;
-    border-right: 1px solid var(--border) !important;
-    backdrop-filter: blur(10px) !important;
+    /* No background here — map panel carries its own styling */
+    background: transparent !important;
+    border-right: none !important;
+    backdrop-filter: none !important;
   }
   .dt-col-center {
     grid-column: 2 !important;
@@ -5159,6 +5160,11 @@ function devForceRoad() {
     display: flex !important;
     flex-direction: column !important;
     align-self: flex-start !important;
+    /* Panel carries its own visual treatment */
+    background: rgba(4,3,1,.72) !important;
+    border-right: 1px solid var(--border) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
     z-index: auto !important;
   }
   .hud-map-header {
@@ -5455,7 +5461,7 @@ function devForceRoad() {
 
   /* ── RIGHT: companions panel — floating card over background ── */
   .hud-companions-wrap {
-    position: fixed !important;
+    position: absolute !important;
     top: 80px !important;
     right: 30px !important;
     bottom: auto !important;
