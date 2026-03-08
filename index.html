@@ -1846,8 +1846,90 @@ body::before {
     background-position: center;
   }
 
+  /* ── 1. Compact habit tiles (~95–110px) ──────────────────── */
+  .habit-card {
+    min-height: 95px;
+    background: rgba(10,7,5,.88);
+  }
+  .habit-card-inner {
+    padding: 14px 16px;
+    min-height: 95px;
+    align-items: center;
+  }
+  .habit-row2 {
+    margin-top: 4px;
+  }
+
+  /* ── 2. Road log readability ─────────────────────────────── */
+  .journal-day-label {
+    font-size: 12px;
+    letter-spacing: 2px;
+    opacity: .7;
+    margin-bottom: 14px;
+  }
+  .journal-section-header {
+    font-size: 14px;
+    letter-spacing: 1.5px;
+    margin-top: 14px;
+    margin-bottom: 8px;
+  }
+  .beat-text {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-top: 8px;
+    margin-bottom: 18px;
+  }
+  .journal-world-text {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-top: 8px;
+  }
+  .journal-block {
+    margin-bottom: 18px;
+  }
+
+  /* Section divider between road log blocks */
+  .journal-section-header + .journal-world-text,
+  .journal-section-header ~ .beat-text {
+    border-top: 1px solid rgba(201,160,64,.25);
+    padding-top: 14px;
+    margin-top: 8px;
+  }
+  .journal-divider {
+    border-top: 1px solid rgba(201,160,64,.25);
+    margin: 18px 0;
+  }
+
+  /* ── 3. Darken panel backgrounds ─────────────────────────── */
+  .panel {
+    background: rgba(10,7,5,.88);
+  }
+  .beat-inner {
+    background: rgba(10,7,5,.88);
+  }
+  .chronicle-body {
+    background: rgba(10,7,5,.88);
+  }
+
+  /* ── 4. Map visibility ───────────────────────────────────── */
+  #mob-map-body {
+    display: block;
+    width: 100%;
+    min-height: 120px;
+    overflow: hidden;
+    position: relative;
+  }
+  #mob-map-inner,
+  .map-strip-inner {
+    display: block;
+    width: 100%;
+    min-height: 120px;
+    overflow: hidden;
+    position: relative;
+  }
+
 }
-/* ── End mobile background swap ─────────────────────────────── */
+/* ── End mobile styles ───────────────────────────────────────── */
 </style>
 
 <script>
