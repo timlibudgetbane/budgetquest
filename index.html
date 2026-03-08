@@ -4603,7 +4603,7 @@ function initObEmbers() {
   requestAnimationFrame(tick);
 }
 
-
+window.addEventListener('load', function() {
   var authScreen = document.getElementById('screen-auth');
   if (authScreen && authScreen.classList.contains('active')) initEmbers();
   var obScreen = document.getElementById('screen-ob');
