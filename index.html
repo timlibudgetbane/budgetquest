@@ -512,7 +512,25 @@ body::before {
   text-transform:uppercase; letter-spacing:.22em; margin-bottom:20px;
 }
 .ob-title { font-family:'Cinzel',serif; font-size:26px; color:var(--gold); line-height:1.2; margin-bottom:8px; }
-.ob-sub { font-size:16px; color:var(--text-dim); font-style:italic; line-height:1.7; margin-bottom:32px; }
+.ob-sub { font-size:16px; color:var(--text-dim); font-style:italic; line-height:1.7; margin-bottom:28px; }
+
+/* ── Habit selection tiles ── */
+.ob-habit-tiles { display:flex; flex-direction:column; gap:8px; margin-bottom:4px; }
+.ob-habit-tile {
+  display:flex; align-items:center; gap:12px;
+  padding:11px 14px;
+  border:1px solid var(--border); border-radius:4px;
+  background:var(--surface2); cursor:pointer;
+  transition: border-color .15s, background .15s;
+  user-select:none; -webkit-user-select:none;
+}
+.ob-habit-tile:hover { border-color:var(--border-mid); background:var(--surface3); }
+.ob-habit-tile.sel {
+  border-color:var(--gold); background:rgba(200,168,75,.08);
+}
+.ob-habit-tile.ob-tile-disabled { opacity:.35; cursor:default; pointer-events:none; }
+.ob-tile-icon { font-size:16px; flex-shrink:0; width:22px; text-align:center; }
+.ob-tile-label { font-family:'Cinzel',serif; font-size:12px; color:var(--text-mid); letter-spacing:.05em; }
 .ob-label {
   font-family:'Cinzel',serif; font-size:11px; color:var(--text-dark);
   text-transform:uppercase; letter-spacing:.18em; margin-bottom:8px;
@@ -933,7 +951,11 @@ body::before {
 .habit-stat-badge.DISC { color:#7a9a60; border-color:rgba(122,154,96,.3); background:rgba(122,154,96,.06); }
 
 /* Stat bars in char modal */
-.char-stat-bars { padding:14px 18px 4px; border-top:1px solid var(--border); }
+.char-stat-bars { padding:12px 16px 4px; border-top:1px solid var(--border); }
+.char-journey-strip {
+  padding:10px 14px 10px;
+  border-top:1px solid var(--border);
+}
 .char-stat-bar-row {
   display:flex; align-items:center; gap:10px; margin-bottom:10px;
 }
@@ -1383,9 +1405,12 @@ body::before {
 #char-modal {
   position:fixed; inset:0; display:flex; align-items:flex-end; justify-content:center;
   z-index:9991; opacity:0; pointer-events:none; transition:opacity .25s;
+  background:rgba(4,3,1,.08);
+  backdrop-filter:blur(3px) brightness(.85);
+  -webkit-backdrop-filter:blur(3px) brightness(.85);
 }
 #char-modal.show { opacity:1; pointer-events:all; }
-.char-modal-backdrop { position:absolute; inset:0; background:rgba(0,0,0,.88); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); }
+.char-modal-backdrop { position:absolute; inset:0; }
 .char-sheet {
   position:relative; z-index:1; width:100%; max-width:480px;
   background:var(--surface); border-radius:10px 10px 0 0;
@@ -1395,8 +1420,8 @@ body::before {
 }
 #char-modal.show .char-sheet { transform:translateY(0); }
 .char-handle { width:36px; height:3px; background:var(--border-mid); border-radius:2px; margin:10px auto 0; }
-.char-hero { display:flex; align-items:flex-start; gap:14px; padding:20px 20px 16px; }
-.char-hero-avatar { font-size:38px; line-height:1; }
+.char-hero { display:flex; align-items:flex-start; gap:14px; padding:16px 16px 12px; }
+.char-hero-avatar { font-size:34px; line-height:1; }
 .char-hero-name { font-family:'Cinzel',serif; font-size:20px; color:var(--gold); }
 .char-hero-sub { font-size:14px; color:var(--text-dim); margin-top:4px; }
 .char-stats-grid {
@@ -1404,18 +1429,18 @@ body::before {
   border-top:1px solid var(--border); border-left:1px solid var(--border);
 }
 .char-stat-cell {
-  padding:14px 16px; border-bottom:1px solid var(--border); border-right:1px solid var(--border);
+  padding:11px 14px; border-bottom:1px solid var(--border); border-right:1px solid var(--border);
 }
-.char-stat-label { font-family:'Cinzel',serif; font-size:9px; color:var(--text-dark); text-transform:uppercase; letter-spacing:.16em; margin-bottom:4px; }
+.char-stat-label { font-family:'Cinzel',serif; font-size:9px; color:var(--text-dark); text-transform:uppercase; letter-spacing:.16em; margin-bottom:3px; }
 .char-stat-val { font-family:'Cinzel',serif; font-size:20px; color:var(--gold); }
-.char-stat-sub { font-size:12px; color:var(--text-dim); margin-top:2px; }
+.char-stat-sub { font-size:12px; color:var(--text-dim); margin-top:1px; }
 .char-habits-section { padding:14px 20px; border-top:1px solid var(--border); }
 .char-habit-row { display:flex; align-items:center; gap:8px; padding:5px 0; }
 .char-habit-dot { width:6px; height:6px; border-radius:50%; background:var(--gold-dim); flex-shrink:0; }
 .char-habit-text { font-size:14px; color:var(--text-dim); }
 .char-close {
-  display:block; width:calc(100% - 40px); margin:14px 20px 24px;
-  padding:12px; background:transparent; border:1px solid var(--border-mid);
+  display:block; width:calc(100% - 32px); margin:10px 16px 20px;
+  padding:10px; background:transparent; border:1px solid var(--border-mid);
   border-radius:2px; font-family:'Cinzel',serif; font-size:13px;
   color:var(--text-dim); letter-spacing:.08em; cursor:pointer; transition:all .2s;
 }
@@ -1557,6 +1582,49 @@ body::before {
   color: var(--text-dim);
   margin-top: 3px;
 }
+
+/* ── Desktop Mini HUD ── */
+.hud-mini-hud {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 2px 0;
+}
+.hud-mini-nameline {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  color: var(--gold);
+  letter-spacing: .05em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.hud-mini-avatar { font-size: 16px; flex-shrink: 0; }
+.hud-mini-name { color: var(--gold); }
+.hud-mini-sep { color: var(--text-dark); }
+.hud-mini-class { color: var(--text-dim); font-size: 12px; }
+.hud-mini-location {
+  font-family: 'Crimson Text', serif;
+  font-size: 13px;
+  color: var(--text-dim);
+  font-style: italic;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.hud-mini-stats {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  letter-spacing: .04em;
+}
+.hud-mini-icon { font-size: 12px; }
 
 /* ── TOP-RIGHT: Logo ── */
 .hud-logo-wrap {
@@ -1879,14 +1947,14 @@ body::before {
     overflow: visible !important;
   }
 
-  /* ── 2. Compact habit tiles (88px) ──────────────────────── */
+  /* ── 2. Compact habit tiles (~72px) ──────────────────────── */
   .habit-card {
-    min-height: 88px !important;
+    min-height: 0 !important;
     background: rgba(10,7,5,.92) !important;
   }
   .habit-card-inner {
-    padding: 8px 14px !important;
-    min-height: 88px !important;
+    padding: 9px 14px 8px !important;
+    min-height: 0 !important;
     align-items: center !important;
     display: flex !important;
   }
@@ -1894,6 +1962,17 @@ body::before {
     margin-top: 2px !important;
     display: flex !important;
     align-items: center !important;
+  }
+  /* Collapse reaction row on mobile — no reserved blank space */
+  .habit-reaction {
+    height: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+  .habit-reaction.visible {
+    height: auto !important;
+    padding: 3px 12px 4px 56px !important;
+    min-height: 28px !important;
   }
 
   /* ── 3. Road log — narrative flow ───────────────────────── */
@@ -3191,16 +3270,22 @@ function daysToNextNode() {
 // ════════════════════════════════════════════════════════
 //  ONBOARDING
 // ════════════════════════════════════════════════════════
-var _obRace = 'human';
-var _obClass = 'Warrior';
-var _obFreqs = {};
-var _obHabits = [{ text: '', freq: 'daily' }];
+
+// Curated habit → stat map
+var OB_CURATED = [
+  { text: 'Move your body',    stat: 'STR'  },
+  { text: 'Read something',    stat: 'WIS'  },
+  { text: 'Learn something',   stat: 'WIS'  },
+  { text: 'Clear your mind',   stat: 'WIS'  },
+  { text: 'Practice restraint',stat: 'DISC' },
+];
+
+// Selected habits during onboarding [{text, stat}]
+var _obSelectedHabits = [];
+var _obCustomShown = false;
 
 window.addEventListener('load', async function() {
   initSupabase();
-  buildRaceGrid();
-  buildClassGrid();
-  buildExamples();
 
   // Check for existing session
   var { data: { session } } = await _sb.auth.getSession();
@@ -3215,9 +3300,7 @@ window.addEventListener('load', async function() {
       showObStep(0);
     }
   } else {
-    // Check local storage as fallback
     if (loadLocal() && S.habits.length > 0) {
-      // Has local data but no account — go to auth to encourage login
       showScreen('auth');
       showAuthTab('login');
     } else {
@@ -3226,7 +3309,6 @@ window.addEventListener('load', async function() {
     }
   }
 
-  // Listen for auth changes
   _sb.auth.onAuthStateChange(async function(event, session) {
     if (event === 'SIGNED_IN' && session) {
       _user = session.user;
@@ -3245,37 +3327,142 @@ window.addEventListener('load', async function() {
   });
 });
 
+function showObStep(n) {
+  document.querySelectorAll('.ob-step').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById('ob-step-' + n).classList.add('active');
+}
+
+// Step 0: name validation
+function onObName() {
+  var n = document.getElementById('ob-name').value.trim();
+  document.getElementById('ob-step0-next').disabled = n.length < 1;
+}
+
+function goObStep1() {
+  var n = document.getElementById('ob-name').value.trim();
+  if (!n) return;
+  showObStep(1);
+}
+
+// Step 1: habit tile toggling
+function obToggleTile(el, text, stat) {
+  var alreadySel = el.classList.contains('sel');
+
+  if (alreadySel) {
+    // Deselect
+    el.classList.remove('sel');
+    _obSelectedHabits = _obSelectedHabits.filter(function(h) { return h.text !== text; });
+  } else {
+    // Select — max 2 total (tiles + custom)
+    var customText = _obCustomShown ? (document.getElementById('ob-custom-text').value.trim()) : '';
+    var totalSelected = _obSelectedHabits.length;
+    if (totalSelected >= 2) {
+      document.getElementById('ob-habit-hint').style.display = 'block';
+      return;
+    }
+    document.getElementById('ob-habit-hint').style.display = 'none';
+    el.classList.add('sel');
+    _obSelectedHabits.push({ text: text, stat: stat });
+  }
+  obCheckStep1();
+}
+
+function obShowCustom() {
+  _obCustomShown = true;
+  document.getElementById('ob-custom-toggle').style.display = 'none';
+  document.getElementById('ob-custom-wrap').style.display = 'block';
+  document.getElementById('ob-custom-text').focus();
+}
+
+function obCheckStep1() {
+  var customText = _obCustomShown ? (document.getElementById('ob-custom-text').value.trim()) : '';
+  var hasCustom = customText.length >= 2;
+  var total = _obSelectedHabits.length + (hasCustom ? 1 : 0);
+  document.getElementById('ob-step1-next').disabled = total < 1;
+  // Enforce max 2: grey out unselected tiles if at limit
+  var tiles = document.querySelectorAll('.ob-habit-tile');
+  tiles.forEach(function(t) {
+    var atLimit = total >= 2 && !t.classList.contains('sel');
+    t.classList.toggle('ob-tile-disabled', atLimit);
+  });
+}
+
+function goObStep2() {
+  // Collect all selected habits
+  var habits = _obSelectedHabits.slice();
+  var customText = _obCustomShown ? (document.getElementById('ob-custom-text').value.trim()) : '';
+  if (customText.length >= 2) habits.push({ text: customText, stat: 'DISC' });
+  if (habits.length === 0) return;
+
+  // Render gate preview
+  var habitsHtml = habits.map(function(h) {
+    return '<div class="gate-habit-row"><span class="gate-habit-name">' + esc(h.text) + '</span></div>';
+  }).join('');
+  document.getElementById('gate-habits-list').innerHTML = habitsHtml;
+
+  showObStep(2);
+}
+
+function beginJourney() {
+  resetS();
+  var name = document.getElementById('ob-name').value.trim() || 'Traveler';
+  S.name  = name;
+  S.race  = 'human';   // default — identity emerges from habits
+  S.cls   = 'Warrior'; // default — kept for story system
+
+  // Build habits from selection
+  var habits = _obSelectedHabits.slice();
+  var customText = _obCustomShown ? (document.getElementById('ob-custom-text').value.trim()) : '';
+  if (customText.length >= 2) habits.push({ text: customText, stat: 'DISC' });
+
+  S.habits = habits.map(function(h, i) {
+    return { id: i + 1, text: h.text, freq: 'daily', stat: h.stat, streak: 0, log: [] };
+  });
+
+  S.firstRun  = false;
+  S.createdAt = Date.now();
+  save();
+
+  if (_sb && _user) {
+    _sb.from('profiles').update({ display_name: S.name }).eq('id', _user.id).then(function() {});
+  }
+  goToMain();
+}
+
+// Legacy stubs — kept so any residual references don't throw
+function buildRaceGrid()  {}
+function buildClassGrid() {}
+function buildExamples()  {}
+function goStep1()        { goObStep1(); }
+function goStep2()        { showObStep(2); }
+function goGate()         { goObStep2(); }
+function addHabit()       {}
+function onHabitInput()   {}
+function checkStep2()     {}
+function setFreq()        {}
+function setStat()        {}
+
 function showScreen(id) {
-  // Toggle main bg image
   var mainBg = document.getElementById('screen-main-bg');
   if (mainBg) {
-    if (id === 'main') { mainBg.classList.add('active'); }
-    else { mainBg.classList.remove('active'); }
+    if (id === 'main') mainBg.classList.add('active');
+    else mainBg.classList.remove('active');
   }
   document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
   var el = document.getElementById('screen-' + id);
   el.classList.add('active');
 
-  // ── Mobile shell: only show when authenticated (main screen) ──
   var mobShell = document.getElementById('mob-shell');
   if (mobShell) {
     if (id === 'main') {
-      if (window.innerWidth <= 768) {
-        // Mobile: remove inline style so CSS media query takes over
-        mobShell.style.removeProperty('display');
-      } else {
-        // Desktop: always keep hidden, media query won't fire at this width
-        mobShell.style.setProperty('display', 'none', 'important');
-      }
-      // Populate data after render completes
+      if (window.innerWidth <= 768) mobShell.style.removeProperty('display');
+      else mobShell.style.setProperty('display', 'none', 'important');
       if (typeof mobSync === 'function') setTimeout(mobSync, 80);
     } else {
-      // Not authenticated / not on main — force hidden regardless of screen size
       mobShell.style.setProperty('display', 'none', 'important');
     }
   }
 
-  // HUD panels: only visible on main screen
   var HUD_PANELS = ['.hud-char', '.hud-logo-wrap', '.hud-map-wrap',
                     '.hud-story-wrap', '.hud-chronicle-wrap',
                     '.hud-companions-wrap', '.hud-actionbar', '.hud-wound', '#dt-grid'];
@@ -3287,219 +3474,14 @@ function showScreen(id) {
     });
   });
 
-  // Desktop only: force fixed HUD layout via inline style
-  // Mobile uses natural document flow — no inline styles set here
   if (onMain && window.innerWidth > 768) {
     el.style.cssText = 'display:block !important;position:fixed !important;inset:0 !important;width:100vw !important;height:100vh !important;max-width:100vw !important;margin:0 !important;padding:0 !important;overflow:hidden !important;background:transparent !important;pointer-events:none !important;z-index:1 !important';
-    // Chronicle always visible in grid
     var cw = document.getElementById('chronicle-wrap');
     if (cw) cw.style.removeProperty('display');
   } else if (onMain) {
-    // Mobile: clear ALL inline styles so CSS takes full control
     el.style.cssText = '';
   }
   if (id === 'auth') { _fxRunning = false; setTimeout(initEmbers, 100); }
-}
-
-function showObStep(n) {
-  document.querySelectorAll('.ob-step').forEach(function(s) { s.classList.remove('active'); });
-  document.getElementById('ob-step-' + n).classList.add('active');
-}
-
-function buildRaceGrid() {
-  var g = document.getElementById('ob-race-grid');
-  g.innerHTML = '';
-  RACES.forEach(function(r) {
-    var d = document.createElement('div');
-    d.className = 'race-opt' + (r.id === _obRace ? ' sel' : '');
-    d.innerHTML = '<div class="race-opt-icon">' + r.icon + '</div><div class="race-opt-label">' + r.label + '</div>';
-    d.onclick = (function(rid) { return function() {
-      _obRace = rid;
-      document.querySelectorAll('.race-opt').forEach(function(el) { el.classList.remove('sel'); });
-      d.classList.add('sel');
-    }; })(r.id);
-    g.appendChild(d);
-  });
-}
-
-function buildClassGrid() {
-  var g = document.getElementById('ob-class-grid');
-  g.innerHTML = '';
-  CLASSES.forEach(function(c) {
-    var d = document.createElement('div');
-    d.className = 'class-opt' + (c.id === _obClass ? ' sel' : '');
-    d.innerHTML = '<div class="class-opt-icon">' + c.icon + '</div>' +
-      '<div class="class-opt-name">' + c.name + '</div>' +
-      '<div class="class-opt-stat">' + c.desc + '</div>';
-    d.onclick = (function(cid) { return function() {
-      _obClass = cid;
-      document.querySelectorAll('.class-opt').forEach(function(el) { el.classList.remove('sel'); });
-      d.classList.add('sel');
-    }; })(c.id);
-    g.appendChild(d);
-  });
-}
-
-function buildExamples() {
-  ['ob-examples','ob-examples2','ob-examples3'].forEach(function(cid, idx) {
-    var c = document.getElementById(cid);
-    if (!c) return;
-    var targetId = idx === 0 ? 'ob-habit-text' : idx === 1 ? 'ob-habit2-text' : 'ob-habit3-text';
-    c.innerHTML = '';
-    EXAMPLES.forEach(function(e) {
-      var el = document.createElement('span');
-      el.className = 'habit-ex';
-      el.textContent = e;
-      el.onclick = function() {
-        document.getElementById(targetId).value = e;
-        if (idx === 0) onHabitInput();
-      };
-      c.appendChild(el);
-    });
-  });
-}
-
-function onObName() { checkStep0(); }
-function checkStep0() {
-  var n = document.getElementById('ob-name').value.trim();
-  document.getElementById('ob-step0-next').disabled = n.length < 1;
-}
-
-function goStep1() {
-  var n = document.getElementById('ob-name').value.trim();
-  if (!n) return;
-  showObStep(1);
-}
-
-function goStep2() { showObStep(2); }
-
-function onHabitInput() {
-  var v = document.getElementById('ob-habit-text').value.trim();
-  var fw = document.getElementById('ob-freq-wrap');
-  var hint = document.getElementById('ob-habit-hint');
-  if (v.length > 2) {
-    fw.style.display = 'block';
-    hint.style.display = 'none';
-    // Pre-select stat if not already overridden by player
-    if (!_obStats['h1']) {
-      setStat(inferStat(v), 'h1');
-    }
-  } else {
-    fw.style.display = 'none';
-    hint.style.display = 'none';
-  }
-  checkStep2();
-}
-
-function checkStep2() {
-  var v = document.getElementById('ob-habit-text').value.trim();
-  document.getElementById('ob-step2-next').disabled = v.length < 2;
-}
-
-function setFreq(f, btnPrefix) {
-  _obFreqs[btnPrefix || 'h1'] = f;
-  ['daily','2','3','4'].forEach(function(v) {
-    var el = document.getElementById((btnPrefix || 'h1') + '-freq-' + v);
-    if (el) el.classList.toggle('sel', v === f);
-  });
-}
-
-var _obHabitCount = 1;
-var _obStats = {}; // stat overrides keyed by h1/h2/h3
-function setStat(stat, prefix) {
-  _obStats[prefix] = stat;
-  ['STR','WIS','DISC'].forEach(function(s) {
-    var el = document.getElementById(prefix + '-stat-' + s);
-    if (el) { el.className = 'stat-pick-btn' + (s === stat ? ' sel ' + s : ''); }
-  });
-}
-
-function addHabit() {
-  if (_obHabitCount >= 3) return;
-  _obHabitCount++;
-  var wrap = document.getElementById('ob-habit' + _obHabitCount + '-wrap');
-  if (wrap) {
-    wrap.style.display = 'block';
-    if (_obHabitCount >= 3) {
-      var link = document.getElementById('ob-add-habit-link');
-      if (link) link.style.display = 'none';
-    }
-  }
-}
-
-function goGate() {
-  var name = document.getElementById('ob-name').value.trim();
-  var h1 = document.getElementById('ob-habit-text').value.trim();
-  if (!name || !h1) return;
-
-  // Build gate preview
-  var race = RACES.find(function(r) { return r.id === _obRace; }) || RACES[0];
-  document.getElementById('gate-avatar').textContent = race.icon;
-  document.getElementById('gate-name').textContent = name;
-
-  var habits = [];
-  var h1freq = _obFreqs['h1'] || 'daily';
-  habits.push({ text: h1, freq: h1freq });
-
-  var h2el = document.getElementById('ob-habit2-text');
-  if (h2el && h2el.value.trim().length > 2) {
-    habits.push({ text: h2el.value.trim(), freq: _obFreqs['h2'] || 'daily' });
-  }
-  var h3el = document.getElementById('ob-habit3-text');
-  if (h3el && h3el.value.trim().length > 2) {
-    habits.push({ text: h3el.value.trim(), freq: _obFreqs['h3'] || 'daily' });
-  }
-
-  var habitsHtml = habits.map(function(h) {
-    var fl = h.freq === 'daily' ? 'Daily' : h.freq + '× per week';
-    return '<div class="gate-habit-row">' +
-      '<span class="gate-habit-name">' + esc(h.text) + '</span>' +
-      '<span class="gate-habit-freq">' + fl + '</span>' +
-      '</div>';
-  }).join('');
-  document.getElementById('gate-habits-list').innerHTML = habitsHtml;
-
-  var cls = CLASSES.find(function(c) { return c.id === _obClass; }) || CLASSES[0];
-  document.getElementById('gate-class').textContent = cls.icon + ' ' + cls.name;
-
-  showObStep(3);
-}
-
-function beginJourney() {
-  resetS();
-  var name = document.getElementById('ob-name').value.trim() || 'Traveler';
-  S.name = name;
-  S.race = _obRace;
-  S.cls = _obClass;
-
-  var h1text = document.getElementById('ob-habit-text').value.trim();
-  var habits = [];
-
-  var addH = function(text, freq, idx, statKey) {
-    if (!text) return;
-    habits.push({
-      id: idx, text: text,
-      freq: freq || 'daily',
-      stat: _obStats[statKey] || inferStat(text),
-      streak: 0, log: []
-    });
-  };
-
-  addH(h1text, _obFreqs['h1'] || 'daily', 1, 'h1');
-  var h2el = document.getElementById('ob-habit2-text');
-  if (h2el && h2el.value.trim().length > 2) addH(h2el.value.trim(), _obFreqs['h2'] || 'daily', 2, 'h2');
-  var h3el = document.getElementById('ob-habit3-text');
-  if (h3el && h3el.value.trim().length > 2) addH(h3el.value.trim(), _obFreqs['h3'] || 'daily', 3, 'h3');
-
-  S.habits = habits;
-  S.firstRun = false;
-  S.createdAt = Date.now();
-  save();
-  // Update display_name in profiles but do NOT overwrite username (already set during signup)
-  if (_sb && _user) {
-    _sb.from('profiles').update({ display_name: S.name }).eq('id', _user.id).then(function() {});
-  }
-  goToMain();
 }
 
 function goToMain() {
@@ -3643,6 +3625,46 @@ function renderCharBar() {
   if (stateEl) stateEl.style.color = vStateColor;
   if (badge) badge.className = 'hp-risk-badge' + (vState === 'state-atrisk' ? ' visible' : '');
 
+  // ── Desktop mini HUD ──
+  var miniHp     = document.getElementById('hud-mini-hp');
+  var miniMaxHp  = document.getElementById('hud-mini-maxhp');
+  var miniLoc    = document.getElementById('hud-mini-location-text');
+  var miniStreak = document.getElementById('hud-mini-streak');
+  var miniStrWrap= document.getElementById('hud-mini-streak-wrap');
+  if (miniHp)    miniHp.textContent    = Math.round(hp);
+  if (miniMaxHp) miniMaxHp.textContent = maxHp;
+  if (miniLoc)   miniLoc.textContent   = node.name;
+  if (miniStreak && miniStrWrap) {
+    if (streak > 0) {
+      miniStreak.textContent = streak;
+      miniStrWrap.style.display = '';
+    } else {
+      miniStrWrap.style.display = 'none';
+    }
+  }
+
+  // ── Mobile HUD fields ──
+  var mobHpText   = document.getElementById('mob-hp-text');
+  var mobMaxHp    = document.getElementById('mob-maxhp-text');
+  var mobStrText  = document.getElementById('mob-streak-text');
+  var mobStrWrap  = document.getElementById('mob-streak-wrap');
+  var mobLocText  = document.getElementById('mob-char-location-text');
+  var mobCls      = document.getElementById('mob-char-class');
+  var mobName     = document.getElementById('mob-char-name');
+  if (mobHpText)  mobHpText.textContent  = Math.round(hp);
+  if (mobMaxHp)   mobMaxHp.textContent   = maxHp;
+  if (mobLocText) mobLocText.textContent = node.name;
+  if (mobCls)     mobCls.textContent     = cls.name;
+  if (mobName)    mobName.textContent    = S.name || 'Traveler';
+  if (mobStrText && mobStrWrap) {
+    if (streak > 0) {
+      mobStrText.textContent = streak;
+      mobStrWrap.style.display = '';
+    } else {
+      mobStrWrap.style.display = 'none';
+    }
+  }
+
   // Atmospheric absence notice
   var notice = document.getElementById('wound-notice');
   if (notice) {
@@ -3693,7 +3715,7 @@ function renderHabits() {
     // Streak — only show when logged (bar handles the at-risk warning)
     var streakHtml = '';
     if ((h.streak || 0) > 1 && done) {
-      streakHtml = '<span class="habit-streak">🔥 ' + h.streak + ' day streak</span>';
+      streakHtml = '<span class="habit-streak">🔥 ' + h.streak + ' streak</span>';
     }
 
     // Weekly progress for non-daily habits
@@ -4212,12 +4234,13 @@ function openCharModal() {
   document.getElementById('cm-node-sub').textContent = next ? 'Heading to: ' + next.name : 'Journey complete';
   document.getElementById('cm-days').textContent = S.daysLogged;
   document.getElementById('cm-streak').textContent = streak;
-  document.getElementById('cm-chapter').textContent = 'Chapter ' + (S.chapter || 1);
+  var cmChapter = document.getElementById('cm-chapter');
+  if (cmChapter) cmChapter.textContent = 'Chapter ' + (S.chapter || 1);
   var coins = S.coins || { gold:0, silver:0, copper:0 };
   var coinsEl = document.getElementById('cm-coins');
   if (coinsEl) {
     var total = (coins.total || 0);
-    coinsEl.textContent = total === 0 ? '—' : '⚜ ' + total;
+    coinsEl.textContent = total + ' 🪙';
   }
   // cm-consistency removed from modal
   var cmHp = document.getElementById('cm-hp');
@@ -4252,7 +4275,7 @@ function openCharModal() {
           '</div>';
       });
       statBarsEl.innerHTML =
-        '<div class="char-stat-label" style="margin-bottom:8px;">Attributes <span style="font-size:9px;color:var(--text-dark);font-family:\'Crimson Text\',serif;font-style:italic;font-weight:normal;letter-spacing:0;text-transform:none;">— last 7 days</span></div>' + barsHtml;
+        '<div class="char-stat-label" style="margin-bottom:8px;">Attribute Growth <span style="display:block;font-size:9px;color:var(--text-dark);font-family:\'Crimson Text\',serif;font-style:italic;font-weight:normal;letter-spacing:0;text-transform:none;margin-top:2px;">(last 7 days)</span></div>' + barsHtml;
       statBarsEl.style.display = 'block';
     } else {
       statBarsEl.style.display = 'none';
@@ -5063,19 +5086,24 @@ function devForceRoad() {
     display: none !important;
   }
 
-  /* ── CHARACTER CHIP in header ── */
+  /* ── CHARACTER CHIP — no longer used for HUD, keep for legacy compat ── */
   .hud-char {
-    position: static !important;
-    inset: auto !important;
-    display: flex !important;
-    align-items: center !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 0 14px !important;
-    background: transparent !important;
-    cursor: pointer !important;
+    display: none !important;
   }
-  .hud-char-info { flex: 1 !important; min-width: 0 !important; }
+
+  /* ── DESKTOP HUD — compact cluster above map, constrained width ── */
+  .dt-hud {
+    padding: 16px 16px 13px !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    border-bottom: 1px solid var(--border) !important;
+    align-self: stretch !important;
+    width: 100% !important;
+    max-width: 240px !important;
+    box-sizing: border-box !important;
+  }
+  .dt-hud:hover .hud-mini-nameline { opacity: .85; }
+  .hud-mini-hud { width: 100% !important; max-width: 210px !important; }
 
   /* ── LOGO in header — hidden (topbar is now floating) ── */
   .hud-logo-wrap {
@@ -6029,21 +6057,33 @@ function devForceRoad() {
   /* ── Mobile topbar ── */
   .mob-topbar {
     display: flex !important;
-    align-items: center !important;
+    align-items: flex-start !important;
     justify-content: space-between !important;
-    padding: 10px 14px 8px !important;
+    padding: 12px 14px 12px !important;
     flex-shrink: 0 !important;
     pointer-events: auto !important;
     z-index: 10 !important;
+    gap: 10px !important;
   }
-  .mob-char { display: flex; align-items: center; gap: 8px; cursor: pointer; }
-  .mob-avatar { font-size: 22px; line-height: 1; }
-  .mob-char-info { display: flex; flex-direction: column; gap: 3px; }
-  .mob-char-name {
+  .mob-char { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; flex: 1; min-width: 0; }
+  .mob-avatar { font-size: 22px; line-height: 1; margin-top: 2px; flex-shrink: 0; }
+  .mob-char-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .mob-hud-nameline {
     font-family: 'Cinzel', serif; font-size: 13px;
-    color: var(--text); letter-spacing: .05em;
+    color: var(--gold); letter-spacing: .05em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  .mob-hp-track {
+  .mob-hud-sep { color: var(--text-dark); margin: 0 3px; }
+  .mob-hud-location {
+    font-family: 'Crimson Text', serif; font-size: 13px;
+    color: var(--text-dim); font-style: italic;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .mob-hud-vitals {
+    font-family: 'Cinzel', serif; font-size: 11px;
+    color: var(--text-dim); letter-spacing: .04em;
+    display: flex; align-items: center; gap: 12px;
+  }
     width: 80px; height: 4px;
     background: var(--surface2); border-radius: 2px; overflow: hidden;
   }
@@ -6328,140 +6368,80 @@ function devForceRoad() {
 <div id="screen-ob" class="screen">
   <div class="ob-wrap">
 
-    <!-- Step 0: Name + Race -->
+    <!-- Step 0: Name -->
     <div id="ob-step-0" class="ob-step active">
       <div class="ob-eyebrow">HabitForge</div>
       <div class="ob-title">Who are you?</div>
       <div class="ob-sub">Name your traveler. The road remembers everyone who walks it.</div>
-
       <div style="margin-bottom:20px;">
-        <div class="ob-label">Your name</div>
-        <input class="field" id="ob-name" type="text" placeholder="Name your traveler…" maxlength="24" autocomplete="off" oninput="onObName()">
+        <input class="field" id="ob-name" type="text" placeholder="Name your traveler…" maxlength="24" autocomplete="off" oninput="onObName()" onkeydown="if(event.key==='Enter'&&!document.getElementById('ob-step0-next').disabled)goObStep1()">
       </div>
-
-      <div style="margin-bottom:8px;">
-        <div class="ob-label">Your race</div>
-        <div class="race-grid" id="ob-race-grid"></div>
-      </div>
-
       <div class="ob-nav">
-        <button class="btn btn-gold" id="ob-step0-next" onclick="goStep1()" disabled>Continue →</button>
+        <button class="btn btn-gold" id="ob-step0-next" onclick="goObStep1()" disabled>Continue →</button>
       </div>
     </div>
 
-    <!-- Step 1: Class -->
+    <!-- Step 1: Choose habits -->
     <div id="ob-step-1" class="ob-step">
       <div class="ob-eyebrow">HabitForge</div>
-      <div class="ob-title">What's your path?</div>
-      <div class="ob-sub">Your class shapes how the world narrates your story. It has no effect on your progress — only your habits do that.</div>
+      <div class="ob-title">What are you carrying?</div>
+      <div class="ob-sub">Choose one or two habits to carry onto the road.</div>
 
-      <div style="margin-bottom:8px;">
-        <div class="ob-label">Choose your class</div>
-        <div class="class-grid" id="ob-class-grid"></div>
+      <!-- Curated habit tiles -->
+      <div class="ob-habit-tiles" id="ob-habit-tiles">
+        <div class="ob-habit-tile" onclick="obToggleTile(this,'Move your body','STR')">
+          <span class="ob-tile-icon">⚔</span>
+          <span class="ob-tile-label">Move your body</span>
+        </div>
+        <div class="ob-habit-tile" onclick="obToggleTile(this,'Read something','WIS')">
+          <span class="ob-tile-icon">📖</span>
+          <span class="ob-tile-label">Read something</span>
+        </div>
+        <div class="ob-habit-tile" onclick="obToggleTile(this,'Learn something','WIS')">
+          <span class="ob-tile-icon">🧠</span>
+          <span class="ob-tile-label">Learn something</span>
+        </div>
+        <div class="ob-habit-tile" onclick="obToggleTile(this,'Clear your mind','WIS')">
+          <span class="ob-tile-icon">🌿</span>
+          <span class="ob-tile-label">Clear your mind</span>
+        </div>
+        <div class="ob-habit-tile" onclick="obToggleTile(this,'Practice restraint','DISC')">
+          <span class="ob-tile-icon">🛡</span>
+          <span class="ob-tile-label">Practice restraint</span>
+        </div>
       </div>
 
-      <div class="ob-nav">
-        <button class="btn btn-gold" onclick="goStep2()">Continue →</button>
+      <!-- Custom habit input -->
+      <div style="margin-top:16px;">
+        <div id="ob-custom-toggle" class="add-habit-link" onclick="obShowCustom()" style="display:inline-block;cursor:pointer;">+ Add your own habit</div>
+        <div id="ob-custom-wrap" style="display:none;margin-top:10px;">
+          <input class="field" id="ob-custom-text" type="text" placeholder="Describe your habit…" maxlength="60" autocomplete="off" oninput="obCheckStep1()">
+        </div>
+      </div>
+
+      <div style="margin-top:8px;min-height:18px;">
+        <div id="ob-habit-hint" style="font-family:'Cinzel',serif;font-size:10px;color:var(--text-dark);letter-spacing:.08em;display:none;">Select up to 2 habits</div>
+      </div>
+
+      <div class="ob-nav" style="margin-top:16px;">
+        <button class="btn btn-gold" id="ob-step1-next" onclick="goObStep2()" disabled>Continue →</button>
         <button class="btn btn-ghost" onclick="showObStep(0)">← Back</button>
       </div>
     </div>
 
-    <!-- Step 2: Habits -->
+    <!-- Step 2: Gate / Enter the road -->
     <div id="ob-step-2" class="ob-step">
-      <div class="ob-eyebrow">HabitForge</div>
-      <div class="ob-title">What are you carrying?</div>
-      <div class="ob-sub">Every traveler carries something they're trying to hold onto. These are the habits that will shape your road.</div>
-
-      <!-- Habit 1 -->
-      <div style="margin-bottom:20px;">
-        <div class="ob-label">First habit</div>
-        <div class="habit-examples" id="ob-examples"></div>
-        <input class="field" id="ob-habit-text" type="text" placeholder="Describe your habit…" maxlength="60" autocomplete="off" oninput="onHabitInput()">
-        <div class="field-hint" id="ob-habit-hint" style="display:none;"></div>
-      </div>
-
-      <div id="ob-freq-wrap" style="display:none;margin-bottom:24px;">
-        <div class="ob-label">How often?</div>
-        <div class="freq-row">
-          <div class="freq-opt sel" id="h1-freq-daily" onclick="setFreq('daily','h1')"><div class="freq-opt-main">Every</div><div class="freq-opt-sub">day</div></div>
-          <div class="freq-opt" id="h1-freq-2" onclick="setFreq('2','h1')"><div class="freq-opt-main">2×</div><div class="freq-opt-sub">per week</div></div>
-          <div class="freq-opt" id="h1-freq-3" onclick="setFreq('3','h1')"><div class="freq-opt-main">3×</div><div class="freq-opt-sub">per week</div></div>
-          <div class="freq-opt" id="h1-freq-4" onclick="setFreq('4','h1')"><div class="freq-opt-main">4×</div><div class="freq-opt-sub">per week</div></div>
-        </div>
-        <div class="stat-pick-label">What kind of habit?</div>
-        <div class="stat-pick-row">
-          <div class="stat-pick-btn" id="h1-stat-STR" onclick="setStat('STR','h1')">STR<br><span style="font-size:8px;opacity:.6;letter-spacing:.04em;">Physical</span></div>
-          <div class="stat-pick-btn" id="h1-stat-WIS" onclick="setStat('WIS','h1')">WIS<br><span style="font-size:8px;opacity:.6;letter-spacing:.04em;">Mental</span></div>
-          <div class="stat-pick-btn" id="h1-stat-DISC" onclick="setStat('DISC','h1')">DIS<br><span style="font-size:8px;opacity:.6;letter-spacing:.04em;">Discipline</span></div>
-        </div>
-      </div>
-
-      <!-- Habit 2 (optional) -->
-      <div id="ob-habit2-wrap" style="display:none;margin-bottom:20px;">
-        <div class="ob-label">Second habit <span style="color:var(--text-dark);font-family:'Crimson Text',serif;font-style:italic;font-size:14px;letter-spacing:0;">(optional)</span></div>
-        <div class="habit-examples" id="ob-examples2"></div>
-        <input class="field" id="ob-habit2-text" type="text" placeholder="Second habit…" maxlength="60" autocomplete="off">
-        <div style="margin-top:8px;">
-          <div class="freq-row">
-            <div class="freq-opt sel" id="h2-freq-daily" onclick="setFreq('daily','h2')"><div class="freq-opt-main">Every</div><div class="freq-opt-sub">day</div></div>
-            <div class="freq-opt" id="h2-freq-2" onclick="setFreq('2','h2')"><div class="freq-opt-main">2×</div><div class="freq-opt-sub">per week</div></div>
-            <div class="freq-opt" id="h2-freq-3" onclick="setFreq('3','h2')"><div class="freq-opt-main">3×</div><div class="freq-opt-sub">per week</div></div>
-            <div class="freq-opt" id="h2-freq-4" onclick="setFreq('4','h2')"><div class="freq-opt-main">4×</div><div class="freq-opt-sub">per week</div></div>
-          </div>
-          <div class="stat-pick-label">What kind of habit?</div>
-          <div class="stat-pick-row">
-            <div class="stat-pick-btn" id="h2-stat-STR" onclick="setStat('STR','h2')">STR<br><span style="font-size:8px;opacity:.6;letter-spacing:.04em;">Physical</span></div>
-            <div class="stat-pick-btn" id="h2-stat-WIS" onclick="setStat('WIS','h2')">WIS<br><span style="font-size:8px;opacity:.6;letter-spacing:.04em;">Mental</span></div>
-            <div class="stat-pick-btn" id="h2-stat-DISC" onclick="setStat('DISC','h2')">DIS<br><span style="font-size:8px;opacity:.6;letter-spacing:.04em;">Discipline</span></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Habit 3 (optional) -->
-      <div id="ob-habit3-wrap" style="display:none;margin-bottom:20px;">
-        <div class="ob-label">Third habit <span style="color:var(--text-dark);font-family:'Crimson Text',serif;font-style:italic;font-size:14px;letter-spacing:0;">(optional)</span></div>
-        <div class="habit-examples" id="ob-examples3"></div>
-        <input class="field" id="ob-habit3-text" type="text" placeholder="Third habit…" maxlength="60" autocomplete="off">
-        <div style="margin-top:8px;">
-          <div class="freq-row">
-            <div class="freq-opt sel" id="h3-freq-daily" onclick="setFreq('daily','h3')"><div class="freq-opt-main">Every</div><div class="freq-opt-sub">day</div></div>
-            <div class="freq-opt" id="h3-freq-2" onclick="setFreq('2','h3')"><div class="freq-opt-main">2×</div><div class="freq-opt-sub">per week</div></div>
-            <div class="freq-opt" id="h3-freq-3" onclick="setFreq('3','h3')"><div class="freq-opt-main">3×</div><div class="freq-opt-sub">per week</div></div>
-            <div class="freq-opt" id="h3-freq-4" onclick="setFreq('4','h3')"><div class="freq-opt-main">4×</div><div class="freq-opt-sub">per week</div></div>
-          </div>
-          <div class="stat-pick-label">What kind of habit?</div>
-          <div class="stat-pick-row">
-            <div class="stat-pick-btn" id="h3-stat-STR" onclick="setStat('STR','h3')">STR<br><span style="font-size:8px;opacity:.6;letter-spacing:.04em;">Physical</span></div>
-            <div class="stat-pick-btn" id="h3-stat-WIS" onclick="setStat('WIS','h3')">WIS<br><span style="font-size:8px;opacity:.6;letter-spacing:.04em;">Mental</span></div>
-            <div class="stat-pick-btn" id="h3-stat-DISC" onclick="setStat('DISC','h3')">DIS<br><span style="font-size:8px;opacity:.6;letter-spacing:.04em;">Discipline</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div id="ob-add-habit-link" style="margin-bottom:4px;display:none;">
-        <span class="add-habit-link" onclick="addHabit()">+ Add another habit</span>
-      </div>
-
-      <div class="ob-nav">
-        <button class="btn btn-gold" id="ob-step2-next" onclick="goGate()" disabled>Continue →</button>
-        <button class="btn btn-ghost" onclick="showObStep(1)">← Back</button>
-      </div>
-    </div>
-
-    <!-- Step 3: Gate scene -->
-    <div id="ob-step-3" class="ob-step">
       <div class="gate-scene">
         <div class="gate-icon">🏘️</div>
-        <div class="gate-quote">The Iron Keep sits at the end of a long road. <span id="gate-name">Traveler</span> stands at the village gate. The road does not care about intentions — only what actually gets done.</div>
-        <div class="gate-habits">
+        <div class="ob-title" style="margin-bottom:10px;">The Road Awaits</div>
+        <div class="gate-quote">The road ahead does not care about intentions —<br>only what actually gets done.</div>
+        <div class="gate-habits" style="margin-top:20px;">
           <div id="gate-habits-list"></div>
         </div>
-        <div style="font-family:'Cinzel',serif;font-size:12px;color:var(--text-dark);letter-spacing:.08em;margin-bottom:8px;" id="gate-class"></div>
-        <div style="font-size:48px;line-height:1;" id="gate-avatar">🧔</div>
       </div>
       <div class="ob-nav">
-        <button class="btn btn-gold" onclick="beginJourney()">Enter the Road ⚔</button>
-        <button class="btn btn-ghost" onclick="showObStep(2)">← Back</button>
+        <button class="btn btn-gold" onclick="beginJourney()">Enter the road →</button>
+        <button class="btn btn-ghost" onclick="showObStep(1)">← Back</button>
       </div>
     </div>
 
@@ -6487,40 +6467,33 @@ function devForceRoad() {
   ══════════════════════════════════════════════════════════ -->
   <div class="dt-grid" id="dt-grid">
 
-    <!-- ── HEADER ROW (hidden — char chip uses own floating rules) ── -->
-    <div class="dt-header">
-      <!-- Header left: character -->
-      <div class="dt-header-left">
-        <div class="hud-char" onclick="openCharModal()">
-          <div class="hud-avatar" id="main-avatar">🧔</div>
-          <div class="hud-char-info">
-            <div class="hud-char-name" id="char-name">Traveler</div>
-            <div class="hud-char-meta" id="char-meta">Warrior</div>
-            <div class="hud-hp-track">
-              <div class="hud-hp-fill" id="hp-fill"></div>
-            </div>
-            <div class="hud-hp-state" id="vitality-state"></div>
-          </div>
-        </div>
-      </div>
-      <!-- Header center: wound notice (hidden unless missed days) -->
+    <!-- ── HEADER ROW — hidden, kept for wound-notice compat ── -->
+    <div class="dt-header" style="display:none;" aria-hidden="true">
+      <div class="dt-header-left"></div>
       <div class="dt-header-center">
         <div id="wound-notice" style="display:none;" class="hp-wound-notice hud-wound"></div>
       </div>
-      <!-- Header right: logo + sign out -->
-      <div class="dt-header-right">
-        <div class="hud-logo-wrap">
-          <div class="header-logo">HabitForge</div>
-          <span class="header-signout" onclick="doSignOut()">Sign Out</span>
-        </div>
-      </div>
+      <div class="dt-header-right"></div>
     </div>
 
     <!-- ── MAIN 3-COLUMN AREA ── -->
     <div class="dt-columns">
 
-      <!-- LEFT: Road Map -->
+      <!-- LEFT: HUD + Road Map -->
       <div class="dt-col-left">
+
+        <!-- ── DESKTOP HUD — sits above the map, no container ── -->
+        <div class="dt-hud" onclick="openCharModal()">
+          <div class="hud-mini-nameline"><span class="hud-mini-avatar" id="main-avatar">🧔</span> <span class="hud-mini-name" id="char-name">Traveler</span> <span class="hud-mini-sep">—</span> <span class="hud-mini-class" id="char-meta">Warrior</span></div>
+          <div class="hud-mini-location"><span class="hud-mini-icon">📍</span> <span id="hud-mini-location-text">Hearthstone Village</span></div>
+          <div class="hud-mini-stats">
+            <span><span class="hud-mini-icon">❤️</span> <span id="hud-mini-hp">100</span> / <span id="hud-mini-maxhp">100</span></span>
+            <span id="hud-mini-streak-wrap" style="display:none;"><span class="hud-mini-icon">🔥</span> <span id="hud-mini-streak">0</span> streak</span>
+          </div>
+          <!-- keep hidden for JS compat -->
+          <div style="display:none"><div class="hud-hp-track"><div class="hud-hp-fill" id="hp-fill"></div></div><div id="vitality-state"></div></div>
+        </div>
+
         <div class="hud-map-wrap" id="map-strip">
           <div class="hud-map-header">
             <span class="hud-map-label" id="node-map-sub">Your Journey</span>
@@ -6595,26 +6568,40 @@ function devForceRoad() {
   <!-- Mobile top bar: char chip + logo (fixed) -->
   <!-- ── MOBILE SHELL: hidden on desktop via inline style, shown by media query ── -->
   <div id="mob-shell" style="display:none;contents:normal;">
+
+  <!-- ── MOBILE HUD STRIP ── -->
   <div class="mob-topbar">
     <div class="mob-char" onclick="openCharModal()">
       <div class="mob-avatar" id="mob-avatar">🧔</div>
       <div class="mob-char-info">
-        <div class="mob-char-name" id="mob-char-name">Traveler</div>
-        <div class="mob-hp-track">
-          <div class="mob-hp-fill" id="mob-hp-fill" style="width:100%;background:var(--on-road);"></div>
+        <div class="mob-hud-nameline"><span id="mob-char-name">Traveler</span> <span class="mob-hud-sep">—</span> <span id="mob-char-class">Warrior</span></div>
+        <div class="mob-hud-location"><span>📍</span> <span id="mob-char-location-text">Hearthstone Village</span></div>
+        <div class="mob-hud-vitals">
+          <span>❤️ <span id="mob-hp-text">100</span> / <span id="mob-maxhp-text">100</span></span>
+          <span id="mob-streak-wrap" style="display:none;">🔥 <span id="mob-streak-text">0</span> streak</span>
         </div>
       </div>
     </div>
-    <div style="text-align:right;">
+    <div style="text-align:right;flex-shrink:0;">
       <div class="mob-logo">HabitForge</div>
       <span class="mob-signout" onclick="doSignOut()">Sign Out</span>
     </div>
+    <!-- keep hidden for JS compat -->
+    <div style="display:none"><div class="mob-hp-track"><div class="mob-hp-fill" id="mob-hp-fill" style="width:100%;background:var(--on-road);"></div></div></div>
   </div>
 
-  <!-- ── TODAY tab pane ── -->
+  <!-- ── TODAY tab pane: Habits first, Road Log second ── -->
   <div class="mob-pane mob-pane-active" id="mob-pane-today">
 
-    <!-- Road Log — always expanded, no accordion -->
+    <!-- Today's Habits — always expanded -->
+    <div class="mob-card">
+      <div class="mob-card-header">
+        <span class="mob-card-title">Today's Habits</span>
+      </div>
+      <div id="mob-habits-wrap"></div>
+    </div>
+
+    <!-- Road Log -->
     <div class="mob-card">
       <div class="mob-card-header">
         <span class="mob-card-dot">◆</span>
@@ -6625,14 +6612,6 @@ function devForceRoad() {
         <div class="beat-locked" id="mob-beat-locked">Log today's habits to see what happens on the road.</div>
         <div class="beat-inner" id="mob-beat-inner" style="display:none;"></div>
       </div>
-    </div>
-
-    <!-- Today's Habits — always expanded, no accordion -->
-    <div class="mob-card">
-      <div class="mob-card-header">
-        <span class="mob-card-title">Today's Habits</span>
-      </div>
-      <div id="mob-habits-wrap"></div>
     </div>
 
   </div>
@@ -6717,35 +6696,30 @@ function devForceRoad() {
       </div>
     </div>
     <div class="char-stats-grid">
+      <!-- Row 1 -->
       <div class="char-stat-cell">
-        <div class="char-stat-label">Current Location</div>
-        <div class="char-stat-val" id="cm-node" style="font-size:14px;">Hearthstone</div>
+        <div class="char-stat-label">Location</div>
+        <div class="char-stat-val" id="cm-node" style="font-size:13px;line-height:1.3;">Hearthstone</div>
         <div class="char-stat-sub" id="cm-node-sub">Heading north</div>
       </div>
       <div class="char-stat-cell">
         <div class="char-stat-label">Progress</div>
-        <div class="char-stat-val" id="cm-days" style="font-size:18px;">0</div>
+        <div class="char-stat-val" id="cm-days" style="font-size:20px;">0</div>
         <div class="char-stat-sub">days logged</div>
-        <div style="margin-top:6px;">
-          <span class="char-stat-label">Streak </span>
-          <span style="font-family:'Cinzel',serif;font-size:13px;color:var(--gold);" id="cm-streak">0</span>
-          <span class="char-stat-sub"> days</span>
+        <div style="margin-top:5px;font-family:'Cinzel',serif;font-size:11px;color:var(--text-dim);">
+          🔥 <span id="cm-streak" style="color:var(--gold);">0</span> streak
+        </div>
+      </div>
+      <!-- Row 2 -->
+      <div class="char-stat-cell">
+        <div class="char-stat-label">Health</div>
+        <div style="font-family:'Cinzel',serif;font-size:16px;color:var(--text);margin-top:1px;">
+          <span id="cm-hp">100</span><span style="font-size:11px;color:var(--text-dark);margin:0 2px;">/</span><span style="font-size:11px;color:var(--text-dark);">100</span>
         </div>
       </div>
       <div class="char-stat-cell">
-        <div class="char-stat-label">HP</div>
-        <div class="char-stat-val" id="cm-hp" style="font-size:18px;">100</div>
-        <div class="char-stat-sub">/ 100</div>
-      </div>
-      <div class="char-stat-cell">
-        <div class="char-stat-label">Journey</div>
-        <div class="char-stat-val" id="cm-chapter" style="font-size:16px;">Chapter 1</div>
-        <div class="char-stat-sub">The Ironveil Road</div>
-      </div>
-      <div class="char-stat-cell">
-        <div class="char-stat-label">Coins Earned</div>
-        <div class="char-stat-val" id="cm-coins" style="font-size:15px;letter-spacing:.04em;">—</div>
-        <div class="char-stat-sub">road coin</div>
+        <div class="char-stat-label">Road Coins</div>
+        <div class="char-stat-val" id="cm-coins" style="font-size:18px;">0 🪙</div>
       </div>
     </div>
     <div class="char-stat-bars" id="cm-stat-bars"></div>
@@ -6808,29 +6782,6 @@ function devForceRoad() {
 <div id="toast"></div>
 
 <script>
-// Wire up onboarding: show add-habit link after freq wrap appears
-(function() {
-  var orig = window.onHabitInput;
-  window.onHabitInput = function() {
-    orig && orig();
-    var v = document.getElementById('ob-habit-text').value.trim();
-    var addLink = document.getElementById('ob-add-habit-link');
-    var h2wrap = document.getElementById('ob-habit2-wrap');
-    if (v.length > 2 && addLink) {
-      addLink.style.display = 'block';
-    }
-  };
-  window.addHabit = function() {
-    if (_obHabitCount >= 3) return;
-    _obHabitCount++;
-    var wrap = document.getElementById('ob-habit' + _obHabitCount + '-wrap');
-    if (wrap) wrap.style.display = 'block';
-    if (_obHabitCount >= 3) {
-      var link = document.getElementById('ob-add-habit-link');
-      if (link) link.style.display = 'none';
-    }
-  };
-})();
 
 /* ══════════════════════════════════════════════════════════
    MOBILE TAB + ACCORDION SYSTEM
@@ -6842,7 +6793,7 @@ function isMobile() { return window.innerWidth <= 768; }
 function mobSync() {
   if (!isMobile()) return;
 
-  // Char bar
+  // Char bar — name sync (HP bar is now text-based, updated in renderCharBar directly)
   var fill = document.getElementById('hp-fill');
   var mFill = document.getElementById('mob-hp-fill');
   if (fill && mFill) { mFill.style.width = fill.style.width; mFill.style.background = fill.style.background; }
