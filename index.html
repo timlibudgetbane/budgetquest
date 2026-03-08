@@ -5385,16 +5385,19 @@ function devForceRoad() {
     animation: none !important;
   }
 
-  /* ── Continue button: keep in flow, centered ── */
+  /* ── Continue button: sits ~35% down the screen ── */
   .auth-continue-btn {
     position: relative !important;
     bottom: auto !important;
     left: auto !important;
     transform: none !important;
     display: block !important;
-    margin: 0 auto !important;
-    /* sit near bottom of background image */
-    margin-top: 60vh !important;
+    margin: 35vh auto 0 !important;
+  }
+
+  /* ── Auth form panel: sits immediately below the button ── */
+  .auth-wrap {
+    margin-top: 24px !important;
   }
 
   /* ── mob-shell: normal scrollable block ── */
