@@ -501,9 +501,29 @@ body::before {
 #screen-ob {
   align-items:center; justify-content:flex-start;
   padding:48px 24px 80px;
-  background:radial-gradient(ellipse at 50% 0%, rgba(200,168,75,.06) 0%, transparent 60%);
+  position:relative;
+  background:
+    linear-gradient(to bottom, rgba(6,4,2,.55) 0%, rgba(6,4,2,.35) 40%, rgba(6,4,2,.65) 100%),
+    url('onboarding desktop.png') center center / cover no-repeat;
 }
-.ob-wrap { width:100%; max-width:420px; }
+@media (max-width: 768px) {
+  #screen-ob {
+    background:
+      linear-gradient(to bottom, rgba(6,4,2,.55) 0%, rgba(6,4,2,.35) 40%, rgba(6,4,2,.65) 100%),
+      url('onboarding mobile.png') center center / cover no-repeat;
+    background-attachment: scroll;
+  }
+}
+.ob-wrap {
+  width:100%; max-width:420px;
+  position:relative; z-index:1;
+  background:rgba(6,4,2,.55);
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:32px 28px;
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+}
 .ob-step { display:none; }
 .ob-step.active { display:block; }
 
