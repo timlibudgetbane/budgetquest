@@ -3247,8 +3247,13 @@ function showScreen(id) {
   var mobShell = document.getElementById('mob-shell');
   if (mobShell) {
     if (id === 'main') {
-      // Remove the forced-none so CSS media query takes over on mobile
-      mobShell.style.removeProperty('display');
+      if (window.innerWidth <= 768) {
+        // Mobile: remove inline style so CSS media query takes over
+        mobShell.style.removeProperty('display');
+      } else {
+        // Desktop: always keep hidden, media query won't fire at this width
+        mobShell.style.setProperty('display', 'none', 'important');
+      }
       // Populate data after render completes
       if (typeof mobSync === 'function') setTimeout(mobSync, 80);
     } else {
@@ -5057,10 +5062,12 @@ function devForceRoad() {
 /* Wound notice */
 .hud-wound {
   position: fixed !important;
-  top: 100px !important;
+  top: 170px !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
   z-index: 150 !important;
+  max-width: 340px !important;
+  text-align: center !important;
 }
 
 /* ── Story: Road Log label + smaller beat text ── */
