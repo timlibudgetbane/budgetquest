@@ -1573,6 +1573,20 @@ body::before {
   -webkit-backdrop-filter: blur(14px);
 }
 
+/* ── Floating topbar: HabitForge logo + sign out ── */
+.hud-topbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(6,4,2,.78);
+  border: 1px solid var(--border-gold);
+  border-radius: 4px;
+  padding: 8px 16px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+}
+
 /* ── TOP-CENTER: Map strip (collapsible) ── */
 .hud-map-wrap {
   position: absolute;
@@ -5063,15 +5077,18 @@ function devForceRoad() {
   }
   .hud-char-info { flex: 1 !important; min-width: 0 !important; }
 
-  /* ── LOGO in header ── */
+  /* ── LOGO in header — hidden (topbar is now floating) ── */
   .hud-logo-wrap {
-    position: static !important;
-    inset: auto !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-end !important;
-    padding: 0 16px !important;
-    width: 100% !important;
+    display: none !important;
+  }
+
+  /* ── FLOATING TOPBAR: HabitForge logo + sign out ── */
+  .hud-topbar {
+    position: fixed !important;
+    top: 20px !important;
+    right: 30px !important;
+    z-index: 200 !important;
+    pointer-events: auto !important;
   }
 
   /* ── WOUND NOTICE in header center ── */
@@ -5098,13 +5115,16 @@ function devForceRoad() {
   .dt-col-left {
     grid-column: 1 !important;
     min-height: 0 !important;
-    height: 100% !important;  /* column fills row; map panel inside is auto */
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
     overflow-y: auto !important;
     overflow-x: hidden !important;
     background: rgba(4,3,1,.55) !important;
     border-right: 1px solid var(--border) !important;
     backdrop-filter: blur(10px) !important;
-    align-items: flex-start !important;
   }
   .dt-col-center {
     grid-column: 2 !important;
@@ -5134,6 +5154,8 @@ function devForceRoad() {
     min-width: 0 !important;
     max-width: 100% !important;
     height: auto !important;
+    min-height: 0 !important;
+    flex: 0 0 auto !important;
     display: flex !important;
     flex-direction: column !important;
     align-self: flex-start !important;
@@ -5431,11 +5453,11 @@ function devForceRoad() {
     margin: 0 !important;
   }
 
-  /* ── RIGHT: companions panel — floating card, absolute over background ── */
+  /* ── RIGHT: companions panel — floating card over background ── */
   .hud-companions-wrap {
     position: fixed !important;
-    top: 140px !important;
-    right: 40px !important;
+    top: 80px !important;
+    right: 30px !important;
     bottom: auto !important;
     left: auto !important;
     width: 260px !important;
@@ -5494,12 +5516,18 @@ function devForceRoad() {
   }
   .chronicle-header {
     flex-shrink: 0 !important;
-    padding: 9px 20px !important;
+    padding: 11px 18px !important;
     border-bottom: 1px solid rgba(201,160,64,.15) !important;
     cursor: pointer !important;
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
+    user-select: none !important;
+    transition: background .15s !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+  .chronicle-header:hover {
+    background: rgba(255,215,120,0.05) !important;
   }
   .chronicle-body {
     flex: 1 !important;
@@ -5671,6 +5699,23 @@ function devForceRoad() {
     padding: 2px 6px !important;
     margin-top: 3px !important;
   }
+  /* Road log header label + arrow */
+  .hud-chronicle-wrap .chronicle-label {
+    font-family: "Cinzel", serif !important;
+    font-size: 12px !important;
+    letter-spacing: .18em !important;
+    text-transform: uppercase !important;
+    color: var(--text-dim) !important;
+  }
+  .chronicle-chevron-icon {
+    font-size: 11px !important;
+    color: var(--gold-dim) !important;
+    transition: transform .3s ease !important;
+    flex-shrink: 0 !important;
+  }
+  .hud-chronicle-wrap.dt-expanded .chronicle-chevron-icon {
+    transform: rotate(180deg) !important;
+  }
 }
 
 /* ══════════════════════════════════════════════
@@ -5832,6 +5877,7 @@ function devForceRoad() {
 @media (max-width: 768px) {
   .hud-char,
   .hud-logo-wrap,
+  .hud-topbar,
   .hud-wound,
   .hud-map-wrap,
   .hud-story-wrap,
@@ -6431,7 +6477,25 @@ function devForceRoad() {
   ══════════════════════════════════════════════════════════ -->
   <div class="dt-grid" id="dt-grid">
 
-    <!-- ── HEADER ROW ── -->
+    <!-- ── FLOATING TOPBAR: logo + sign out ── -->
+    <div class="hud-topbar" id="hud-topbar">
+      <div class="header-logo">HabitForge</div>
+      <span class="header-signout" onclick="doSignOut()">Sign Out</span>
+    </div>
+
+    <!-- ── FLOATING COMPANIONS PANEL ── -->
+    <div class="hud-companions-wrap" id="friends-wrap">
+      <div class="friends-header" onclick="toggleFriends()">
+        <div class="friends-title">Road Companions</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-family:'Cinzel',serif;font-size:10px;color:var(--text-dark);letter-spacing:.08em;" id="friends-count"></span>
+          <span class="friends-chevron" style="font-size:10px;color:var(--text-dark);">▼</span>
+        </div>
+      </div>
+      <div id="friends-body" style="display:none;"></div>
+    </div>
+
+    <!-- ── HEADER ROW (hidden — char chip uses own floating rules) ── -->
     <div class="dt-header">
       <!-- Header left: character -->
       <div class="dt-header-left">
@@ -6498,12 +6562,8 @@ function devForceRoad() {
           <!-- Road Log — narrative timeline, flows below habits -->
           <div class="hud-chronicle-wrap" id="chronicle-wrap">
             <div class="chronicle-header" onclick="toggleJourneyLog()">
-              <div class="chronicle-title">
-                <span class="chronicle-rule"></span>
-                <span class="chronicle-label">Road Log</span>
-                <span class="chronicle-rule"></span>
-              </div>
-              <span id="chronicle-chevron">▾</span>
+              <span class="chronicle-label">Road Log</span>
+              <span id="chronicle-chevron" class="chronicle-chevron-icon">▼</span>
             </div>
             <div class="chronicle-body" id="journey-log-body"></div>
           </div>
