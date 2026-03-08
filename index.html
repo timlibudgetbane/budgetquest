@@ -2478,6 +2478,12 @@ var S = {
   // Session (not persisted between days)
   todayBeat: null,
   todayBeatDate: null,
+  // ── The Road Remembers ────────────────────────────────────────
+  storyMemory: {
+    helpedMerchant:     false,  // logged on Day 5 (success)
+    consistentTraveler: false,  // 5+ consecutive logged days at any point
+    resilientTraveler:  false   // recovered from Gone to Ground back to On the Road
+  },
 };
 var KEY = 'hf_v3';
 var _devOffset = 0;
@@ -2557,6 +2563,11 @@ function fixState() {
   if (S.hp === undefined || S.hp === null) S.hp = 100;
   if (!S.maxHp) S.maxHp = 100;
   if (!S.coins) S.coins = { gold: 0, silver: 0, copper: 0 };
+  // Road Remembers — initialise flags if missing (handles saves from before this feature)
+  if (!S.storyMemory) S.storyMemory = { helpedMerchant: false, consistentTraveler: false, resilientTraveler: false };
+  if (S.storyMemory.helpedMerchant     === undefined) S.storyMemory.helpedMerchant     = false;
+  if (S.storyMemory.consistentTraveler === undefined) S.storyMemory.consistentTraveler = false;
+  if (S.storyMemory.resilientTraveler  === undefined) S.storyMemory.resilientTraveler  = false;
 
   // Reset streaks if user missed days — runs on every load so stale streaks
   // are never shown when returning after a gap.
@@ -2922,6 +2933,27 @@ function processDayCommit() {
 
   var consistency = getConsistency();
 
+  // ── The Road Remembers — set flags ───────────────────────────
+  if (!S.storyMemory) S.storyMemory = { helpedMerchant: false, consistentTraveler: false, resilientTraveler: false };
+
+  // helpedMerchant: player logged on Day 5
+  var _d5beat = BEATS.find(function(b){ return b.day === 5; });
+  if (_d5beat && _d5beat.id && S.beatsSeen.indexOf(_d5beat.id) !== -1) {
+    S.storyMemory.helpedMerchant = true;
+  }
+
+  // consistentTraveler: 5+ consecutive logged days (check max streak across habits)
+  var _maxStreak = Math.max.apply(null, S.habits.map(function(h){ return h.streak || 0; }).concat([0]));
+  if (_maxStreak >= 5) S.storyMemory.consistentTraveler = true;
+
+  // resilientTraveler: previously gone to ground, now back on road
+  if (!S.storyMemory.resilientTraveler) {
+    if (S._wasGone && consistency === 'on_road') {
+      S.storyMemory.resilientTraveler = true;
+    }
+    if (consistency === 'gone') S._wasGone = true;
+  }
+
   if (!S.hp) S.hp = 100;
   if (!S.maxHp) S.maxHp = 100;
   S.hp = Math.min(S.maxHp, S.hp + 5);
@@ -3061,6 +3093,43 @@ function getDominantStat() {
     });
   }
   return best;
+}
+
+// ── The Road Remembers — narrative callbacks ─────────────────────────────────
+// Returns an array of extra sentences to append to beat text on key days.
+// Only appends lines that are true. Never replaces base text.
+function getMemoryCallbacks(day) {
+  var mem = S.storyMemory || {};
+  var lines = [];
+  if (day === 19) {
+    if (mem.helpedMerchant)
+      lines.push('Aldric mentions he heard about you helping a stranded merchant near Harvest Crossing. "People remember that kind of thing on the road," he says.');
+    if (mem.consistentTraveler)
+      lines.push('He studies your condition and nods. "You haven\'t broken stride once since you left. That tells me something."');
+  }
+  if (day === 25) {
+    if (mem.helpedMerchant)
+      lines.push('Aldric adds: "A merchant near Harvest Crossing spoke well of you. That name travels further than you think."');
+    if (mem.resilientTraveler)
+      lines.push('Aldric pauses. "I know the road knocked you down at some point. The fact that you\'re still here matters more than the fall."');
+  }
+  if (day === 31) {
+    if (mem.helpedMerchant)
+      lines.push('Aldric adds quietly: "Several travelers spoke well of you on the road north."');
+    if (mem.consistentTraveler)
+      lines.push('Sera says: "He never missed a day walking the road."');
+    if (mem.resilientTraveler)
+      lines.push('Aldric nods. "The road nearly broke him once. He came back stronger."');
+  }
+  if (day === 35) {
+    if (mem.helpedMerchant)
+      lines.push('You think of the merchant near Harvest Crossing. Small decisions, long road.');
+    if (mem.consistentTraveler)
+      lines.push('Thirty-five days. You never stopped showing up.');
+    if (mem.resilientTraveler)
+      lines.push('The road tested you once. You came back. That was the real journey.');
+  }
+  return lines;
 }
 
 function getBeatText(beat) {
@@ -3779,9 +3848,14 @@ function renderBeatSection() {
     + '</div>';
 
   // Encounter text
+  var _callbacks = getMemoryCallbacks(encounterBeat.day);
+  var _callbackHtml = _callbacks.length
+    ? '<div class="beat-text beat-memory">' + _callbacks.map(esc).join(' ') + '</div>'
+    : '';
   html += '<div class="journal-block">'
     + '<div class="journal-section-header">' + eventHeader + '</div>'
     + '<div class="beat-text">' + esc(beatText).split('\n').join('<br>') + '</div>'
+    + _callbackHtml
     + '</div>';
 
   // ── STATE C: AFTER PRESS ON — progress + next teaser ─────────
