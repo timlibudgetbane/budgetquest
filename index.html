@@ -627,7 +627,7 @@ body::before {
 .ob-nav { display:flex; flex-direction:column; gap:10px; margin-top:28px; }
 
 /* ══ MAIN SCREEN ══ */
-#screen-main { max-width:100%; margin:0; width:100%; padding-bottom:0; background:transparent; position:fixed; inset:0; }
+#screen-main { max-width:100%; margin:0; width:100%; padding-bottom:0; background:transparent; }
 
 /* ══ MAP STRIP — road progress view ══ */
 .map-strip {
@@ -1838,10 +1838,12 @@ body::before {
     background-size: cover;
     background-position: center top;
   }
-  body.main-bg {
+  body, body.main-bg {
     background-image: url('mobile main.png');
     background-size: cover;
-    background-position: center;
+    background-position: center top;
+    background-attachment: scroll;
+    background-repeat: no-repeat;
   }
 
   /* ── 1. Fix scrolling ────────────────────────────────────── */
@@ -3152,8 +3154,8 @@ function showScreen(id) {
     });
   });
 
-  // For main screen, force fixed HUD layout via inline style (beats all cascade)
-  // On mobile (<=768px) skip fixed positioning so the page can scroll naturally
+  // Desktop only: force fixed HUD layout via inline style
+  // Mobile uses natural document flow — no inline styles set here
   if (onMain && window.innerWidth > 768) {
     el.style.setProperty('display', 'block', 'important');
     el.style.setProperty('position', 'fixed', 'important');
@@ -3168,16 +3170,8 @@ function showScreen(id) {
     el.style.setProperty('pointer-events', 'none', 'important');
     el.style.setProperty('flex-direction', 'unset', 'important');
   } else if (onMain) {
-    // Mobile: screen-main is fixed background layer; mob-shell handles scroll
-    el.style.setProperty('position', 'fixed', 'important');
-    el.style.setProperty('inset', '0', 'important');
-    el.style.setProperty('width', '100vw', 'important');
-    el.style.setProperty('height', '100dvh', 'important');
-    el.style.setProperty('overflow', 'hidden', 'important');
-    el.style.setProperty('background', 'transparent', 'important');
-    el.style.setProperty('pointer-events', 'none', 'important');
-    el.style.setProperty('z-index', '0', 'important');
-    el.style.setProperty('display', 'block', 'important');
+    // Mobile: clear ALL inline styles so CSS takes full control
+    el.style.cssText = '';
   }
   if (id === 'auth') { _fxRunning = false; setTimeout(initEmbers, 100); }
 }
@@ -3389,6 +3383,7 @@ function goToMain() {
   // On mobile (<=768px) skip fixed positioning so the page can scroll naturally
   var sm = document.getElementById('screen-main');
   if (sm && window.innerWidth > 768) {
+    // Desktop: fixed full-viewport HUD overlay
     sm.style.cssText = [
       'display:block',
       'position:fixed',
@@ -3404,9 +3399,8 @@ function goToMain() {
       'z-index:1'
     ].join(' !important;') + ' !important';
   } else if (sm) {
-    // Mobile: screen-main is a fixed background layer only
-    // mob-shell floats above it and handles all scrolling
-    sm.style.cssText = 'position:fixed !important;inset:0 !important;width:100vw !important;height:100dvh !important;overflow:hidden !important;background:transparent !important;pointer-events:none !important;z-index:0 !important;display:block !important';
+    // Mobile: clear all inline styles — CSS media query takes full control
+    sm.style.cssText = '';
   }
   setTimeout(function() {
     render();
@@ -5340,43 +5334,31 @@ function devForceRoad() {
 
 @media (max-width: 768px) {
 
-  /* ── Show shell as real block (not contents phantom) ── */
-  #mob-shell {
-    display: flex !important;
-    flex-direction: column !important;
-    position: relative !important;
-    width: 100% !important;
+  /* ── Mobile scroll: natural document flow ── */
+  html, body {
     height: auto !important;
-    min-height: 100dvh !important;
     overflow-y: auto !important;
     overflow-x: hidden !important;
-    -webkit-overflow-scrolling: touch !important;
-    z-index: 10 !important;
+  }
+
+  /* ── screen-main: plain block in document flow ── */
+  #screen-main, #screen-main.active {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    display: block !important;
     pointer-events: auto !important;
   }
 
-  /* ── Viewport: allow scroll on mobile ── */
-  html, body,
-  body:has(#screen-main.active),
-  html:has(#screen-main.active) {
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    height: auto !important;
-  }
-
-  /* ── screen-main: pull out of flow entirely on mobile ──
-     mob-shell handles all mobile layout; screen-main just
-     provides the background layer                         */
-  #screen-main, #screen-main.active {
-    position: fixed !important;
-    inset: 0 !important;
-    width: 100vw !important;
-    height: 100dvh !important;
-    overflow: hidden !important;
+  /* ── mob-shell: normal scrollable block ── */
+  #mob-shell {
     display: block !important;
-    background: transparent !important;
-    pointer-events: none !important;
-    z-index: 0 !important;
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
   }
 
   /* ── Hide ALL desktop HUD panels ── */
