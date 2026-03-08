@@ -5365,24 +5365,31 @@ function devForceRoad() {
     -webkit-overflow-scrolling: touch !important;
   }
 
-  /* ── auth panel: static flow so it scrolls with container ── */
+  /* ── auth panel: fixed overlay, slides up from bottom ── */
   .auth-wrap {
-    position: relative !important;
-    bottom: auto !important;
-    left: auto !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
     transform: none !important;
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 !important;
-    border-radius: 0 !important;
+    border-radius: 8px 8px 0 0 !important;
     border-left: none !important;
     border-right: none !important;
     box-sizing: border-box !important;
+    z-index: 100 !important;
   }
 
-  /* ── auth wrap visible: push to bottom of screen ── */
+  /* ── auth wrap visible: slide up animation ── */
   .auth-wrap.visible {
-    animation: none !important;
+    animation: mobileModalIn .32s cubic-bezier(.22,.61,.36,1) both !important;
+  }
+
+  @keyframes mobileModalIn {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
   }
 
   /* ── Continue button: filled gold on mobile ── */
