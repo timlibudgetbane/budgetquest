@@ -3153,7 +3153,8 @@ function showScreen(id) {
   });
 
   // For main screen, force fixed HUD layout via inline style (beats all cascade)
-  if (onMain) {
+  // On mobile (<=768px) skip fixed positioning so the page can scroll naturally
+  if (onMain && window.innerWidth > 768) {
     el.style.setProperty('display', 'block', 'important');
     el.style.setProperty('position', 'fixed', 'important');
     el.style.setProperty('inset', '0', 'important');
@@ -3166,6 +3167,12 @@ function showScreen(id) {
     el.style.setProperty('background', 'transparent', 'important');
     el.style.setProperty('pointer-events', 'none', 'important');
     el.style.setProperty('flex-direction', 'unset', 'important');
+  } else if (onMain) {
+    el.style.removeProperty('position');
+    el.style.removeProperty('inset');
+    el.style.removeProperty('height');
+    el.style.removeProperty('overflow');
+    el.style.removeProperty('pointer-events');
   }
   if (id === 'auth') { _fxRunning = false; setTimeout(initEmbers, 100); }
 }
@@ -3373,9 +3380,10 @@ function beginJourney() {
 
 function goToMain() {
   showScreen('main');
-  // Force HUD layout inline — beats all cascade
+  // Force HUD layout inline -- beats all cascade
+  // On mobile (<=768px) skip fixed positioning so the page can scroll naturally
   var sm = document.getElementById('screen-main');
-  if (sm) {
+  if (sm && window.innerWidth > 768) {
     sm.style.cssText = [
       'display:block',
       'position:fixed',
@@ -3390,6 +3398,8 @@ function goToMain() {
       'pointer-events:none',
       'z-index:1'
     ].join(' !important;') + ' !important';
+  } else if (sm) {
+    sm.style.cssText = '';
   }
   setTimeout(function() {
     render();
