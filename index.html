@@ -2094,8 +2094,176 @@ body::before {
   }
 
 }
-/* ── End mobile styles ───────────────────────────────────────── */
-</style>
+/* ══════════════════════════════════════════════
+   TODAY'S JOURNEY SECTION
+   Replaces the habit action bar.
+══════════════════════════════════════════════ */
+.journey-section {
+  padding: 16px 20px 18px;
+  border-top: 1px solid var(--border-gold);
+  background: linear-gradient(180deg, rgba(4,3,1,0) 0%, rgba(4,3,1,.88) 30%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.journey-section-label {
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  color: var(--text-dark);
+  text-transform: uppercase;
+  letter-spacing: .32em;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.journey-section-label::before,
+.journey-section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.journey-steps-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.journey-steps-count {
+  font-family: 'Cinzel', serif;
+  font-size: 28px;
+  color: var(--gold);
+  letter-spacing: .04em;
+  text-shadow: 0 0 30px rgba(212,168,75,.35);
+  line-height: 1;
+}
+.journey-steps-label {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  color: var(--text-dark);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+.journey-progress-block {
+  margin-bottom: 12px;
+}
+.journey-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+.journey-progress-label {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: .08em;
+}
+.journey-progress-pct {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  color: var(--gold-dim);
+  letter-spacing: .06em;
+}
+.journey-progress-track {
+  height: 4px;
+  background: rgba(255,255,255,.05);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+.journey-progress-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+  box-shadow: 0 0 8px rgba(212,168,75,.35);
+  transition: width .8s ease;
+}
+.journey-steps-left {
+  font-family: 'Crimson Text', serif;
+  font-size: 12px;
+  color: var(--text-dark);
+  font-style: italic;
+}
+.journey-narrative {
+  font-family: 'Crimson Text', serif;
+  font-size: 16px;
+  color: var(--text-dim);
+  font-style: italic;
+  line-height: 1.75;
+  padding-top: 4px;
+  border-top: 1px solid var(--border);
+}
+
+/* ── Chapter Complete overlay ── */
+#chapter-complete-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(4,3,1,.92);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity .4s ease;
+}
+#chapter-complete-overlay.show {
+  opacity: 1; pointer-events: auto;
+}
+.chapter-complete-box {
+  text-align: center;
+  padding: 48px 40px 40px;
+  background: rgba(8,6,3,.95);
+  border: 1px solid var(--border-gold);
+  border-radius: 6px;
+  max-width: 380px;
+  width: 90vw;
+  box-shadow: 0 0 80px rgba(212,168,75,.15), inset 0 1px 0 rgba(212,168,75,.15);
+}
+.chapter-complete-chapter {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  color: var(--gold-dim);
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+.chapter-complete-icon {
+  font-size: 48px;
+  display: block;
+  margin-bottom: 16px;
+  filter: drop-shadow(0 0 20px rgba(212,168,75,.5));
+}
+.chapter-complete-title {
+  font-family: 'Cinzel', serif;
+  font-size: 20px;
+  color: var(--gold);
+  letter-spacing: .08em;
+  margin-bottom: 14px;
+  text-shadow: 0 0 40px rgba(212,168,75,.4);
+}
+.chapter-complete-body {
+  font-family: 'Crimson Text', serif;
+  font-size: 17px;
+  color: var(--text-dim);
+  font-style: italic;
+  line-height: 1.8;
+  margin-bottom: 28px;
+}
+.chapter-complete-btn {
+  padding: 14px 40px;
+  background: linear-gradient(180deg, rgba(200,168,75,.1) 0%, rgba(200,168,75,.04) 100%);
+  border: 1px solid var(--gold-dim);
+  border-radius: 2px;
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  color: var(--gold);
+  letter-spacing: .2em;
+  cursor: pointer;
+  transition: all .2s;
+}
+.chapter-complete-btn:hover {
+  background: rgba(200,168,75,.18);
+  border-color: var(--gold);
+  box-shadow: 0 0 24px rgba(212,168,75,.2);
+}
+
 
 <script>
 // ════════════════════════════════════════════════════════
@@ -2600,6 +2768,8 @@ var S = {
   npcsSeen: [],
   chapter: 1,
   daysSinceEncounter: 0,
+  // ── Step-based journey progress ──────────────────────────────
+  totalJourneySteps: 0,   // accumulates forever — never resets
   // Health
   hp: 100,
   maxHp: 100,
@@ -2616,6 +2786,89 @@ var S = {
 };
 var KEY = 'hf_v3';
 var _devOffset = 0;
+
+// ════════════════════════════════════════════════════════
+//  STEP SERVICE
+//  Single source of truth for daily step data.
+//  Replace the mock implementation here when integrating
+//  Apple HealthKit (iOS) or Android Health Connect via Capacitor.
+//
+//  Contract:
+//    getTodaySteps()  → Promise<number>  (or sync number for mock)
+//    All UI/game logic MUST call getTodaySteps() — never read
+//    the mock variable directly.
+// ════════════════════════════════════════════════════════
+var StepService = (function() {
+
+  // ── MOCK — replace this block with HealthKit / Health Connect ──
+  var stepsToday = 8420;   // dev mock value
+  // ────────────────────────────────────────────────────────────────
+
+  function getTodaySteps() {
+    // Returns a Promise so the real implementation can be async.
+    // The mock resolves synchronously for simplicity.
+    return Promise.resolve(stepsToday);
+  }
+
+  // Dev helper: override mock steps from the dev panel
+  function _setMockSteps(n) {
+    stepsToday = n;
+  }
+
+  return { getTodaySteps: getTodaySteps, _setMockSteps: _setMockSteps };
+})();
+
+// ════════════════════════════════════════════════════════
+//  GAME PROGRESSION SERVICE
+//  Converts raw steps into road progress units.
+//  All conversion math lives here — UI never sees the formula.
+// ════════════════════════════════════════════════════════
+var ProgressionService = (function() {
+
+  // Each 1 000 steps = 1 progress unit (1% toward next location per unit).
+  // The divisor is the only number to change when tuning difficulty.
+  var STEPS_PER_UNIT = 1000;
+
+  // How many steps are needed to travel from one node to the next?
+  // (NODES.length - 1) segments × 10 000 steps each = full chapter
+  var STEPS_PER_SEGMENT = 10000;
+
+  // Convert today's step count into accumulated progress units.
+  // Called once per session when steps are ingested.
+  function stepsToUnits(steps) {
+    return Math.floor(steps / STEPS_PER_UNIT);
+  }
+
+  // Given totalJourneySteps, return { nodeIndex, pctToNext (0–100) }.
+  // nodeIndex  = which node the player is currently AT.
+  // pctToNext  = how far toward the NEXT node (0 = just arrived, 100 = there).
+  function getJourneyPosition(totalSteps) {
+    var totalNodes  = NODES.length;          // e.g. 6
+    var lastIdx     = totalNodes - 1;        // 5
+    var stepsPerSeg = STEPS_PER_SEGMENT;
+
+    // Which segment are we in?
+    var segIndex = Math.min(Math.floor(totalSteps / stepsPerSeg), lastIdx);
+    var stepsIntoSeg = totalSteps - (segIndex * stepsPerSeg);
+    var pct = (segIndex >= lastIdx)
+      ? 100
+      : Math.min(100, Math.floor((stepsIntoSeg / stepsPerSeg) * 100));
+
+    return { nodeIndex: segIndex, pctToNext: pct };
+  }
+
+  // True when the player has completed the chapter (reached final node).
+  function isChapterComplete(totalSteps) {
+    return totalSteps >= (NODES.length - 1) * STEPS_PER_SEGMENT;
+  }
+
+  return {
+    stepsToUnits:       stepsToUnits,
+    getJourneyPosition: getJourneyPosition,
+    isChapterComplete:  isChapterComplete,
+    STEPS_PER_SEGMENT:  STEPS_PER_SEGMENT,
+  };
+})();
 var SUPABASE_URL = 'https://tkitlklvunsdxipgfthd.supabase.co';
 var SUPABASE_KEY = 'sb_publishable_Bgn1lXzYxwswhZidGtRDDA_5krnnTcT';
 var _sb = null;
@@ -2692,6 +2945,8 @@ function fixState() {
   if (S.hp === undefined || S.hp === null) S.hp = 100;
   if (!S.maxHp) S.maxHp = 100;
   if (!S.coins) S.coins = { gold: 0, silver: 0, copper: 0 };
+  // Step-journey progress — never resets between days
+  if (S.totalJourneySteps === undefined || S.totalJourneySteps === null) S.totalJourneySteps = 0;
   // Road Remembers — initialise flags if missing (handles saves from before this feature)
   if (!S.storyMemory) S.storyMemory = { helpedMerchant: false, consistentTraveler: false, resilientTraveler: false };
   if (S.storyMemory.helpedMerchant     === undefined) S.storyMemory.helpedMerchant     = false;
@@ -2798,6 +3053,7 @@ function resetS() {
     chapter: 1, todayBeat: null, todayBeatDate: null,
     hp: 100, maxHp: 100, hpDamagedDate: null,
     coins: { gold: 0, silver: 0, copper: 0 },
+    totalJourneySteps: 0,
   });
 }
 
@@ -3019,12 +3275,13 @@ function doLog(habitId) {
 
   function renderWithoutHabits() {
     renderCharBar();
+    renderJourneySection();   // keep journey panel live during log animation
     renderBeatSection();
     renderNodeMap();
     renderJourneyLog();
     renderDevPanel();
     mobSync();
-    // Update just this card's logged state in-place
+    // Update just this card's logged state in-place (no-op if habits removed)
     var c = document.getElementById('habit-card-' + _habitId);
     if (c) c.classList.add('logged');
   }
@@ -3099,22 +3356,45 @@ function processDayCommit() {
   });
   S.daysLogged = Object.keys(allDates).length;
 
-  _pendingNodeAdvanced = false;
-  if (!S.advancementPaused) {
-    var nextNode = NODES[S.currentNode + 1];
-    if (nextNode && S.daysLogged >= nextNode.daysNeeded) {
-      S.currentNode++;
-      _pendingNodeAdvanced = true;
-      if (!S.coins) S.coins = { total: 0 };
-      var arrivalHp  = Math.max(0, Math.min(S.maxHp, S.hp));
-      var arrivalPct = arrivalHp / S.maxHp;
-      var coinEarned = arrivalPct >= 0.8 ? 50 : arrivalPct >= 0.4 ? 25 : 10;
-      S.coins.total = (S.coins.total || 0) + coinEarned;
-      S._lastCoinEarned    = coinEarned;
-      S._lastArrivalReward = arrivalPct >= 0.8 ? 'gold' : arrivalPct >= 0.4 ? 'silver' : 'copper';
-      S._lastArrivalHp     = arrivalHp;
+  // ── STEP INGESTION ─────────────────────────────────────────
+  // Accumulate today's steps into totalJourneySteps.
+  // getTodaySteps() is async — we call it and update state + re-render when it resolves.
+  StepService.getTodaySteps().then(function(stepsToday) {
+    S.totalJourneySteps = (S.totalJourneySteps || 0) + stepsToday;
+
+    // Derive node position from totalJourneySteps (replaces daysLogged-based advancement)
+    var pos = ProgressionService.getJourneyPosition(S.totalJourneySteps);
+    var prevNode = S.currentNode;
+    S.currentNode = pos.nodeIndex;
+
+    _pendingNodeAdvanced = (S.currentNode > prevNode);
+
+    // Chapter complete check
+    if (ProgressionService.isChapterComplete(S.totalJourneySteps)) {
+      S._chapterComplete = true;
     }
-  }
+
+    save();
+    // Re-render map and journey panel to reflect new position
+    renderNodeMap();
+    renderJourneySection();
+    renderDevPanel();
+    mobSync();
+
+    if (_pendingNodeAdvanced) {
+      _pendingNodeAdvanced = false;
+      if (S._chapterComplete) {
+        setTimeout(function() { showChapterComplete(); }, 600);
+      } else {
+        setTimeout(function() { showLevelUp(S.currentNode); }, 600);
+      }
+    }
+  });
+  // ── END STEP INGESTION ─────────────────────────────────────
+
+  // Node advancement is now driven by steps (above), not daysLogged.
+  // Keep _pendingNodeAdvanced = false here; the async step handler sets it.
+  _pendingNodeAdvanced = false;
 
   if (beat) {
     var cLabel = consistency === 'on_road' ? 'On the Road'
@@ -3299,9 +3579,20 @@ function pressOn() {
 }
 
 function daysToNextNode() {
+  // Legacy shim — kept for beat text that references it.
+  // Now derived from step position rather than daysLogged.
   var next = NODES[S.currentNode + 1];
   if (!next) return null;
   return Math.max(0, next.daysNeeded - S.daysLogged);
+}
+
+// Steps-based: how many more steps to reach the next location?
+function stepsToNextNode() {
+  if (ProgressionService.isChapterComplete(S.totalJourneySteps)) return null;
+  var pos = ProgressionService.getJourneyPosition(S.totalJourneySteps);
+  var stepsPerSeg = ProgressionService.STEPS_PER_SEGMENT;
+  var nextSegStart = (pos.nodeIndex + 1) * stepsPerSeg;
+  return Math.max(0, nextSegStart - (S.totalJourneySteps || 0));
 }
 
 // ════════════════════════════════════════════════════════
@@ -3321,7 +3612,23 @@ var OB_CURATED = [
 var _obSelectedHabits = [];
 var _obCustomShown = false;
 
+// ── Early screen reveal ───────────────────────────────────────────────────────
+// Show the auth screen as soon as the DOM is parsed — before Supabase loads.
+// This prevents the "black screen" when the CDN is slow or the file is opened locally.
+// showScreen() will override this once the auth state is known.
+document.addEventListener('DOMContentLoaded', function() {
+  var authEl = document.getElementById('screen-auth');
+  if (authEl) authEl.classList.add('active');
+  // Always show the login form immediately — don't wait for "Continue" click
+  var btn  = document.getElementById('auth-continue-btn');
+  var wrap = document.getElementById('auth-wrap');
+  if (btn)  btn.style.display  = 'none';
+  if (wrap) { wrap.style.display = 'block'; wrap.classList.add('visible'); }
+});
+// ─────────────────────────────────────────────────────────────────────────────
+
 window.addEventListener('load', async function() {
+  try {
   initSupabase();
 
   // Check for existing session
@@ -3330,14 +3637,16 @@ window.addEventListener('load', async function() {
     _user = session.user;
     var loaded = await loadFromSupabase();
     if (!loaded) loadLocal();
-    if (S.habits && S.habits.length > 0) {
+    if (S.name && S.name.length > 0) {
       goToMain();
     } else {
       showScreen('ob');
       showObStep(0);
     }
   } else {
-    if (loadLocal() && S.habits.length > 0) {
+    loadLocal();
+    if (S.name && S.name.length > 0) {
+      // Returning player, not signed in — show auth
       showScreen('auth');
       showAuthTab('login');
     } else {
@@ -3351,7 +3660,7 @@ window.addEventListener('load', async function() {
       _user = session.user;
       var loaded = await loadFromSupabase();
       if (!loaded) loadLocal();
-      if (S.habits && S.habits.length > 0) {
+      if (S.name && S.name.length > 0) {
         goToMain();
       } else {
         showScreen('ob');
@@ -3362,6 +3671,12 @@ window.addEventListener('load', async function() {
       showScreen('auth');
     }
   });
+  } catch(e) {
+    // If anything in the startup sequence throws, fall back to auth screen
+    console.error('HabitForge startup error:', e);
+    showScreen('auth');
+    showAuthTab('login');
+  }
 });
 
 function showObStep(n) {
@@ -3592,7 +3907,7 @@ function backfillHabitStats() {
 
 function render() {
   renderCharBar();
-  renderHabits();
+  renderJourneySection();
   renderBeatSection();
   // day summary + teaser now handled inline by pressOn
   renderNodeMap();
@@ -3696,9 +4011,11 @@ function renderCharBar() {
   if (miniHp)    miniHp.textContent    = Math.round(hp);
   if (miniMaxHp) miniMaxHp.textContent = maxHp;
   if (miniLoc)   miniLoc.textContent   = node.name;
+  // Show total steps in the streak slot
   if (miniStreak && miniStrWrap) {
-    if (streak > 0) {
-      miniStreak.textContent = streak;
+    var totalSteps = S.totalJourneySteps || 0;
+    if (totalSteps > 0) {
+      miniStreak.textContent = totalSteps.toLocaleString() + ' steps';
       miniStrWrap.style.display = '';
     } else {
       miniStrWrap.style.display = 'none';
@@ -3762,55 +4079,120 @@ function renderCharBar() {
 }
 
 
-function renderHabits() {
-  var wrap = document.getElementById('habits-wrap');
-  wrap.innerHTML = '';
-  var t = today();
-  S.habits.forEach(function(h) {
-    var done = (h.log || []).indexOf(t) !== -1;
-    var card = document.createElement('div');
-    card.className = 'habit-card' + (done ? ' logged' : '');
-    card.id = 'habit-card-' + h.id;
+// ════════════════════════════════════════════════════════
+//  TODAY'S JOURNEY SECTION
+//  Replaces the old habit-logging section.
+//  Reads steps from StepService, converts via ProgressionService,
+//  and renders the journey panel + narrative block.
+// ════════════════════════════════════════════════════════
 
-    var freqLabel = h.freq === 'daily' ? 'Daily' : h.freq + '× per week';
+// Milestone narrative messages — shown at 25 / 50 / 75 / 100% toward next location.
+// Each segment has its own pool. Key = "fromNodeId_toNodeId", fallback = "default".
+var JOURNEY_NARRATIVES = {
+  '0_1': {
+    25:  'You have left Hearthstone behind. The North Road opens ahead.',
+    50:  'Halfway to Harvest Crossing. The road is firm underfoot.',
+    75:  'The fields thin out. You can smell the crossing from here.',
+    100: 'Harvest Crossing is within reach. One more push.',
+  },
+  '1_2': {
+    25:  'The market district fades behind you. Trade Road ahead.',
+    50:  'Good miles covered since Harvest Crossing. Keep the pace.',
+    75:  'Merchant\'s Gate is close. The road is busy with carts.',
+    100: 'The gate is in sight. You have earned your rest here.',
+  },
+  '2_3': {
+    25:  'The trade roads are rougher now. River country ahead.',
+    50:  'Solid progress toward Copperbridge. The river smell carries on the wind.',
+    75:  'The bridge glints on the horizon. Nearly there.',
+    100: 'Copperbridge is just ahead. The crossing awaits.',
+  },
+  '3_4': {
+    25:  'The forest edge begins. The road narrows into the trees.',
+    50:  'Deep into the woodland stretch. Light comes in patches now.',
+    75:  'Thornwood Edge is close. The canopy thickens overhead.',
+    100: 'The forest breaks. Thornwood Edge is within reach.',
+  },
+  '4_5': {
+    25:  'The high country rises. Every step is deliberate now.',
+    50:  'Halfway to the Iron Keep. The air is thin and cold.',
+    75:  'The fortress silhouette cuts the skyline. Push on.',
+    100: 'The Iron Keep looms above. The road ends here.',
+  },
+  'default': {
+    25:  'You have covered a quarter of the distance. The road is yours.',
+    50:  'Halfway there. The miles add up.',
+    75:  'Three quarters done. The destination is real now.',
+    100: 'You are on the threshold. One final effort.',
+  },
+};
 
-    // Streak — only show when logged (bar handles the at-risk warning)
-    var streakHtml = '';
-    if ((h.streak || 0) > 1 && done) {
-      streakHtml = '<span class="habit-streak">🔥 ' + h.streak + ' streak</span>';
-    }
+// Returns the narrative string for the current step position.
+// Dynamic: changes at 25 / 50 / 75 / 100% milestones.
+function getJourneyNarrative(pos) {
+  var key = pos.nodeIndex + '_' + (pos.nodeIndex + 1);
+  var pool = JOURNEY_NARRATIVES[key] || JOURNEY_NARRATIVES['default'];
+  var pct = pos.pctToNext;
+  if (pct >= 100) return pool[100] || pool['default'];
+  if (pct >= 75)  return pool[75];
+  if (pct >= 50)  return pool[50];
+  if (pct >= 25)  return pool[25];
+  // < 25%: use the origin node's "just arrived" flavour from WORLD_CONDITIONS
+  var zone = Math.min(pos.nodeIndex + 1, 5);
+  var condPool = WORLD_CONDITIONS[zone] || WORLD_CONDITIONS[1];
+  return condPool[(S.daysLogged || 0) % condPool.length];
+}
 
-    // Weekly progress for non-daily habits
-    var weeklyHtml = '';
-    if (h.freq !== 'daily') {
-      var target = parseInt(h.freq) || 3;
-      var count = weeklyCount(h);
-      var pips = '';
-      for (var i = 0; i < target; i++) {
-        pips += '<span class="weekly-pip' + (i < count ? ' filled' : '') + '"></span>';
-      }
-      weeklyHtml = '<div class="weekly-progress">' + pips + '<span class="weekly-label">' + count + '/' + target + ' past 7 days</span></div>';
-    }
+function renderJourneySection() {
+  var wrap    = document.getElementById('journey-section-wrap');
+  var mobWrap = document.getElementById('mob-journey-section-wrap');
 
-    card.innerHTML = '<div class="habit-card-inner">' +
-      '<div class="habit-check ' + (done ? 'done' : '') + '" id="habit-check-' + h.id + '"' +
-        (done ? '' : ' onclick="doLog(' + h.id + ')"') + '>' + (done ? '✓' : '') + '</div>' +
-      '<div class="habit-body">' +
-        '<div class="habit-name">' + esc(h.text) + '</div>' +
-        '<div class="habit-row2">' +
-          '<span class="habit-freq-tag">' + freqLabel + '</span>' +
-          (h.stat ? '<span class="habit-stat-badge ' + h.stat + '">' + h.stat + '</span>' : '') +
-          streakHtml +
-        '</div>' +
-        weeklyHtml +
+  StepService.getTodaySteps().then(function(stepsToday) {
+    var totalSteps = S.totalJourneySteps || 0;
+    var pos        = ProgressionService.getJourneyPosition(totalSteps);
+    var curNode    = NODES[pos.nodeIndex] || NODES[0];
+    var nextNode   = NODES[pos.nodeIndex + 1];
+    var chapterDone = ProgressionService.isChapterComplete(totalSteps);
+
+    var stepsLeft = stepsToNextNode();
+
+    var narrative = chapterDone
+      ? 'You have reached the end of the chapter. A new road awaits.'
+      : getJourneyNarrative(pos);
+
+    var barPct = chapterDone ? 100 : pos.pctToNext;
+
+    var destLabel = chapterDone
+      ? 'Chapter complete'
+      : (nextNode ? 'Toward ' + nextNode.name : 'Journey\'s end');
+
+    var html =
+      '<div class="journey-steps-row">' +
+        '<div class="journey-steps-count">' + stepsToday.toLocaleString() + '</div>' +
+        '<div class="journey-steps-label">steps today</div>' +
       '</div>' +
-    '</div>' +
-    '<div class="habit-reaction" id="habit-reaction-' + h.id + '">' +
-      '<span class="habit-reaction-stat" id="habit-reaction-stat-' + h.id + '"></span>' +
-      '<span class="habit-reaction-text" id="habit-reaction-text-' + h.id + '"></span>' +
-    '</div>';
-    wrap.appendChild(card);
+      '<div class="journey-progress-block">' +
+        '<div class="journey-progress-header">' +
+          '<span class="journey-progress-label">' + esc(destLabel) + '</span>' +
+          '<span class="journey-progress-pct">' + barPct + '%</span>' +
+        '</div>' +
+        '<div class="journey-progress-track">' +
+          '<div class="journey-progress-fill" style="width:' + Math.max(2, barPct) + '%"></div>' +
+        '</div>' +
+        (stepsLeft !== null
+          ? '<div class="journey-steps-left">' + stepsLeft.toLocaleString() + ' steps to ' + esc(nextNode ? nextNode.name : 'journey\'s end') + '</div>'
+          : '') +
+      '</div>' +
+      '<div class="journey-narrative">' + esc(narrative) + '</div>';
+
+    if (wrap)    _setHTML(wrap,    html);
+    if (mobWrap) _setHTML(mobWrap, html);
   });
+}
+
+// Keep renderHabits as a no-op shim — called in a few legacy paths
+function renderHabits() {
+  // Habit system removed. Journey section is rendered by renderJourneySection().
 }
 
 // Guard: only write innerHTML if content actually changed — prevents flicker
@@ -3871,7 +4253,7 @@ function renderBeatSection() {
       if (teaserBeat && teaserBeat.teaser) {
         _setHTML(locked, '<div class="beat-teaser-pre">' + esc(teaserBeat.teaser) + '</div>');
       } else {
-        _setHTML(locked, '<div class="beat-teaser-pre">The road north doesn\'t wait.</div>');
+        _setHTML(locked, '<div class="beat-teaser-pre">Keep walking. The road north doesn\'t wait.</div>');
       }
 
     } else {
@@ -3987,28 +4369,38 @@ function renderNodeMap() {
   if (!inner) return;
   _setHTML(inner, '');
 
-  var curNode  = NODES[S.currentNode] || NODES[0];
-  var nextNode = NODES[S.currentNode + 1];
-  var dtnn     = daysToNextNode();
+  // ── Derive position from step-based ProgressionService ───────
+  var pos      = ProgressionService.getJourneyPosition(S.totalJourneySteps || 0);
+  var curNodeIdx = pos.nodeIndex;
+  var pctToNext  = pos.pctToNext;   // 0–100, % toward next node
+  var curNode    = NODES[curNodeIdx] || NODES[0];
+  var nextNode   = NODES[curNodeIdx + 1];
+  var chapterDone = ProgressionService.isChapterComplete(S.totalJourneySteps || 0);
 
-  var subText = !nextNode ? 'Journey complete.' :
-    dtnn === 0 ? 'Arriving at ' + nextNode.name + '…' :
-    dtnn === 1 ? '1 day to ' + nextNode.name :
-    dtnn + ' days to ' + nextNode.name;
+  // Human-readable sub-text: show % progress toward next location
+  var subText;
+  if (chapterDone) {
+    subText = 'Chapter complete.';
+  } else if (nextNode) {
+    if (pctToNext === 0) {
+      subText = 'Arrived at ' + curNode.name + '.';
+    } else {
+      subText = pctToNext + '% toward ' + nextNode.name;
+    }
+  } else {
+    subText = 'Journey complete.';
+  }
 
   // ── Desktop: vertical node list ──────────────────────────────
   if (window.innerWidth > 768) {
-    // Section label
     var zoneLabel = document.createElement('div');
     zoneLabel.className = 'vmap-zone-label';
-    zoneLabel.textContent = 'Your Journey';
+    zoneLabel.textContent = 'Chapter ' + (S.chapter || 1);
     inner.appendChild(zoneLabel);
 
-    // One row per node — rendered top to bottom (Hearthstone first)
     NODES.forEach(function(node, idx) {
-      var isCurrent = (node.id === S.currentNode);
-      var isDone    = (node.id < S.currentNode);
-      var isLast    = (idx === NODES.length - 1);
+      var isCurrent = (idx === curNodeIdx);
+      var isDone    = (idx < curNodeIdx);
 
       var row = document.createElement('div');
       row.className = 'vmap-row' +
@@ -4016,7 +4408,6 @@ function renderNodeMap() {
         (isDone    ? ' vmap-row--done'    : '') +
         (!isDone && !isCurrent ? ' vmap-row--ahead' : '');
 
-      // Connector line above (skip first node)
       var connector = document.createElement('div');
       connector.className = 'vmap-connector';
       connector.innerHTML =
@@ -4027,7 +4418,7 @@ function renderNodeMap() {
           (isCurrent ? '<div class="vmap-dot-pulse"></div>' : '') +
         '</div>';
 
-      // Node info
+      var segSteps = ProgressionService.STEPS_PER_SEGMENT;
       var info = document.createElement('div');
       info.className = 'vmap-info';
       info.innerHTML =
@@ -4035,11 +4426,10 @@ function renderNodeMap() {
         (isCurrent
           ? '<div class="vmap-sub">' + subText + '</div>'
           : isDone
-            ? '<div class="vmap-sub vmap-sub--done">Visited · Day ' + node.daysNeeded + '</div>'
-            : '<div class="vmap-sub">Day ' + node.daysNeeded + '</div>') +
+            ? '<div class="vmap-sub vmap-sub--done">Visited</div>'
+            : '<div class="vmap-sub">' + (idx * segSteps / 1000).toFixed(0) + 'k steps</div>') +
         '';
 
-      // Icon
       var icon = document.createElement('div');
       icon.className = 'vmap-icon';
       icon.textContent = node.icon;
@@ -4050,21 +4440,17 @@ function renderNodeMap() {
       inner.appendChild(row);
     });
 
-    // Clear the header sub-text (managed inline above)
     var subEl = document.getElementById('node-map-sub');
-    if (subEl) subEl.textContent = 'Your Journey';
+    if (subEl) subEl.textContent = 'Chapter ' + (S.chapter || 1);
     return;
   }
 
-  // ── Mobile: original horizontal bar layout ────────────────────
-  var prevNodeDays = curNode.daysNeeded || 0;
-  var nextNodeDays = nextNode ? nextNode.daysNeeded : curNode.daysNeeded;
-  var segmentLen = nextNodeDays - prevNodeDays;
-  var daysInSegment = (S.daysLogged || 0) - prevNodeDays;
+  // ── Mobile: horizontal progress bar ──────────────────────────
+  // Overall track position: each segment is equal width.
   var nodeSpacing = 100 / (NODES.length - 1);
-  var nodeStartPct = S.currentNode * nodeSpacing;
-  var segmentPct = segmentLen > 0 ? Math.min(1, Math.max(0, daysInSegment / segmentLen)) : 0;
-  var pct = Math.min(100, nodeStartPct + segmentPct * nodeSpacing);
+  var nodeStartPct = curNodeIdx * nodeSpacing;
+  var segmentFillPct = chapterDone ? 100 : nodeStartPct + (pctToNext / 100) * nodeSpacing;
+  var trackPct = Math.min(100, Math.max(2, segmentFillPct));
 
   var header = document.createElement('div');
   header.className = 'map-current-row';
@@ -4080,14 +4466,14 @@ function renderNodeMap() {
   track.className = 'map-progress-track';
   var fill = document.createElement('div');
   fill.className = 'map-progress-fill';
-  fill.style.width = Math.max(2, pct) + '%';
+  fill.style.width = trackPct + '%';
   track.appendChild(fill);
   inner.appendChild(track);
 
   var milestones = document.createElement('div');
   milestones.className = 'map-milestones';
-  NODES.forEach(function(node) {
-    var state = node.id < S.currentNode ? 'done' : node.id === S.currentNode ? 'current' : 'ahead';
+  NODES.forEach(function(node, idx) {
+    var state = idx < curNodeIdx ? 'done' : idx === curNodeIdx ? 'current' : 'ahead';
     var m = document.createElement('div');
     m.className = 'map-milestone';
     m.innerHTML =
@@ -4240,17 +4626,14 @@ function renderJourneyLog() {
 function renderDevPanel() {
   var el = document.getElementById('dev-info');
   if (!el) return;
-  var c = getConsistency();
-  var ep = getEpithet();
-  var str = getStat('STR'), wis = getStat('WIS'), dis = getStat('DISC');
-  var hp = Math.round(S.hp || 100);
-  var node = NODES[S.currentNode] || NODES[0];
+  var pos  = ProgressionService.getJourneyPosition(S.totalJourneySteps || 0);
+  var node = NODES[pos.nodeIndex] || NODES[0];
+  var hp   = Math.round(S.hp || 100);
   el.innerHTML =
-    'Day <span>' + S.daysLogged + '</span> · offset <span>+' + _devOffset + '</span><br>' +
-    'Node <span>' + S.currentNode + '</span> · ' + node.short + '<br>' +
-    'HP <span>' + hp + '</span> · ' + c.replace('_',' ') + '<br>' +
-    'STR <span>' + str + '</span> · WIS <span>' + wis + '</span> · DIS <span>' + dis + '</span><br>' +
-    'Epithet: <span>' + (ep ? ep.text : 'none') + '</span>';
+    'Steps <span>' + (S.totalJourneySteps || 0).toLocaleString() + '</span><br>' +
+    'Node <span>' + pos.nodeIndex + '</span> · ' + node.short + ' · <span>' + pos.pctToNext + '%</span> to next<br>' +
+    'HP <span>' + hp + '</span> · Day <span>' + (S.daysLogged || 0) + '</span><br>' +
+    'Chapter <span>' + (S.chapter || 1) + '</span> · Complete: <span>' + (ProgressionService.isChapterComplete(S.totalJourneySteps||0) ? 'yes' : 'no') + '</span>';
 }
 
 // ── Journey log toggle ──
@@ -4292,8 +4675,13 @@ function openCharModal() {
   if (ep) subParts.push(ep.text);
   document.getElementById('cm-sub').textContent = subParts.join(' · ');
   document.getElementById('cm-node').textContent = node.name;
-  document.getElementById('cm-node-sub').textContent = next ? 'Heading to: ' + next.name : 'Journey complete';
-  document.getElementById('cm-days').textContent = S.daysLogged;
+  document.getElementById('cm-node-sub').textContent = next ? 'Heading to: ' + next.name : 'Chapter complete';
+  var cmDays = document.getElementById('cm-days');
+  if (cmDays) {
+    cmDays.textContent = (S.totalJourneySteps || 0).toLocaleString();
+    var cmDaysSub = cmDays.parentElement && cmDays.parentElement.querySelector('.char-stat-sub');
+    if (cmDaysSub) cmDaysSub.textContent = 'total steps';
+  }
   document.getElementById('cm-streak').textContent = streak;
   var cmChapter = document.getElementById('cm-chapter');
   if (cmChapter) cmChapter.textContent = 'Chapter ' + (S.chapter || 1);
@@ -4348,37 +4736,34 @@ function openCharModal() {
 function closeCharModal() { document.getElementById('char-modal').classList.remove('show'); }
 
 // ── Level up ──
-function showLevelUp(node) {
-  var wp = NODES[node] || NODES[0];
-  var reward = S._lastArrivalReward || 'copper';
-  var arrivalHp = S._lastArrivalHp || S.hp || 0;
-  var coins = S.coins || { gold: 0, silver: 0, copper: 0 };
-
-  var coinEarned = S._lastCoinEarned || (reward === 'gold' ? 50 : reward === 'silver' ? 25 : 10);
-  var coinTotal  = (S.coins && S.coins.total) || coinEarned;
-  var rewardData = {
-    gold:   { icon: '⚜', label: '50 Road Coin', line: 'Full strength arrival. The road was merciful.', color: '#c8a84b' },
-    silver: { icon: '⚜', label: '25 Road Coin', line: 'Arrived wounded, but you made it.', color: '#a0a8b0' },
-    copper: { icon: '⚜', label: '10 Road Coin', line: 'Barely standing. The road cost you.', color: '#b87840' },
-  };
-  var rd = rewardData[reward];
+function showLevelUp(nodeIdx) {
+  var wp = NODES[nodeIdx] || NODES[0];
+  var totalSteps = S.totalJourneySteps || 0;
 
   document.getElementById('lu-icon').textContent = wp.icon;
   document.getElementById('lu-title').textContent = 'You reached ' + wp.name;
   document.getElementById('lu-text').innerHTML =
-    '<div style="margin-bottom:12px;color:var(--text-dim);">' + wp.zone + ' · Waypoint ' + node + ' of 5</div>' +
-    '<div class="arrival-reward">' +
-      '<div class="arrival-coin" style="color:' + rd.color + '">' + rd.icon + ' ' + rd.label + '</div>' +
-      '<div class="arrival-line">' + rd.line + '</div>' +
-      '<div class="arrival-hp">Arrived at ' + arrivalHp + ' / ' + (S.maxHp||100) + ' HP</div>' +
-    '</div>' +
-    '<div class="arrival-total">' +
-      '⚜ ' + coinTotal + ' Road Coin total' +
+    '<div style="margin-bottom:12px;color:var(--text-dim);">' + esc(wp.zone) + ' · Waypoint ' + nodeIdx + ' of ' + (NODES.length - 1) + '</div>' +
+    '<div style="font-family:\'Crimson Text\',serif;font-size:16px;color:var(--text-dim);font-style:italic;line-height:1.7;">' +
+      totalSteps.toLocaleString() + ' total steps carried you here.' +
     '</div>';
 
   document.getElementById('levelup-overlay').classList.add('show');
 }
 function closeLevelUp() { document.getElementById('levelup-overlay').classList.remove('show'); }
+
+// ── Chapter Complete overlay ──
+function showChapterComplete() {
+  var overlay = document.getElementById('chapter-complete-overlay');
+  if (!overlay) return;
+  overlay.classList.add('show');
+}
+function closeChapterComplete() {
+  var overlay = document.getElementById('chapter-complete-overlay');
+  if (overlay) overlay.classList.remove('show');
+  // Placeholder: future chapters will begin here.
+  showToast('New chapter coming soon. Your journey continues.');
+}
 
 // ── Toast ──
 var _tt = null;
@@ -4657,6 +5042,11 @@ function showAuthTab(tab) {
   document.getElementById('auth-form-' + tab).classList.add('active');
   var e1 = document.getElementById('auth-error'); if (e1) e1.textContent = '';
   var e2 = document.getElementById('auth-error-signup'); if (e2) e2.textContent = '';
+  // Always show the auth panel immediately — skip the "Continue" click requirement
+  var btn  = document.getElementById('auth-continue-btn');
+  var wrap = document.getElementById('auth-wrap');
+  if (btn)  btn.style.display = 'none';
+  if (wrap) { wrap.style.display = 'block'; wrap.classList.add('visible'); }
 }
 
 async function doSignup() {
@@ -4740,7 +5130,8 @@ async function doSignOut() {
   await _sb.auth.signOut();
   Object.assign(S, { name:'', race:'human', cls:'Warrior', habits:[], currentNode:0, daysLogged:0,
     advancementPaused:false, pauseReason:'', lastLogDate:null, sessionDate:null, pressedOn:false,
-    beatsSeen:[], journeyLog:[], npcsSeen:[], chapter:1, todayBeat:null, todayBeatDate:null });
+    beatsSeen:[], journeyLog:[], npcsSeen:[], chapter:1, todayBeat:null, todayBeatDate:null,
+    totalJourneySteps:0, _chapterComplete:false });
   localStorage.removeItem(KEY);
   _user = null;
   showScreen('auth');
@@ -5049,19 +5440,48 @@ function devSetHP(val) {
 }
 
 function devSetNode(n) {
-  S.currentNode = Math.max(0, Math.min(NODES.length-1, n));
-  S.daysLogged = NODES[n].daysNeeded || 0;
+  n = Math.max(0, Math.min(NODES.length - 1, n));
+  // Set totalJourneySteps so ProgressionService places the player at the start of node n
+  S.totalJourneySteps = n * ProgressionService.STEPS_PER_SEGMENT;
+  S.currentNode = n;
+  S.daysLogged  = NODES[n].daysNeeded || 0;
   S.sessionDate = null;
-  S.pressedOn = false;
-  S.todayBeat = null;
+  S.pressedOn   = false;
+  S.todayBeat   = null;
+  S._chapterComplete = false;
   save(); render();
-  showToast('Jumped to ' + NODES[n].name);
+  showToast('Jumped to ' + NODES[n].name + ' (' + S.totalJourneySteps.toLocaleString() + ' steps)');
+}
+
+// ── Step dev helpers ──
+// Override the mock step value AND (optionally) re-run step ingestion
+function devSetSteps(val) {
+  if (val === undefined) {
+    var input = document.getElementById('dev-steps-val');
+    val = parseInt(input ? input.value : 0);
+    if (isNaN(val) || val < 0) { showToast('Enter a valid step count'); return; }
+  }
+  StepService._setMockSteps(val);
+  renderJourneySection();
+  renderDevPanel();
+  showToast('Mock steps today set to ' + val.toLocaleString());
+}
+
+// Add steps directly to totalJourneySteps (simulates cumulative walking)
+function devAddSteps(n) {
+  S.totalJourneySteps = (S.totalJourneySteps || 0) + n;
+  // Re-derive currentNode
+  var pos = ProgressionService.getJourneyPosition(S.totalJourneySteps);
+  S.currentNode = pos.nodeIndex;
+  if (ProgressionService.isChapterComplete(S.totalJourneySteps)) {
+    S._chapterComplete = true;
+  }
+  save();
+  render();
+  showToast('+' + n.toLocaleString() + ' steps → ' + S.totalJourneySteps.toLocaleString() + ' total');
 }
 
 function devForceEncounter() {
-  S.sessionDate = null;
-  S.pressedOn = false;
-  // Find an encounter beat for current node
   var beats = BEATS.filter(function(b) {
     return b.type === 'encounter' && b.node <= S.currentNode;
   });
@@ -6268,13 +6688,7 @@ function devForceRoad() {
     flex-shrink: 0 !important;
   }
 
-  /* ── Habit cards: full width stacked ── */
-  #mob-habits-wrap { padding: 0 14px 14px !important; }
-  #mob-habits-wrap .habit-card {
-    width: 100% !important; margin-bottom: 8px !important;
-    min-width: unset !important; max-width: 100% !important;
-  }
-  #mob-habits-wrap .habit-card:last-child { margin-bottom: 0 !important; }
+  /* mob-habits-wrap removed — replaced by journey section */
 
   /* Beat content padding */
   #mob-beat-section { padding: 0 !important; }
@@ -6377,11 +6791,11 @@ function devForceRoad() {
     display: flex !important;
     flex-direction: column !important;
   }
-  /* Habits card — primary action, comes first */
-  #mob-pane-today .mob-card:has(#mob-habits-wrap) {
+  /* Journey section card — primary action, comes first */
+  #mob-pane-today .mob-card:has(#mob-journey-section-wrap) {
     order: 1 !important;
   }
-  /* Road Log card — comes after habits */
+  /* Road Log card — comes after journey section */
   #mob-pane-today .mob-card:has(#mob-beat-section) {
     order: 2 !important;
   }
@@ -6632,14 +7046,14 @@ function devForceRoad() {
           <div class="hud-story-body" id="hud-story-body">
             <div id="beat-section" class="beat-section">
               <div class="beat-return-greeting" id="beat-return-greeting" style="display:none;"></div>
-              <div class="beat-locked" id="beat-locked">Log today's habits to see what happens on the road.</div>
+              <div class="beat-locked" id="beat-locked">Your steps carry you forward. Keep walking.</div>
               <div class="beat-inner" id="beat-inner" style="display:none;"></div>
             </div>
           </div>
-          <!-- Habits panel embedded in center column -->
-          <div class="hud-actionbar" id="habits-wrap-outer">
-            <div class="hud-actionbar-label">Today's Habits</div>
-            <div class="hud-actionbar-habits" id="habits-wrap"></div>
+          <!-- Today's Journey panel — replaces habit action bar -->
+          <div class="journey-section hud-actionbar" id="journey-section-outer">
+            <div class="journey-section-label">Today's Journey</div>
+            <div id="journey-section-wrap"></div>
           </div>
 
           <!-- Road Log — narrative timeline, flows below habits -->
@@ -6711,12 +7125,12 @@ function devForceRoad() {
   <!-- ── TODAY tab pane: Habits first, Road Log second ── -->
   <div class="mob-pane mob-pane-active" id="mob-pane-today">
 
-    <!-- Today's Habits — always expanded -->
+    <!-- Today's Journey — always expanded -->
     <div class="mob-card">
       <div class="mob-card-header">
-        <span class="mob-card-title">Today's Habits</span>
+        <span class="mob-card-title">Today's Journey</span>
       </div>
-      <div id="mob-habits-wrap"></div>
+      <div class="journey-section" id="mob-journey-section-wrap" style="border-top:none;background:none;backdrop-filter:none;padding:12px 16px 14px;"></div>
     </div>
 
     <!-- Road Log -->
@@ -6727,7 +7141,7 @@ function devForceRoad() {
       </div>
       <div id="mob-beat-section" class="beat-section">
         <div class="beat-return-greeting" id="mob-beat-return-greeting" style="display:none;"></div>
-        <div class="beat-locked" id="mob-beat-locked">Log today's habits to see what happens on the road.</div>
+        <div class="beat-locked" id="mob-beat-locked">Your steps carry you forward. Keep walking.</div>
         <div class="beat-inner" id="mob-beat-inner" style="display:none;"></div>
       </div>
     </div>
@@ -6822,8 +7236,8 @@ function devForceRoad() {
       </div>
       <div class="char-stat-cell">
         <div class="char-stat-label">Progress</div>
-        <div class="char-stat-val" id="cm-days" style="font-size:20px;">0</div>
-        <div class="char-stat-sub">days logged</div>
+        <div class="char-stat-val" id="cm-days" style="font-size:18px;">0</div>
+        <div class="char-stat-sub">total steps</div>
         <div style="margin-top:5px;font-family:'Cinzel',serif;font-size:11px;color:var(--text-dim);">
           🔥 <span id="cm-streak" style="color:var(--gold);">0</span> streak
         </div>
@@ -6859,11 +7273,23 @@ function devForceRoad() {
     <button class="dev-btn" onclick="devSkipDays(2)">→ Skip 2 Days (missed)</button>
     <button class="dev-btn" onclick="devSkipDays(5)">→ Skip 5 Days (wounded)</button>
 
-    <div class="dev-section">Logging</div>
-    <button class="dev-btn" onclick="devLogAll()">Log all habits today</button>
-    <button class="dev-btn" onclick="devLogByStat('STR')">Log STR habits only</button>
-    <button class="dev-btn" onclick="devLogByStat('WIS')">Log WIS habits only</button>
-    <button class="dev-btn" onclick="devLogByStat('DISC')">Log DIS habits only</button>
+    <div class="dev-section">Steps (mock)</div>
+    <div class="dev-input-row">
+      <input class="dev-input" id="dev-steps-val" type="number" placeholder="Steps today (e.g. 8420)" min="0" max="99999">
+      <button class="dev-btn" style="flex:0 0 auto;padding:5px 10px;" onclick="devSetSteps()">Set</button>
+    </div>
+    <div class="dev-btn-row">
+      <button class="dev-btn" onclick="devSetSteps(2500)">2.5k</button>
+      <button class="dev-btn" onclick="devSetSteps(5000)">5k</button>
+      <button class="dev-btn" onclick="devSetSteps(8420)">8.4k</button>
+      <button class="dev-btn" onclick="devSetSteps(12000)">12k</button>
+    </div>
+    <div class="dev-section">Add Steps (accumulate)</div>
+    <div class="dev-btn-row">
+      <button class="dev-btn" onclick="devAddSteps(1000)">+1k</button>
+      <button class="dev-btn" onclick="devAddSteps(5000)">+5k</button>
+      <button class="dev-btn" onclick="devAddSteps(10000)">+10k</button>
+    </div>
 
     <div class="dev-section">HP</div>
     <div class="dev-input-row">
@@ -6877,7 +7303,7 @@ function devForceRoad() {
       <button class="dev-btn danger" onclick="devSetHP(0)">0</button>
     </div>
 
-    <div class="dev-section">Location</div>
+    <div class="dev-section">Location (jump)</div>
     <div class="dev-btn-row">
       <button class="dev-btn" onclick="devSetNode(0)">Node 0</button>
       <button class="dev-btn" onclick="devSetNode(1)">Node 1</button>
@@ -6886,6 +7312,7 @@ function devForceRoad() {
     <div class="dev-btn-row">
       <button class="dev-btn" onclick="devSetNode(3)">Node 3</button>
       <button class="dev-btn" onclick="devSetNode(4)">Node 4</button>
+      <button class="dev-btn" onclick="devSetNode(5)">Node 5 (end)</button>
     </div>
 
     <div class="dev-section">Beat</div>
@@ -6894,6 +7321,21 @@ function devForceRoad() {
 
     <div class="dev-section">Danger</div>
     <button class="dev-btn danger" onclick="devReset()">⚠ Reset all data</button>
+  </div>
+</div>
+
+<!-- Chapter complete overlay -->
+<div id="chapter-complete-overlay">
+  <div class="chapter-complete-box">
+    <div class="chapter-complete-chapter">Chapter I · Complete</div>
+    <span class="chapter-complete-icon">🏰</span>
+    <div class="chapter-complete-title">The Iron Keep</div>
+    <div class="chapter-complete-body">
+      Your steps have carried you the full length of the North Road.
+      The keep stands before you. The road behind you is yours.
+      A new chapter waits beyond the gate.
+    </div>
+    <button class="chapter-complete-btn" onclick="closeChapterComplete()">Onward ⚔</button>
   </div>
 </div>
 
@@ -6928,10 +7370,8 @@ function mobSync() {
   var beatDst = document.getElementById('mob-beat-section');
   if (beatSrc && beatDst) beatDst.innerHTML = beatSrc.innerHTML;
 
-  // Habits
-  var habSrc = document.getElementById('habits-wrap');
-  var habDst = document.getElementById('mob-habits-wrap');
-  if (habSrc && habDst) habDst.innerHTML = habSrc.innerHTML;
+  // Journey section — rendered directly by renderJourneySection() into both slots.
+  // No sync needed here.
 
   // Map
   var mapSrc = document.getElementById('node-map-inner');
@@ -6994,23 +7434,7 @@ function toggleMobMap()       { mobToggle('mob-map-body',         'mob-map-chev'
 function toggleMobChronicle() { mobToggle('mob-journey-log-body', 'mob-chron-chev'); }
 function toggleMobFriends()   { mobToggle('mob-friends-body',     'mob-friends-chev'); }
 
-/* ── Mobile: tap anywhere on habit card to log ──────────────────────────────
-   Only active on mobile (≤768px). Delegated on document so it works after
-   mobSync re-renders the habit list. Skips if: desktop, card already logged,
-   or the tap was directly on .habit-check (which has its own onclick). */
-document.addEventListener('click', function(e) {
-  if (!isMobile()) return;
-  var card = e.target.closest('.habit-card');
-  if (!card) return;
-  if (card.classList.contains('logged')) return;
-  // Let the checkbox handle its own onclick — don't double-fire
-  if (e.target.closest('.habit-check')) return;
-  // Extract habit id from card id ("habit-card-{id}")
-  var cardId = card.id || '';
-  var match = cardId.match(/^habit-card-(\d+)$/);
-  if (!match) return;
-  doLog(parseInt(match[1], 10));
-});
+/* Mobile habit tap-to-log removed — habit system replaced by step ingestion. */
 </script>
 
 </body>
